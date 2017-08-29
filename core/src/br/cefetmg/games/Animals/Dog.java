@@ -18,16 +18,17 @@ public class Dog extends Animal{
     private int barkCounter;
     private boolean latindo;
     private int lives;
-    private AnimatedSprite animacao;
 
-    public Dog(int barkCounter, boolean latindo, int lives, AnimatedSprite animacao, Vector2 Pos, Animation<TextureRegion> animation) {
+    public Dog(int lives, Vector2 Pos, Animation<TextureRegion> animation) {
         super(Pos, animation);
+        this.lives = lives;
         barkCounter = 0;
         this.lives = lives;
         latindo = false;
-        this.animacao = animacao;
     }
-        
+    
+    
+
     public int getBarkCounter() {
         return barkCounter;
     }
@@ -40,7 +41,7 @@ public class Dog extends Animal{
     
     public void Bark (){
         // Se click late
-        if (true/*CLICK*/){
+        if (/*CLICK*/){
             barkCounter += 1;
             latindo = true;
         }else
@@ -48,6 +49,6 @@ public class Dog extends Animal{
     }
     
     public void wasHurt () {
-        
+        lives --;
     }
 }

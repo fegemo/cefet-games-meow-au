@@ -17,20 +17,23 @@ import com.badlogic.gdx.math.Vector2;
 public class Cat extends Animal {
     
     // Precisa de armazenar a sprite para animacao
-    private final int BeScaredThereshold;
     
-    public Cat(int Thereshold, Vector2 Pos, Animation<TextureRegion> animation) {
+    private final int BeScaredThereshold;
+
+    public Cat(int BeScaredThereshold, Vector2 Pos, Animation<TextureRegion> animation) {
         super(Pos, animation);
-            BeScaredThereshold = Thereshold;
+        this.BeScaredThereshold = BeScaredThereshold;
     }
-       
+    
+    
+    
     public boolean FleeAction (int BarkCounter) {
         // Caso positivo ativa a funcao de sair da dela
         // Presente na classe do jogo
         return BarkCounter >= BeScaredThereshold;
     }
     
-    //public abstract void Attack ();
+    public abstract void Attack ();
     
     
 }

@@ -20,7 +20,9 @@ public class Animal extends AnimatedSprite {
     public Animal(Vector2 Pos, Animation<TextureRegion> animation) {
         super(animation);
         this.Pos = Pos;
-    }   
+    }
+    
+    
     
     private void moviment (Vector2 NovaPosicao) {
         this.Pos = NovaPosicao;
