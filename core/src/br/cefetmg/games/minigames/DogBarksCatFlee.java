@@ -27,6 +27,7 @@ public class DogBarksCatFlee extends MiniGame {
     private Array<Cat> enemies;
     private Vector2 PosicaoInicial;
     private Texture tileTexture[] = new Texture[5];
+    private float spawnInterval;
     
     public DogBarksCatFlee(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -46,7 +47,24 @@ public class DogBarksCatFlee extends MiniGame {
         tileTexture[3] = assets.get("DogBarksCatFlee/tile3.png", Texture.class);
         tileTexture[4] = assets.get("DogBarksCatFlee/tile4.png", Texture.class);
         //</editor-fold>
+        enemies = new Array<Cat>();
+        
+        timer.scheduleTask(new Task() {
+            
+            @Override
+            public void run() {
+                spawnEnemy();
+            }
+
+        }, 0, this.spawnInterval);
+        
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    private void spawnEnemy () {
+        Vector2 CatPosition = new Vector2();
+        CatPosition.x = viewport.getWorldWidth();
+        Cat enemy = new Cat(ScareTheresHold(), CatPosition, CatTexture);
     }
 
     @Override
