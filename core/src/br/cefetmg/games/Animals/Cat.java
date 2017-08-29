@@ -6,6 +6,7 @@
 package br.cefetmg.games.Animals;
 
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -19,9 +20,22 @@ public class Cat extends Animal {
     // Precisa de armazenar a sprite para animacao
     
     private final int BeScaredThereshold;
+    static final int FRAME_WIDTH = 131;
+    static final int FRAME_HEIGHT = 32;
 
-    public Cat(int BeScaredThereshold, Vector2 Pos, Animation<TextureRegion> animation) {
-        super(Pos, animation);
+    public Cat(int BeScaredThereshold, Vector2 Pos, final Texture CatTexture) {
+        super(Pos, new Animation(0.1f, new Array<TextureRegion>(){
+            {
+            TextureRegion[][] frames = TextureRegion.split(
+                    CatTexture, FRAME_WIDTH, FRAME_HEIGHT);
+            super.addAll(new TextureRegion[]{
+                frames[0][0],
+                frames[0][1],
+                frames[0][2],
+                frames[0][3]
+            });
+            }
+        }));
         this.BeScaredThereshold = BeScaredThereshold;
     }
     

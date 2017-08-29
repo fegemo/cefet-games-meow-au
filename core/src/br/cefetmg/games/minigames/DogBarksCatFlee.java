@@ -13,6 +13,7 @@ import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -25,6 +26,7 @@ public class DogBarksCatFlee extends MiniGame {
     
     private Dog player;
     private Texture DogTexture;
+    private Texture CatTexture;
     private Array<Cat> enemies;
     private Vector2 PosicaoInicial;
     private Texture tileTexture[] = new Texture[5];
@@ -38,8 +40,10 @@ public class DogBarksCatFlee extends MiniGame {
     protected void onStart() {
         PosicaoInicial.x = 0;
         PosicaoInicial.y = 0;
-        DogTexture = assets.get("DogBarksCatFlee/dog1", Texture.class);
+        DogTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);
         player = new Dog (3, PosicaoInicial, DogTexture);
+        CatTexture = assets.get("DogBarksCatFlee/Kitten1.png",Texture.class);
+        
         //DogAnimation = assets.get(null);
         //<editor-fold defaultstate="collapsed" desc="texturas tile">
         tileTexture[0] = assets.get("DogBarksCatFlee/tile0.png", Texture.class);
@@ -65,7 +69,11 @@ public class DogBarksCatFlee extends MiniGame {
     private void spawnEnemy () {
         Vector2 CatPosition = new Vector2();
         CatPosition.x = viewport.getWorldWidth();
-        Cat enemy = new Cat(ScareTheresHold(), CatPosition, CatTexture);
+        Cat enemy = new Cat(ScareThereshold(), CatPosition, CatTexture);
+    }
+    
+    private int ScareThereshold (){
+        return MathUtils.random(10, 30);
     }
 
     @Override
