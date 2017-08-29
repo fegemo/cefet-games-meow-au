@@ -68,6 +68,8 @@ public class DogBarksCatFlee extends MiniGame {
         tileTexture[3] = assets.get("DogBarksCatFlee/tile3.png", Texture.class);
         tileTexture[4] = assets.get("DogBarksCatFlee/tile4.png", Texture.class);
         //</editor-fold>
+        tilesVector = new Array<Vector2>();
+        
         enemies = new Array<Cat>();
         for (int i =0 ; i< TILES_COUNT ;i++ ) {
             tilesVector.add(new Vector2(PosicaoInicial.x + i*5, PosicaoInicial.y));
