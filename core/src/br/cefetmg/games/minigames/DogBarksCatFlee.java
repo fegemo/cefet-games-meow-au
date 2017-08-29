@@ -41,11 +41,13 @@ public class DogBarksCatFlee extends MiniGame {
             batch.draw(tileTexture[MathUtils.random(4)], tile.x, tile.y);
         }
     }
+    
     private void UpdateDraw(){
         for (Vector2 tile : tilesVector) {
             tile.x += -1; 
         }
     }
+    
     @Override
     protected void onStart() {
         PosicaoInicial.x = 0;
@@ -100,13 +102,14 @@ public class DogBarksCatFlee extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
+        UpdateDraw();
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     
     @Override
     public void onDrawGame() {
-        
+        TilesDraw();
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
