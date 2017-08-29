@@ -5,6 +5,8 @@
  */
 package br.cefetmg.games.Animals;
 
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 
@@ -17,13 +19,15 @@ public class Dog extends Animal{
     private boolean latindo;
     private int lives;
     private AnimatedSprite animacao;
-    public Dog(Vector2 Pos, int lives) {
-        super(Pos);
+
+    public Dog(int barkCounter, boolean latindo, int lives, AnimatedSprite animacao, Vector2 Pos, Animation<TextureRegion> animation) {
+        super(Pos, animation);
         barkCounter = 0;
         this.lives = lives;
         latindo = false;
+        this.animacao = animacao;
     }
-
+        
     public int getBarkCounter() {
         return barkCounter;
     }
@@ -36,7 +40,7 @@ public class Dog extends Animal{
     
     public void Bark (){
         // Se click late
-        if (/*CLICK*/){
+        if (true/*CLICK*/){
             barkCounter += 1;
             latindo = true;
         }else
