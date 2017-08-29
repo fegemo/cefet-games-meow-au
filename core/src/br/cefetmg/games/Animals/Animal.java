@@ -5,6 +5,7 @@
  */
 package br.cefetmg.games.Animals;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -17,7 +18,8 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 public class Animal extends AnimatedSprite {
     private Vector2 Pos;
 
-    public Animal(Vector2 Pos, Animation<TextureRegion> animation) {
+   
+    public Animal(Vector2 Pos, Animation animation) {
         super(animation);
         this.Pos = Pos;
     }

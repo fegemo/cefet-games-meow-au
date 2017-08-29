@@ -33,7 +33,7 @@ public class Cat extends Animal {
         return BarkCounter >= BeScaredThereshold;
     }
     
-   // public abstract void Attack ();
+
     
     
 }

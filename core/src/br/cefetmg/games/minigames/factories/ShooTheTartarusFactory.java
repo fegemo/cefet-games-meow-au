@@ -29,7 +29,7 @@ public class ShooTheTartarusFactory implements MiniGameFactory {
                         Texture.class);
                 put("shoo-the-tartarus/tartarus-spritesheet.png",
                         Texture.class);
-                put("shoo-the-tartarus/tooth.png", Texture.class);
+                put("DogBarksCatFlee/dog1.png", Texture.class);
                 put("shoo-the-tartarus/appearing1.wav", Sound.class);
                 put("shoo-the-tartarus/appearing2.wav", Sound.class);
                 put("shoo-the-tartarus/appearing3.wav", Sound.class);
