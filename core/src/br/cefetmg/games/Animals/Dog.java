@@ -20,8 +20,8 @@ public class Dog extends Animal{
     private int barkCounter;
     private boolean latindo;
     private int lives;
-    static final int FRAME_WIDTH = 120;
-    static final int FRAME_HEIGHT = 280;
+    static final int FRAME_WIDTH = 131;
+    static final int FRAME_HEIGHT = 32;
 
     public Dog(int lives, Vector2 Pos, final Texture DogTexture) {
         super(Pos, new Animation(0.1f, new Array<TextureRegion>(){
