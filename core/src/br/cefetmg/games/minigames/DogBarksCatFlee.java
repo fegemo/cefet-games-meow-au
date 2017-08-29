@@ -23,11 +23,12 @@ import com.badlogic.gdx.utils.Timer.Task;
  * @author Pedro
  */
 public class DogBarksCatFlee extends MiniGame {
-    
+    private final int TILES_COUNT = 5;
     private Dog player;
     private Texture DogTexture;
     private Texture CatTexture;
     private Array<Cat> enemies;
+    private Array<Vector2> tilesVector;
     private Vector2 PosicaoInicial;
     private Texture tileTexture[] = new Texture[5];
     private float spawnInterval;
@@ -53,9 +54,11 @@ public class DogBarksCatFlee extends MiniGame {
         tileTexture[4] = assets.get("DogBarksCatFlee/tile4.png", Texture.class);
         //</editor-fold>
         enemies = new Array<Cat>();
+        for (int i =0 ; i< TILES_COUNT ;i++ ) {
+            tilesVector.add(new Vector2(PosicaoInicial.x + i*5, PosicaoInicial.y));
+        }
         
         timer.scheduleTask(new Task() {
-            
             @Override
             public void run() {
                 spawnEnemy();
@@ -91,6 +94,7 @@ public class DogBarksCatFlee extends MiniGame {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    
     @Override
     public void onDrawGame() {
         batch.draw(tileTexture[0], 5, 5);
