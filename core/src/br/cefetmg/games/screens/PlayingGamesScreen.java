@@ -40,8 +40,9 @@ public class PlayingGamesScreen extends BaseScreen
         sequencer = new GameSequencer(5, new HashSet<MiniGameFactory>(
                 Arrays.asList(
                         // flávio
-                        new ShootTheCariesFactory(),
-                        new ShooTheTartarusFactory()
+                        //new ShootTheCariesFactory()
+                        //new ShooTheTartarusFactory()
+                        new DogBarksCatFleeFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);

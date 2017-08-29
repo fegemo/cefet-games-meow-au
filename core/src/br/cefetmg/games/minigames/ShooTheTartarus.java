@@ -49,6 +49,7 @@ public class ShooTheTartarus extends MiniGame {
     }
 
     @Override
+    
     protected void onStart() {
         toothbrushTexture = assets.get(
                 "shoo-the-tartarus/toothbrush-spritesheet.png", Texture.class);
