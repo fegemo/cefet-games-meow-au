@@ -25,7 +25,12 @@ public class DogBarksCatFlee extends MiniGame {
     private Dog player;
     private Texture DogTexture;
     private Array<Cat> enemies;
+<<<<<<< Updated upstream
     private Vector2 PosicaoInicial;
+=======
+    private Vector2 ArrayTile;
+    private Texture tileTexture[] = new Texture[5];
+>>>>>>> Stashed changes
     
     public DogBarksCatFlee(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -34,10 +39,21 @@ public class DogBarksCatFlee extends MiniGame {
 
     @Override
     protected void onStart() {
+<<<<<<< Updated upstream
         PosicaoInicial.x = 0;
         PosicaoInicial.y = 0;
         DogTexture = assets.get("DogBarksCatFlee/dog1", Texture.class);
         player = new Dog (3, PosicaoInicial, DogTexture);
+=======
+        DogAnimation = assets.get(null);
+        //<editor-fold defaultstate="collapsed" desc="texturas tile">
+        tileTexture[0] = assets.get("DogBarksCatFlee/tile0.png", Texture.class);
+        tileTexture[1] = assets.get("DogBarksCatFlee/tile1.png", Texture.class);
+        tileTexture[2] = assets.get("DogBarksCatFlee/tile2.png", Texture.class);
+        tileTexture[3] = assets.get("DogBarksCatFlee/tile3.png", Texture.class);
+        tileTexture[4] = assets.get("DogBarksCatFlee/tile4.png", Texture.class);
+        //</editor-fold>
+>>>>>>> Stashed changes
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
