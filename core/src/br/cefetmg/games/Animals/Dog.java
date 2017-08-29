@@ -41,7 +41,7 @@ public class Dog extends Animal{
     
     public void Bark (){
         // Se click late
-        if (/*CLICK*/){
+        if (true/*CLICK*/){
             barkCounter += 1;
             latindo = true;
         }else
