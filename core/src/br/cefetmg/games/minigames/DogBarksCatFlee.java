@@ -7,6 +7,7 @@ package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.Animals.Cat;
 import br.cefetmg.games.Animals.Dog;
+import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -32,6 +33,8 @@ public class DogBarksCatFlee extends MiniGame {
     private Vector2 PosicaoInicial;
     private Texture tileTexture[] = new Texture[5];
     private float spawnInterval;
+    private float minimumEnemySpeed;
+    private float maximumEnemySpeed;
     
     public DogBarksCatFlee(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -84,6 +87,7 @@ public class DogBarksCatFlee extends MiniGame {
         Vector2 CatPosition = new Vector2();
         CatPosition.x = viewport.getWorldWidth();
         Cat enemy = new Cat(ScareThereshold(), CatPosition, CatTexture);
+        enemies.add(enemy);
     }
     
     private int ScareThereshold (){
@@ -92,35 +96,38 @@ public class DogBarksCatFlee extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        this.minimumEnemySpeed = DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 120, 220);
+        this.maximumEnemySpeed = DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 240, 340);
+        this.spawnInterval = DifficultyCurve.LINEAR_NEGATIVE
+                .getCurveValueBetween(difficulty, 0.25f, 1.5f);
+  }
 
     @Override
     public void onHandlePlayingInput() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void onUpdate(float dt) {
         UpdateDraw();
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // player.update(dt);
     }
 
     
     @Override
     public void onDrawGame() {
         TilesDraw();
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String getInstructions() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "Salve o mundo Pink";
     }
 
     @Override
     public boolean shouldHideMousePointer() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return false;
     }
     
 }
