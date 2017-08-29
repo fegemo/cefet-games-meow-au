@@ -34,7 +34,8 @@ public class MenuScreen extends BaseScreen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
 
         // instancia a textura e a região de textura (usada para repetir)
-        background = new TextureRegion(new Texture("menu-background.png"));
+        background = new TextureRegion(new Texture("menu-background-pacdog.png"));
+
         // configura a textura para repetir caso ela ocupe menos espaço que o
         // espaço disponível
         background.getTexture().setWrap(
