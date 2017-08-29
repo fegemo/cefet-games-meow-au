@@ -56,7 +56,7 @@ public class ShooTheTartarus extends MiniGame {
         tartarusTexture = assets.get(
                 "shoo-the-tartarus/tartarus-spritesheet.png", Texture.class);
         toothTexture = assets.get(
-                "shoo-the-tartarus/tooth.png", Texture.class);
+                "shoo-the-tartarus/dog1.png", Texture.class);
         tartarusAppearingSound = new Array<Sound>(3);
         tartarusAppearingSound.addAll(assets.get(
                 "shoo-the-tartarus/appearing1.wav", Sound.class),
@@ -345,8 +345,8 @@ public class ShooTheTartarus extends MiniGame {
         private final TextureRegion broken;
         private int lives = 2;
 
-        static final int FRAME_WIDTH = 64;
-        static final int FRAME_HEIGHT = 64;
+        static final int FRAME_WIDTH = 32;
+        static final int FRAME_HEIGHT = 24;
 
         public Tooth(TextureRegion textureOk, TextureRegion textureHurt,
                 TextureRegion textureBroken, int lives) {
