@@ -21,7 +21,8 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 /**
  *
- * @author Pedro
+ * @author Pedro e Arthur
+ * ouçam https://www.youtube.com/watch?v=Gfw4yxn_kPQ
  */
 public class DogBarksCatFlee extends MiniGame {
     private final int TILES_COUNT = 5;
@@ -29,7 +30,7 @@ public class DogBarksCatFlee extends MiniGame {
     private Texture DogTexture;
     private Texture CatTexture;
     private Array<Cat> enemies;
-    private Array<Vector2> tilesVector;
+    private Array<Vector2> tilesVector; // Tem que criar 1 tipo tile que tem Vector2 e um int para representar qual é o 
     private Vector2 PosicaoInicial;
     private Texture tileTexture[] = new Texture[5];
     private float spawnInterval;
@@ -39,6 +40,7 @@ public class DogBarksCatFlee extends MiniGame {
     public DogBarksCatFlee(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
     }
+    
     private void TilesDraw(){
         for (Vector2 tile : tilesVector) {
             batch.draw(tileTexture[MathUtils.random(4)], tile.x, tile.y);
@@ -48,6 +50,8 @@ public class DogBarksCatFlee extends MiniGame {
     private void UpdateDraw(){
         for (Vector2 tile : tilesVector) {
             tile.x += -1; 
+            if(tile.x <= 0) // ainda não definido o num;
+                tile.x = 50; // ainda não definido o num;
         }
     }
     
@@ -67,6 +71,8 @@ public class DogBarksCatFlee extends MiniGame {
         tileTexture[3] = assets.get("DogBarksCatFlee/tile3.png", Texture.class);
         tileTexture[4] = assets.get("DogBarksCatFlee/tile4.png", Texture.class);
         //</editor-fold>
+        tilesVector = new Array<Vector2>();
+        
         enemies = new Array<Cat>();
         for (int i =0 ; i< TILES_COUNT ;i++ ) {
             tilesVector.add(new Vector2(PosicaoInicial.x + i*5, PosicaoInicial.y));
