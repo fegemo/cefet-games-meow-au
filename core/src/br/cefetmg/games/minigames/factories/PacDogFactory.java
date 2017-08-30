@@ -25,6 +25,7 @@ public class PacDogFactory implements MiniGameFactory {
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
             {
+                put("pac-dog/dog-spritesheet.png", Texture.class);
                 put("shoot-the-caries/caries.png", Texture.class);
                 put("shoot-the-caries/target.png", Texture.class);
                 put("shoot-the-caries/caries1.mp3", Sound.class);
