@@ -4,6 +4,7 @@ import br.cefetmg.games.Config;
 import br.cefetmg.games.graphics.hud.Hud;
 import br.cefetmg.games.logic.chooser.BaseGameSequencer;
 import br.cefetmg.games.logic.chooser.GameSequencer;
+import br.cefetmg.games.minigames.Game_Test;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.factories.*;
 import br.cefetmg.games.minigames.util.MiniGameState;
@@ -42,7 +43,10 @@ public class PlayingGamesScreen extends BaseScreen
                         // flávio
                        // new ShootTheCariesFactory(),
                         //new ShooTheTartarusFactory(),
-                        new SpyFishFactory()
+                        new SpyFishFactory(),
+                        new ShootTheCariesFactory(),
+                        new ShooTheTartarusFactory()
+                        //new Game_Test()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);

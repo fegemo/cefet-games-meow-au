@@ -1,6 +1,7 @@
 package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.minigames.util.DifficultyCurve;
+import br.cefetmg.games.SpriteSheetCoin;
 import br.cefetmg.games.graphics.MultiAnimatedSprite;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -35,6 +36,7 @@ public class ShooTheTartarus extends MiniGame {
     private Array<Tartarus> enemies;
     private Array<Tooth> teeth;
     private int numberOfBrokenTeeth;
+    private static SpriteSheetCoin coin;
 
     // variáveis do desafio - variam com a dificuldade do minigame
     private float minimumEnemySpeed;
@@ -70,6 +72,7 @@ public class ShooTheTartarus extends MiniGame {
         teeth = new Array<Tooth>();
         numberOfBrokenTeeth = 0;
 
+        
         initializeTeeth();
         timer.scheduleTask(new Task() {
             @Override
@@ -79,6 +82,9 @@ public class ShooTheTartarus extends MiniGame {
 
         }, 0, this.spawnInterval);
     }
+    
+    // metodo que instancia objetos coin
+    
 
     private void initializeTeeth() {
         TextureRegion[][] frames = TextureRegion.split(toothTexture,
