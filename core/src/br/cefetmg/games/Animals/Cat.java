@@ -21,27 +21,25 @@ public class Cat extends Animal {
     // Precisa de armazenar a sprite para animacao
     
     private final int BeScaredThereshold;
-    static final int FRAME_WIDTH = 131;
-    static final int FRAME_HEIGHT = 32;
 
-    public Cat(int BeScaredThereshold, Vector2 Pos, final Texture CatTexture) {
-        super(Pos, new Animation(0.1f, new Array<TextureRegion>(){
-            {
-            TextureRegion[][] frames = TextureRegion.split(
-                    CatTexture, FRAME_WIDTH, FRAME_HEIGHT);
-            super.addAll(new TextureRegion[]{
-                frames[0][0],
-                frames[0][1],
-                frames[0][2],
-                frames[0][3]
-            });
-            }
-        }));
+
+    public Cat(int BeScaredThereshold, Vector2 Pos, TextureRegion CatTexture) {
+        super(Pos, CatTexture);
         this.BeScaredThereshold = BeScaredThereshold;
     }
     
+    public int GetWidth () {
+        return FRAME_WIDTH;
+    }
     
+    public int GetHeight () {
+        return FRAME_HEIGHT;
+    }
     
+//    public void update(float dt) {
+//        super.update(dt);
+//    }
+//    
     public boolean FleeAction (int BarkCounter) {
         // Caso positivo ativa a funcao de sair da dela
         // Presente na classe do jogo

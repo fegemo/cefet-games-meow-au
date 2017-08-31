@@ -7,20 +7,23 @@ package br.cefetmg.games.Animals;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 
 /**
  *
  * @author Pedro
  */
-public class Animal extends AnimatedSprite {
+public class Animal extends Sprite {
     private Vector2 Pos;
-
+    static final int FRAME_WIDTH = 131;
+    static final int FRAME_HEIGHT = 32;
    
-    public Animal(Vector2 Pos, Animation animation) {
-        super(animation);
+    public Animal(Vector2 Pos, TextureRegion AnimalSpriteSheet) {
+        super(AnimalSpriteSheet);
         this.Pos = Pos;
     }
     

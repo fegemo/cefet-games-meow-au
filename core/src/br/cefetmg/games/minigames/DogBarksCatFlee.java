@@ -12,7 +12,6 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -26,6 +25,7 @@ import com.badlogic.gdx.utils.Timer.Task;
  */
 public class DogBarksCatFlee extends MiniGame {
     private final int TILES_COUNT = 5;
+    private static Cat Test;
     private Dog player;
     private Texture DogTexture;
     private Texture CatTexture;
@@ -47,7 +47,8 @@ public class DogBarksCatFlee extends MiniGame {
         }
     }
     
-    private void UpdateDraw(){
+    private void UpdateDraw(float dt){
+        super.update(dt);
         for (Vector2 tile : tilesVector) {
             tile.x += -1; 
             if(tile.x <= 0) // ainda não definido o num;
@@ -55,42 +56,49 @@ public class DogBarksCatFlee extends MiniGame {
         }
     }
     
+    private void inicializeDog(){
+        TextureRegion[][] frames = TextureRegion.split(DogTexture, Test.GetWidth(), Test.GetHeight());
+        player = new Dog (3, PosicaoInicial,
+                        frames[0][0],
+                        frames[0][1],
+                        frames[0][2]
+                        );
+    }
+    
     @Override
     protected void onStart() {
-        PosicaoInicial = new Vector2 (0,0);
+        PosicaoInicial = new Vector2 (1,1);
         DogTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);
-        player = new Dog (3, PosicaoInicial, DogTexture);
-        CatTexture = assets.get("DogBarksCatFlee/Kitten1.png",Texture.class);
         
-        //DogAnimation = assets.get(null);
-        //<editor-fold defaultstate="collapsed" desc="texturas tile">
-        tileTexture[0] = assets.get("DogBarksCatFlee/tile0.png", Texture.class);
-        tileTexture[1] = assets.get("DogBarksCatFlee/tile1.png", Texture.class);
-        tileTexture[2] = assets.get("DogBarksCatFlee/tile2.png", Texture.class);
-        tileTexture[3] = assets.get("DogBarksCatFlee/tile3.png", Texture.class);
-        tileTexture[4] = assets.get("DogBarksCatFlee/tile4.png", Texture.class);
-        //</editor-fold>
-        tilesVector = new Array<Vector2>();
+        CatTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);
         enemies = new Array<Cat>();
-        
-        for (int i =0 ; i< TILES_COUNT ;i++ ) {
-            tilesVector.add(new Vector2(PosicaoInicial.x + i*5, PosicaoInicial.y));
-        }
-        
+        //DogAnimation = assets.get(null);
+//        //<editor-fold defaultstate="collapsed" desc="texturas tile">
+//        tileTexture[0] = assets.get("DogBarksCatFlee/tile0.png", Texture.class);
+//        tileTexture[1] = assets.get("DogBarksCatFlee/tile1.png", Texture.class);
+//        tileTexture[2] = assets.get("DogBarksCatFlee/tile2.png", Texture.class);
+//        tileTexture[3] = assets.get("DogBarksCatFlee/tile3.png", Texture.class);
+//        tileTexture[4] = assets.get("DogBarksCatFlee/tile4.png", Texture.class);
+//        //</editor-fold>
+//        tilesVector = new Array<Vector2>();
+//        
+//        
+//        for (int i =0 ; i< TILES_COUNT ;i++ ) {
+//            tilesVector.add(new Vector2(PosicaoInicial.x + i*5, PosicaoInicial.y));
+//        }
+        inicializeDog();
         timer.scheduleTask(new Task() {
             @Override
             public void run() {
                 spawnEnemy();
             }
         }, 0, this.spawnInterval);    
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     private void spawnEnemy () {
-        Vector2 CatPosition = new Vector2();
-        CatPosition.x = viewport.getWorldWidth();
-        Cat enemy = new Cat(ScareThereshold(), CatPosition, CatTexture);
-        enemies.add(enemy);
+//        Vector2 CatPosition = new Vector2(viewport.getWorldWidth(), viewport.getWorldHeight());
+//        Cat enemy = new Cat(ScareThereshold(), CatPosition, CatTexture);
+//        enemies.add(enemy);
     }
     
     private int ScareThereshold (){
@@ -113,7 +121,7 @@ public class DogBarksCatFlee extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
-        UpdateDraw();
+        UpdateDraw(dt);
         // player.update(dt);
     }
 
