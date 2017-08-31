@@ -31,7 +31,7 @@ public class PacDog extends MiniGame
     private final int frameWidthDogTexture = 32;
     private final int frameHeightDogTexture = 32;
     private final int frameWidthEnemieTexture = 16;
-    private final int frameHeightEnemieTexture = 8;
+    private final int frameHeightEnemieTexture = 16;
     private final int animationSpeed = 2;
     private final int CURRENT_ANIMATION = 0, MOVE_UP = 1, MOVE_DOWN = 2, MOVE_RIGHT = 3, MOVE_LEFT = 4;
     private final int FIRST_ENEMIE = 0, SECOND_ENEMIE = 1, THIRD_ENEMIE = 2, FOURTH_ENEMIE = 3;
@@ -193,9 +193,9 @@ public class PacDog extends MiniGame
         positionXEnemie[SECOND_ENEMIE] = Math.round(viewport.getWorldWidth()) - frameWidthEnemieTexture;
         positionYEnemie[SECOND_ENEMIE] = Math.round(viewport.getWorldHeight()) - frameHeightEnemieTexture;
         positionXEnemie[THIRD_ENEMIE] = Math.round(viewport.getWorldWidth()) - frameWidthEnemieTexture;
-        positionYEnemie[THIRD_ENEMIE] = 0;
+        positionYEnemie[THIRD_ENEMIE] = Math.round(viewport.getWorldHeight()/2);
         positionXEnemie[FOURTH_ENEMIE] = 0;
-        positionYEnemie[FOURTH_ENEMIE] = 0;
+        positionYEnemie[FOURTH_ENEMIE] = Math.round(viewport.getWorldHeight()/2);
         
         positionEnemie[FIRST_ENEMIE] = new Vector2(positionXEnemie[FIRST_ENEMIE], positionYEnemie[FIRST_ENEMIE]);
         positionEnemie[SECOND_ENEMIE] = new Vector2(positionXEnemie[SECOND_ENEMIE], positionYEnemie[SECOND_ENEMIE]);
@@ -262,6 +262,10 @@ public class PacDog extends MiniGame
     public void onDrawGame()
     {
         batch.draw((TextureRegion) mainCharacterAnimation[CURRENT_ANIMATION].getKeyFrame(animationTime), positionMainCharacter.x, positionMainCharacter.y);
+        batch.draw((TextureRegion) enemiesAnimation[FIRST_ENEMIE][CURRENT_ANIMATION].getKeyFrame(animationTime), positionEnemie[FIRST_ENEMIE].x, positionEnemie[FIRST_ENEMIE].y);
+        batch.draw((TextureRegion) enemiesAnimation[SECOND_ENEMIE][CURRENT_ANIMATION].getKeyFrame(animationTime), positionEnemie[SECOND_ENEMIE].x, positionEnemie[SECOND_ENEMIE].y);
+        batch.draw((TextureRegion) enemiesAnimation[THIRD_ENEMIE][CURRENT_ANIMATION].getKeyFrame(animationTime), positionEnemie[THIRD_ENEMIE].x, positionEnemie[THIRD_ENEMIE].y);
+        batch.draw((TextureRegion) enemiesAnimation[FOURTH_ENEMIE][CURRENT_ANIMATION].getKeyFrame(animationTime), positionEnemie[FOURTH_ENEMIE].x, positionEnemie[FOURTH_ENEMIE].y);
     }
 
     @Override
