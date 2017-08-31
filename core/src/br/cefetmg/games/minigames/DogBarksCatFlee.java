@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.Timer.Task;
  * ouçam https://www.youtube.com/watch?v=Gfw4yxn_kPQ
  */
 public class DogBarksCatFlee extends MiniGame {
-    private final int TILES_COUNT = 20;
+    private final int TILES_COUNT = 9;
     private Dog player;
     private Texture DogTexture;
     private Texture CatTexture;
