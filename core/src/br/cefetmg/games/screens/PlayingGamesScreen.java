@@ -43,9 +43,9 @@ public class PlayingGamesScreen extends BaseScreen
                         // flávio
                        // new ShootTheCariesFactory(),
                         //new ShooTheTartarusFactory(),
-                        new SpyFishFactory(),
-                        new ShootTheCariesFactory(),
-                        new ShooTheTartarusFactory()
+                        new SpyFishFactory()
+                        //new ShootTheCariesFactory(),
+                        //new ShooTheTartarusFactory()
                         //new Game_Test()
                 )
         ), 0, 1, this, this);

@@ -33,9 +33,9 @@ public class SpyFish extends MiniGame{
     private Texture texturaMcontrol;
     
     //elementos de logica
-    private Fish fish;
-    private Control control;
-    private MemoryCard memoryCard;
+//    private Fish fish;
+//    private Control control;
+//    private MemoryCard memoryCard;
     
     //elementos de dificuldade
     
@@ -44,8 +44,8 @@ public class SpyFish extends MiniGame{
           MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty,10000,
                 TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
-        fish=new Fish(texturaFish);
-        control = new Control();
+//        fish=new Fish(texturaFish);
+//        control = new Control();
     }
     @Override
     protected void challengeSolved() {
@@ -69,26 +69,27 @@ public class SpyFish extends MiniGame{
 
     @Override
     public void onHandlePlayingInput() {
-       Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+       /*Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);
         if(Gdx.input.isTouched())
             control.update(click);
         else
             control.update();
-        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        */// throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void onUpdate(float dt) {
-        fish.update(dt);
-        memoryCard.update();
+        /*fish.update(dt);
+        memoryCard.update();*/
     }
 
     @Override
     public void onDrawGame() {
-        fish.draw(batch);
+        batch.draw(texturaFish, 0, 0);
+        /*fish.draw(batch);
         control.draw(batch);
-        memoryCard.draw(batch);
+        memoryCard.draw(batch);*/
     }
 
     @Override
@@ -101,7 +102,7 @@ public class SpyFish extends MiniGame{
         return true;
     //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    class Fish extends MultiAnimatedSprite{
+/*    class Fish extends MultiAnimatedSprite{
 
         private Vector2 dposi;
         private int lado;
@@ -159,5 +160,5 @@ public class SpyFish extends MiniGame{
         public void update(){
             centroMeio = centro;
         }
-    }
+    }*/
 }
