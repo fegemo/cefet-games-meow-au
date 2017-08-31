@@ -72,9 +72,9 @@ public class DogBarksCatFlee extends MiniGame {
         tileTexture[4] = assets.get("DogBarksCatFlee/tile4.png", Texture.class);
         //</editor-fold>
         tilesVector = new Array<Vector2>();
-        
         enemies = new Array<Cat>();
-        for (int i = 1 ; i< TILES_COUNT ;i++ ) {
+        
+        for (int i =0 ; i< TILES_COUNT ;i++ ) {
             tilesVector.add(new Vector2(PosicaoInicial.x + i*5, PosicaoInicial.y));
         }
         
@@ -83,8 +83,6 @@ public class DogBarksCatFlee extends MiniGame {
             public void run() {
                 spawnEnemy();
             }
-
-        
         }, 0, this.spawnInterval);    
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
