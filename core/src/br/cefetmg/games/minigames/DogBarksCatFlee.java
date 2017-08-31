@@ -84,8 +84,8 @@ public class DogBarksCatFlee extends MiniGame {
                 spawnEnemy();
             }
 
-        }, 0, this.spawnInterval);
         
+        }, 0, this.spawnInterval);    
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
