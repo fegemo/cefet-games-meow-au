@@ -5,8 +5,7 @@
  */
 package br.cefetmg.games.minigames;
 
-import br.cefetmg.games.Animals.Cat;
-import br.cefetmg.games.Animals.Dog;
+import br.cefetmg.games.Animals.*;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
@@ -29,7 +28,7 @@ public class DogBarksCatFlee extends MiniGame {
     private Texture DogTexture;
     private Texture CatTexture;
     private Array<Cat> enemies;
-    private Array<Vector2> tilesVector; // Tem que criar 1 tipo tile que tem Vector2 e um int para representar qual é o 
+    private Array<Tiles> tilesVector; // Tem que criar 1 tipo tile que tem Vector2 e um int para representar qual é o 
     private Vector2 PosicaoInicial;
     private Texture tileTexture[] = new Texture[5];
     private float spawnInterval;
@@ -41,18 +40,20 @@ public class DogBarksCatFlee extends MiniGame {
     }
     
     private void TilesDraw(){
-        for (Vector2 tile : tilesVector) {
-            batch.draw(tileTexture[0], tile.x, tile.y);
+        for (Tiles tile : tilesVector) {
+            batch.draw(tileTexture[tile.tile_Type ], tile.tileVector.x, tile.tileVector.y);
            // batch.draw(tileTexture[MathUtils.random(4)], tile.x, tile.y);
         }
     }
     
     private void UpdateDraw(float dt){
         //super.update(dt);
-        for (Vector2 tile : tilesVector) {
-            tile.x += -0.5; 
-            if(tile.x <= 0- tileTexture[0].getWidth()) // ainda não definido o num;
-                tile.x = 500; // ainda não definido o num;
+        for (Tiles tile : tilesVector) {
+            tile.tileVector.x += -0.5; 
+            if(tile.tileVector.x <= 0- tileTexture[0].getWidth()){
+                tile.tileChange();
+                tile.tileVector.x = 500; // ainda não definido o num;
+            } // ainda não definido o num;   
         }
     }
     
@@ -74,7 +75,7 @@ public class DogBarksCatFlee extends MiniGame {
         tileTexture[3] = assets.get("DogBarksCatFlee/tile3.png", Texture.class);
         tileTexture[4] = assets.get("DogBarksCatFlee/tile4.png", Texture.class);
 //        //</editor-fold>
-        tilesVector = new Array<Vector2>();
+        tilesVector = new Array<Tiles>();
         
         
         for (int i =0 ; i< TILES_COUNT ;i++ ) {
