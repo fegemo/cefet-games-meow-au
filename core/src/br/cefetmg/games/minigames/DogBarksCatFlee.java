@@ -57,27 +57,28 @@ public class DogBarksCatFlee extends MiniGame {
     
     @Override
     protected void onStart() {
-        PosicaoInicial.x = 0;
-        PosicaoInicial.y = 0;
-        DogTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);
-        player = new Dog (3, PosicaoInicial, DogTexture);
-        CatTexture = assets.get("DogBarksCatFlee/Kitten1.png",Texture.class);
+        PosicaoInicial= new Vector2(0,0);
         
         //DogAnimation = assets.get(null);
-        //<editor-fold defaultstate="collapsed" desc="texturas tile">
+        
+        //<editor-fold defaultstate="collapsed" desc="texturas">
         tileTexture[0] = assets.get("DogBarksCatFlee/tile0.png", Texture.class);
         tileTexture[1] = assets.get("DogBarksCatFlee/tile1.png", Texture.class);
         tileTexture[2] = assets.get("DogBarksCatFlee/tile2.png", Texture.class);
         tileTexture[3] = assets.get("DogBarksCatFlee/tile3.png", Texture.class);
         tileTexture[4] = assets.get("DogBarksCatFlee/tile4.png", Texture.class);
-        //</editor-fold>
+        CatTexture = assets.get("DogBarksCatFlee/Kitten1.png",Texture.class);
+        DogTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);//</editor-fold>
+        
+        
+        player = new Dog (3, PosicaoInicial, DogTexture);
         tilesVector = new Array<Vector2>();
         enemies = new Array<Cat>();
         
         for (int i =0 ; i< TILES_COUNT ;i++ ) {
             tilesVector.add(new Vector2(PosicaoInicial.x + i*5, PosicaoInicial.y));
         }
-        
+
         timer.scheduleTask(new Task() {
             @Override
             public void run() {
@@ -88,7 +89,7 @@ public class DogBarksCatFlee extends MiniGame {
     }
     
     private void spawnEnemy () {
-        Vector2 CatPosition = new Vector2();
+        Vector2 CatPosition = new Vector2(0,0);
         CatPosition.x = viewport.getWorldWidth();
         Cat enemy = new Cat(ScareThereshold(), CatPosition, CatTexture);
         enemies.add(enemy);
@@ -126,7 +127,7 @@ public class DogBarksCatFlee extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Salve o mundo Pink";
+        return "RAWR RAWR";
     }
 
     @Override
