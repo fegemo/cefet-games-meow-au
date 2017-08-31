@@ -57,8 +57,7 @@ public class DogBarksCatFlee extends MiniGame {
     
     @Override
     protected void onStart() {
-        PosicaoInicial.x = 0;
-        PosicaoInicial.y = 0;
+        PosicaoInicial = new Vector2 (0,0);
         DogTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);
         player = new Dog (3, PosicaoInicial, DogTexture);
         CatTexture = assets.get("DogBarksCatFlee/Kitten1.png",Texture.class);
