@@ -67,7 +67,7 @@ public class DogBarksCatFlee extends MiniGame {
     
     @Override
     protected void onStart() {
-<<<<<<< HEAD
+
         PosicaoInicial = new Vector2 (1,1);
         DogTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);
         
@@ -88,30 +88,6 @@ public class DogBarksCatFlee extends MiniGame {
 //            tilesVector.add(new Vector2(PosicaoInicial.x + i*5, PosicaoInicial.y));
 //        }
         inicializeDog();
-=======
-        PosicaoInicial= new Vector2(0,0);
-        
-        //DogAnimation = assets.get(null);
-        
-        //<editor-fold defaultstate="collapsed" desc="texturas">
-        tileTexture[0] = assets.get("DogBarksCatFlee/tile0.png", Texture.class);
-        tileTexture[1] = assets.get("DogBarksCatFlee/tile1.png", Texture.class);
-        tileTexture[2] = assets.get("DogBarksCatFlee/tile2.png", Texture.class);
-        tileTexture[3] = assets.get("DogBarksCatFlee/tile3.png", Texture.class);
-        tileTexture[4] = assets.get("DogBarksCatFlee/tile4.png", Texture.class);
-        CatTexture = assets.get("DogBarksCatFlee/Kitten1.png",Texture.class);
-        DogTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);//</editor-fold>
-        
-        
-        player = new Dog (3, PosicaoInicial, DogTexture);
-        tilesVector = new Array<Vector2>();
-        enemies = new Array<Cat>();
-        
-        for (int i =0 ; i< TILES_COUNT ;i++ ) {
-            tilesVector.add(new Vector2(PosicaoInicial.x + i*5, PosicaoInicial.y));
-        }
-
->>>>>>> 711b517c25e80e2d6cb94bc94de6d8f7b2e1de68
         timer.scheduleTask(new Task() {
             @Override
             public void run() {
@@ -121,16 +97,11 @@ public class DogBarksCatFlee extends MiniGame {
     }
     
     private void spawnEnemy () {
-<<<<<<< HEAD
+
 //        Vector2 CatPosition = new Vector2(viewport.getWorldWidth(), viewport.getWorldHeight());
 //        Cat enemy = new Cat(ScareThereshold(), CatPosition, CatTexture);
 //        enemies.add(enemy);
-=======
-        Vector2 CatPosition = new Vector2(0,0);
-        CatPosition.x = viewport.getWorldWidth();
-        Cat enemy = new Cat(ScareThereshold(), CatPosition, CatTexture);
-        enemies.add(enemy);
->>>>>>> 711b517c25e80e2d6cb94bc94de6d8f7b2e1de68
+
     }
     
     private int ScareThereshold (){
