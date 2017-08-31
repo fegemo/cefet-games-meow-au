@@ -38,7 +38,10 @@ public class SpriteSheetCoin {
 	}
 	
 	public void update(){
-		posicaoY -= 10;	
+		if( posicaoY >= 0){
+			// se dentro da tela
+			posicaoY -= 10;	
+		}
 	}
 	
 	public void render(SpriteBatch sb){

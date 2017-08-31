@@ -83,7 +83,6 @@ public class ShooTheTartarus extends MiniGame {
         }, 0, this.spawnInterval);
     }
     
-    // metodo que instancia objetos coin
     
 
     private void initializeTeeth() {

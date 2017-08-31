@@ -6,6 +6,7 @@
 package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.Config;
+import br.cefetmg.games.SpriteSheetCoin;
 import br.cefetmg.games.graphics.MultiAnimatedSprite;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import static java.lang.Math.max;
@@ -31,6 +33,8 @@ public class SpyFish extends MiniGame{
     private Texture texturaFundo;
     private Texture texturaFcontrol;
     private Texture texturaMcontrol;
+    private Texture t;
+    private static SpriteSheetCoin coin;
     
     //elementos de logica
 //    private Fish fish;
@@ -60,6 +64,8 @@ public class SpyFish extends MiniGame{
         this.texturaFcontrol = assets.get("spy-fish/fundo-controle.png",Texture.class);
         this.texturaMcontrol = assets.get("spy-fish/controle-principal.png",Texture.class);
         
+        coin = new SpriteSheetCoin( (Texture) assets.get("spy-fish/coin.png",Texture.class) );
+        
     }
 
     @Override
@@ -86,7 +92,10 @@ public class SpyFish extends MiniGame{
 
     @Override
     public void onDrawGame() {
+    	batch.begin();
         batch.draw(texturaFish, 0, 0);
+        coin.render(batch);
+        batch.end();
         /*fish.draw(batch);
         control.draw(batch);
         memoryCard.draw(batch);*/
