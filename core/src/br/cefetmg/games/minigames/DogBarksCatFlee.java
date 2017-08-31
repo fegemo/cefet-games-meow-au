@@ -79,7 +79,7 @@ public class DogBarksCatFlee extends MiniGame {
         
         
         for (int i =0 ; i< TILES_COUNT ;i++ ) {
-            tilesVector.add(new Vector2(PosicaoInicial.x + i * tileTexture[0].getWidth(), PosicaoInicial.y + 40));
+            tilesVector.add(new Tiles(new Vector2(PosicaoInicial.x + i * tileTexture[0].getWidth(), PosicaoInicial.y + 40)));
         }
         inicializeDog();
         timer.scheduleTask(new Task() {

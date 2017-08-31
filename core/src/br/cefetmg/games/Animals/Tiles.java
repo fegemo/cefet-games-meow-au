@@ -20,7 +20,7 @@ public class Tiles {
         this.tileVector = tileVector;
         this.tile_Type = MathUtils.random(4);
     }
-    private void tileChange(){
+    public void tileChange(){
         this.tile_Type = MathUtils.random(4);
     }
 }
