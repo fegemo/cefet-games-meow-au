@@ -56,14 +56,7 @@ public class DogBarksCatFlee extends MiniGame {
         }
     }
     
-    private void inicializeDog(){
-        TextureRegion[][] frames = TextureRegion.split(DogTexture, Test.GetWidth(), Test.GetHeight());
-        player = new Dog (3, PosicaoInicial,
-                        frames[0][0],
-                        frames[0][1],
-                        frames[0][2]
-                        );
-    }
+
     
     @Override
     protected void onStart() {
@@ -75,18 +68,18 @@ public class DogBarksCatFlee extends MiniGame {
         enemies = new Array<Cat>();
         //DogAnimation = assets.get(null);
 //        //<editor-fold defaultstate="collapsed" desc="texturas tile">
-//        tileTexture[0] = assets.get("DogBarksCatFlee/tile0.png", Texture.class);
-//        tileTexture[1] = assets.get("DogBarksCatFlee/tile1.png", Texture.class);
-//        tileTexture[2] = assets.get("DogBarksCatFlee/tile2.png", Texture.class);
-//        tileTexture[3] = assets.get("DogBarksCatFlee/tile3.png", Texture.class);
-//        tileTexture[4] = assets.get("DogBarksCatFlee/tile4.png", Texture.class);
+        tileTexture[0] = assets.get("DogBarksCatFlee/tile0.png", Texture.class);
+        tileTexture[1] = assets.get("DogBarksCatFlee/tile1.png", Texture.class);
+        tileTexture[2] = assets.get("DogBarksCatFlee/tile2.png", Texture.class);
+        tileTexture[3] = assets.get("DogBarksCatFlee/tile3.png", Texture.class);
+        tileTexture[4] = assets.get("DogBarksCatFlee/tile4.png", Texture.class);
 //        //</editor-fold>
-//        tilesVector = new Array<Vector2>();
-//        
-//        
-//        for (int i =0 ; i< TILES_COUNT ;i++ ) {
-//            tilesVector.add(new Vector2(PosicaoInicial.x + i*5, PosicaoInicial.y));
-//        }
+        tilesVector = new Array<Vector2>();
+        
+        
+        for (int i =0 ; i< TILES_COUNT ;i++ ) {
+            tilesVector.add(new Vector2(PosicaoInicial.x + i*5, PosicaoInicial.y));
+        }
         inicializeDog();
         timer.scheduleTask(new Task() {
             @Override
@@ -102,6 +95,10 @@ public class DogBarksCatFlee extends MiniGame {
 //        Cat enemy = new Cat(ScareThereshold(), CatPosition, CatTexture);
 //        enemies.add(enemy);
 
+    }
+    private void inicializeDog(){
+        TextureRegion Dog = new TextureRegion(DogTexture);
+        player = new Dog (3, PosicaoInicial, Dog);
     }
     
     private int ScareThereshold (){

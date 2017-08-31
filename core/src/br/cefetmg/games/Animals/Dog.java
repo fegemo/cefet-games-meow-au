@@ -19,7 +19,8 @@ public class Dog extends Animal{
     private int lives;
     
 
-    public Dog(int lives, Vector2 Pos, TextureRegion DogTexture, TextureRegion d1, TextureRegion d2) {
+    public Dog(int lives, Vector2 Pos, TextureRegion DogTexture) {
+        
         super(Pos, DogTexture);
         this.lives = lives;
         barkCounter = 0;

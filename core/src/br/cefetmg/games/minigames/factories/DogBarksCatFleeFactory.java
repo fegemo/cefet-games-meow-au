@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
 import java.util.Map;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class DogBarksCatFleeFactory implements MiniGameFactory {
     
     @Override
