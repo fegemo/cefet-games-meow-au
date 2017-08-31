@@ -26,6 +26,7 @@ public class PacDogFactory implements MiniGameFactory {
         return new HashMap<String, Class>() {
             {
                 put("pac-dog/dog-spritesheet.png", Texture.class);
+                put("pac-dog/enemies-spritesheet.png", Texture.class);
             }
         };
     }
