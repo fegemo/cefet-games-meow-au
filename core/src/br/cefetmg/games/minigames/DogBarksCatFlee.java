@@ -74,7 +74,7 @@ public class DogBarksCatFlee extends MiniGame {
         tilesVector = new Array<Vector2>();
         
         enemies = new Array<Cat>();
-        for (int i =0 ; i< TILES_COUNT ;i++ ) {
+        for (int i = 1 ; i< TILES_COUNT ;i++ ) {
             tilesVector.add(new Vector2(PosicaoInicial.x + i*5, PosicaoInicial.y));
         }
         
