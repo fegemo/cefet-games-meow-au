@@ -34,6 +34,14 @@ public class Dog extends Animal{
 //    }
     
 
+    public int getFrameWidth () {
+        return FRAME_WIDTH;
+    }
+    
+    public int getFrameHeight () {
+        return FRAME_HEIGHT;
+    }
+    
     public int getBarkCounter() {
         return barkCounter;
     }

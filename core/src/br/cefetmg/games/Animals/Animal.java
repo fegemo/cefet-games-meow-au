@@ -26,7 +26,10 @@ public class Animal extends Sprite {
         super(AnimalSpriteSheet);
         this.Pos = Pos;
     }
-    
+
+    public Vector2 getPos() {
+        return Pos;
+    }
     
     
     private void moviment (Vector2 NovaPosicao) {

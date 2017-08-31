@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
+import java.time.Clock;
 
 /**
  *
@@ -57,12 +58,16 @@ public class DogBarksCatFlee extends MiniGame {
         }
     }
     
+    private void PlayerDraw() {
+        batch.draw (player.getTexture(),player.getPos().x,player.getPos().y);
+    }
+    
 
     
     @Override
     protected void onStart() {
 
-        PosicaoInicial = new Vector2 (1,1);
+        
         DogTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);
         
         CatTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);
@@ -79,7 +84,7 @@ public class DogBarksCatFlee extends MiniGame {
         
         
         for (int i =0 ; i< TILES_COUNT ;i++ ) {
-            tilesVector.add(new Tiles(new Vector2(PosicaoInicial.x + i * tileTexture[0].getWidth(), PosicaoInicial.y + 40)));
+            tilesVector.add(new Tiles(new Vector2(1 + i * tileTexture[0].getWidth(), 41)));
         }
         inicializeDog();
         timer.scheduleTask(new Task() {
@@ -98,8 +103,9 @@ public class DogBarksCatFlee extends MiniGame {
 
     }
     private void inicializeDog(){
-        TextureRegion Dog = new TextureRegion(DogTexture);
-        player = new Dog (3, PosicaoInicial, Dog);
+        TextureRegion[][] Dog = TextureRegion.split(DogTexture, DogTexture.getWidth(), DogTexture.getHeight());
+        PosicaoInicial = new Vector2 (1 +  DogTexture.getWidth(),41);
+        player = new Dog (3, PosicaoInicial, Dog[0][0]);
     }
     
     private int ScareThereshold (){
@@ -130,6 +136,7 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     public void onDrawGame() {
         TilesDraw();
+        PlayerDraw();
     }
 
     @Override
