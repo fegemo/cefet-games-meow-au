@@ -48,7 +48,7 @@ public class DogBarksCatFlee extends MiniGame {
     }
     
     private void UpdateDraw(float dt){
-        super.update(dt);
+        //super.update(dt);
         for (Vector2 tile : tilesVector) {
             tile.x += -0.5; 
             if(tile.x <= 0- tileTexture[0].getWidth()) // ainda não definido o num;
