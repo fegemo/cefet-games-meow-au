@@ -24,8 +24,7 @@ import com.badlogic.gdx.utils.Timer.Task;
  * ouçam https://www.youtube.com/watch?v=Gfw4yxn_kPQ
  */
 public class DogBarksCatFlee extends MiniGame {
-    private final int TILES_COUNT = 5;
-    private static Cat Test;
+    private final int TILES_COUNT = 20;
     private Dog player;
     private Texture DogTexture;
     private Texture CatTexture;
@@ -43,16 +42,17 @@ public class DogBarksCatFlee extends MiniGame {
     
     private void TilesDraw(){
         for (Vector2 tile : tilesVector) {
-            batch.draw(tileTexture[MathUtils.random(4)], tile.x, tile.y);
+            batch.draw(tileTexture[0], tile.x, tile.y);
+           // batch.draw(tileTexture[MathUtils.random(4)], tile.x, tile.y);
         }
     }
     
     private void UpdateDraw(float dt){
         super.update(dt);
         for (Vector2 tile : tilesVector) {
-            tile.x += -1; 
-            if(tile.x <= 0) // ainda não definido o num;
-                tile.x = 50; // ainda não definido o num;
+            tile.x += -0.5; 
+            if(tile.x <= 0- tileTexture[0].getWidth()) // ainda não definido o num;
+                tile.x = 500; // ainda não definido o num;
         }
     }
     
@@ -78,7 +78,7 @@ public class DogBarksCatFlee extends MiniGame {
         
         
         for (int i =0 ; i< TILES_COUNT ;i++ ) {
-            tilesVector.add(new Vector2(PosicaoInicial.x + i*5, PosicaoInicial.y));
+            tilesVector.add(new Vector2(PosicaoInicial.x + i * tileTexture[0].getWidth(), PosicaoInicial.y + 40));
         }
         inicializeDog();
         timer.scheduleTask(new Task() {
