@@ -57,9 +57,9 @@ public class FlappySita extends MiniGame {
     protected void onStart() {
          calopsitaTextura = assets.get("FlappySita/bird-sprite-reverse.png",Texture.class);
 
-        toothbrushTexture = assets.get(
-                "shoo-the-tartarus/toothbrush-spritesheet.png", Texture.class);
-        toothBrush = new ToothBrush(toothbrushTexture);
+      //  toothbrushTexture = assets.get(
+      //          "shoo-the-tartarus/toothbrush-spritesheet.png", Texture.class);
+       // toothBrush = new ToothBrush(toothbrushTexture);
         calopsita= new Calopsita(calopsitaTextura);
         ScreenHeight = Gdx.graphics.getHeight();
         ScreenWidth = Gdx.graphics.getWidth();
@@ -305,13 +305,13 @@ public class FlappySita extends MiniGame {
     }
     
 
-    class ToothBrush extends AnimatedSprite {
+  /*  class ToothBrush extends AnimatedSprite {
 
         static final  int FRAME_WIDTH = 183;
         static final int FRAME_HEIGHT = 168;
 
         ToothBrush(final Texture toothbrushTexture) {
-            super(new Animation(0.1f, new Array<TextureRegion>() {
+           super(new Animation(0.1f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             toothbrushTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -336,7 +336,7 @@ public class FlappySita extends MiniGame {
         float getHeadDistanceTo(float enemyX, float enemyY) {
             return getHeadPosition().dst(enemyX, enemyY);
         }
-    }
+    }*/
 /*
     class Tartarus extends MultiAnimatedSprite {
         
