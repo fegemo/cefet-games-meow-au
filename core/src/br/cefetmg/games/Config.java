@@ -6,22 +6,21 @@ package br.cefetmg.games;
  */
 public class Config {
 
-    /**
-     * A largura do mundo de jogo.
-     *
-     * Todos os objetos (sprites, etc.) devem estar contidos em coordenadas x
-     * que vão de 0 a WORLD_WIDTH para que apareçam na tela.
-     */
+
     public static final int WORLD_WIDTH = 1280;
-
-    /**
-     * A altura do mundo de jogo.
-     *
-     * Todos os objetos (sprites, etc.) devem estar contidos em coordenadas y
-     * que vão de 0 a WORLD_HEIGHT para que apareçam na tela.
-     */
     public static final int WORLD_HEIGHT = 720;
-
+    public static final int NORTH = 0;
+    public static final int SOUTH = 1;
+    public static final int WEST = 2;
+    public static final int EAST = 3;
+    public static final int SOUTHEAST = 4;
+    public static final int NORTHEAST = 5;
+    public static final int SOUTHWEST = 6;
+    public static final int NORTHWEST = 7;
+    
+    public static final int VERTICAL = 0;
+    public static final int HORIZONTAL = 1;
+    
     /**
      * A razão de aspecto do mundo de jogo, igual a 16:9.
      *
