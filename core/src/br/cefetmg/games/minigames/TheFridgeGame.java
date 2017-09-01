@@ -19,10 +19,8 @@ public class TheFridgeGame extends MiniGame {
     
     private Texture texturaFundo;
    
-
-    public TheFridgeGame(BaseScreen screen, GameStateObserver observer, float difficulty) {
-        super(screen, difficulty, 10000,
-                TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS, observer);
+    public TheFridgeGame(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
+        super(screen, observer, difficulty, 100f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
     }
 
     @Override
@@ -63,5 +61,4 @@ public class TheFridgeGame extends MiniGame {
     public boolean shouldHideMousePointer() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-}
 }

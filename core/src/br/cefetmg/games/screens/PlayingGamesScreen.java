@@ -37,7 +37,14 @@ public class PlayingGamesScreen extends BaseScreen
         super(game, previous);
         state = PlayScreenState.PLAYING;
         lives = Config.MAX_LIVES;
-        sequencer = null;
+        sequencer = new GameSequencer(5, new HashSet<MiniGameFactory>(
+                Arrays.asList(
+                        // flávio
+                        //new ShootTheCariesFactory(),
+                        //new ShooTheTartarusFactory(),
+                        new KillTheRatsFactory()
+                )
+        ), 0, 1, this, this);
         hud = new Hud(this, this);
         inputMultiplexer = new InputMultiplexer();
     }

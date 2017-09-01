@@ -23,7 +23,7 @@ public class TheFridgeGameFactory implements MiniGameFactory{
     public MiniGame createMiniGame(BaseScreen screen, 
             MiniGameStateObserver observer, float difficulty){
         
-         
+        return new TheFridgeGame(screen, observer, difficulty);
     }
     
     @Override
