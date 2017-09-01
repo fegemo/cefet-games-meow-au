@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.Random;
 
-public class MemoryChip {
+public class MemoryChip{
 	
 	private static float posicaoY = 720.0f;
 	private static float posicaoX;
@@ -26,8 +26,8 @@ public class MemoryChip {
                 sprite.setPosition(posicaoX,posicaoY);
 	}
 	
-	public void update(){
-		
+	public void update(float dt){
+		posicaoY -= dt;
 	}
 	
 	public void render(SpriteBatch sb){
