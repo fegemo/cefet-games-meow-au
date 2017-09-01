@@ -30,6 +30,9 @@ public class KillTheRats extends MiniGame {
     private Cat cat;
     private Array<Fire> fires;
     
+    private float countTimer;
+    private boolean releaseFire;
+    
     // variáveis de desafio
     private float minimumEnemySpeed;
     private float maximumEnemySpeed;
@@ -46,7 +49,10 @@ public class KillTheRats extends MiniGame {
         
         cat = new Cat(catTexture);
         fires = new Array<Fire>();
+        
         maxNumFires = 10;
+        countTimer = 0;
+        releaseFire = true;
         
         initializeFire();
     }
@@ -55,11 +61,13 @@ public class KillTheRats extends MiniGame {
         TextureRegion[][] frames = TextureRegion.split(fireTexture,
                 Fire.FRAME_WIDTH, Fire.FRAME_HEIGHT);
         
-        Fire fire = new Fire(frames[0][0]);
-        fire.setCenter(
-                viewport.getWorldWidth() * 0.1f,
-                viewport.getWorldHeight() / 2f);
-        this.fires.add(fire);
+        for (int i = 0; i < maxNumFires; i++) {
+            Fire fire = new Fire(frames[0][0]);
+            fire.setCenter(
+                    viewport.getWorldWidth() * 0.1f,
+                    viewport.getWorldHeight() / 2f);
+            this.fires.add(fire);
+        }
     }
     
     @Override
@@ -81,7 +89,7 @@ public class KillTheRats extends MiniGame {
             fire.setDirection(new Vector2(click.x, click.y));
             
             if (Gdx.input.isTouched()) {
-                fire.follow();
+                fire.setFollow(true);
             }
         }
     }
@@ -89,6 +97,17 @@ public class KillTheRats extends MiniGame {
     @Override
     public void onUpdate(float dt) {
         cat.update(dt);
+        
+        for (Fire fire : this.fires) {
+            fire.update(dt);
+        }
+        
+        if (!releaseFire)
+            countTimer += dt;
+        if (countTimer > 0.5f) {
+            countTimer = 0;
+            releaseFire = true;
+        }
     }
     
     @Override
@@ -134,8 +153,8 @@ public class KillTheRats extends MiniGame {
 
         Vector2 getPosition() {
             return new Vector2(
-                    this.getX() + this.getWidth() * 0.5f,
-                    this.getY() + this.getHeight() * 0.8f);
+                    this.getX() + this.getWidth(),
+                    this.getY() + this.getHeight());
         }
 
         float getHeadDistanceTo(float enemyX, float enemyY) {
@@ -147,9 +166,11 @@ public class KillTheRats extends MiniGame {
 
         static final int FRAME_WIDTH = 360;
         static final int FRAME_HEIGHT = 720;
+        static final float fireInterval = 0.5f;
         
         private float speed;
         private float offset;
+        private boolean launched;
         private Vector2 direction;
 
         public Fire(TextureRegion fireTexture) {
@@ -160,11 +181,15 @@ public class KillTheRats extends MiniGame {
         public void init() {
             setScale(0.1f);
             direction = new Vector2(0, 0);
+            setPosition(0, 0);
             speed = 10;
             offset = 10;
+            launched = false;
         }
         
         public void setDirection(Vector2 v) {
+            if (launched) return;
+            
             float posX = getX() + FRAME_WIDTH / 2;
             float posY = getY() + FRAME_HEIGHT / 2;
             
@@ -179,14 +204,29 @@ public class KillTheRats extends MiniGame {
         }
         
         public void follow() {
-            if (direction.len() < offset)
-                return;
+            //if (direction.len() < offset)
+                //return;
             
             direction.nor(); // normaliza o vetor
             float newPosX = getX() + direction.x * speed;
             float newPosY = getY() + direction.y * speed;
             
             setPosition(newPosX, newPosY);
+        }
+        
+        public void setFollow(boolean b) {
+            if (releaseFire) {
+                launched = b;
+                releaseFire = false;
+            }
+        }
+        
+        public void update(float dt) {
+            if (launched)
+                follow();
+            
+            if (getX() < 0 || getX() > viewport.getWorldWidth() || getY() < 0 || getY() > viewport.getWorldHeight())
+                init();
         }
     }
 }
