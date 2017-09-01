@@ -63,14 +63,11 @@ public class SpyFish extends MiniGame{
         this.texturaFcontrol = assets.get("spy-fish/fundo-controle.png",Texture.class);
         this.texturaMcontrol = assets.get("spy-fish/controle-principal.png",Texture.class);        
         
-<<<<<<< HEAD
         coin = new SpriteSheetCoin( (Texture) assets.get("spy-fish/coin.png",Texture.class) );
         
-=======
         fish = new  Fish(texturaFish);
         memoryCard = new MemoryCard(texturaCard);
         control = new Control(texturaFcontrol,texturaMcontrol);
->>>>>>> 821a7719cfe6e5b4f4b1fde06baf97e8407bfd80
     }
 
     @Override
@@ -97,20 +94,23 @@ public class SpyFish extends MiniGame{
 
     @Override
     public void onDrawGame() {
-<<<<<<< HEAD
-    	batch.begin();
+    	//batch.begin();
+       
         batch.draw(texturaFish, 0, 0);
+        
+        batch.draw(texturaFundo,100, 100);
+        
         coin.render(batch);
-        batch.end();
+        
         /*fish.draw(batch);
         control.draw(batch);
         memoryCard.draw(batch);*/
-=======
-        batch.draw(texturaFundo,100, 100);
+        
         fish.draw(batch);
         control.draw();
         memoryCard.draw();
->>>>>>> 821a7719cfe6e5b4f4b1fde06baf97e8407bfd80
+        
+        //batch.end();
     }
 
     @Override
@@ -120,7 +120,7 @@ public class SpyFish extends MiniGame{
 
     @Override
     public boolean shouldHideMousePointer() {
-        return true;
+        return false;
     //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     class Fish extends Sprite{

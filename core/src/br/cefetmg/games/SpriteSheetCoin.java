@@ -21,7 +21,7 @@ public class SpriteSheetCoin {
 	private static Sprite sprite;
 
 	private static Animation queda;
-	private static float tempo_animacao = 5.0f;
+	private static float tempo_animacao;
 	
 	
 	public SpriteSheetCoin(Texture texture){
@@ -38,15 +38,18 @@ public class SpriteSheetCoin {
 	}
 	
 	public void update(){
-		if( posicaoY >= 0){
-			// se dentro da tela
-			posicaoY -= 10;	
-		}
+		
 	}
 	
 	public void render(SpriteBatch sb){
-		update();
-		sb.draw((TextureRegion) queda.getKeyFrame(tempo_animacao), posicaoX, posicaoY);
+		
+                if( posicaoY >= -25){
+			// se dentro da tela
+			posicaoY -= 1;	
+                        tempo_animacao += Gdx.graphics.getDeltaTime()*100;
+                        sb.draw((TextureRegion) queda.getKeyFrame(tempo_animacao), posicaoX, posicaoY);
+		}
+               
 	}
 	
 	
