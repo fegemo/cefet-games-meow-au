@@ -42,6 +42,14 @@ public class TheFridgeGame extends MiniGame {
         
         // instancias das subclasses da fase
         fridge = new Fridge(fridgeTexture);
+        
+        initialize();
+    }
+    
+    private void initialize() {
+        fridge.setCenter(
+                viewport.getWorldWidth() * 0.8f,
+                viewport.getWorldHeight() / 2f);
     }
 
     @Override
@@ -69,6 +77,7 @@ public class TheFridgeGame extends MiniGame {
 
     @Override
     public void onDrawGame() {
+        batch.draw(backgroundTexture, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
         fridge.draw(batch);
     }
 
@@ -100,17 +109,11 @@ public class TheFridgeGame extends MiniGame {
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
             super.setAutoUpdate(false);
             
-            setScale(0.5f);
+            init();
         }
 
-        Vector2 getPosition() {
-            return new Vector2(
-                    this.getX() + this.getWidth() * 0.5f,
-                    this.getY() + this.getHeight() * 0.8f);
-        }
-
-        float getHeadDistanceTo(float enemyX, float enemyY) {
-            return getPosition().dst(enemyX, enemyY);
+        public void init() {
+            //setScale(0.5f);
         }
     }
 }
