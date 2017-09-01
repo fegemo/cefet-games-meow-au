@@ -6,7 +6,7 @@
 package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.Config;
-import br.cefetmg.games.SpriteSheetCoin;
+import br.cefetmg.games.MemoryChip;
 import br.cefetmg.games.graphics.MultiAnimatedSprite;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
@@ -22,6 +22,8 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 import java.util.HashMap;
 import java.util.Random;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 /**
  *
@@ -34,8 +36,7 @@ public class SpyFish extends MiniGame{
     private Texture texturaFundo;
     private Texture texturaFcontrol;
     private Texture texturaMcontrol;
-    private Texture t;
-    private static SpriteSheetCoin coin;
+    private static MemoryChip chip;
     
     //elementos de logica
     private Fish fish;
@@ -43,6 +44,7 @@ public class SpyFish extends MiniGame{
     private MemoryCard memoryCard;
     
     //elementos de dificuldade
+    private int Difficulty;
     
     
      public SpyFish(BaseScreen screen,
@@ -63,15 +65,20 @@ public class SpyFish extends MiniGame{
         this.texturaFcontrol = assets.get("spy-fish/fundo-controle.png",Texture.class);
         this.texturaMcontrol = assets.get("spy-fish/controle-principal.png",Texture.class);        
         
-        coin = new SpriteSheetCoin( (Texture) assets.get("spy-fish/coin.png",Texture.class) );
+        chip = new MemoryChip( (Texture) assets.get("spy-fish/card.png",Texture.class) );
         
         fish = new  Fish(texturaFish);
         memoryCard = new MemoryCard(texturaCard);
         control = new Control(texturaFcontrol,texturaMcontrol);
+        
+        this.Difficulty = 1;
     }
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
+        
+        
+        
     //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -94,13 +101,11 @@ public class SpyFish extends MiniGame{
 
     @Override
     public void onDrawGame() {
-    	//batch.begin();
-       
+        
+        chip.render(batch);
         batch.draw(texturaFish, 0, 0);
         
         batch.draw(texturaFundo,100, 100);
-        
-        coin.render(batch);
         
         /*fish.draw(batch);
         control.draw(batch);
@@ -110,7 +115,7 @@ public class SpyFish extends MiniGame{
         control.draw();
         memoryCard.draw();
         
-        //batch.end();
+        
     }
 
     @Override

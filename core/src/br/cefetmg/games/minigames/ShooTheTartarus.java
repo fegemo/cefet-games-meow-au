@@ -1,7 +1,7 @@
 package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.minigames.util.DifficultyCurve;
-import br.cefetmg.games.SpriteSheetCoin;
+import br.cefetmg.games.MemoryChip;
 import br.cefetmg.games.graphics.MultiAnimatedSprite;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -36,7 +36,7 @@ public class ShooTheTartarus extends MiniGame {
     private Array<Tartarus> enemies;
     private Array<Tooth> teeth;
     private int numberOfBrokenTeeth;
-    private static SpriteSheetCoin coin;
+    private static MemoryChip coin;
 
     // variáveis do desafio - variam com a dificuldade do minigame
     private float minimumEnemySpeed;
