@@ -1,6 +1,5 @@
 package br.cefetmg.games.minigames;
 
-import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
@@ -13,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
-import br.cefetmg.games.graphics.Cat;
+import br.cefetmg.games.minigames.util.Cat;
 
 /**
  *

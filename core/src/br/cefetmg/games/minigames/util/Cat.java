@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package br.cefetmg.games.graphics;
+package br.cefetmg.games.minigames.util;
 
 /**
  *
@@ -13,6 +13,11 @@ package br.cefetmg.games.graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -22,7 +27,11 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 
 
 public class Cat extends AnimatedSprite {
+
+
     
+    Texture spriteSheet;
+
     TextureRegion[][] quadrosDaAnimacao;
     
     Animation animacaoAtual;
@@ -62,6 +71,21 @@ public class Cat extends AnimatedSprite {
  //       quadrosDaAnimacao = TextureRegion.split(spriteSheet, 64, 64);
 
 /*        normal = new Animation(0.1f,
+=======
+    public int x = 30;
+    public int y = 10;
+    
+    private int parado = 1;
+    
+    public Cat(Texture spriteSheet){
+        //this.jogador=jogador;
+        this.spriteSheet = spriteSheet;
+        
+        spriteSheet = new Texture("sprite-cat.png");
+        quadrosDaAnimacao = TextureRegion.split(spriteSheet, 64, 64);
+        
+        normal = new Animation(0.1f,
+>>>>>>> dac944b518db7300ed9b8f12930a1286c2713248
           quadrosDaAnimacao[0][0], // 1ª linha, 1ª coluna
           quadrosDaAnimacao[0][1], // idem, 2ª coluna
           quadrosDaAnimacao[0][2],
@@ -109,6 +133,7 @@ public class Cat extends AnimatedSprite {
         
         animacaoAtual=normal;
         tempoDaAnimacao = 0;
+<<<<<<< HEAD
         //jogador.setPosition(x, y);(*/
 
     }
@@ -130,18 +155,35 @@ public class Cat extends AnimatedSprite {
         if (Gdx.input.isButtonPressed(FRAME_WIDTH)) {
             animacaoAtual = chutar;
 
+=======
+        //jogador.setPosition(x, y);
+    }
+    
+    public void update() {//int x, int y){
+        
+        tempoDaAnimacao += Gdx.graphics.getDeltaTime();
+                
+        if (Gdx.input.isButtonPressed(x)) {
+            animacaoAtual = chutar;
+                  
+>>>>>>> dac944b518db7300ed9b8f12930a1286c2713248
         }
         else{
             animacaoAtual=normal;
         }
         //jogador.setPosition(x, y);
     }
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> dac944b518db7300ed9b8f12930a1286c2713248
     public void render(SpriteBatch batch) {
             //jogador.draw(batch);
             tempoDaAnimacao += Gdx.graphics.getDeltaTime();
             TextureRegion quadroCorrente = (TextureRegion)
             animacaoAtual.getKeyFrame(tempoDaAnimacao);
+<<<<<<< HEAD
             batch.draw(quadroCorrente, FRAME_WIDTH, FRAME_HEIGHT);
             if(parado==0)
                 animacaoAtual.setPlayMode(Animation.PlayMode.LOOP);
@@ -149,6 +191,13 @@ public class Cat extends AnimatedSprite {
             else
                 animacaoAtual.setPlayMode(Animation.PlayMode.NORMAL);
 
+
+    }    */
+          /*  batch.draw(quadroCorrente, x, y);
+            if(parado==0)
+                animacaoAtual.setPlayMode(PlayMode.LOOP_PINGPONG);
+            else
+                animacaoAtual.setPlayMode(PlayMode.NORMAL);
 
     }    */
 }
