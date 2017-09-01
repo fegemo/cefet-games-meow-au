@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import java.util.Random;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 
 /**
@@ -26,30 +27,55 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
  */
 public class TheFridgeGame extends MiniGame {
     
-    private Texture backgroundTexture;
-    private Texture fridgeTexture;
-    private Fridge fridge;
+    private Object background, fridge;
+    private Object[][] food;
+    private int shelfAmount;
+    private boolean started, goingUp, end;
+    private Texture[] foodTexture;
+    private Cat cat;
    
+    public class Object {
+        public Vector2 position;
+        public Texture texture;
+    }    
+    
+    public Texture RandomTexture(){//pick up a random food texture//
+        Random generator = new Random();
+        int rand = generator.nextInt(13);
+        switch(rand){
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+                
+        }
+    }
+    
     public TheFridgeGame(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 100f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
+        super(screen, observer, difficulty, 100f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
     }
 
     @Override
     protected void onStart() {
         // objetos de textura
-        this.backgroundTexture = screen.assets.get("the-fridge-game/fridge-game-background.png", Texture.class);
-        this.fridgeTexture = screen.assets.get("the-fridge-game/open-fridge.png", Texture.class);
-        
+        this.background.texture = screen.assets.get("the-fridge-game/fridge-game-background.png", Texture.class);
+        this.fridge.texture = screen.assets.get("the-fridge-game/open-fridge.png", Texture.class);
+        this.foodTexture[0]= screen.assets.get("the-fridge-game/food01.png",Texture.class);
+        //....//
         // instancias das subclasses da fase
-        fridge = new Fridge(fridgeTexture);
+        cat = new Cat(screen.assets.get("the-fridge-game/cat-sprite.png",Texture.class));
         
         initialize();
     }
     
     private void initialize() {
-        fridge.setCenter(
-                viewport.getWorldWidth() * 0.8f,
-                viewport.getWorldHeight() / 2f);
+        cat.setCenter( viewport.getWorldWidth() * 0.8f, viewport.getWorldHeight() / 2f);
     }
 
     @Override
@@ -77,27 +103,31 @@ public class TheFridgeGame extends MiniGame {
 
     @Override
     public void onDrawGame() {
-        batch.draw(backgroundTexture, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        fridge.draw(batch);
+        if(started==false){
+            this.AnimatedStart();
+        }
+        cat.draw(batch);
     }
 
+    public void AnimatedStart(){
+        
+    }
     @Override
     public String getInstructions() {
-        return "Pegue o Máximo de Comida que Puder";
+        return "Alcance a útima prateleira antes que o tempo acabe.";
     }
 
     @Override
     public boolean shouldHideMousePointer() {
-        return false;
+        return true;
     }
     
-    class Fridge extends AnimatedSprite {
-
+    class Cat extends AnimatedSprite {
         static final int FRAME_WIDTH = 467;
         static final int FRAME_HEIGHT = 547;
 
-        Fridge(final Texture catTexture) {
-            super(new Animation(1.0f, new Array<TextureRegion>() {
+        Cat(final Texture catTexture){
+            super(new Animation(1.0f, new Array<TextureRegion>(){
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             catTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -108,7 +138,6 @@ public class TheFridgeGame extends MiniGame {
             }));
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
             super.setAutoUpdate(false);
-            
             init();
         }
 
