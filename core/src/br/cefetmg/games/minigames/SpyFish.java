@@ -1,35 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.Config;
 import br.cefetmg.games.MemoryChip;
-import br.cefetmg.games.graphics.MultiAnimatedSprite;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-import java.util.HashMap;
 import java.util.Random;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import java.util.ArrayList;
 
 /**
  *
- * @author Alberto
+ * @author Luiza-Pedro
  */
 public class SpyFish extends MiniGame {
 
@@ -40,32 +30,28 @@ public class SpyFish extends MiniGame {
     private Texture texturaFcontrol;
     private Texture texturaMcontrol;
     private Texture texturaCardd;
-
-    private Array<MemoryChip> chip;
-    
-    private static SpriteBatch batch; 
-
-    private static final int MAX_CHIPS = 2;
-
+    private ArrayList<MemoryChip> chip;
+    private static final int MAX_CHIPS = 5;
+    private static SpriteBatch batch;
     //elementos de logica
     private Fish fish;
     private Control control;
     private MemoryCard memoryCard;
 
-    //elementos de dificuldade
-    private int Difficulty;
-
-    public SpyFish(BaseScreen screen,
-            MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 10000,
-                TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
-        
+    public SpyFish(BaseScreen screen,MiniGameStateObserver observer, float difficulty) {
+        super(screen, observer, difficulty, 10000,TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
         batch = new SpriteBatch();
+        // cria um numero MAX_CHIPS de objetos MemoryCard
+        chip = new ArrayList<MemoryChip>();
+        for (int i = 0; i < MAX_CHIPS; i++) {
+            chip.add(new MemoryChip(texturaCardd));
+        }
     }
 
     @Override
     protected void challengeSolved() {
-        super.challengeSolved(); //To change body of generated methods, choose Tools | Templates.
+        super.challengeSolved(); 
+        //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -81,20 +67,14 @@ public class SpyFish extends MiniGame {
         memoryCard = new MemoryCard(texturaCard);
         control = new Control(texturaFcontrol, texturaMcontrol);
 
-        // cria um numero N de objetos MemoryCard
-        chip = new Array<MemoryChip>();
-        for (int i = 0; i < MAX_CHIPS; i++) {
-            float m = (float)new Random().nextInt(1281);
-            chip.add(new MemoryChip(texturaCardd,m));
-            System.out.println(m);
-        }
-
     }
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
 
-        //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); 
+        //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     @Override
@@ -117,26 +97,21 @@ public class SpyFish extends MiniGame {
 
     @Override
     public void onDrawGame() {
-        
-        
+
+        update(Gdx.graphics.getDeltaTime());
         batch.begin();
         batch.draw(texturaFish, 0, 0);
         batch.draw(texturaFundo, 100, 100);
-
-        /*fish.draw(batch);
-        control.draw(batch);
-        memoryCard.draw(batch);*/
         fish.draw(batch);
         control.draw();
         memoryCard.draw();
-        
-        for (MemoryChip chipe : chip) {
-            
-            chipe.render(batch,Gdx.graphics.getDeltaTime());
-            update(Gdx.graphics.getDeltaTime());
-            // por algum motivo as sprites ficam uma em cima da outra!
-        }
         batch.end();
+        for (MemoryChip chip : chip) {
+            batch.begin();
+            chip.render(batch);
+            batch.end();
+        }
+
     }
 
     @Override

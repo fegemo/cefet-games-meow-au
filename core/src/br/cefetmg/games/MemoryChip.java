@@ -1,6 +1,5 @@
 package br.cefetmg.games;
 
-// classe do spritesheet que ficara descendo na tela
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -11,32 +10,29 @@ import java.util.Random;
 
 public class MemoryChip {
 
-    private static float posicaoY = 720.0f;
-    public static float posicaoX;
+    public float posicaoY = 720.0f;
+    public float posicaoX;
 
     private Sprite sprite;
 
-    private static float tempo_animacao;
-
-    public MemoryChip(Texture texture,float posx) {
+    public MemoryChip(Texture texture) {
         this.sprite = new Sprite(texture);
-        // gera um numero aleatorio entre 0 a 1280
-        posicaoX = posx;
-        sprite.setPosition(posicaoX, posicaoY);
+        this.posicaoX = new Random().nextInt(1271);
+        this.sprite.setPosition(this.posicaoX, this.posicaoY);
     }
 
     public void update(float dt) {
-        posicaoY -= dt;
-        sprite.setPosition(posicaoX , posicaoY);
-        sprite.rotate((float) 3);
+        this.posicaoY -= dt;
+        sprite.rotate((float) 10);
+        this.sprite.setPosition(this.posicaoX, this.posicaoY);
     }
 
-    public void render(SpriteBatch sb,float dt) {
+    public void render(SpriteBatch sb) {
 
-        if (posicaoY >= -35) {
+        if (this.posicaoY >= -35) {
             // se dentro da tela
-            sprite.draw(sb); 
-            update(dt*100);
+            this.sprite.draw(sb);
+            update(new Random().nextInt(5));
         }
 
     }
