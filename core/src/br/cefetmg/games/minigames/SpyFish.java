@@ -40,12 +40,7 @@ public class SpyFish extends MiniGame {
 
     public SpyFish(BaseScreen screen,MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10000,TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
-        batch = new SpriteBatch();
-        // cria um numero MAX_CHIPS de objetos MemoryCard
-        chip = new ArrayList<MemoryChip>();
-        for (int i = 0; i < MAX_CHIPS; i++) {
-            chip.add(new MemoryChip(texturaCardd));
-        }
+        
     }
 
     @Override
@@ -66,6 +61,13 @@ public class SpyFish extends MiniGame {
         fish = new Fish(texturaFish);
         memoryCard = new MemoryCard(texturaCard);
         control = new Control(texturaFcontrol, texturaMcontrol);
+        
+        batch = new SpriteBatch();
+        // cria um numero MAX_CHIPS de objetos MemoryCard
+        chip = new ArrayList<MemoryChip>();
+        for (int i = 0; i < MAX_CHIPS; i++) {
+            chip.add(new MemoryChip(texturaCardd));
+        }
 
     }
 
