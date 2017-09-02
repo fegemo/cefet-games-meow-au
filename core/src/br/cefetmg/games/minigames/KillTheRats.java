@@ -54,15 +54,20 @@ public class KillTheRats extends MiniGame {
         countTimer = 0;
         releaseFire = true;
         
-        initializeFire();
+        initCat();
+        initFire();
     }
     
-    private void initializeFire() {
-        TextureRegion[][] frames = TextureRegion.split(fireTexture,
-                fireTexture.getWidth(), fireTexture.getHeight());
+    private void initCat() {
+        cat.setCenter(viewport.getWorldWidth() * 0.1f, viewport.getWorldHeight() / 2f);
+    }
+    
+    private void initFire() {
+        //TextureRegion[][] frames = TextureRegion.split(fireTexture,
+        //        fireTexture.getWidth(), fireTexture.getHeight());
         
         for (int i = 0; i < maxNumFires; i++) {
-            Fire fire = new Fire(frames[0][0]);
+            Fire fire = new Fire(fireTexture);
             //fire.setCenter(viewport.getWorldWidth() * 0.1f, viewport.getWorldHeight() / 2f);
             this.fires.add(fire);
         }
@@ -81,13 +86,13 @@ public class KillTheRats extends MiniGame {
         // obtem a posição do mouse
         Vector3 click = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         viewport.unproject(click);
-        cat.setCenter(click.x, click.y);
+        //cat.setCenter(click.x, click.y);
         
         for (Fire fire : this.fires) {
             fire.setDirection(new Vector2(click.x, click.y));
             
             if (Gdx.input.isTouched()) {
-                fire.setFollow(true);
+                fire.enableOnceFollow();
             }
         }
     }
@@ -103,11 +108,11 @@ public class KillTheRats extends MiniGame {
     
     @Override
     public void onDrawGame() {
-        cat.draw(batch);
-        
         for (Fire fire : this.fires) {
             fire.draw(batch);
         }
+        
+        cat.draw(batch);
     }
 
     @Override
@@ -139,7 +144,27 @@ public class KillTheRats extends MiniGame {
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
             super.setAutoUpdate(false);
             
-            setScale(0.5f);
+            reset();
+        }
+        
+        public void reset() {
+            setScale(0.6f);
+            setPosition(getOriginX(), getOriginY());
+        }
+        
+        @Override
+        public void setPosition(float x, float y) {
+            super.setPosition(x - super.getWidth()/2, y - super.getHeight()/2);
+        }
+        
+        @Override
+        public float getX() {
+            return super.getX() + super.getWidth() / 2;
+        }
+        
+        @Override
+        public float getY() {
+            return super.getY() + super.getHeight() / 2;
         }
 
         Vector2 getPosition() {
@@ -153,7 +178,7 @@ public class KillTheRats extends MiniGame {
         }
     }
     
-    class Fire extends Sprite {
+    class Fire extends AnimatedSprite {
 
         static final float fireInterval = 3.0f;
         
@@ -162,28 +187,46 @@ public class KillTheRats extends MiniGame {
         private boolean launched;
         private Vector2 direction;
 
-        public Fire(TextureRegion fireTexture) {
-            super(fireTexture);
-            init();
+        public Fire(final Texture fireTexture) {
+            super(new Animation(1.0f, new Array<TextureRegion>() {
+                {
+                    TextureRegion[][] frames = TextureRegion.split(
+                            fireTexture, fireTexture.getWidth(), fireTexture.getHeight());
+                    super.addAll(new TextureRegion[]{
+                        frames[0][0]
+                    });
+                }
+            }));
+            super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
+            super.setAutoUpdate(false);
+            
+            defineProperties();
+            reset();
         }
         
-        public void init() {
+        public void defineProperties() {
             setScale(0.1f);
-            direction = new Vector2(0, 0);
-            setPosition(getOriginX(), getOriginY());
-            speed = 20;
             offset = 10;
+        }
+        
+        public void reset() {
+            direction = new Vector2(0, 0);
+            setPosition(cat.getX(), cat.getY());
+            speed = 20;
             launched = false;
         }
         
+        @Override
         public void setPosition(float x, float y) {
             super.setPosition(x - super.getWidth()/2, y - super.getHeight()/2);
         }
         
+        @Override
         public float getX() {
             return super.getX() + super.getWidth() / 2;
         }
         
+        @Override
         public float getY() {
             return super.getY() + super.getHeight() / 2;
         }
@@ -215,9 +258,9 @@ public class KillTheRats extends MiniGame {
             setPosition(normalized.x, normalized.y);
         }
         
-        public void setFollow(boolean val) {
+        public void enableOnceFollow() {
             if (releaseFire && !launched) {
-                launched = val;
+                launched = true;
                 releaseFire = false;
             }
         }
@@ -233,10 +276,8 @@ public class KillTheRats extends MiniGame {
             if (!releaseFire)
                 countTimer += dt;
             
-            System.out.println("releaseFire = " + releaseFire);
-            
             if (getX() < 0 || getX() > viewport.getWorldWidth() || getY() < 0 || getY() > viewport.getWorldHeight())
-                init();
+                reset();
         }
     }
 }
