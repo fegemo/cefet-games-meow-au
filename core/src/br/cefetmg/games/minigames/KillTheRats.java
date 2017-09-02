@@ -54,10 +54,15 @@ public class KillTheRats extends MiniGame {
         countTimer = 0;
         releaseFire = true;
         
-        initializeFire();
+        initCat();
+        initFire();
     }
     
-    private void initializeFire() {
+    private void initCat() {
+        cat.setCenter(viewport.getWorldWidth() * 0.1f, viewport.getWorldHeight() / 2f);
+    }
+    
+    private void initFire() {
         //TextureRegion[][] frames = TextureRegion.split(fireTexture,
         //        fireTexture.getWidth(), fireTexture.getHeight());
         
@@ -81,7 +86,7 @@ public class KillTheRats extends MiniGame {
         // obtem a posição do mouse
         Vector3 click = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         viewport.unproject(click);
-        cat.setCenter(click.x, click.y);
+        //cat.setCenter(click.x, click.y);
         
         for (Fire fire : this.fires) {
             fire.setDirection(new Vector2(click.x, click.y));
@@ -139,7 +144,27 @@ public class KillTheRats extends MiniGame {
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
             super.setAutoUpdate(false);
             
-            setScale(0.5f);
+            reset();
+        }
+        
+        public void reset() {
+            setScale(0.6f);
+            setPosition(getOriginX(), getOriginY());
+        }
+        
+        @Override
+        public void setPosition(float x, float y) {
+            super.setPosition(x - super.getWidth()/2, y - super.getHeight()/2);
+        }
+        
+        @Override
+        public float getX() {
+            return super.getX() + super.getWidth() / 2;
+        }
+        
+        @Override
+        public float getY() {
+            return super.getY() + super.getHeight() / 2;
         }
 
         Vector2 getPosition() {
@@ -186,7 +211,7 @@ public class KillTheRats extends MiniGame {
         
         public void reset() {
             direction = new Vector2(0, 0);
-            setPosition(getOriginX(), getOriginY());
+            setPosition(cat.getX(), cat.getY());
             speed = 20;
             launched = false;
         }
