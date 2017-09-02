@@ -58,11 +58,11 @@ public class KillTheRats extends MiniGame {
     }
     
     private void initializeFire() {
-        TextureRegion[][] frames = TextureRegion.split(fireTexture,
-                fireTexture.getWidth(), fireTexture.getHeight());
+        //TextureRegion[][] frames = TextureRegion.split(fireTexture,
+        //        fireTexture.getWidth(), fireTexture.getHeight());
         
         for (int i = 0; i < maxNumFires; i++) {
-            Fire fire = new Fire(frames[0][0]);
+            Fire fire = new Fire(fireTexture);
             //fire.setCenter(viewport.getWorldWidth() * 0.1f, viewport.getWorldHeight() / 2f);
             this.fires.add(fire);
         }
@@ -103,11 +103,11 @@ public class KillTheRats extends MiniGame {
     
     @Override
     public void onDrawGame() {
-        cat.draw(batch);
-        
         for (Fire fire : this.fires) {
             fire.draw(batch);
         }
+        
+        cat.draw(batch);
     }
 
     @Override
@@ -153,7 +153,7 @@ public class KillTheRats extends MiniGame {
         }
     }
     
-    class Fire extends Sprite {
+    class Fire extends AnimatedSprite {
 
         static final float fireInterval = 3.0f;
         
@@ -162,8 +162,19 @@ public class KillTheRats extends MiniGame {
         private boolean launched;
         private Vector2 direction;
 
-        public Fire(TextureRegion fireTexture) {
-            super(fireTexture);
+        public Fire(final Texture fireTexture) {
+            super(new Animation(1.0f, new Array<TextureRegion>() {
+                {
+                    TextureRegion[][] frames = TextureRegion.split(
+                            fireTexture, fireTexture.getWidth(), fireTexture.getHeight());
+                    super.addAll(new TextureRegion[]{
+                        frames[0][0]
+                    });
+                }
+            }));
+            super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
+            super.setAutoUpdate(false);
+            
             defineProperties();
             reset();
         }
