@@ -29,6 +29,7 @@ public class KillTheRatsFactory implements MiniGameFactory {
         return new HashMap<String, Class>() {
             {
                 put("kill-the-rats/lakitu.png", Texture.class);
+                put("kill-the-rats/ratframes.png", Texture.class);
                 put("kill-the-rats/rocket.png", Texture.class);
                 //put("kill-the-rats/sound.wav", Sound.class);
             }

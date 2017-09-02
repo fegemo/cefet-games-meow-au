@@ -5,11 +5,13 @@
  */
 package br.cefetmg.games.minigames;
 
+import br.cefetmg.games.graphics.MultiAnimatedSprite;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -17,6 +19,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import java.util.HashMap;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 
 /**
@@ -26,8 +29,10 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 public class KillTheRats extends MiniGame {
     
     private Texture catTexture;
+    private Texture ratsSpriteSheet;
     private Texture fireTexture;
     private Cat cat;
+    private Array<Rat> rats;
     private Array<Fire> fires;
     
     private float countTimer;
@@ -36,6 +41,7 @@ public class KillTheRats extends MiniGame {
     // variáveis de desafio
     private float minimumEnemySpeed;
     private float maximumEnemySpeed;
+    private int maxNumRats;
     private int maxNumFires;
     
     public KillTheRats(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
@@ -45,21 +51,33 @@ public class KillTheRats extends MiniGame {
     @Override
     protected void onStart() {
         catTexture = assets.get("kill-the-rats/lakitu.png", Texture.class);
+        ratsSpriteSheet = assets.get("kill-the-rats/ratframes.png", Texture.class);
         fireTexture = assets.get("kill-the-rats/rocket.png", Texture.class);
         
         cat = new Cat(catTexture);
+        rats = new Array<Rat>();
         fires = new Array<Fire>();
         
+        maxNumRats = 100;
         maxNumFires = 100;
         countTimer = 0;
         releaseFire = true;
         
         initCat();
+        initRat();
         initFire();
     }
     
     private void initCat() {
         cat.setCenter(viewport.getWorldWidth() * 0.1f, viewport.getWorldHeight() / 2f);
+    }
+    
+    private void initRat() {
+        for (int i = 0; i < maxNumRats; i++) {
+            Rat rat = new Rat(ratsSpriteSheet);
+            //rat.setCenter(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
+            this.rats.add(rat);
+        }
     }
     
     private void initFire() {
@@ -104,12 +122,20 @@ public class KillTheRats extends MiniGame {
         for (Fire fire : this.fires) {
             fire.updateMoves(dt);
         }
+        
+        for (Rat rat : this.rats) {
+            rat.update(dt);
+        }
     }
     
     @Override
     public void onDrawGame() {
         for (Fire fire : this.fires) {
             fire.draw(batch);
+        }
+        
+        for (Rat rat : this.rats) {
+            rat.draw(batch);
         }
         
         cat.draw(batch);
@@ -127,11 +153,13 @@ public class KillTheRats extends MiniGame {
     
     class Cat extends AnimatedSprite {
 
+        static final float frameDuration = 1.0f;
+        
         static final int FRAME_WIDTH = 200;
         static final int FRAME_HEIGHT = 259;
 
         Cat(final Texture catTexture) {
-            super(new Animation(1.0f, new Array<TextureRegion>() {
+            super(new Animation(frameDuration, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             catTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -178,9 +206,100 @@ public class KillTheRats extends MiniGame {
         }
     }
     
+    class Rat extends MultiAnimatedSprite {
+
+        private Vector2 speed;
+        private float minSpeed;
+        private float maxSpeed;
+        private float time;
+        private boolean flipX;
+        
+        static final float frameDuration = 0.02f;
+        static final int ROWS = 6;
+        static final int COLS = 8;
+
+        public Rat(final Texture ratsSpriteSheet) {
+            super(new HashMap<String, Animation>() {
+                {
+                    TextureRegion[][] frames = TextureRegion
+                            .split(ratsSpriteSheet,
+                                    ratsSpriteSheet.getWidth()/COLS, ratsSpriteSheet.getHeight()/ROWS);
+                    Animation walking = new Animation(frameDuration,
+                            frames[0][0], frames[0][1],
+                            frames[0][2], frames[0][3],
+                            frames[0][4], frames[0][5],
+                            frames[0][6], frames[0][7]);
+                    walking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+                    put("walking", walking);
+                }
+            }, "walking");
+            
+            init();
+            reset();
+        }
+        
+        public void init() {
+            time = 0;
+            flipX = false;
+            speed = new Vector2();
+            minSpeed = 40;
+            maxSpeed = 200;
+        }
+        
+        public void reset() {
+            float posY = (float) Math.random() * viewport.getWorldHeight();
+            setPosition(viewport.getWorldWidth() + getWidth(), posY);
+            setRotation(90);
+            speed.x = (float) Math.random() * maxSpeed + minSpeed;
+        }
+        
+        @Override
+        public void setPosition(float x, float y) {
+            super.setPosition(x - super.getWidth()/2, y - super.getHeight()/2);
+        }
+        
+        @Override
+        public float getX() {
+            return super.getX() + super.getWidth() / 2;
+        }
+        
+        @Override
+        public float getY() {
+            return super.getY() + super.getHeight() / 2;
+        }
+
+        @Override
+        public void update(float dt) {
+            super.update(dt);
+            
+            time += dt;
+            if (time >= 2*COLS*frameDuration) {
+                flipX = !flipX;
+                time = 0;
+            }
+            
+            if (flipX)
+                setFlip(true, false);
+            
+            setPosition(getX() - this.speed.x * dt, getY() + this.speed.y * dt);
+            
+            if (getX() < 0)
+                reset();
+        }
+
+        public Vector2 getSpeed() {
+            return speed;
+        }
+
+        public void setSpeed(Vector2 speed) {
+            this.speed = speed;
+        }
+    }
+    
     class Fire extends AnimatedSprite {
 
         static final float fireInterval = 3.0f;
+        static final float frameDuration = 0.1f;
         
         private float speed;
         private float offset;
@@ -188,7 +307,7 @@ public class KillTheRats extends MiniGame {
         private Vector2 direction;
 
         public Fire(final Texture fireTexture) {
-            super(new Animation(1.0f, new Array<TextureRegion>() {
+            super(new Animation(frameDuration, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             fireTexture, fireTexture.getWidth(), fireTexture.getHeight());
