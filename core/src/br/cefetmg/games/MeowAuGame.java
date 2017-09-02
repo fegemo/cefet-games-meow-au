@@ -19,7 +19,7 @@ public class MeowAuGame extends Game {
 
     @Override
     public void create() {
-        //this.setScreen(new SplashScreen(this, null));
+
         this.setScreen(new PlayingGamesScreen(this, null));
     }
     

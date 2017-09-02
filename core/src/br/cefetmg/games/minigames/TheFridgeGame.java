@@ -25,39 +25,44 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
  *
  * @author sarit
  */
-public class TheFridgeGame extends MiniGame {
-    
-    private  Random generator = new Random();
-    private Object background, fridge;
+public class TheFridgeGame extends MiniGame {    
+    private Random generator;
+    private Texture[] foodTexture;   
     private Object[][] food;
-    private int shelfAmount;
-    private boolean started, goingUp, end;
-    private Texture[] foodTexture;
+    private Object background, fridge;
     private Cat cat;
+    
+    private int fridgeLimitsXMax, fridgeLimitsXMin, fridgeLimitsYMax, fridgeLimitsYMin;
+            
+    private boolean started, goingUp, end;
+    private int shelfAmount;  
    
     public class Object {
         public Vector2 position;
         public Texture texture;
-
-        public Object(Vector2 position, Texture texture) {
+        public float width, height;
+       
+        public Object(Vector2 position, float width, float height, Texture texture) {
             this.position = position;
             this.texture = texture;
-        }        
+            this.width = width;
+            this.height = height;
+        }
         
         public void Draw(){            
-            batch.draw(texture, position.x, position.y, viewport.getWorldWidth(), viewport.getWorldHeight());
+            batch.draw(texture, position.x, position.y, width, height);
         }
     }    
     
      class Cat extends AnimatedSprite {
-        static final int FRAME_WIDTH = 467;
-        static final int FRAME_HEIGHT = 547;
+        static final int frameWidth = 30;
+        static final int frameHeiht = 30;
 
         Cat(final Texture catTexture){
             super(new Animation(1.0f, new Array<TextureRegion>(){
                 {
                     TextureRegion[][] frames = TextureRegion.split(
-                            catTexture, FRAME_WIDTH, FRAME_HEIGHT);
+                            catTexture, frameWidth, frameHeiht);
                     super.addAll(new TextureRegion[]{
                         frames[0][0]
                     });
@@ -72,41 +77,48 @@ public class TheFridgeGame extends MiniGame {
             //setScale(0.5f);
         }
     }
-    
-    public void fillFoodMatrix(){
-        int emptySpace = 1;       
-        System.out.println("Filling Food Matrix");
-        for(int i=0;i<shelfAmount;i++){
-            for(int j=0;j<3;j++){
-                if(j==emptySpace) j++;
-                else food[i][j] = this.RandomObject();             
-            }
-            while(emptySpace<0 || emptySpace>2){
-                int aux = generator.nextInt(3); //number between 0 and 2//
-                aux--; //we need a number between -1 and 1//
-                emptySpace += aux;  
-            }
+    public void initialAnimation(){
+        if(fridge.position.x>550){
+            fridge.position.x--;
         }
     }
     
-    public Object RandomObject(){ //pick up a random food texture//        
-        int rand = generator.nextInt(13); //number between 0 and 12//
-        switch(rand){ //they gonna have different sizes//
-            case 0: return new Object(new Vector2(10, 10),foodTexture[0]);
-            case 1: return new Object(new Vector2(10, 10),foodTexture[1]);
-            case 2: return new Object(new Vector2(10, 10),foodTexture[2]);
-            case 3: return new Object(new Vector2(10, 10),foodTexture[3]);
-            case 4: return new Object(new Vector2(10, 10),foodTexture[4]);
-            case 5: return new Object(new Vector2(10, 10),foodTexture[5]);
-            case 6: return new Object(new Vector2(10, 10),foodTexture[6]);
-            case 7: return new Object(new Vector2(10, 10),foodTexture[7]);
-            case 8: return new Object(new Vector2(10, 10),foodTexture[8]);
-            case 9: return new Object(new Vector2(10, 10),foodTexture[9]);
-            case 10: return new Object(new Vector2(10, 10),foodTexture[10]);
-            case 11: return new Object(new Vector2(10, 10),foodTexture[11]);              
-            case 12: return new Object(new Vector2(10, 10),foodTexture[12]);                
+    public void fillFoodMatrix(){
+        int emptySpace = 1; 
+        System.out.println("Filling Food Matrix\nMapping:");
+        for(int i=0;i<shelfAmount;i++){
+            for(int j=0; j<3;j++){
+                if(j==emptySpace) System.out.print("- ");
+                else{
+                    int textureNumber = (i*3+j)%13;
+                    food[i][j] = new Object(new Vector2(0,0), (fridgeLimitsXMax-fridgeLimitsXMin)/3 - 10, (fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount - 10, foodTexture[textureNumber]);
+                    System.out.print("X ");
+                }        
+            }  
+            int aux = generator.nextInt(2); //number between 0 and 1//
+            switch(emptySpace){
+                case 0: emptySpace++; break;
+                case 1: if(aux==0) emptySpace++; 
+                        else emptySpace--;
+                        break;
+                case 2: emptySpace--; break;
+            }
+            System.out.println();
         }
-        return null;
+    }
+    
+    public void setPositionsFoodMatrix(){
+        int x=fridgeLimitsXMin, y=fridgeLimitsYMin;    
+        for(int i=0;i<shelfAmount;i++){
+            for(int j=0;j<3;j++){
+                if(food[i][j]!=null){
+                    food[i][j].position.x=fridge.position.x + x;
+                    food[i][j].position.y=fridge.position.y + y;                       
+                }
+                x+=(fridgeLimitsXMax-fridgeLimitsXMin)/3;
+            }
+            x=fridgeLimitsXMin; y+=(fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount;
+        }
     }
     
     public TheFridgeGame(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
@@ -115,35 +127,37 @@ public class TheFridgeGame extends MiniGame {
 
     @Override
     protected void onStart() {
+        //variables//
+        started=false;
+        fridgeLimitsXMax = 360; fridgeLimitsXMin = 120; fridgeLimitsYMax = 400; fridgeLimitsYMin = 50;
         // objetos de textura
-        background = new Object(new Vector2(0,0),screen.assets.get("the-fridge-game/fridge-game-background.png", Texture.class));
-        fridge = new Object(new Vector2(0,0),screen.assets.get("the-fridge-game/open-fridge.png", Texture.class));
         this.foodTexture = new Texture[13];    
         for(int i=0;i<13;i++){
              String aux = Integer.toString(i+1);
              if(aux.length()<2) aux = "0" + aux; //to ensure it's 01-13//
              this.foodTexture[i]= screen.assets.get("the-fridge-game/food" + aux + ".png",Texture.class);   
         }
-        System.out.println("Textures succesfully loaded!");
-        // instancias das subclasses da fase        
-        cat = new Cat(screen.assets.get("the-fridge-game/food13.png",Texture.class));
-        fillFoodMatrix();            
+        System.out.println("\n\n--------------DEBUG--------------\n\nTextures succesfully loaded!");
+        // instancias das subclasses da fase 
+        generator = new Random();
+        background = new Object(new Vector2(0,0), viewport.getWorldWidth(), viewport.getWorldHeight(), screen.assets.get("the-fridge-game/fridge-game-background.png", Texture.class));
+        fridge = new Object(new Vector2(750,100), 500, 550, screen.assets.get("the-fridge-game/open-fridge.png", Texture.class));
+        cat = new Cat(screen.assets.get("the-fridge-game/food13.png",Texture.class)); 
+        food = new Object[shelfAmount][3];
         System.out.println("Objects succesfully instantiated!");
         initialize();
     }
     
-    private void initialize() {
+    private void initialize() {        
         cat.setCenter( viewport.getWorldWidth() * 0.8f, viewport.getWorldHeight() / 2f);
+        fillFoodMatrix();    
+        setPositionsFoodMatrix();        
     }
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        /*
-        this.minimumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 120, 220);
-        this.maximumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 240, 340);
-        */
+        System.out.println("\n\nDifficulty: " + difficulty + "\n\n");
+        shelfAmount = 6; //FIX ME//
     }
 
     @Override
@@ -165,8 +179,16 @@ public class TheFridgeGame extends MiniGame {
             this.AnimatedStart();
         }
         background.Draw();
-        cat.draw(batch);
+        fridge.Draw();
+        //cat.draw(batch);
         //percorrer matrix aqui//
+        for(int i=0;i<shelfAmount;i++){
+            for(int j=0;j<3;j++){
+                if(food[i][j]!=null){
+                    food[i][j].Draw();
+                }
+            }
+        }
     }
 
     public void AnimatedStart(){
@@ -174,12 +196,12 @@ public class TheFridgeGame extends MiniGame {
     }
     @Override
     public String getInstructions() {
-        return "Alcance a útima prateleira antes que o tempo acabe.";
+        return "Alcance os peixes antes que o tempo acabe.";
     }
 
     @Override
     public boolean shouldHideMousePointer() {
-        return true;
+        return false;
     }
        
 }
