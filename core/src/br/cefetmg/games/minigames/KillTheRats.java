@@ -87,7 +87,7 @@ public class KillTheRats extends MiniGame {
             fire.setDirection(new Vector2(click.x, click.y));
             
             if (Gdx.input.isTouched()) {
-                fire.setFollow(true);
+                fire.enableOnceFollow();
             }
         }
     }
@@ -164,26 +164,33 @@ public class KillTheRats extends MiniGame {
 
         public Fire(TextureRegion fireTexture) {
             super(fireTexture);
-            init();
+            defineProperties();
+            reset();
         }
         
-        public void init() {
+        public void defineProperties() {
             setScale(0.1f);
+            offset = 10;
+        }
+        
+        public void reset() {
             direction = new Vector2(0, 0);
             setPosition(getOriginX(), getOriginY());
             speed = 20;
-            offset = 10;
             launched = false;
         }
         
+        @Override
         public void setPosition(float x, float y) {
             super.setPosition(x - super.getWidth()/2, y - super.getHeight()/2);
         }
         
+        @Override
         public float getX() {
             return super.getX() + super.getWidth() / 2;
         }
         
+        @Override
         public float getY() {
             return super.getY() + super.getHeight() / 2;
         }
@@ -215,9 +222,9 @@ public class KillTheRats extends MiniGame {
             setPosition(normalized.x, normalized.y);
         }
         
-        public void setFollow(boolean val) {
+        public void enableOnceFollow() {
             if (releaseFire && !launched) {
-                launched = val;
+                launched = true;
                 releaseFire = false;
             }
         }
@@ -233,10 +240,8 @@ public class KillTheRats extends MiniGame {
             if (!releaseFire)
                 countTimer += dt;
             
-            System.out.println("releaseFire = " + releaseFire);
-            
             if (getX() < 0 || getX() > viewport.getWorldWidth() || getY() < 0 || getY() > viewport.getWorldHeight())
-                init();
+                reset();
         }
     }
 }
