@@ -19,6 +19,7 @@ public class MeowAuGame extends Game {
 
     @Override
     public void create() {
+
         this.setScreen(new PlayingGamesScreen(this, null));
     }
     

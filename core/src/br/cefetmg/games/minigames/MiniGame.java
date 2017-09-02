@@ -77,6 +77,7 @@ public abstract class MiniGame {
 
     public final void start() {
         this.configureDifficultyParameters(this.difficulty);
+
         transitionTo(MiniGameState.PLAYING);
     }
 
