@@ -33,12 +33,14 @@ public class TheFridgeGameFactory implements MiniGameFactory{
             {
                 put("the-fridge-game/fridge-game-background.png", Texture.class);
                 put("the-fridge-game/open-fridge.png", Texture.class);
-                for(int i=1;i<14;i++){
+                for(int i=1;i<19;i++){
                     String aux = Integer.toString(i);
-                    if(aux.length()<2) aux = "0" + aux; //to ensure it's 01-13//
+                    if(aux.length()<2) aux = "0" + aux; //to ensure it's 01-18//
                     put("the-fridge-game/food" + aux + ".png",Texture.class);   
-                }                
-              //  put("super-micro-jogo/tiro.wav", Sound.class);                  
+                }    
+                put("the-fridge-game/shelf.png",Texture.class);  
+             //  put("the-fridge-game/cat.png",Texture.class);  
+             //  put("super-micro-jogo/tiro.wav", Sound.class);                  
             }
         };
     }
