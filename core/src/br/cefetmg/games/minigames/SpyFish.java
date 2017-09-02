@@ -40,10 +40,12 @@ public class SpyFish extends MiniGame {
     private Texture texturaFcontrol;
     private Texture texturaMcontrol;
     private Texture texturaCardd;
-    
-    private Array<MemoryChip> chip;
 
-    private static final int MAX_CHIPS = 10;
+    private Array<MemoryChip> chip;
+    
+    private static SpriteBatch batch; 
+
+    private static final int MAX_CHIPS = 2;
 
     //elementos de logica
     private Fish fish;
@@ -57,6 +59,8 @@ public class SpyFish extends MiniGame {
             MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10000,
                 TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
+        
+        batch = new SpriteBatch();
     }
 
     @Override
@@ -80,9 +84,11 @@ public class SpyFish extends MiniGame {
         // cria um numero N de objetos MemoryCard
         chip = new Array<MemoryChip>();
         for (int i = 0; i < MAX_CHIPS; i++) {
-            chip.add(new MemoryChip(texturaCardd));
+            float m = (float)new Random().nextInt(1281);
+            chip.add(new MemoryChip(texturaCardd,m));
+            System.out.println(m);
         }
-  
+
     }
 
     @Override
@@ -107,15 +113,13 @@ public class SpyFish extends MiniGame {
         /*fish.update(dt);
         memoryCard.update();*/
 
-        for (MemoryChip chip : chip) {
-            chip.update(Gdx.graphics.getDeltaTime());
-        }
     }
 
     @Override
     public void onDrawGame() {
-        update(Gdx.graphics.getDeltaTime());
         
+        
+        batch.begin();
         batch.draw(texturaFish, 0, 0);
         batch.draw(texturaFundo, 100, 100);
 
@@ -125,10 +129,14 @@ public class SpyFish extends MiniGame {
         fish.draw(batch);
         control.draw();
         memoryCard.draw();
-        for (MemoryChip chip : chip) {
-            chip.render(batch);
+        
+        for (MemoryChip chipe : chip) {
+            
+            chipe.render(batch,Gdx.graphics.getDeltaTime());
+            update(Gdx.graphics.getDeltaTime());
+            // por algum motivo as sprites ficam uma em cima da outra!
         }
-
+        batch.end();
     }
 
     @Override
