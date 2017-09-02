@@ -39,7 +39,7 @@ public class TheFridgeGameFactory implements MiniGameFactory{
                     put("the-fridge-game/food" + aux + ".png",Texture.class);   
                 }    
                 put("the-fridge-game/shelf.png",Texture.class);  
-             //  put("the-fridge-game/cat.png",Texture.class);  
+                put("the-fridge-game/cat.png",Texture.class);  
              //  put("super-micro-jogo/tiro.wav", Sound.class);                  
             }
         };

@@ -15,11 +15,9 @@ import com.badlogic.gdx.Input.Keys;
  * @author Flávio Coutinho - fegemo <coutinho@decom.cefetmg.br>
  */
 public class MeowAuGame extends Game {
-
-
+    
     @Override
     public void create() {
-
         this.setScreen(new PlayingGamesScreen(this, null));
     }
     
@@ -32,7 +30,7 @@ public class MeowAuGame extends Game {
     @Override
     public void render() {
         handleInput();
-        super.render();
+         super.render();
     }
 
     @Override
