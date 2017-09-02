@@ -50,7 +50,7 @@ public class KillTheRats extends MiniGame {
         cat = new Cat(catTexture);
         fires = new Array<Fire>();
         
-        maxNumFires = 10;
+        maxNumFires = 100;
         countTimer = 0;
         releaseFire = true;
         
@@ -59,13 +59,11 @@ public class KillTheRats extends MiniGame {
     
     private void initializeFire() {
         TextureRegion[][] frames = TextureRegion.split(fireTexture,
-                Fire.FRAME_WIDTH, Fire.FRAME_HEIGHT);
+                fireTexture.getWidth(), fireTexture.getHeight());
         
         for (int i = 0; i < maxNumFires; i++) {
             Fire fire = new Fire(frames[0][0]);
-            fire.setCenter(
-                    viewport.getWorldWidth() * 0.1f,
-                    viewport.getWorldHeight() / 2f);
+            //fire.setCenter(viewport.getWorldWidth() * 0.1f, viewport.getWorldHeight() / 2f);
             this.fires.add(fire);
         }
     }
@@ -99,14 +97,7 @@ public class KillTheRats extends MiniGame {
         cat.update(dt);
         
         for (Fire fire : this.fires) {
-            fire.update(dt);
-        }
-        
-        if (!releaseFire)
-            countTimer += dt;
-        if (countTimer > 0.5f) {
-            countTimer = 0;
-            releaseFire = true;
+            fire.updateMoves(dt);
         }
     }
     
@@ -164,9 +155,7 @@ public class KillTheRats extends MiniGame {
     
     class Fire extends Sprite {
 
-        static final int FRAME_WIDTH = 360;
-        static final int FRAME_HEIGHT = 720;
-        static final float fireInterval = 0.5f;
+        static final float fireInterval = 3.0f;
         
         private float speed;
         private float offset;
@@ -181,20 +170,29 @@ public class KillTheRats extends MiniGame {
         public void init() {
             setScale(0.1f);
             direction = new Vector2(0, 0);
-            setPosition(0, 0);
-            speed = 10;
+            setPosition(getOriginX(), getOriginY());
+            speed = 20;
             offset = 10;
             launched = false;
+        }
+        
+        public void setPosition(float x, float y) {
+            super.setPosition(x - super.getWidth()/2, y - super.getHeight()/2);
+        }
+        
+        public float getX() {
+            return super.getX() + super.getWidth() / 2;
+        }
+        
+        public float getY() {
+            return super.getY() + super.getHeight() / 2;
         }
         
         public void setDirection(Vector2 v) {
             if (launched) return;
             
-            float posX = getX() + FRAME_WIDTH / 2;
-            float posY = getY() + FRAME_HEIGHT / 2;
-            
-            direction.x = v.x - posX;
-            direction.y = v.y - posY;
+            direction.x = v.x - getX();
+            direction.y = v.y - getY();
             
             double angle = Math.atan(direction.y / direction.x);
             angle += (direction.x > 0) ? -Math.PI/2 : Math.PI/2;
@@ -204,26 +202,38 @@ public class KillTheRats extends MiniGame {
         }
         
         public void follow() {
-            //if (direction.len() < offset)
-                //return;
+            if (direction.len() < offset)
+                return;
             
-            direction.nor(); // normaliza o vetor
-            float newPosX = getX() + direction.x * speed;
-            float newPosY = getY() + direction.y * speed;
+            Vector2 normalized = new Vector2(direction);
+            normalized.nor(); // normaliza o vetor
+            normalized.scl(speed);
             
-            setPosition(newPosX, newPosY);
+            normalized.x += getX();
+            normalized.y += getY();
+            
+            setPosition(normalized.x, normalized.y);
         }
         
-        public void setFollow(boolean b) {
-            if (releaseFire) {
-                launched = b;
+        public void setFollow(boolean val) {
+            if (releaseFire && !launched) {
+                launched = val;
                 releaseFire = false;
             }
         }
         
-        public void update(float dt) {
+        public void updateMoves(float dt) {
             if (launched)
                 follow();
+            
+            if (countTimer > fireInterval) {
+                countTimer = 0;
+                releaseFire = true;
+            }
+            if (!releaseFire)
+                countTimer += dt;
+            
+            System.out.println("releaseFire = " + releaseFire);
             
             if (getX() < 0 || getX() > viewport.getWorldWidth() || getY() < 0 || getY() > viewport.getWorldHeight())
                 init();
