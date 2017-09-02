@@ -33,6 +33,7 @@ public class TheFridgeGame extends MiniGame {
     private Cat cat;
     
     private int fridgeLimitsXMax, fridgeLimitsXMin, fridgeLimitsYMax, fridgeLimitsYMin;
+    private final Vector2 initialFridgePosition = new Vector2(750,100), finalFridgePosition = new Vector2(600,00);
             
     private boolean started, goingUp, end;
     private int shelfAmount;  
@@ -78,9 +79,29 @@ public class TheFridgeGame extends MiniGame {
         }
     }
     public void initialAnimation(){
-        if(fridge.position.x>550){
-            fridge.position.x--;
+        boolean flag = false; 
+         
+        if(fridge.position.x>finalFridgePosition.x){
+            fridge.position.x-=3; 
+            fridge.width++;  
+            fridgeLimitsXMin = Math.round((120*fridge.width)/500); 
+            fridgeLimitsXMax = Math.round((360*fridge.width)/500);           
+            background.position.x-=5;
+            background.width+=5;
+            flag=true;
         }
+        
+        if(fridge.position.y>finalFridgePosition.y){
+            fridge.position.y--;
+            fridge.height++; 
+            fridgeLimitsYMin = Math.round((50*fridge.height)/550);
+            fridgeLimitsYMax =  Math.round((400*fridge.height)/550);
+            background.position.y--;
+            background.height++;            
+            flag=true;
+        }        
+        if(flag==false) started=true; 
+        setPositionsFoodMatrix();
     }
     
     public void fillFoodMatrix(){
@@ -141,7 +162,7 @@ public class TheFridgeGame extends MiniGame {
         // instancias das subclasses da fase 
         generator = new Random();
         background = new Object(new Vector2(0,0), viewport.getWorldWidth(), viewport.getWorldHeight(), screen.assets.get("the-fridge-game/fridge-game-background.png", Texture.class));
-        fridge = new Object(new Vector2(750,100), 500, 550, screen.assets.get("the-fridge-game/open-fridge.png", Texture.class));
+        fridge = new Object(initialFridgePosition, 500, 550, screen.assets.get("the-fridge-game/open-fridge.png", Texture.class));
         cat = new Cat(screen.assets.get("the-fridge-game/food13.png",Texture.class)); 
         food = new Object[shelfAmount][3];
         System.out.println("Objects succesfully instantiated!");
@@ -176,7 +197,7 @@ public class TheFridgeGame extends MiniGame {
     @Override
     public void onDrawGame() {
         if(started==false){
-            this.AnimatedStart();
+            initialAnimation();
         }
         background.Draw();
         fridge.Draw();
@@ -191,9 +212,6 @@ public class TheFridgeGame extends MiniGame {
         }
     }
 
-    public void AnimatedStart(){
-        
-    }
     @Override
     public String getInstructions() {
         return "Alcance os peixes antes que o tempo acabe.";
