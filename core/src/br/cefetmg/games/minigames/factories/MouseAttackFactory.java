@@ -21,7 +21,7 @@ public class MouseAttackFactory implements MiniGameFactory {
     @Override
     public MiniGame createMiniGame(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
-        return new Mouse(screen, observer, difficulty);
+        return new MouseAttack(screen, observer, difficulty);
     }
 
     @Override
