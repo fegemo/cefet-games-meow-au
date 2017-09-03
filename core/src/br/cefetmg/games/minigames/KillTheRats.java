@@ -197,10 +197,8 @@ public class KillTheRats extends MiniGame {
             return super.getY() + super.getHeight() / 2;
         }
 
-        Vector2 getPosition() {
-            return new Vector2(
-                    this.getX() + this.getWidth(),
-                    this.getY() + this.getHeight());
+        public Vector2 getPosition() {
+            return new Vector2(getX(), getY());
         }
 
         float getHeadDistanceTo(float enemyX, float enemyY) {
@@ -216,8 +214,9 @@ public class KillTheRats extends MiniGame {
         private float maxSpeed;
         private float offset;
         private float time;
-        private boolean flipX;
         private int numCollisions;
+        private boolean flipX;
+        private boolean folowPlayer;
         
         static final float frameDuration = 0.02f;
         static final int ROWS = 6;
@@ -261,6 +260,7 @@ public class KillTheRats extends MiniGame {
             direction.x = -1;
             direction.y = 0;
             speed = (float) Math.random() * maxSpeed + minSpeed;
+            folowPlayer = false;
         }
         
         @Override
@@ -304,6 +304,28 @@ public class KillTheRats extends MiniGame {
             this.speed = speed;
         }
 
+        public void setDirection(Vector2 v) {
+            direction.x = v.x - getX();
+            direction.y = v.y - getY();
+            
+            double angle = Math.atan(direction.y / direction.x);
+            angle += (direction.x > 0) ? -Math.PI/2 : Math.PI/2;
+            angle *= 180 / Math.PI;
+            
+            setRotation((float) angle);
+        }
+        
+        public void walk() {
+            Vector2 normalized = new Vector2(direction);
+            normalized.nor(); // normaliza o vetor
+            normalized.scl(speed);
+            
+            normalized.x += getX();
+            normalized.y += getY();
+            
+            setPosition(normalized.x, normalized.y);
+        }
+        
         @Override
         public void update(float dt) {
             super.update(dt);
@@ -317,37 +339,16 @@ public class KillTheRats extends MiniGame {
             if (flipX)
                 setFlip(true, false);
             
-            Vector2 newPos = new Vector2(direction);
-            newPos.scl(speed);
-            setPosition(getX() + newPos.x, getY() + newPos.y);
+            if (folowPlayer)
+                setDirection(cat.getPosition());
+            else {
+                folowPlayer = (Math.random() < 0.001) ? true : false;
+            }
+            
+            walk();
             
             if (getX() < 0)
                 reset();
-        }
-        
-        public void setDirection(Vector2 v) {
-            direction.x = v.x - getX();
-            direction.y = v.y - getY();
-            
-            double angle = Math.atan(direction.y / direction.x);
-            angle += (direction.x > 0) ? Math.PI : 0;
-            angle *= 180 / Math.PI;
-            
-            setRotation((float) angle);
-        }
-        
-        public void follow() {
-            if (direction.len() < offset)
-                return;
-            
-            Vector2 normalized = new Vector2(direction);
-            normalized.nor(); // normaliza o vetor
-            normalized.scl(speed);
-            
-            normalized.x += getX();
-            normalized.y += getY();
-            
-            setPosition(normalized.x, normalized.y);
         }
     }
     
