@@ -22,6 +22,7 @@ public class TheFridgeGame extends MiniGame {
     private Texture[] foodTexture;       
     private Object[][] food;
     private Object[] shelfs;
+    private Object fish;
     private Object background, fridge;
     private Cat cat;
     private float TimeCounter;
@@ -50,32 +51,37 @@ public class TheFridgeGame extends MiniGame {
     }    
     
      class Cat {
-        Vector2 position;
         final int width = 400;
         final int height = 199;
         AnimatedSprite walking, stoped, jumping, siting, currentAnimation;
         
         Cat(Texture catTexture){  
-            position = new Vector2(0,0);
-            TextureRegion[][] AnimationFrames = TextureRegion.split(catTexture, width, height);              
-            walking = new AnimatedSprite(new Animation(0.1f, AnimationFrames[0][0], AnimationFrames[1][0], AnimationFrames[2][0], AnimationFrames[3][0], AnimationFrames[4][0], AnimationFrames[5][0],
-                          AnimationFrames[6][0], AnimationFrames[7][0], AnimationFrames[8][0], AnimationFrames[9][0], AnimationFrames[10][0], AnimationFrames[11][0],AnimationFrames[12][0]));
-            walking.getAnimation().setPlayMode(Animation.PlayMode.LOOP);        
-           /* stoped = new Animation(0.1f, AnimationFrames[0][0], AnimationFrames[0][1], AnimationFrames[0][2], AnimationFrames[0][3], AnimationFrames[0][4]);
-            stoped.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+            TextureRegion[][] AnimationFrames = TextureRegion.split(catTexture, width, height);  
+            TextureRegion[] walkingFrames = new TextureRegion[30];
+            for(int i=0; i<24; i++){                
+                walkingFrames[i] = AnimationFrames[i%12][0];   
+            }           
+            for(int i=24; i<30; i++){
+                walkingFrames[i] = AnimationFrames[i%24][1];
+            }
+            walking = new AnimatedSprite(new Animation(0.1f, walkingFrames));        
+            walking.setPosition( viewport.getWorldWidth(), 0);
+            stoped =  new AnimatedSprite(new Animation(0.1f, AnimationFrames[5][1]));           
             
-            jumping = new Animation(0.1f, AnimationFrames[2][0], AnimationFrames[2][1], AnimationFrames[2][2], AnimationFrames[2][3], AnimationFrames[2][4]);
-            jumping.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);*/
-                  
-            this.currentAnimation = this.walking;
+           // jumping = new Animation(0.1f, AnimationFrames[2][0], AnimationFrames[2][1], AnimationFrames[2][2], AnimationFrames[2][3], AnimationFrames[2][4]);
+           // jumping.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);*/ 
+           currentAnimation = null;
         }
         public void draw(Batch batch){
-        if(currentAnimation==walking){
-            walking.draw(batch);
-        }
-        else{
-            walking.setPlaying(false);
-        }
+            if(currentAnimation==walking){
+               walking.draw(batch);
+            }
+            else if(currentAnimation==jumping){
+             //  jumping.draw(batch);
+            }
+            else if(currentAnimation==stoped){
+               stoped.draw(batch);
+            }
     }    
        
     }
@@ -101,7 +107,19 @@ public class TheFridgeGame extends MiniGame {
             flag=true;
         }       
         else flag=false;        
-        if(flag==false){ started=true; cat.currentAnimation=cat.siting; }
+        if(flag==false){ 
+            cat.currentAnimation = cat.walking;            
+            cat.walking.setSize(food[0][0].width+50,food[0][0].height+50);            
+            if(cat.currentAnimation.getX()>(fridge.position.x+400)){
+                cat.currentAnimation.setX(cat.currentAnimation.getX()-2);   
+              //  if(cat.walking.)
+            }
+            else{ 
+                cat.stoped.setPosition(cat.walking.getX(),0);
+                cat.stoped.setSize(food[0][0].width+50,food[0][0].height+50);
+                started=true; 
+            }
+        }        
         setPositionsFoodMatrix();
     }
     
@@ -142,7 +160,7 @@ public class TheFridgeGame extends MiniGame {
             }            
             x=fridgeLimitsXMin; y+=(fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount;
             shelfs[i] = new Object(new Vector2((fridge.position.x + x)*0.99f,(fridge.position.y + y)-30),(fridgeLimitsXMax-fridgeLimitsXMin),(fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount+80,
-                    screen.assets.get("the-fridge-game/shelf.png",Texture.class));
+                        screen.assets.get("the-fridge-game/shelf.png",Texture.class));
         }
     }
     
@@ -183,7 +201,7 @@ public class TheFridgeGame extends MiniGame {
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         System.out.println("\n\nDifficulty: " + difficulty + "\n\n");
-        shelfAmount = 7; //FIX ME//between 4 and 7//
+        shelfAmount = 6; //FIX ME//between 4 and 6//
     }
 
     @Override
@@ -205,7 +223,6 @@ public class TheFridgeGame extends MiniGame {
         }
         background.Draw();
         fridge.Draw();
-        cat.draw(batch);
         //percorrer matrix aqui//
         for(int i=0;i<shelfAmount;i++){
             for(int j=0;j<3;j++){
@@ -215,6 +232,7 @@ public class TheFridgeGame extends MiniGame {
             }
             shelfs[i].Draw();
         }
+        cat.draw(batch);
     }
 
     @Override
