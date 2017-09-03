@@ -16,6 +16,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -45,14 +47,14 @@ public class KillTheRats extends MiniGame {
     private int maxNumFires;
     
     public KillTheRats(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 100f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
+        super(screen, observer, difficulty, 20f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
     }
     
     @Override
     protected void onStart() {
         catTexture = assets.get("kill-the-rats/lakitu.png", Texture.class);
         ratsSpriteSheet = assets.get("kill-the-rats/ratframes.png", Texture.class);
-        fireTexture = assets.get("kill-the-rats/rocket.png", Texture.class);
+        fireTexture = assets.get("kill-the-rats/fireball_0.png", Texture.class);
         
         cat = new Cat(catTexture);
         rats = new Array<Rat>();
@@ -120,7 +122,7 @@ public class KillTheRats extends MiniGame {
         cat.update(dt);
         
         for (Fire fire : this.fires) {
-            fire.updateMoves(dt);
+            fire.update(dt);
         }
         
         for (Rat rat : this.rats) {
@@ -208,11 +210,14 @@ public class KillTheRats extends MiniGame {
     
     class Rat extends MultiAnimatedSprite {
 
-        private Vector2 speed;
+        private Vector2 direction;
+        private float speed;
         private float minSpeed;
         private float maxSpeed;
+        private float offset;
         private float time;
         private boolean flipX;
+        private int numCollisions;
         
         static final float frameDuration = 0.02f;
         static final int ROWS = 6;
@@ -241,16 +246,21 @@ public class KillTheRats extends MiniGame {
         public void init() {
             time = 0;
             flipX = false;
-            speed = new Vector2();
-            minSpeed = 40;
-            maxSpeed = 200;
+            numCollisions = 0;
+            offset = 10;
+            direction = new Vector2();
+            speed = 1;
+            minSpeed = 1f;
+            maxSpeed = 5f;
         }
         
         public void reset() {
             float posY = (float) Math.random() * viewport.getWorldHeight();
             setPosition(viewport.getWorldWidth() + getWidth(), posY);
             setRotation(90);
-            speed.x = (float) Math.random() * maxSpeed + minSpeed;
+            direction.x = -1;
+            direction.y = 0;
+            speed = (float) Math.random() * maxSpeed + minSpeed;
         }
         
         @Override
@@ -267,6 +277,32 @@ public class KillTheRats extends MiniGame {
         public float getY() {
             return super.getY() + super.getHeight() / 2;
         }
+        
+        public Vector2 getPosition() {
+            return new Vector2(getX(), getY());
+        }
+        
+        public Rectangle getBoundRect() {
+            return new Rectangle(getX(), getY(), getWidth(), getHeight());
+        }
+        
+        public Circle getBoundCirle() {
+            Vector2 pos = getPosition().add(direction);
+            return new Circle(pos, Math.max(getWidth(), getHeight()));
+        }
+        
+        public void verifyCollision(Circle c) {
+            if (getBoundCirle().overlaps(c))
+                numCollisions++;
+        }
+
+        public float getSpeed() {
+            return speed;
+        }
+
+        public void setSpeed(float speed) {
+            this.speed = speed;
+        }
 
         @Override
         public void update(float dt) {
@@ -281,25 +317,47 @@ public class KillTheRats extends MiniGame {
             if (flipX)
                 setFlip(true, false);
             
-            setPosition(getX() - this.speed.x * dt, getY() + this.speed.y * dt);
+            Vector2 newPos = new Vector2(direction);
+            newPos.scl(speed);
+            setPosition(getX() + newPos.x, getY() + newPos.y);
             
             if (getX() < 0)
                 reset();
         }
-
-        public Vector2 getSpeed() {
-            return speed;
+        
+        public void setDirection(Vector2 v) {
+            direction.x = v.x - getX();
+            direction.y = v.y - getY();
+            
+            double angle = Math.atan(direction.y / direction.x);
+            angle += (direction.x > 0) ? Math.PI : 0;
+            angle *= 180 / Math.PI;
+            
+            setRotation((float) angle);
         }
-
-        public void setSpeed(Vector2 speed) {
-            this.speed = speed;
+        
+        public void follow() {
+            if (direction.len() < offset)
+                return;
+            
+            Vector2 normalized = new Vector2(direction);
+            normalized.nor(); // normaliza o vetor
+            normalized.scl(speed);
+            
+            normalized.x += getX();
+            normalized.y += getY();
+            
+            setPosition(normalized.x, normalized.y);
         }
     }
     
     class Fire extends AnimatedSprite {
 
-        static final float fireInterval = 3.0f;
+        static final float fireInterval = 6.0f;
         static final float frameDuration = 0.1f;
+        
+        static final int WIDTH = 64;
+        static final int HEIGHT = 64;
         
         private float speed;
         private float offset;
@@ -310,9 +368,12 @@ public class KillTheRats extends MiniGame {
             super(new Animation(frameDuration, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
-                            fireTexture, fireTexture.getWidth(), fireTexture.getHeight());
+                            fireTexture, WIDTH, HEIGHT);
                     super.addAll(new TextureRegion[]{
-                        frames[0][0]
+                        frames[0][0], frames[0][1],
+                        frames[0][2], frames[0][3],
+                        frames[0][4], frames[0][5],
+                        frames[0][6], frames[0][7]
                     });
                 }
             }));
@@ -324,7 +385,7 @@ public class KillTheRats extends MiniGame {
         }
         
         public void defineProperties() {
-            setScale(0.1f);
+            //setScale(0.1f);
             offset = 10;
         }
         
@@ -350,6 +411,18 @@ public class KillTheRats extends MiniGame {
             return super.getY() + super.getHeight() / 2;
         }
         
+        public Vector2 getPosition() {
+            return new Vector2(getX(), getY());
+        }
+        
+        public Rectangle getBoundRect() {
+            return new Rectangle(getX(), getY(), getWidth(), getHeight());
+        }
+        
+        public Circle getBoundCirle() {
+            return new Circle(getPosition(), Math.max(getWidth(), getHeight()));
+        }
+        
         public void setDirection(Vector2 v) {
             if (launched) return;
             
@@ -357,7 +430,7 @@ public class KillTheRats extends MiniGame {
             direction.y = v.y - getY();
             
             double angle = Math.atan(direction.y / direction.x);
-            angle += (direction.x > 0) ? -Math.PI/2 : Math.PI/2;
+            angle += (direction.x > 0) ? Math.PI : 0;
             angle *= 180 / Math.PI;
             
             setRotation((float) angle);
@@ -384,7 +457,10 @@ public class KillTheRats extends MiniGame {
             }
         }
         
-        public void updateMoves(float dt) {
+        @Override
+        public void update(float dt) {
+            super.update(dt);
+            
             if (launched)
                 follow();
             
