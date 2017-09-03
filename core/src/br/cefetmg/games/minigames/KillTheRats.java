@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -123,6 +124,14 @@ public class KillTheRats extends MiniGame {
         
         for (Fire fire : this.fires) {
             fire.update(dt);
+            
+            for (Rat rat : this.rats) {
+                if (fire.getBoundCirle().overlaps(rat.getBoundCirle())) {
+                    rat.reset();
+                    fire.reset();
+                    break;
+                }
+            }
         }
         
         for (Rat rat : this.rats) {
@@ -214,6 +223,7 @@ public class KillTheRats extends MiniGame {
         private float maxSpeed;
         private float offset;
         private float time;
+        private float collisionRadius;
         private int numCollisions;
         private boolean flipX;
         private boolean folowPlayer;
@@ -245,6 +255,7 @@ public class KillTheRats extends MiniGame {
         public void init() {
             time = 0;
             flipX = false;
+            collisionRadius = 15;
             numCollisions = 0;
             offset = 10;
             direction = new Vector2();
@@ -287,8 +298,9 @@ public class KillTheRats extends MiniGame {
         }
         
         public Circle getBoundCirle() {
-            Vector2 pos = getPosition().add(direction);
-            return new Circle(pos, Math.max(getWidth(), getHeight()));
+            Vector2 pos = new Vector2(direction).scl(offset);
+            pos.add(getPosition());
+            return new Circle(pos, collisionRadius);
         }
         
         public void verifyCollision(Circle c) {
@@ -307,6 +319,7 @@ public class KillTheRats extends MiniGame {
         public void setDirection(Vector2 v) {
             direction.x = v.x - getX();
             direction.y = v.y - getY();
+            direction.nor();
             
             double angle = Math.atan(direction.y / direction.x);
             angle += (direction.x > 0) ? -Math.PI/2 : Math.PI/2;
@@ -317,7 +330,6 @@ public class KillTheRats extends MiniGame {
         
         public void walk() {
             Vector2 normalized = new Vector2(direction);
-            normalized.nor(); // normaliza o vetor
             normalized.scl(speed);
             
             normalized.x += getX();
@@ -354,7 +366,7 @@ public class KillTheRats extends MiniGame {
     
     class Fire extends AnimatedSprite {
 
-        static final float fireInterval = 6.0f;
+        static final float fireInterval = 4.0f;
         static final float frameDuration = 0.1f;
         
         static final int WIDTH = 64;
@@ -362,6 +374,7 @@ public class KillTheRats extends MiniGame {
         
         private float speed;
         private float offset;
+        private float collisionRadius;
         private boolean launched;
         private Vector2 direction;
 
@@ -381,13 +394,14 @@ public class KillTheRats extends MiniGame {
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
             super.setAutoUpdate(false);
             
-            defineProperties();
+            init();
             reset();
         }
         
-        public void defineProperties() {
+        public void init() {
             //setScale(0.1f);
             offset = 10;
+            collisionRadius = 10;
         }
         
         public void reset() {
@@ -421,7 +435,9 @@ public class KillTheRats extends MiniGame {
         }
         
         public Circle getBoundCirle() {
-            return new Circle(getPosition(), Math.max(getWidth(), getHeight()));
+            Vector2 pos = new Vector2(direction).nor().scl(2*offset);
+            pos.add(getPosition());
+            return new Circle(pos, collisionRadius);
         }
         
         public void setDirection(Vector2 v) {
