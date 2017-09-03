@@ -38,6 +38,8 @@ public class KillTheRats extends MiniGame {
     private Array<Rat> rats;
     private Array<Fire> fires;
     
+    private Vector2 mousePos;
+    
     private float countTimer;
     private boolean releaseFire;
     
@@ -69,10 +71,12 @@ public class KillTheRats extends MiniGame {
         initCat();
         initRat();
         initFire();
+        
+        mousePos = new Vector2(0, 0);
     }
     
     private void initCat() {
-        cat.setCenter(viewport.getWorldWidth() * 0.1f, viewport.getWorldHeight() / 2f);
+        cat.setCenter(viewport.getWorldWidth() * 0.2f, viewport.getWorldHeight() / 2f);
     }
     
     private void initRat() {
@@ -107,10 +111,11 @@ public class KillTheRats extends MiniGame {
         // obtem a posição do mouse
         Vector3 click = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         viewport.unproject(click);
+        mousePos = new Vector2(click.x, click.y);
         //cat.setCenter(click.x, click.y);
         
         for (Fire fire : this.fires) {
-            fire.setDirection(new Vector2(click.x, click.y));
+            fire.setDirection(mousePos);
             
             if (Gdx.input.isTouched()) {
                 fire.enableOnceFollow();
@@ -142,7 +147,8 @@ public class KillTheRats extends MiniGame {
     @Override
     public void onDrawGame() {
         for (Fire fire : this.fires) {
-            fire.draw(batch);
+            if (fire.getLaunched())
+                fire.draw(batch);
         }
         
         for (Rat rat : this.rats) {
@@ -168,6 +174,9 @@ public class KillTheRats extends MiniGame {
         
         static final int FRAME_WIDTH = 200;
         static final int FRAME_HEIGHT = 259;
+        
+        private float collisionRadius;
+        private Circle forceField;
 
         Cat(final Texture catTexture) {
             super(new Animation(frameDuration, new Array<TextureRegion>() {
@@ -187,8 +196,10 @@ public class KillTheRats extends MiniGame {
         }
         
         public void reset() {
+            collisionRadius = 50;
             setScale(0.6f);
             setPosition(getOriginX(), getOriginY());
+            forceField = new Circle(getX(), getY(), collisionRadius*3);
         }
         
         @Override
@@ -209,9 +220,25 @@ public class KillTheRats extends MiniGame {
         public Vector2 getPosition() {
             return new Vector2(getX(), getY());
         }
-
-        float getHeadDistanceTo(float enemyX, float enemyY) {
-            return getPosition().dst(enemyX, enemyY);
+        
+        @Override
+        public void update(float dt) {
+            super.update(dt);
+            
+            forceField.x = getX();
+            forceField.y = getY();
+        }
+        
+        public Rectangle getBoundRect() {
+            return new Rectangle(getX(), getY(), getWidth(), getHeight());
+        }
+        
+        public Circle getBoundCirle() {
+            return new Circle(getPosition(), collisionRadius);
+        }
+        
+        public Circle getForceField() {
+            return this.forceField;
         }
     }
     
@@ -224,6 +251,7 @@ public class KillTheRats extends MiniGame {
         private float offset;
         private float time;
         private float collisionRadius;
+        private float probabilityFollow;
         private int numCollisions;
         private boolean flipX;
         private boolean folowPlayer;
@@ -272,6 +300,7 @@ public class KillTheRats extends MiniGame {
             direction.y = 0;
             speed = (float) Math.random() * maxSpeed + minSpeed;
             folowPlayer = false;
+            probabilityFollow = 0.001f;
         }
         
         @Override
@@ -328,7 +357,7 @@ public class KillTheRats extends MiniGame {
             setRotation((float) angle);
         }
         
-        public void walk() {
+        public void walk(Vector2 direction) {
             Vector2 normalized = new Vector2(direction);
             normalized.scl(speed);
             
@@ -336,6 +365,28 @@ public class KillTheRats extends MiniGame {
             normalized.y += getY();
             
             setPosition(normalized.x, normalized.y);
+        }
+        
+        // cálculo do vetor tangente ao campo de força
+        public Vector2 tangentForceField() {
+            Circle forceField = cat.getForceField();
+            float distance = cat.getPosition().dst(getPosition());
+            
+            float a = forceField.radius*forceField.radius / (distance);
+            Vector2 aux = new Vector2(getPosition());
+            // vetor que aponta do centro de "forceField" para a posicao atual
+            aux.sub(cat.getPosition());
+            aux.nor().scl(a); // o tamanho do vetor é limitado à projeção ortogonal do ponto de intersecção com a tangente
+            
+            // altura do triangulo retângulo formado pelos pontos "intersectionPoint", posição atual e o centro de "forceField"
+            float h = (float) Math.sqrt(a*(distance - a));
+            Vector2 intersectionPoint = new Vector2(-aux.y, aux.x); // rotaciona em +90 graus
+            intersectionPoint.nor().scl(h); // vetor que representa a altura do triangulo retângulo
+            // vetor que aponta do centro de "forceField" para o ponto de intercecção com a tangente
+            intersectionPoint.add(aux).add(forceField.x, forceField.y);
+            
+            Vector2 tangent = new Vector2(intersectionPoint);
+            return tangent.sub(getPosition()).nor();
         }
         
         @Override
@@ -354,10 +405,10 @@ public class KillTheRats extends MiniGame {
             if (folowPlayer)
                 setDirection(cat.getPosition());
             else {
-                folowPlayer = (Math.random() < 0.001) ? true : false;
+                folowPlayer = (Math.random() < probabilityFollow);
             }
             
-            walk();
+            walk(direction);
             
             if (getX() < 0)
                 reset();
@@ -438,6 +489,10 @@ public class KillTheRats extends MiniGame {
             Vector2 pos = new Vector2(direction).nor().scl(2*offset);
             pos.add(getPosition());
             return new Circle(pos, collisionRadius);
+        }
+        
+        public Boolean getLaunched() {
+            return launched;
         }
         
         public void setDirection(Vector2 v) {
