@@ -1,7 +1,7 @@
 package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.minigames.util.DifficultyCurve;
-import br.cefetmg.games.MemoryChip;
+import br.cefetmg.games.minigames.Objects.MemoryChip;
 import br.cefetmg.games.graphics.MultiAnimatedSprite;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;

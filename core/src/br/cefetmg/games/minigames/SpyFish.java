@@ -1,8 +1,9 @@
-
 package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.Config;
-import br.cefetmg.games.MemoryChip;
+import br.cefetmg.games.collision.Collidable;
+import br.cefetmg.games.minigames.Objects.Fish;
+import br.cefetmg.games.minigames.Objects.MemoryChip;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import java.util.Random;
@@ -29,46 +31,63 @@ public class SpyFish extends MiniGame {
     private Texture texturaFundo;
     private Texture texturaFcontrol;
     private Texture texturaMcontrol;
-    private Texture texturaCardd;
+    private Texture texturaMemoCard;
+
     private ArrayList<MemoryChip> chip;
-    private static final int MAX_CHIPS = 5;
+
     private static SpriteBatch batch;
+    private ShapeRenderer shapeRenderer;
+
     //elementos de logica
     private Fish fish;
     private Control control;
     private MemoryCard memoryCard;
 
-    public SpyFish(BaseScreen screen,MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 10000,TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
-        
-    }
+    private static int MAX_CHIPS;
 
-    @Override
-    protected void challengeSolved() {
-        super.challengeSolved(); 
-        //To change body of generated methods, choose Tools | Templates.
-    }
+    private static float diff;
 
-    @Override
-    protected void onStart() {
+    public SpyFish(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
+        super(screen, observer, difficulty, 10000, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
+
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaCard = assets.get("spy-fish/memory-card.png", Texture.class);
         this.texturaFundo = assets.get("spy-fish/fundo.png", Texture.class);
         this.texturaFcontrol = assets.get("spy-fish/fundo-controle.png", Texture.class);
         this.texturaMcontrol = assets.get("spy-fish/controle-principal.png", Texture.class);
-        this.texturaCardd = assets.get("spy-fish/card.png", Texture.class);
+        this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
+        this.fish = new Fish(texturaFish);
+        this.memoryCard = new MemoryCard(texturaCard);
+        this.control = new Control(texturaFcontrol, texturaMcontrol);
 
-        fish = new Fish(texturaFish);
-        memoryCard = new MemoryCard(texturaCard);
-        control = new Control(texturaFcontrol, texturaMcontrol);
-        
         batch = new SpriteBatch();
-        // cria um numero MAX_CHIPS de objetos MemoryCard
-        chip = new ArrayList<MemoryChip>();
-        for (int i = 0; i < MAX_CHIPS; i++) {
-            chip.add(new MemoryChip(texturaCardd));
-        }
 
+        diff = difficulty;
+
+    }
+
+    @Override
+    protected void challengeSolved() {
+        super.challengeSolved();
+        //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void onStart() {
+        if (diff == 0.047425874f) {
+
+            chip = new ArrayList<MemoryChip>();
+            MAX_CHIPS = 50;
+            for (int i = 0; i < MAX_CHIPS; i++) {
+                chip.add(new MemoryChip(texturaMemoCard));
+            }
+        } else {
+            chip = new ArrayList<MemoryChip>();
+            MAX_CHIPS = 100;
+            for (int i = 0; i < MAX_CHIPS; i++) {
+                chip.add(new MemoryChip(texturaMemoCard));
+            }
+        }
     }
 
     @Override
@@ -76,7 +95,6 @@ public class SpyFish extends MiniGame {
 
         //throw new UnsupportedOperationException("Not supported yet."); 
         //To change body of generated methods, choose Tools | Templates.
-        
     }
 
     @Override
@@ -104,14 +122,20 @@ public class SpyFish extends MiniGame {
         batch.begin();
         batch.draw(texturaFish, 0, 0);
         batch.draw(texturaFundo, 100, 100);
-        fish.draw(batch);
-        control.draw();
-        memoryCard.draw();
-        batch.end();
+        this.fish.draw(batch);
+        this.control.draw();
+        this.memoryCard.draw();
+
         for (MemoryChip chip : chip) {
-            batch.begin();
-            chip.render(batch);
-            batch.end();
+
+            chip.render(batch, this.fish);
+
+        }
+        batch.end();
+
+        for (MemoryChip chip : this.chip) {
+            //mostra os circulos de colisão
+            chip.render_area_collision();
         }
 
     }
@@ -125,32 +149,6 @@ public class SpyFish extends MiniGame {
     public boolean shouldHideMousePointer() {
         return false;
         //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    class Fish extends Sprite {
-
-        private Vector2 dposi;
-        private int lado;
-        //private final Texture texture;
-
-        static final int FRAME_WIDTH = 28;
-        static final int FRAME_HEIGHT = 36;
-
-        public Fish(Texture fishSprite) {
-            super(fishSprite);
-        }
-
-        public void update(float dt) {
-            float auxX = dposi.x > 0 ? min(Config.WORLD_WIDTH, super.getX() + dposi.x) : max(0, super.getX() + dposi.x);
-            float auxY = dposi.y > 0 ? min(Config.WORLD_HEIGHT, super.getY() + dposi.y) : max(0, super.getY() + dposi.y);
-            super.setPosition(auxX, auxY);
-            setDposi(0, 0);
-        }
-
-        public void setDposi(float x, float y) {
-            this.dposi.x = x;
-            this.dposi.y = y;
-        }
     }
 
     class MemoryCard {
