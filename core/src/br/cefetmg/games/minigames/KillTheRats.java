@@ -177,6 +177,7 @@ public class KillTheRats extends MiniGame {
         
         private float collisionRadius;
         private Circle forceField;
+        private boolean enableFieldForce;
 
         Cat(final Texture catTexture) {
             super(new Animation(frameDuration, new Array<TextureRegion>() {
@@ -200,6 +201,7 @@ public class KillTheRats extends MiniGame {
             setScale(0.6f);
             setPosition(getOriginX(), getOriginY());
             forceField = new Circle(getX(), getY(), collisionRadius*3);
+            enableFieldForce = false;
         }
         
         @Override
@@ -227,6 +229,13 @@ public class KillTheRats extends MiniGame {
             
             forceField.x = getX();
             forceField.y = getY();
+            
+            if (getTime() > 4)
+                enableFieldForce = true;
+            
+            if (enableFieldForce) {
+                
+            }
         }
         
         public Rectangle getBoundRect() {
@@ -239,6 +248,10 @@ public class KillTheRats extends MiniGame {
         
         public Circle getForceField() {
             return this.forceField;
+        }
+        
+        public boolean getEnableFieldForce() {
+            return enableFieldForce;
         }
     }
     
@@ -408,7 +421,12 @@ public class KillTheRats extends MiniGame {
                 folowPlayer = (Math.random() < probabilityFollow);
             }
             
-            walk(direction);
+            if (cat.getEnableFieldForce()) {
+                folowPlayer = true;
+                walk(tangentForceField());
+            }
+            else
+                walk(direction);
             
             if (getX() < 0)
                 reset();
