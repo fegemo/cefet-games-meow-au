@@ -35,7 +35,7 @@ public class HeadSoccer extends MiniGame {
         catTexture = assets.get("head-soccer/cat.png");
         background = new Sprite(backgroundTexture);
         cat = new Sprite(catTexture);
-        cat.scale(0.01f);
+        cat.setSize(100, 100);
         //scheduleEnemySpawn();
     }
 
