@@ -204,6 +204,7 @@ public class KillTheRats extends MiniGame {
         }
         
         public void init() {
+            setAlpha(0.9f);
             setPosition(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2);
         }
         
