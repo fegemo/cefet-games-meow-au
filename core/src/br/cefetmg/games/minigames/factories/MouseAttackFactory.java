@@ -29,6 +29,7 @@ public class MouseAttackFactory implements MiniGameFactory {
         return new HashMap<String, Class>() {
             {
                 put("MouseAttack/sprite-cat.png",Texture.class);
+                put("MouseAttack/sprite-monster1.png",Texture.class);
                 put("shoot-the-caries/caries.png", Texture.class);
                 put("shoot-the-caries/target.png", Texture.class);
                 put("shoot-the-caries/caries1.mp3", Sound.class);
