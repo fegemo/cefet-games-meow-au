@@ -143,7 +143,7 @@ public class KillTheRats extends MiniGame {
             for (Rat rat : this.rats) {
                 if (fire.getBoundCirle().overlaps(rat.getBoundCirle())) {
                     rat.reset();
-                    fire.reset();
+                    //fire.reset();
                     break;
                 }
             }
@@ -204,7 +204,7 @@ public class KillTheRats extends MiniGame {
         }
         
         public void init() {
-            setAlpha(0.9f);
+            setAlpha(0.95f);
             setPosition(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2);
         }
         
@@ -318,6 +318,7 @@ public class KillTheRats extends MiniGame {
         private float minSpeed;
         private float maxSpeed;
         private float offset;
+        private float wallDist;
         private float time;
         private float collisionRadius;
         private float probabilityFollow;
@@ -351,6 +352,7 @@ public class KillTheRats extends MiniGame {
             collisionRadius = 15;
             numCollisions = 0;
             offset = 10;
+            wallDist = 80;
             direction = new Vector2();
             speed = 1;
             minSpeed = 1f;
@@ -358,7 +360,7 @@ public class KillTheRats extends MiniGame {
         }
         
         public void reset() {
-            float posY = (float) Math.random() * viewport.getWorldHeight();
+            float posY = (float) Math.random() * (viewport.getWorldHeight() - 2*wallDist) + wallDist;
             setPosition(viewport.getWorldWidth() + getWidth(), posY);
             setRotation(90);
             direction.x = -1;
@@ -487,7 +489,7 @@ public class KillTheRats extends MiniGame {
     
     class Fire extends AnimatedSprite {
 
-        static final float fireInterval = 4.0f;
+        static final float fireInterval = 2.0f;
         static final float frameDuration = 0.1f;
         
         static final int WIDTH = 64;
