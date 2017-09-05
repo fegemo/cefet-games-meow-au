@@ -12,7 +12,7 @@ public class Config {
      * Todos os objetos (sprites, etc.) devem estar contidos em coordenadas x
      * que vão de 0 a WORLD_WIDTH para que apareçam na tela.
      */
-    public static final int WORLD_WIDTH = 1280;
+    public static final int WORLD_WIDTH = 700;
 
     /**
      * A altura do mundo de jogo.
@@ -20,7 +20,7 @@ public class Config {
      * Todos os objetos (sprites, etc.) devem estar contidos em coordenadas y
      * que vão de 0 a WORLD_HEIGHT para que apareçam na tela.
      */
-    public static final int WORLD_HEIGHT = 720;
+    public static final int WORLD_HEIGHT = 500;
 
     /**
      * A razão de aspecto do mundo de jogo, igual a 16:9.
