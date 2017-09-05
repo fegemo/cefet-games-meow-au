@@ -1,5 +1,6 @@
 package br.cefetmg.games.minigames;
 
+import br.cefetmg.games.Config;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
@@ -13,9 +14,19 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
 import br.cefetmg.games.minigames.util.Cat;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import static java.lang.Math.max;
+import static java.lang.Math.random;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 
 /**
@@ -28,6 +39,8 @@ public class MouseAttack extends MiniGame {
     private Texture catTexture;
     private Cat2 cat;
 
+    private Texture mosterTexture;
+    private Monster monster;
 
     private int enemiesKilled;
     private int spawnedEnemies;
@@ -43,6 +56,9 @@ public class MouseAttack extends MiniGame {
     private float posX, posY;
     private float ScreenWidth;
     private float ScreenHeight;
+    
+    private static final int NUMBER_OF_TILED_BACKGROUND_TEXTURE = 7;
+    private TextureRegion background;
 
     public MouseAttack(BaseScreen screen,
                        MiniGameStateObserver observer, float difficulty) {
@@ -61,6 +77,26 @@ public class MouseAttack extends MiniGame {
         ScreenWidth = Gdx.graphics.getWidth();
         posX = (float)(ScreenWidth*0.2);
         posY = (float)(ScreenHeight*0.5);
+        
+        background = new TextureRegion(new Texture("menu-background.png"));
+        // configura a textura para repetir caso ela ocupe menos espaço que o
+        // espaço disponível
+        background.getTexture().setWrap(
+                Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+        // define a largura da região de desenho de forma que ela seja repetida
+        // um número de vezes igual a NUMBER_OF_TILED_BACKGROUND_TEXTURE 
+        background.setRegionWidth(
+                background.getTexture().getWidth()
+                * NUMBER_OF_TILED_BACKGROUND_TEXTURE);
+        // idem para altura, porém será repetida um número de vezes igual a 
+        // NUMBER_OF_TILED_BACKGROUND_TEXTURE * razãoDeAspecto
+        background.setRegionHeight(
+                (int) (background.getTexture().getHeight()
+                * NUMBER_OF_TILED_BACKGROUND_TEXTURE
+                / Config.DESIRED_ASPECT_RATIO));
+        
+        
         cat.setPosition(50, 50);
         
         timer.scheduleTask(new Task() {
@@ -91,13 +127,13 @@ public class MouseAttack extends MiniGame {
 
     private void spawnEnemy() {
         // pega x e y entre 0 e 1
-        /*Vector2 position = new Vector2(rand.nextFloat(), rand.nextFloat());
+        Vector2 position = new Vector2(rand.nextFloat(), rand.nextFloat());
         // multiplica x e y pela largura e altura da tela
         position.scl(
-                viewport.getWorldWidth() - cariesTexture.getWidth()
+                viewport.getWorldWidth() - mosterTexture.getWidth()
                 * initialEnemyScale,
                 viewport.getWorldHeight()
-                - cariesTexture.getHeight() * initialEnemyScale);
+                - mosterTexture.getHeight() * initialEnemyScale);
 
         Sprite enemy = new Sprite(cariesTexture);
         enemy.setPosition(position.x, position.y);
@@ -105,7 +141,7 @@ public class MouseAttack extends MiniGame {
         enemies.add(enemy);
 
         // toca um efeito sonoro
-        cariesAppearingSound.play(0.5f);*/
+        cariesAppearingSound.play(0.5f);
     }
 
     @Override
@@ -162,7 +198,9 @@ public class MouseAttack extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
+        System.out.println("chegou aqui1");
         cat.update(dt);
+        cat.update();
         // vai diminuindo o tamanho das cáries existentes
         /*for (int i = 0; i < enemies.size; i++) {
             Sprite sprite = enemies.get(i);
@@ -175,7 +213,7 @@ public class MouseAttack extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Acerte as cáries";
+        return "Mate todos os monstros!";
     }
 
     @Override
@@ -194,47 +232,76 @@ public class MouseAttack extends MiniGame {
     }
     
     class Cat2 extends AnimatedSprite{
+        
         static final int FRAME_WIDTH = 50;
         static final int FRAME_HEIGHT = 50;
         TextureRegion[][] quadrosDaAnimacao;
         Texture spriteSheet;
         
+        float tempoDaAnimacao;
         
+        Animation power;        
+        Animation socar;
         Animation chutar;
+        Animation morrer;
+        Animation parado;
+        
+        int x = 0;
         
         public Cat2(final Texture cat) {
-            
-            /*this.spriteSheet = spriteSheet;
-        
-            spriteSheet = new Texture("MouseAttack/sprite-cat2.png");
-            
-            quadrosDaAnimacao = TextureRegion.split(spriteSheet, 50, 50);
-            chutar = new Animation(0.1f,
-            quadrosDaAnimacao[0][0], // 1ª linha, 1ª coluna
-            quadrosDaAnimacao[0][1], // idem, 2ª coluna
-            quadrosDaAnimacao[0][2],
-            quadrosDaAnimacao[0][3]);*/
             
              super(new Animation(0.1f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             cat, 50, 50);
                     super.addAll(new TextureRegion[]{
-                        frames[4][0],
-                        frames[4][1],
-                        frames[4][2],
-                        frames[4][3],
-                        frames[4][4],
-                        frames[4][5],
-                        frames[4][6],
-                        frames[4][7],
-                        frames[4][8]
+                        frames[4][0]
                     });
                 }
             }));
-            super.getAnimation().setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+            
+            quadrosDaAnimacao = TextureRegion.split(cat, 50, 50);
+            
+            chutar = new Animation(0.1f,
+            quadrosDaAnimacao[4][0], 
+            quadrosDaAnimacao[4][1], 
+            quadrosDaAnimacao[4][2],
+            quadrosDaAnimacao[4][3],
+            quadrosDaAnimacao[4][4],
+            quadrosDaAnimacao[4][5],
+            quadrosDaAnimacao[4][6],
+            quadrosDaAnimacao[4][7],
+            quadrosDaAnimacao[4][8],
+            quadrosDaAnimacao[4][9]);
+            
+            power = new Animation(0.1f,
+            quadrosDaAnimacao[1][0], 
+            quadrosDaAnimacao[1][1], 
+            quadrosDaAnimacao[1][2],
+            quadrosDaAnimacao[1][3],
+            quadrosDaAnimacao[1][4],
+            quadrosDaAnimacao[1][5]);
+            
+            morrer = new Animation(0.1f,
+            quadrosDaAnimacao[3][0], 
+            quadrosDaAnimacao[3][1], 
+            quadrosDaAnimacao[3][2],
+            quadrosDaAnimacao[3][3]);
+            
+            parado = new Animation(0.1f,
+            quadrosDaAnimacao[0][0]);
+            
+            socar = new Animation(0.1f,
+            quadrosDaAnimacao[5][5], 
+            quadrosDaAnimacao[5][6], 
+            quadrosDaAnimacao[5][7],
+            quadrosDaAnimacao[5][8],
+            quadrosDaAnimacao[5][9]);
+            
+            
+            //super.getAnimation().setPlayMode(Animation.PlayMode.NORMAL);
             //chutar.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
-            super.setAutoUpdate(false);
+            //super.setAutoUpdate(false);
             //this.cat = cat;
         }
 
@@ -247,6 +314,44 @@ public class MouseAttack extends MiniGame {
 
         float getHeadDistanceTo(float enemyX, float enemyY) {
             return getHeadPosition().dst(enemyX, enemyY);
+        }
+        
+        public void changeAnimation(){
+            
+            x++;
+            
+            if(x%2==0)
+                super.setAnimation(power);
+            else
+                super.setAnimation(parado);
+            super.getAnimation().setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+            
+            
+            
+           
+            
+        }
+        public void update(){
+            
+            tempoDaAnimacao += Gdx.graphics.getDeltaTime();
+           if(Gdx.input.isButtonPressed(Buttons.LEFT)){
+                 Gdx.input.setInputProcessor(new InputAdapter() {
+                 public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                     if (button == Buttons.LEFT) {
+                         changeAnimation();
+                         return true;
+                     }
+                     return false;
+                 }
+             });
+           }
+            
+        /*if (Gdx.input.) {
+            super.setAnimation(power);
+                  
+        }
+        else{
+        }*/
         }
     }
 
