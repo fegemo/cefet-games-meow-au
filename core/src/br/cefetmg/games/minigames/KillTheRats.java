@@ -31,9 +31,12 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
  */
 public class KillTheRats extends MiniGame {
     
+    private Texture backgroundTexture;
     private Texture catTexture;
     private Texture ratsSpriteSheet;
     private Texture fireTexture;
+    
+    private Background background;
     private Cat cat;
     private Array<Rat> rats;
     private Array<Fire> fires;
@@ -55,10 +58,12 @@ public class KillTheRats extends MiniGame {
     
     @Override
     protected void onStart() {
+        backgroundTexture = assets.get("kill-the-rats/Background_Sewer.png", Texture.class);
         catTexture = assets.get("kill-the-rats/lakitu.png", Texture.class);
         ratsSpriteSheet = assets.get("kill-the-rats/ratframes.png", Texture.class);
         fireTexture = assets.get("kill-the-rats/fireball_0.png", Texture.class);
         
+        background = new Background(backgroundTexture);
         cat = new Cat(catTexture);
         rats = new Array<Rat>();
         fires = new Array<Fire>();
@@ -68,11 +73,16 @@ public class KillTheRats extends MiniGame {
         countTimer = 0;
         releaseFire = true;
         
+        initBackground();
         initCat();
         initRat();
         initFire();
         
         mousePos = new Vector2(0, 0);
+    }
+    
+    private void initBackground() {
+        background.setCenter(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
     }
     
     private void initCat() {
@@ -146,6 +156,8 @@ public class KillTheRats extends MiniGame {
     
     @Override
     public void onDrawGame() {
+        background.draw(batch);
+        
         for (Fire fire : this.fires) {
             if (fire.getLaunched())
                 fire.draw(batch);
@@ -166,6 +178,49 @@ public class KillTheRats extends MiniGame {
     @Override
     public boolean shouldHideMousePointer() {
         return false;
+    }
+    
+    class Background extends AnimatedSprite {
+        
+        static final float frameDuration = 1.0f;
+        
+        static final int FRAME_WIDTH = 1280;
+        static final int FRAME_HEIGHT = 720;
+        
+        Background(final Texture catTexture) {
+            super(new Animation(frameDuration, new Array<TextureRegion>() {
+                {
+                    TextureRegion[][] frames = TextureRegion.split(
+                            catTexture, FRAME_WIDTH, FRAME_HEIGHT);
+                    super.addAll(new TextureRegion[] {
+                        frames[0][0]
+                    });
+                }
+            }));
+            super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
+            super.setAutoUpdate(false);
+            
+            init();
+        }
+        
+        public void init() {
+            setPosition(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2);
+        }
+        
+        @Override
+        public void setPosition(float x, float y) {
+            super.setPosition(x - super.getWidth()/2, y - super.getHeight()/2);
+        }
+        
+        @Override
+        public float getX() {
+            return super.getX() + super.getWidth() / 2;
+        }
+        
+        @Override
+        public float getY() {
+            return super.getY() + super.getHeight() / 2;
+        }
     }
     
     class Cat extends AnimatedSprite {
@@ -279,11 +334,7 @@ public class KillTheRats extends MiniGame {
                     TextureRegion[][] frames = TextureRegion
                             .split(ratsSpriteSheet,
                                     ratsSpriteSheet.getWidth()/COLS, ratsSpriteSheet.getHeight()/ROWS);
-                    Animation walking = new Animation(frameDuration,
-                            frames[0][0], frames[0][1],
-                            frames[0][2], frames[0][3],
-                            frames[0][4], frames[0][5],
-                            frames[0][6], frames[0][7]);
+                    Animation walking = new Animation(frameDuration, frames[0]); // todas as colunas da linha 0
                     walking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
                     put("walking", walking);
                 }
