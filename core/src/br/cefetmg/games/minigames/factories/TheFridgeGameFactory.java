@@ -38,6 +38,11 @@ public class TheFridgeGameFactory implements MiniGameFactory{
                     if(aux.length()<2) aux = "0" + aux; //to ensure it's 01-18//
                     put("the-fridge-game/food" + aux + ".png",Texture.class);   
                 }    
+                for(int i=1;i<4;i++){
+                    String aux = Integer.toString(i); 
+                    aux = "0" + aux; //it's 01-03//
+                    put("the-fridge-game/button" + aux + ".png",Texture.class); 
+                } 
                 put("the-fridge-game/shelf.png",Texture.class);  
                 put("the-fridge-game/cat.png",Texture.class);  
              //  put("super-micro-jogo/tiro.wav", Sound.class);                  
