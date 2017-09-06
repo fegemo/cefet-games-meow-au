@@ -23,7 +23,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class TicCatDog extends MiniGame
 {
-    private Texture backgroundTexture;
+    private Texture backgroundTexture; //Imagem de fundo ilustrativa
+    private Texture whiteSquareTexture; //Quadrado em branco para composição do jogo da velha
+    private Texture [][]ticTacToeSquares; //Quadrados que compõe o estado atual do jogo da velha
+    private Vector2 [][]positionSquares;
+    
+    private final float squareHeight = viewport.getWorldHeight()/5;
+    private final float squareWidth = viewport.getWorldWidth()/5;
 
     public TicCatDog(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty)
@@ -34,9 +40,37 @@ public class TicCatDog extends MiniGame
 
     @Override
     protected void onStart()
-    {
+    { 
         backgroundTexture = assets.get(
-                "tic-cat-dog/background.jpg", Texture.class);
+                "tic-cat-dog/main-background.jpg", Texture.class);
+        whiteSquareTexture = assets.get(
+                "tic-cat-dog/white-square.png", Texture.class);
+        
+        //Inicializa-se o jogo da velha do jogo com quadrados brancos
+        ticTacToeSquares = new Texture[3][3];
+        ticTacToeSquares[0][0] = whiteSquareTexture;
+        ticTacToeSquares[0][1] = whiteSquareTexture;
+        ticTacToeSquares[0][2] = whiteSquareTexture;
+        ticTacToeSquares[1][0] = whiteSquareTexture;
+        ticTacToeSquares[1][1] = whiteSquareTexture;
+        ticTacToeSquares[1][2] = whiteSquareTexture;
+        ticTacToeSquares[2][0] = whiteSquareTexture;
+        ticTacToeSquares[2][1] = whiteSquareTexture;
+        ticTacToeSquares[2][2] = whiteSquareTexture;
+        
+        //Inicializa-se a posição dos quadrados que compõe o jogo da velha
+        positionSquares = new Vector2[3][3];
+        positionSquares[0][0] = new Vector2(squareWidth, squareHeight);
+        positionSquares[0][1] = new Vector2(2*squareWidth, squareHeight);
+        positionSquares[0][2] = new Vector2(3*squareWidth, squareHeight);
+        
+        positionSquares[1][0] = new Vector2(squareWidth, 2*squareHeight);
+        positionSquares[1][1] = new Vector2(2*squareWidth, 2*squareHeight);
+        positionSquares[1][2] = new Vector2(3*squareWidth, 2*squareHeight);
+        
+        positionSquares[2][0] = new Vector2(squareWidth, 3*squareHeight);
+        positionSquares[2][1] = new Vector2(2*squareWidth, 3*squareHeight);
+        positionSquares[2][2] = new Vector2(3*squareWidth, 3*squareHeight);
     }
 
     private void scheduleEnemySpawn()
@@ -70,13 +104,23 @@ public class TicCatDog extends MiniGame
     @Override
     public String getInstructions()
     {
-        return "Jogue jogo da velha em 5 SEGUNDOS!";
+        return "Jogo da velha em CINCO SEGUNDOS!";
     }
 
     @Override
     public void onDrawGame()
     {        
         batch.draw(backgroundTexture, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        
+        batch.draw(ticTacToeSquares[0][0], positionSquares[0][0].x, positionSquares[0][0].y, squareWidth, squareHeight);
+        batch.draw(ticTacToeSquares[0][1], positionSquares[0][1].x, positionSquares[0][1].y, squareWidth, squareHeight);
+        batch.draw(ticTacToeSquares[0][2], positionSquares[0][2].x, positionSquares[0][2].y, squareWidth, squareHeight);
+        batch.draw(ticTacToeSquares[1][0], positionSquares[1][0].x, positionSquares[1][0].y, squareWidth, squareHeight);
+        batch.draw(ticTacToeSquares[1][1], positionSquares[1][1].x, positionSquares[1][1].y, squareWidth, squareHeight);
+        batch.draw(ticTacToeSquares[1][2], positionSquares[1][2].x, positionSquares[1][2].y, squareWidth, squareHeight);
+        batch.draw(ticTacToeSquares[2][0], positionSquares[2][0].x, positionSquares[2][0].y, squareWidth, squareHeight);
+        batch.draw(ticTacToeSquares[2][1], positionSquares[2][1].x, positionSquares[2][1].y, squareWidth, squareHeight);
+        batch.draw(ticTacToeSquares[2][2], positionSquares[2][2].x, positionSquares[2][2].y, squareWidth, squareHeight);
     }
 
     @Override
