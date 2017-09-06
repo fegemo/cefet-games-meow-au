@@ -22,9 +22,13 @@ public class HeadSoccer extends MiniGame {
     private Texture backgroundTexture;
     private Texture catTexture;
     private Texture ballTexture;
+    private Texture goalLeftTexture;
+    private Texture goalRightTexture;
     private Player cat;
     private Sprite background;
     private Sprite ball;
+    private Sprite goalLeft;
+    private Sprite goalRight;
 
     public HeadSoccer(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -35,12 +39,16 @@ public class HeadSoccer extends MiniGame {
     @Override
     protected void onStart() {
         backgroundTexture = assets.get("head-soccer/Arena.png", Texture.class);
-        catTexture = assets.get("head-soccer/cat.png");
-        ballTexture = assets.get("head-soccer/ball.png");
+        catTexture = assets.get("head-soccer/cat.png", Texture.class);
+        ballTexture = assets.get("head-soccer/ball.png", Texture.class);
+        goalLeftTexture = assets.get("head-soccer/goalLeft", Texture.class);
+        //goalRightTexture = assets.get("head-soccer/goalRight.png", Texture.class);
         background = new Sprite(backgroundTexture);
         ball = new Sprite(ballTexture);
         ball.setSize(100, 100);
         ball.setPosition(590, 81);
+        //goalLeft = new Sprite(goalLeftTexture);
+        //goalRight = new Sprite(goalRightTexture);
         cat = new Player(new Vector2(463.5f, 81f), new Vector2(30, 81), new Vector2(1235, 209), catTexture, batch, 3, 4, 100, 100);
         //scheduleEnemySpawn();
     }
@@ -132,6 +140,8 @@ public class HeadSoccer extends MiniGame {
         background.draw(batch);
         cat.draw();
         ball.draw(batch);
+        //goalLeft.draw(batch);
+        //goalRight.draw(batch);
     }
 
     @Override
