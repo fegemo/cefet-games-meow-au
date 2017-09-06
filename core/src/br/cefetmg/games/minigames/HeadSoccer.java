@@ -41,7 +41,7 @@ public class HeadSoccer extends MiniGame {
         backgroundTexture = assets.get("head-soccer/Arena.png", Texture.class);
         catTexture = assets.get("head-soccer/cat.png", Texture.class);
         ballTexture = assets.get("head-soccer/ball.png", Texture.class);
-        goalLeftTexture = assets.get("head-soccer/goalLeft", Texture.class);
+        //goalLeftTexture = assets.get("head-soccer/goalLeft", Texture.class);
         //goalRightTexture = assets.get("head-soccer/goalRight.png", Texture.class);
         background = new Sprite(backgroundTexture);
         ball = new Sprite(ballTexture);
