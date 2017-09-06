@@ -13,37 +13,34 @@ public class Player {
     public boolean walking, up, down, left, right;  
     private float  playerStep, playerWidth, playerHeight; 
     public Sprite sprite_Player;
-    public AnimatedSprite moving;
-    public Vector2 position, positionMin, positionMax;
+    public Vector2 position, positionMin, positionMax, speed;
     private Texture playerTexture;
     private SpriteBatch batch;
+    private float maxSpeed;
     
-    public Player(String spritesheet, Vector2 positionInicial, Vector2 positionMin, Vector2 positionMax, Texture playerTexture, SpriteBatch batch, float playerStep) {
-        
+    public Player(Vector2 positionInicial, Vector2 positionMin, Vector2 positionMax, Texture playerTexture, SpriteBatch batch, float playerStep, float maxSpeed, float sizeX, float sizeY) {
+        this.speed = new Vector2(0, 0);
         this.walking = false;
         this.positionMin = positionMin;
         this.positionMax = positionMax;
         this.batch = batch;
         this.playerStep = playerStep;
         this.playerTexture = playerTexture;
+        this.maxSpeed = maxSpeed;
         
-        this.playerWidth = playerTexture.getWidth();
-        this.playerHeight = playerTexture.getHeight();
+
         this.sprite_Player = new Sprite(playerTexture);
+        this.sprite_Player.setSize(sizeX, sizeY);
+        this.playerWidth = sprite_Player.getWidth();
+        this.playerHeight = sprite_Player.getHeight();
         
         this.position = positionInicial;
-        this.moving = new AnimatedSprite(spritesheet,Integer.parseInt(Float.toString(positionInicial.x)),Integer.parseInt(Float.toString(positionInicial.y)));
         
-        sprite_Player.setPosition(Integer.parseInt(Float.toString(positionInicial.x)),Integer.parseInt(Float.toString(positionInicial.y)));
-        
-        moving.createMoviment(NORTH, HORIZONTAL, 5, 0.1f, 2, 0);
-        moving.createMoviment(SOUTH, HORIZONTAL, 5, 0.1f, 0, 0);
-        moving.createMoviment(EAST, HORIZONTAL, 5, 0.1f, 1, 0);
-        moving.createMoviment(WEST, HORIZONTAL, 5, 0.1f, 3, 0);
+        sprite_Player.setPosition(positionInicial.x, positionInicial.y);
     }
     
     public void updateMoviment(){
-        float x = sprite_Player.getX(), y = sprite_Player.getY();
+         float x = sprite_Player.getX(), y = sprite_Player.getY();
         
         walking  = false;
         up= false;
@@ -52,55 +49,69 @@ public class Player {
         right= false;
         
         if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
-            if(x - playerStep > 0){
-                x-=1;
+            if(speed.x > -1*maxSpeed){
+                speed.x-=1;
+            }    
+        }
+        else if (Gdx.input.isKeyPressed(Keys.RIGHT ) || Gdx.input.isKeyPressed(Keys.D)) {
+            if(speed.x < maxSpeed){
+                speed.x+=1;
+            }
+        }
+        else{
+            speed.x = 0;
+        }  
+        
+        if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
+            if(speed.y < maxSpeed){  
+                speed.y+=1;
+            }
+        }
+        else if (Gdx.input.isKeyPressed(Keys.DOWN) || Gdx.input.isKeyPressed(Keys.S)) {
+            if(speed.y > -1*maxSpeed){
+                speed.y-=1;
+            }
+        }
+        else {
+            speed.y = 0;
+        }
+        
+        float playerStepx = playerStep*(speed.x/maxSpeed);
+        float playerStepy = playerStep*(speed.y/maxSpeed);
+        
+        if (speed.x < 0) {
+            if(x + playerStepx > positionMin.x){
+                x+= playerStepx;
             }    
             walking = true;
             left = true;
         }
-        else if (Gdx.input.isKeyPressed(Keys.RIGHT ) || Gdx.input.isKeyPressed(Keys.D)) {
-            if(x + playerStep < positionMax.x - playerWidth){
-                x+=1;
+        else if (speed.x > 0) {
+            if(x + playerStepx < positionMax.x - playerWidth){
+                x+=playerStepx;
             }
             walking = true;
             right = true;
         }
-        else if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
-            if(y + playerStep < positionMax.y - playerHeight){  
-                y+=1;
+        else if (speed.y > 0) {
+            if(y + playerStepy < positionMax.y - playerHeight){  
+                y+=playerStepy;
             }
             walking = true;
             up = true;
         }
-        else if (Gdx.input.isKeyPressed(Keys.DOWN) || Gdx.input.isKeyPressed(Keys.S)) {
-            if(y - playerStep > 0){
-                y-=1;
+        else if (speed.y < 0) {
+            if(y + playerStepy > positionMin.y){
+                y+=playerStepy;
             }
             walking = true;
             down = true;
         }
-        
         sprite_Player.setPosition(x, y);
     }
     
-    public void updateTimeAnimation(){
-        moving.timeAnimation +=  Gdx.graphics.getDeltaTime();
-    }
      
     public void draw(){
-        if(walking){
-            if(up)
-                batch.draw((TextureRegion)moving.moviments[NORTH].getKeyFrame(moving.timeAnimation), sprite_Player.getX(), sprite_Player.getY());
-            else if(down)
-                batch.draw((TextureRegion)moving.moviments[SOUTH].getKeyFrame(moving.timeAnimation), sprite_Player.getX(), sprite_Player.getY());
-            else if(left)
-                batch.draw((TextureRegion)moving.moviments[WEST].getKeyFrame(moving.timeAnimation), sprite_Player.getX(), sprite_Player.getY());
-            else if(right)
-                batch.draw((TextureRegion)moving.moviments[EAST].getKeyFrame(moving.timeAnimation), sprite_Player.getX(), sprite_Player.getY());
-
-        }
-        else{
-            sprite_Player.draw(batch);
-        }
+        sprite_Player.draw(batch);
     }
 }

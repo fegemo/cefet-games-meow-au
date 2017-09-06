@@ -1,5 +1,6 @@
 package br.cefetmg.games.minigames;
 
+import br.cefetmg.games.Player;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -20,7 +21,7 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 public class HeadSoccer extends MiniGame {
     private Texture backgroundTexture;
     private Texture catTexture;
-    private Sprite cat;
+    private Player cat;
     private Sprite background;
 
     public HeadSoccer(BaseScreen screen,
@@ -34,8 +35,7 @@ public class HeadSoccer extends MiniGame {
         backgroundTexture = assets.get("head-soccer/Arena.png", Texture.class);
         catTexture = assets.get("head-soccer/cat.png");
         background = new Sprite(backgroundTexture);
-        cat = new Sprite(catTexture);
-        cat.setSize(100, 100);
+        cat = new Player(new Vector2(463.5f, 81f), new Vector2(30, 81), new Vector2(1235, 209), catTexture, batch, 3, 4, 100, 100);
         //scheduleEnemySpawn();
     }
 
@@ -113,6 +113,7 @@ public class HeadSoccer extends MiniGame {
             }
         }
         */
+        cat.updateMoviment();
     }
 
     @Override
@@ -123,7 +124,7 @@ public class HeadSoccer extends MiniGame {
     @Override
     public void onDrawGame() {
         background.draw(batch);
-        cat.draw(batch);
+        cat.draw();
     }
 
     @Override
