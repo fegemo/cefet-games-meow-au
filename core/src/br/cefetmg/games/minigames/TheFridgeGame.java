@@ -32,7 +32,7 @@ public class TheFridgeGame extends MiniGame {
     private int[] emptySpaces;
     private final Vector2 initialFridgePosition = new Vector2(750,100), finalFridgePosition = new Vector2(600,20);
     private final int initialFridgeHeight=550,  initialFridgeWidth=500;       
-    private boolean started, jump, falling;
+    private boolean started, jump, falling, ending;
      
     public enum CHOICE {RIGHT,LEFT,JUMP};
     
@@ -72,7 +72,7 @@ public class TheFridgeGame extends MiniGame {
         }        
          
         public void clicked(Vector2 click){
-            if(show && currentChoice==null){
+            if(show && currentChoice==null && jump==false && falling==false){
                 if( (click.x>=this.position.x && click.x<=(this.position.x+this.width)) && (click.y>=this.position.y && click.y<=(this.position.y+this.height)) ){
                     if(this.choice==CHOICE.JUMP){  
                         System.out.println("Button JUMP clicked!");
@@ -132,19 +132,31 @@ public class TheFridgeGame extends MiniGame {
         }          
     }
     
-    public void fallingAnimation(){
+    public void endingAnimation(){
         
+    }
+    
+    public void fallingAnimation(){
+        if(cat.jumping.getY()>0){
+             cat.jumping.setY(cat.jumping.getY()-3);     
+        }
+        challengeFailed();
     }
         
     public void jumpAnimation(){   
         if(currentChoice==null){
-            if(cat.jumping.getY()<shelfs[cat.nextShelf].position.y){
-                cat.jumping.setY(cat.jumping.getY()+1);                      
+            if(cat.nextShelf==(shelfAmount-1)){
+                challengeSolved();
                 
             }
-            else{
-                jump=false;
+            else if(cat.jumping.getY()<shelfs[cat.nextShelf].position.y){
+                cat.jumping.setY(cat.jumping.getY()+1);
+            }
+            else{                
                 cat.nextShelf++;
+                cat.walking.setX(cat.jumping.getX());
+                cat.walking.setY(cat.jumping.getY());
+                jump=false;               
             }            
         }
         else if(currentChoice==CHOICE.RIGHT){
@@ -158,6 +170,7 @@ public class TheFridgeGame extends MiniGame {
             currentChoice = null;
             cat.jumping.play();
             cat.nextEmptySpace--;
+            cat.jumping.setTime(0);
         }
         else{
             if(currentChoice==CHOICE.JUMP){
@@ -177,7 +190,7 @@ public class TheFridgeGame extends MiniGame {
             cat.currentAnimation=cat.jumping;
             cat.jumping.setPosition(cat.walking.getX(),cat.walking.getY());
             cat.jumping.setSize(food[0][0].width+50,food[0][0].height+50);
-            
+            cat.jumping.setTime(0);
         }
         
     }
@@ -189,8 +202,8 @@ public class TheFridgeGame extends MiniGame {
             fridge.width+=2;  
             fridgeLimitsXMin = Math.round((120*fridge.width)/initialFridgeWidth); 
             fridgeLimitsXMax = Math.round((360*fridge.width)/initialFridgeWidth);           
-            background.position.x--;
-            background.width++;
+            background.position.x-=2;
+            background.width+=2;
             flag = true;
         }
         else flag = false; 
@@ -339,6 +352,12 @@ public class TheFridgeGame extends MiniGame {
         }
         else if(jump){
             jumpAnimation();
+        }
+        else if(falling){
+            fallingAnimation();
+        }
+        else if(ending){
+            
         }
         background.Draw();
         fridge.Draw();
