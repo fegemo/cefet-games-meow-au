@@ -21,8 +21,10 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 public class HeadSoccer extends MiniGame {
     private Texture backgroundTexture;
     private Texture catTexture;
+    private Texture ballTexture;
     private Player cat;
     private Sprite background;
+    private Sprite ball;
 
     public HeadSoccer(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -34,7 +36,11 @@ public class HeadSoccer extends MiniGame {
     protected void onStart() {
         backgroundTexture = assets.get("head-soccer/Arena.png", Texture.class);
         catTexture = assets.get("head-soccer/cat.png");
+        ballTexture = assets.get("head-soccer/ball.png");
         background = new Sprite(backgroundTexture);
+        ball = new Sprite(ballTexture);
+        ball.setSize(100, 100);
+        ball.setPosition(590, 81);
         cat = new Player(new Vector2(463.5f, 81f), new Vector2(30, 81), new Vector2(1235, 209), catTexture, batch, 3, 4, 100, 100);
         //scheduleEnemySpawn();
     }
@@ -125,6 +131,7 @@ public class HeadSoccer extends MiniGame {
     public void onDrawGame() {
         background.draw(batch);
         cat.draw();
+        ball.draw(batch);
     }
 
     @Override

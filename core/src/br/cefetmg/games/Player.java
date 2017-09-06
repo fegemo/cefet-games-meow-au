@@ -108,6 +108,7 @@ public class Player {
             down = true;
         }
         sprite_Player.setPosition(x, y);
+        System.out.println("x: "+sprite_Player.getX()+"y: "+sprite_Player.getY());
     }
     
      
