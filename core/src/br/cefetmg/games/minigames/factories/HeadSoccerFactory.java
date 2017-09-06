@@ -41,10 +41,8 @@ public class HeadSoccerFactory implements MiniGameFactory {
                 put("head-soccer/Arena.png", Texture.class);
                 put("head-soccer/cat.png", Texture.class);
                 put("head-soccer/ball.png", Texture.class);
-                put("shoot-the-caries/caries.png", Texture.class);
-                put("shoot-the-caries/target.png", Texture.class);
-                put("shoot-the-caries/caries1.mp3", Sound.class);
-                put("shoot-the-caries/caries2.mp3", Sound.class);
+                put("head-soccer/goalLeft.png", Texture.class);
+                put("head-soccer/goalRight.png", Texture.class);
             }
         };
     }
