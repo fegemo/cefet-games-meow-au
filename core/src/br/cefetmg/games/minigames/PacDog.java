@@ -65,7 +65,7 @@ public class PacDog extends MiniGame
         
         //Define-se a matriz de quadros da sprite do cachorro
         animationFramesDogTexture = TextureRegion.split(dogTexture, frameWidthDogTexture, frameHeightDogTexture);
-        
+    
         //Define-se as animações dos quatro tipo de movimentos possíveis do personagem
         mainCharacterAnimation = new Animation[5];
         mainCharacterAnimation[MOVE_UP] = new Animation(0.1f,

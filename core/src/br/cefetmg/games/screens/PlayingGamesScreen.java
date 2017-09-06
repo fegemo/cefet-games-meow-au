@@ -41,7 +41,7 @@ public class PlayingGamesScreen extends BaseScreen
                 Arrays.asList(
 //                        new ShootTheCariesFactory(),
 //                        new ShooTheTartarusFactory(),
-                        new PacDogFactory()
+                        new TicCatDogFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);
