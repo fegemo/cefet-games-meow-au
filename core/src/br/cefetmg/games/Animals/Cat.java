@@ -17,15 +17,19 @@ import com.badlogic.gdx.utils.Array;
  * @author Pedro
  */
 public class Cat extends Animal {
-    
+    private final int POSICAO_INICIAL_GATO_X = 9;
+    private final int POSICAO_INICIAL_GATO_Y = 9;
     // Precisa de armazenar a sprite para animacao
     
     private final int BeScaredThereshold;
+    private int quantidade_vidas;
+    private boolean morto;
 
 
     public Cat(int BeScaredThereshold, Vector2 Pos, TextureRegion CatTexture) {
         super(Pos, CatTexture);
         this.BeScaredThereshold = BeScaredThereshold;
+        this.quantidade_vidas = 1;
     }
     
     public int GetWidth () {
@@ -36,6 +40,27 @@ public class Cat extends Animal {
         return FRAME_HEIGHT;
     }
     
+    public int get_quantidade_vidas(){
+        return this.quantidade_vidas;
+    }
+    
+    public void morreu(){
+        this.quantidade_vidas--;
+        this.morto=true;
+        moviment(new Vector2(POSICAO_INICIAL_GATO_X,POSICAO_INICIAL_GATO_Y));
+    }
+    
+    public boolean vivoMorto(){
+        return this.morto;
+    }
+    
+    public void spawn(){
+        this.morto=false;
+    }
+    
+    public void settarQuantidade_vidas(float variavelControleDificuldade){
+        this.quantidade_vidas = (int) (variavelControleDificuldade*10);
+    }
 //    public void update(float dt) {
 //        super.update(dt);
 //    }

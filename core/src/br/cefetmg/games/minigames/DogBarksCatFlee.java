@@ -30,7 +30,8 @@ public class DogBarksCatFlee extends MiniGame {
     private Dog player;
     private Texture DogTexture;
     private Texture CatTexture;
-    private Array<Cat> enemies;
+    //private Array<Cat> enemies;
+    private Cat enemy;
     private Array<Tiles> tilesVector; // Tem que criar 1 tipo tile que tem Vector2 e um int para representar qual é o 
     private Vector2 PosicaoInicial;
     private Texture tileTexture[] = new Texture[5];
@@ -64,7 +65,10 @@ public class DogBarksCatFlee extends MiniGame {
         batch.draw (player.getTexture(),player.getPos().x,player.getPos().y);
     }
     
-
+    private void CatDraw(){
+        if(enemy.vivoMorto())
+            batch.draw(enemy.getTexture(),enemy.getPos().x,enemy.getPos().x);
+    }
     
     @Override
     protected void onStart() {
@@ -72,8 +76,8 @@ public class DogBarksCatFlee extends MiniGame {
         
         DogTexture = assets.get("DogBarksCatFlee/dog_separado_1.png", Texture.class);
         
-        CatTexture = assets.get("DogBarksCatFlee/dog_separado_1.png", Texture.class);
-        enemies = new Array<Cat>();
+        CatTexture = assets.get("DogBarksCatFlee/kitten1-alt.png", Texture.class);
+        //enemies = new Array<Cat>();
         //DogAnimation = assets.get(null);
 //        //<editor-fold defaultstate="collapsed" desc="texturas tile">
         tileTexture[0] = assets.get("DogBarksCatFlee/tile0.png", Texture.class);
@@ -89,25 +93,39 @@ public class DogBarksCatFlee extends MiniGame {
             tilesVector.add(new Tiles(new Vector2(1 + i * tileTexture[0].getWidth(), 41)));
         }
         inicializeDog();
-        timer.scheduleTask(new Task() {
-            @Override
-            public void run() {
-                spawnEnemy();
-            }
-        }, 0, this.spawnInterval);    
+        inicializeCat();
+//        timer.scheduleTask(new Task() {
+//            @Override
+//            public void run() {
+//                spawnEnemy();
+//            }
+//        }, 0, this.spawnInterval);    
     }
     
-    private void spawnEnemy () {
-
-//        Vector2 CatPosition = new Vector2(viewport.getWorldWidth(), viewport.getWorldHeight());
-//        Cat enemy = new Cat(ScareThereshold(), CatPosition, CatTexture);
-//        enemies.add(enemy);
-
+    private void UpdateEnemy(){
+        if( enemy.FleeAction( player.getBarkCounter() ))
+            enemy.morreu();
+        if(enemy.vivoMorto()  && (enemy.get_quantidade_vidas() > 0))
+            enemy.spawn();//spawnEnemy();
+        
     }
+
+//    private void spawnEnemy () {
+//          enemy.spawn();
+//          Vector2 CatPosition = new Vector2(viewport.getWorldWidth(), viewport.getWorldHeight());
+//          Cat enemy = new Cat(ScareThereshold(), CatPosition, CatTexture);
+//          enemies.add(enemy);
+//    }
+    
     private void inicializeDog(){
         TextureRegion[][] Dog = TextureRegion.split(DogTexture, DogTexture.getWidth(), DogTexture.getHeight());
         PosicaoInicial = new Vector2 (1,41);
         player = new Dog (3, PosicaoInicial, Dog[0][0]);
+    }
+    
+    private void inicializeCat(){
+        TextureRegion[][] Cat = TextureRegion.split(CatTexture, CatTexture.getWidth(), CatTexture.getHeight());
+        enemy = new Cat( (int) (ScareThereshold() * DifficultyCurve.S.getCurveValue(spawnInterval)),enemy.PosIniCat(),Cat[0][0] );
     }
     
     private int ScareThereshold (){
@@ -116,12 +134,14 @@ public class DogBarksCatFlee extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        this.minimumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 120, 220);
-        this.maximumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 240, 340);
-        this.spawnInterval = DifficultyCurve.LINEAR_NEGATIVE
-                .getCurveValueBetween(difficulty, 0.25f, 1.5f);
+//        this.minimumEnemySpeed = DifficultyCurve.LINEAR;
+//                .getCurveValueBetween(difficulty, 120, 220);
+//        this.maximumEnemySpeed = DifficultyCurve.LINEAR
+//                .getCurveValueBetween(difficulty, 240, 340);
+//        this.spawnInterval = DifficultyCurve.LINEAR_NEGATIVE
+//                .getCurveValueBetween(difficulty, 0.25f, 1.5f);
+        spawnInterval = difficulty;
+        enemy.settarQuantidade_vidas( DifficultyCurve.S.getCurveValue(difficulty) );
   }
 
     @Override
@@ -135,6 +155,7 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     public void onUpdate(float dt) {
         UpdateDraw(dt);
+        UpdateEnemy();
         // player.update(dt);
     }
 
@@ -143,6 +164,7 @@ public class DogBarksCatFlee extends MiniGame {
     public void onDrawGame() {
         TilesDraw();
         PlayerDraw();
+        CatDraw();
     }
 
     @Override

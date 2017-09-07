@@ -31,8 +31,7 @@ public class Animal extends Sprite {
         return Pos;
     }
     
-    
-    private void moviment (Vector2 NovaPosicao) {
+    public void moviment (Vector2 NovaPosicao) {
         this.Pos = NovaPosicao;
     }
 }
