@@ -32,7 +32,7 @@ public class CucumberMadness extends MiniGame {
     private Array<Veggie> veggies;
     private Array<Texture> veggieTextures;
     private Sound backgroundMusic;
-    private float spawnInterval = 1;
+    private float spawnInterval = 0.2f;
 
     public CucumberMadness(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -77,11 +77,33 @@ public class CucumberMadness extends MiniGame {
 
     private void spawnVeggies() {
         int index = MathUtils.random(0, veggieTextures.size - 1);
-        Veggie veggie = new Veggie(veggieTextures.get(index), new Vector2(0, 300));
-//        homework.setScale(3);
-        veggie.setPosition(
-                MathUtils.random(0, viewport.getWorldWidth()), 
-                MathUtils.random(0, viewport.getWorldHeight()));
+
+        Vector2 direction;
+        Vector2 position = new Vector2();
+        do {
+           direction = new Vector2(MathUtils.random(-1, 1) * 500, MathUtils.random(-1, 1) * 500);
+        } while (direction.x == 0f && direction.y == 0f);
+
+        Veggie veggie = new Veggie(veggieTextures.get(index), direction);
+
+        boolean appearFromSides = MathUtils.randomBoolean();
+        if (appearFromSides) {
+            position.x = MathUtils.randomBoolean()
+                    ? -veggie.FRAME_WIDTH
+                    : viewport.getWorldWidth();
+            position.y = MathUtils.random(
+                    -veggie.FRAME_HEIGHT,
+                    viewport.getWorldHeight());
+        } else {
+            position.y = MathUtils.randomBoolean()
+                    ? -veggie.FRAME_HEIGHT
+                    : viewport.getWorldHeight();
+            position.x = MathUtils.random(
+                    -veggie.FRAME_WIDTH,
+                    viewport.getWorldWidth());
+        }
+        
+        veggie.setPosition(position.x, position.y);
         veggies.add(veggie);
 
     }
@@ -95,20 +117,17 @@ public class CucumberMadness extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
-//        for (Homework homework : homeworks) {
-//            homework.update(dt);
-//        }
-//
-//        for (Homework homework : homeworks) {
-////            Colisão com o gato
-//            if (homework.getBoundingRectangle()
-//                    .overlaps(cat.getBoundingRectangle())) {
-//                homeworks.removeValue(homework, true);
-////                Colisão com o chão
-//            } else if (homework.getY() < 0) {
-//                super.challengeFailed();
-//            }
-//        }
+        for (Veggie veggie : veggies) {
+            veggie.update(dt);
+        }
+
+        for (Veggie veggie : veggies) {
+//            Colisão veggie x cat
+            if (veggie.getBoundingRectangle()
+                    .overlaps(cat.getBoundingRectangle())) {
+                super.challengeFailed();
+            }
+        }
     }
 
     @Override
@@ -152,7 +171,7 @@ public class CucumberMadness extends MiniGame {
         public Veggie(Texture texture, Vector2 speed) {
             super(texture);
             this.speed = speed;
-
+            
 //            carrot
             if (texture == veggieTextures.get(0)) {
                 FRAME_WIDTH = 34;
@@ -173,7 +192,7 @@ public class CucumberMadness extends MiniGame {
         }
 
         public void update(float dt) {
-            this.setPosition(this.getX(),
+            this.setPosition(this.getX() - this.speed.x * dt,
                     this.getY() - this.speed.y * dt);
         }
 
