@@ -170,28 +170,22 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     public void onHandlePlayingInput() {
         if (Gdx.input.justTouched()){
-<<<<<<< HEAD
+
             player.InvertLatindo();
             System.out.println("Click");
         } else 
             player.InvertLatindo();
-=======
             player.Bark();
             System.out.println( player.getBarkCounter() + " " + enemy.GetScareTheresold());
         }
->>>>>>> b14db5eee75edc9d3e91347e95a4fe1538a2125b
-        
-    }
 
     @Override
     public void onUpdate(float dt) {
         TempoDeAnimacao = dt;
         UpdateDraw(dt);
         UpdateEnemy();
-        // player.update(dt);
     }
 
-    
     @Override
     public void onDrawGame() {
         TilesDraw();
@@ -208,5 +202,5 @@ public class DogBarksCatFlee extends MiniGame {
     public boolean shouldHideMousePointer() {
         return false;
     }
-    
+        
 }
