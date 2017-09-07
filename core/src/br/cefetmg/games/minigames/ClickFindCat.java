@@ -43,7 +43,7 @@ public class ClickFindCat extends MiniGame {
         GatosNaTela = new Array<Sprite>();
         HipotenuzaDaTela =(float)  Math.sqrt(viewport.getScreenWidth() * viewport.getScreenWidth()
                 + viewport.getScreenHeight() * viewport.getScreenHeight());
-        initialCatScale = 0.1f;
+        initialCatScale = .1f;
         CatTexture = assets.get("DogBarksCatFlee/gatinho-grande.png", Texture.class);
         
         MiraTexture = assets.get("DogBarksCatFlee/Dog_separado_1.png", Texture.class);
@@ -54,7 +54,7 @@ public class ClickFindCat extends MiniGame {
             public void run () {
                 spawnEnemies();
             }
-        },0, 100);
+        },0, 2);
         
     }
 
@@ -83,11 +83,13 @@ public class ClickFindCat extends MiniGame {
         viewport.unproject(click);
         this.MiraSprite.setPosition(click.x - this.MiraSprite.getWidth() / 2, click.y - this.MiraSprite.getHeight()/ 2);
         if (Gdx.input.justTouched()) {
+            System.out.println(GatosNaTela.first().getBoundingRectangle());
             if (GatosNaTela.first().getBoundingRectangle().overlaps(MiraSprite.getBoundingRectangle())){
                 super.challengeSolved();
             } else {
+
                 float distancia = click.dst(GatosNaTela.first().getX(), GatosNaTela.first().getY());
-                float intensidade = 1 - distancia/HipotenuzaDaTela;
+                float intensidade = distancia;
                 MeawSound.play(intensidade);
               
             }
@@ -105,7 +107,10 @@ public class ClickFindCat extends MiniGame {
     public void onDrawGame() {
         MiraSprite.draw(batch);
         for (Sprite s : GatosNaTela){
-            s.draw(batch);
+            if (s != GatosNaTela.first()){
+                s.setScale(0.5f);
+                s.draw(batch);
+            }
         }
     }
 
