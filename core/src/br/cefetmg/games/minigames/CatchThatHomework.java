@@ -86,12 +86,19 @@ public class CatchThatHomework extends MiniGame {
         for (Homework homework : homeworks) {
             homework.update(dt);
         }
+        
+        for (Homework homework : homeworks) {
+            if (homework.getBoundingRectangle()
+                    .overlaps(cat.getBoundingRectangle())) {
+                homeworks.removeValue(homework, true);
+            }
+        }
     }
 
     @Override
     public void onDrawGame() {
         this.cat.draw(batch);
-        
+
         for (Homework homework : homeworks) {
             homework.draw(batch);
         }
