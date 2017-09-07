@@ -36,6 +36,7 @@ public class DogBarksCatFlee extends MiniGame {
     private Animation<TextureRegion> DogWalking;
     private Animation<TextureRegion> DogBarking;
     private Sound BarkSound;
+    private Sound MeawSound;
     private Texture CatTexture;
     //private Array<Cat> enemies;
     private Cat enemy;
@@ -117,6 +118,7 @@ public class DogBarksCatFlee extends MiniGame {
         DogBarking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         DogWalking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         CatTexture = assets.get("DogBarksCatFlee/kitten1-alt.png", Texture.class);
+        MeawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
         //enemies = new Array<Cat>();
         //DogAnimation = assets.get(null);
 //        //<editor-fold defaultstate="collapsed" desc="texturas tile">
@@ -138,6 +140,7 @@ public class DogBarksCatFlee extends MiniGame {
     
     private void UpdateEnemy(){
         if( enemy.FleeAction( player.getBarkCounter())){
+            MeawSound.play();
             enemy.morreu();
             player.BarkZero();
             super.challengeSolved();
