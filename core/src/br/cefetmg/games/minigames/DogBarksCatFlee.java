@@ -66,12 +66,12 @@ public class DogBarksCatFlee extends MiniGame {
     }
     
     private void PlayerDraw(float dt) {
-        if (!player.isLatindo()) {
-            batch.draw (player.getTexture(),player.getPos().x,player.getPos().y);
-        } else {
+        if (player.isLatindo()) {
             batch.draw (player.Anima(dt), player.getPos().x, player.getPos().y);
-        }
-        
+        } else {
+            batch.draw (player.getTexture(),player.getPos().x,player.getPos().y);
+            // player.InvertLatindo();
+        }    
     }
     
     private void CatDraw(){
@@ -182,7 +182,7 @@ public class DogBarksCatFlee extends MiniGame {
     public void onUpdate(float dt) {
         if(player.isLatindo()){
             latindo_Counter++;
-            if(latindo_Counter == 1000 ){
+            if(latindo_Counter == 80 ){
                  latindo_Counter=0; 
                  player.InvertLatindo();
             }

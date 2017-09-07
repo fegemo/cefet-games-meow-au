@@ -64,6 +64,7 @@ public class Dog extends Animal{
     
     public void Bark (){
         barkCounter ++;
+        latindo = true;
     }
     public void BarkZero(){
         barkCounter = 0;
