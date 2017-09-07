@@ -26,7 +26,7 @@ public class DogBarksCatFleeFactory implements MiniGameFactory {
              put("DogBarksCatFlee/dog_separado_2.png", Texture.class);
              put("DogBarksCatFlee/dog_separado_3.png", Texture.class);
              put("DogBarksCatFlee/dog_separado_4.png", Texture.class); 
-             put("DogBarksCatFlee/dog1.png", Texture.class);
+             put("dog_spritesheet.png", Texture.class);
              put("DogBarksCatFlee/kitten1-alt.png", Texture.class);  
              put("DogBarksCatFlee/tile0.png", Texture.class);
              put("DogBarksCatFlee/tile1.png", Texture.class);

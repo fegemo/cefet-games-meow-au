@@ -83,8 +83,8 @@ public class DogBarksCatFlee extends MiniGame {
     protected void onStart() {
         TempoDeAnimacao = 0;
         DogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_1.png", Texture.class);
-        DogTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);
-        TextureRegion[][] quadrosDeAnimacao = TextureRegion.split(DogTexture, 32, 32);
+        DogTexture = assets.get("DogBarksCatFlee/dog_spritesheet.png", Texture.class);
+        TextureRegion[][] quadrosDeAnimacao = TextureRegion.split(DogTexture, 128,128);
         System.out.println(+ quadrosDeAnimacao.length);
         DogBarking = new Animation <TextureRegion>(0.1f,
                     quadrosDeAnimacao[0][0],
