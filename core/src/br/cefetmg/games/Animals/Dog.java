@@ -17,13 +17,15 @@ public class Dog extends Animal{
     private int barkCounter;
     private boolean latindo;
     private final Animation<TextureRegion> animacao;
+    private final Animation<TextureRegion> animacao2;
     private int lives;
     
 
-    public Dog(int lives, Vector2 Pos, TextureRegion DogTexture, Animation<TextureRegion> animacao) {
+    public Dog(int lives, Vector2 Pos, TextureRegion DogTexture, Animation<TextureRegion> animacao , Animation<TextureRegion> animacao2 ) {
         
         super(Pos, DogTexture);
         this.animacao = animacao;
+        this.animacao2 = animacao2;
         this.lives = lives;
         barkCounter = 0;
         this.lives = lives;
@@ -38,7 +40,12 @@ public class Dog extends Animal{
     public TextureRegion Anima (float dt) {
         return ((TextureRegion)animacao.getKeyFrame(dt));
     }
-
+    
+    public TextureRegion Anima2 (float dt) {
+        return ((TextureRegion)animacao2.getKeyFrame(dt));
+    }
+    
+    
     public int getFrameWidth () {
         return FRAME_WIDTH;
     }

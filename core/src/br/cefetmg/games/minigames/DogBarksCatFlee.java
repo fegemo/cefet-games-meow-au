@@ -75,7 +75,7 @@ public class DogBarksCatFlee extends MiniGame {
     }
     
     private void PlayerDraw(float dt) {
-        if(enemy.getPos().x - player.getPos().x >= 2*(player.getFrameWidth() + enemy.GetWidth() )){
+        if( enemy.getPos().x - player.getPos().x >= 2*(player.getFrameWidth() + enemy.GetWidth() )){
             batch.draw (player.Anima2(dt), player.getPos().x, player.getPos().y);
         }
         else if (player.isLatindo()) {
