@@ -91,7 +91,7 @@ public class DogBarksCatFlee extends MiniGame {
                     quadrosDeAnimacao[0][1],
                     quadrosDeAnimacao[0][2],
                     quadrosDeAnimacao[0][3]);
-        DogBarking.setPlayMode(Animation.PlayMode.NORMAL);
+        DogBarking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         
         CatTexture = assets.get("DogBarksCatFlee/kitten1-alt.png", Texture.class);
         //enemies = new Array<Cat>();
