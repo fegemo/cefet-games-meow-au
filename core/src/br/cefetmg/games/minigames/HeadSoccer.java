@@ -1,5 +1,7 @@
 package br.cefetmg.games.minigames;
 
+import br.cefetmg.games.Bot;
+import static br.cefetmg.games.Config.*;
 import br.cefetmg.games.Player;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
@@ -13,36 +15,52 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Circle;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
  * @author Flávio Coutinho - fegemo <coutinho@decom.cefetmg.br>
  */
-
 public class HeadSoccer extends MiniGame {
+
     private Texture backgroundTexture;
     private Texture catTexture;
     private Texture goalLeftTexture;
     private Texture goalRightTexture;
     private Player cat;
+    private Ball ball;
+    private Bot bot;
+    private Player tmpCat;
+    private Ball tmpBall;
+    private Bot tmpBot;
     private Sprite background;
     private Sprite goalLeft;
     private Sprite goalRight;
-    private float gravity;
     private ArrayList objects;
 
-    
     public class Ball {
+
         private Texture ballTexture;
         private Sprite ball;
+        private Circle circle;
+        private Vector2 speed;
+        private SpriteBatch batch;
+        private float mass;
         
-        public Ball() {
+        public Ball(SpriteBatch batch) {
+            this.batch = batch;
+            
             ballTexture = assets.get("head-soccer/ball.png", Texture.class);
-            backgroundTexture = assets.get("head-soccer/Arena.png", Texture.class);
             ball = new Sprite(ballTexture);
-            ball.setSize(100, 100);
-            ball.setPosition(590, 81);
+            ball.setSize(60, 60);
+            ball.setPosition(590, FLOOR);
+            
+            circle = new Circle(620, 111, 30);
+            speed = new Vector2(0, 0);
+            mass = 1;
         }
 
         public Vector2 getPositionBall() {
@@ -51,12 +69,28 @@ public class HeadSoccer extends MiniGame {
         }
 
         public void setPositionBall(float x, float y) {
-           ball.setPosition(x, y);
+            ball.setPosition(x, y);
+            circle.setPosition(x + circle.radius, y + circle.radius);
         }
         
+        public Vector2 getSpeed() {
+            return speed;
+        }
+
+        public void setSpeed(Vector2 speed) {
+            this.speed = speed;
+        }
         
+        public void actionGravity(float value) {
+            speed.set(speed.x, speed.y - value);
+        }
+        
+        public void draw(){
+            ball.draw(batch);
+        }
+
     }
-    
+
     public HeadSoccer(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f,
@@ -65,28 +99,32 @@ public class HeadSoccer extends MiniGame {
 
     @Override
     protected void onStart() {
-        objects = new ArrayList();
-        catTexture = assets.get("head-soccer/cat.png", Texture.class);
-        Ball ball = new Ball();
+        
+        backgroundTexture = assets.get("head-soccer/Arena.png", Texture.class);
         goalLeftTexture = assets.get("head-soccer/goalLeft.png", Texture.class);
         goalRightTexture = assets.get("head-soccer/goalRight.png", Texture.class);
-        background = new Sprite(backgroundTexture);
-        
+        catTexture = assets.get("head-soccer/cat.png", Texture.class);
         
         goalLeft = new Sprite(goalLeftTexture);
-        goalLeft.setPosition(-45, 75);
         goalRight = new Sprite(goalRightTexture);
-        goalRight.setPosition(1135, 75);
-        cat = new Player(new Vector2(463.5f, 81f), new Vector2(30, 81), new Vector2(1235, 209), catTexture, batch, 3, 4, 100, 100);
+        background = new Sprite(backgroundTexture);
+        
+        goalLeft.setPosition(INITIALXLEFTGOAL, INITIALYGOAL);
+        goalRight.setPosition(INITIALXRIGHTGOAL, INITIALYGOAL);
+
+        objects = new ArrayList();
+        ball = new Ball(batch);
+        cat = new Player(new Vector2(463.5f, FLOOR), new Vector2(30, FLOOR), new Vector2(1245, 209),
+                catTexture, batch, 3, 4, 100, 100,10);
+        
         objects.add(cat);
-        gravity = 4;
+        objects.add(ball);
     }
-    
+
     @Override
     protected void configureDifficultyParameters(float difficulty) {
 
     }
-    
 
     @Override
     public void onHandlePlayingInput() {
@@ -123,11 +161,24 @@ public class HeadSoccer extends MiniGame {
                 }
             }
         }
-        */
+         */
     }
 
     @Override
     public void onUpdate(float dt) {
+        for (Object o : objects) {
+            if (o instanceof Ball) {
+                tmpBall = (Ball) o;
+                tmpBall.actionGravity(dt * GRAVITY);
+            } else if (o instanceof Player) {
+                tmpCat = (Player) o;
+                tmpCat.actionGravity(dt * GRAVITY);
+            } else if (o instanceof Bot) {
+                tmpBot = (Bot) o;
+            }
+
+        }
+
         //Gdx.graphics.getDeltaTime()
         /*
         // vai diminuindo o tamanho das cáries existentes
@@ -138,22 +189,23 @@ public class HeadSoccer extends MiniGame {
                 sprite.setScale(sprite.getScaleX() - 0.3f * dt);
             }
         }
-        */
+         */
         cat.updateMoviment();
     }
 
     @Override
     public String getInstructions() {
-        return "Acerte as cáries";
+        return "Faça um gol sem levar gol";
     }
 
     @Override
     public void onDrawGame() {
         background.draw(batch);
-        cat.draw();
-        //ball.draw(batch);
         goalLeft.draw(batch);
         goalRight.draw(batch);
+        cat.draw();
+        ball.draw();
+        
     }
 
     @Override

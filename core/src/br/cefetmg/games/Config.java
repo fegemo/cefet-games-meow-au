@@ -9,6 +9,14 @@ public class Config {
 
     public static final int WORLD_WIDTH = 1280;
     public static final int WORLD_HEIGHT = 720;
+    public static final int FLOOR = 81;
+    public static final int JUMP = 7;
+    public static final int GRAVITY = 10;
+    
+    public static final int INITIALXLEFTGOAL = -45;
+    public static final int INITIALXRIGHTGOAL = 1135;
+    public static final int INITIALYGOAL = 75;
+    
     public static final int NORTH = 0;
     public static final int SOUTH = 1;
     public static final int WEST = 2;
