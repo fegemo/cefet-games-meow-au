@@ -5,7 +5,6 @@
  */
 package br.cefetmg.games.Animals;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -17,7 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Dog extends Animal{
     private int barkCounter;
     private boolean latindo;
-    private Animation<TextureRegion> animacao;
+    private final Animation<TextureRegion> animacao;
     private int lives;
     
 
@@ -66,7 +65,7 @@ public class Dog extends Animal{
         if(gatoOuve)
             this.barkCounter ++;
         else
-            this.barkCounter =0;
+            this.barkCounter = 0;
         latindo = true;
     }
     public void BarkZero(){
