@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.Array;
  */
 public class Cat extends Animal {
     private final int POSICAO_INICIAL_GATO_X = 500;
-    private final int POSICAO_INICIAL_GATO_Y = 500;
+    private final int POSICAO_INICIAL_GATO_Y = 41;
     // Precisa de armazenar a sprite para animacao
     
     private final int BeScaredThereshold;

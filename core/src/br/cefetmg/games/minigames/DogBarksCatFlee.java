@@ -43,7 +43,7 @@ public class DogBarksCatFlee extends MiniGame {
     private float maximumEnemySpeed;
     private float TempoDeAnimacao;
     public int latindo_Counter =0;
-    
+    public boolean consegueOuver =false;
     public DogBarksCatFlee(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
     }
@@ -56,12 +56,19 @@ public class DogBarksCatFlee extends MiniGame {
     }
     
     private void UpdateDraw(){
-        for (Tiles tile : tilesVector) {
-            tile.tileVector.x += -0.5; 
-            if(tile.tileVector.x <= 0- tileTexture[0].getWidth()){
-                tile.tileChange();
-                tile.tileVector.x = 500; // ainda não definido o num;
-            } // ainda não definido o num;   
+        if( enemy.getPos().dst(player.getPos()) >= 2*(player.getFrameWidth() + enemy.GetWidth() ) ){
+            consegueOuver=true;
+            enemy.moviment(new Vector2( enemy.getPos().x += -0.5 , enemy.getPos().y ));
+            for (Tiles tile : tilesVector) {
+                tile.tileVector.x += -0.5; 
+                if(tile.tileVector.x <= 0- tileTexture[0].getWidth()){
+                    tile.tileChange();
+                    tile.tileVector.x = 500; // ainda não definido o num;
+                } // ainda não definido o num;   
+            }
+        }
+        else{
+            consegueOuver=false;
         }
     }
     
@@ -76,7 +83,7 @@ public class DogBarksCatFlee extends MiniGame {
     
     private void CatDraw(){
         if( ! enemy.vivoMorto() )
-            batch.draw(enemy.getTexture(),enemy.getPos().x,enemy.getPos().x);
+            batch.draw(enemy.getTexture(),enemy.getPos().x,enemy.getPos().y);
     }
     
     @Override
@@ -128,7 +135,6 @@ public class DogBarksCatFlee extends MiniGame {
         if( enemy.vivoMorto() && (enemy.get_quantidade_vidas() > 0))
             enemy.spawn();
         //spawnEnemy();
-        
     }
 
 //    private void spawnEnemy () {
@@ -172,11 +178,12 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     public void onHandlePlayingInput() {
         if (Gdx.input.justTouched()){
-            player.Bark();
+            player.Bark(consegueOuver);
+            latindo_Counter=0;
             System.out.println( player.getBarkCounter() + " " + enemy.GetScareTheresold());
             //player.InvertLatindo();
             //System.out.println("Click");
-            latindo_Counter=0;
+            
         }     
     }
 
