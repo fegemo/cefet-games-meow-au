@@ -26,7 +26,6 @@ import com.badlogic.gdx.utils.Timer.Task;
 public class ClickFindCat extends MiniGame {
     
     private Texture CatTexture;
-    private Sprite CatSprite;
     private Texture MiraTexture;
     private Sprite MiraSprite;
     private Array<Cat> GatosNaTela;
@@ -65,10 +64,10 @@ public class ClickFindCat extends MiniGame {
         PosicaoInicial.scl(
                 viewport.getWorldWidth() - CatTexture.getWidth() * initialCatScale,
                 viewport.getWorldHeight() - CatTexture.getHeight() * initialCatScale);
-        Sprite CatSprite = new Sprite (CatTexture);
-        CatSprite.setPosition(PosicaoInicial.x, PosicaoInicial.y);
-        CatSprite.setScale(initialCatScale);
-        GatosNaTela.add(new Cat (CatSprite));
+        Sprite SpriteCat = new Sprite (CatTexture);
+        SpriteCat.setPosition(PosicaoInicial.x, PosicaoInicial.y);
+        SpriteCat.setScale(initialCatScale);
+        GatosNaTela.add(new Cat (SpriteCat));
         if (GatosNaTela.size == 1) GatosNaTela.get(0).SetInvisivel();
     }
     
