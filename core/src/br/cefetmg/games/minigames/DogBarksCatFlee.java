@@ -12,6 +12,7 @@ import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -28,7 +29,9 @@ import java.time.Clock;
 public class DogBarksCatFlee extends MiniGame {
     private final int TILES_COUNT = 9;
     private Dog player;
+    private Texture DogTextureStandBy;
     private Texture DogTexture;
+    private Animation<TextureRegion> DogBarking;
     private Texture CatTexture;
     //private Array<Cat> enemies;
     private Cat enemy;
@@ -38,6 +41,7 @@ public class DogBarksCatFlee extends MiniGame {
     private float spawnInterval;
     private float minimumEnemySpeed;
     private float maximumEnemySpeed;
+    private float TempoDeAnimacao;
     
     public DogBarksCatFlee(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -61,8 +65,13 @@ public class DogBarksCatFlee extends MiniGame {
         }
     }
     
-    private void PlayerDraw() {
-        batch.draw (player.getTexture(),player.getPos().x,player.getPos().y);
+    private void PlayerDraw(float dt) {
+        if (!player.isLatindo()) {
+            batch.draw (player.getTexture(),player.getPos().x,player.getPos().y);
+        } else {
+            batch.draw (player.Anima(dt), player.getX(), player.getY());
+        }
+        
     }
     
     private void CatDraw(){
@@ -72,9 +81,19 @@ public class DogBarksCatFlee extends MiniGame {
     
     @Override
     protected void onStart() {
-
-        
-        DogTexture = assets.get("DogBarksCatFlee/dog_separado_1.png", Texture.class);
+        TempoDeAnimacao = 0;
+        DogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_1.png", Texture.class);
+        DogTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);
+        TextureRegion[][] quadrosDeAnimacao = TextureRegion.split(DogTexture, 24, 21);
+        System.out.println(+ quadrosDeAnimacao.length);
+        DogBarking = new Animation <TextureRegion>(0.1f,
+                    quadrosDeAnimacao[0][0],
+                    quadrosDeAnimacao[0][1],
+                    quadrosDeAnimacao[0][2],
+                    quadrosDeAnimacao[0][3],
+                    quadrosDeAnimacao[0][4],
+                    quadrosDeAnimacao[0][5]);
+        DogBarking.setPlayMode(Animation.PlayMode.LOOP);
         
         CatTexture = assets.get("DogBarksCatFlee/kitten1-alt.png", Texture.class);
         //enemies = new Array<Cat>();
@@ -118,9 +137,9 @@ public class DogBarksCatFlee extends MiniGame {
 //    }
     
     private void inicializeDog(){
-        TextureRegion[][] Dog = TextureRegion.split(DogTexture, DogTexture.getWidth(), DogTexture.getHeight());
+        TextureRegion[][] TextureDog = TextureRegion.split(DogTextureStandBy, DogTextureStandBy.getWidth(), DogTextureStandBy.getHeight());
         PosicaoInicial = new Vector2 (1,41);
-        player = new Dog (3, PosicaoInicial, Dog[0][0]);
+        player = new Dog (3, PosicaoInicial, TextureDog[0][0], DogBarking);
     }
     
     private void inicializeCat(){
@@ -148,13 +167,16 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     public void onHandlePlayingInput() {
         if (Gdx.input.justTouched()){
+            player.InvertLatindo();
             System.out.println("Click");
-        }
+        } else 
+            player.InvertLatindo();
         
     }
 
     @Override
     public void onUpdate(float dt) {
+        TempoDeAnimacao = dt;
         UpdateDraw(dt);
         UpdateEnemy();
         // player.update(dt);
@@ -164,7 +186,7 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     public void onDrawGame() {
         TilesDraw();
-        PlayerDraw();
+        PlayerDraw(TempoDeAnimacao);
         CatDraw();
     }
 

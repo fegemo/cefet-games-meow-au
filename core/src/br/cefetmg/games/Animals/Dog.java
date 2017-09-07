@@ -6,6 +6,7 @@
 package br.cefetmg.games.Animals;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -16,12 +17,14 @@ import com.badlogic.gdx.math.Vector2;
 public class Dog extends Animal{
     private int barkCounter;
     private boolean latindo;
+    private Animation<TextureRegion> animacao;
     private int lives;
     
 
-    public Dog(int lives, Vector2 Pos, TextureRegion DogTexture) {
+    public Dog(int lives, Vector2 Pos, TextureRegion DogTexture, Animation<TextureRegion> animacao) {
         
         super(Pos, DogTexture);
+        this.animacao = animacao;
         this.lives = lives;
         barkCounter = 0;
         this.lives = lives;
@@ -33,6 +36,9 @@ public class Dog extends Animal{
 //        super.update(dt);
 //    }
     
+    public TextureRegion Anima (float dt) {
+        return ((TextureRegion)animacao.getKeyFrame(dt));
+    }
 
     public int getFrameWidth () {
         return FRAME_WIDTH;
@@ -48,6 +54,10 @@ public class Dog extends Animal{
 
     public boolean isLatindo() {
         return latindo;
+    }
+    
+    public void InvertLatindo () {
+        latindo = !latindo;
     }
     
     
