@@ -42,6 +42,7 @@ public class DogBarksCatFlee extends MiniGame {
     private float minimumEnemySpeed;
     private float maximumEnemySpeed;
     private float TempoDeAnimacao;
+    public int latindo_Counter =0;
     
     public DogBarksCatFlee(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -174,13 +175,18 @@ public class DogBarksCatFlee extends MiniGame {
         if (Gdx.input.justTouched()){
             player.Bark();
             System.out.println( player.getBarkCounter() + " " + enemy.GetScareTheresold());
-            player.InvertLatindo();
             System.out.println("Click");
-        }
-            
+        }     
     }
 
     public void onUpdate(float dt) {
+        if(player.isLatindo()){
+            latindo_Counter++;
+            if(latindo_Counter == 5 ){
+                 latindo_Counter=0; 
+                 player.InvertLatindo();
+            }
+        }
         TempoDeAnimacao += Gdx.graphics.getDeltaTime();
         UpdateDraw();
         UpdateEnemy();
