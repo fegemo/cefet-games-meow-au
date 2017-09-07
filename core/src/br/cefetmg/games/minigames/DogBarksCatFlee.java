@@ -10,10 +10,12 @@ import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
 import java.time.Clock;
@@ -124,6 +126,10 @@ public class DogBarksCatFlee extends MiniGame {
 
     @Override
     public void onHandlePlayingInput() {
+        if (Gdx.input.justTouched()){
+            System.out.println("Click");
+        }
+        
     }
 
     @Override
