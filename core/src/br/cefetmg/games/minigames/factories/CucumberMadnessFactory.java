@@ -1,8 +1,7 @@
 package br.cefetmg.games.minigames.factories;
 
-import br.cefetmg.games.minigames.CatchThatHomework;
+import br.cefetmg.games.minigames.CucumberMadness;
 import br.cefetmg.games.minigames.MiniGame;
-import br.cefetmg.games.minigames.ShooTheTartarus;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,25 +10,24 @@ import java.util.Map;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
 
-public class CatchThatHomeworkFactory implements MiniGameFactory {
+public class CucumberMadnessFactory implements MiniGameFactory {
 
     @Override
     public MiniGame createMiniGame(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
-        return new CatchThatHomework(screen, observer, difficulty);
+        return new CucumberMadness(screen, observer, difficulty);
     }
 
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
             {
-                put("catch-that-homework/cat-spritesheet.png",
-                        Texture.class);
-                put("catch-that-homework/homework.png",
-                        Texture.class);
-                put("catch-that-homework/cat-sprite.png",
-                        Texture.class);
-                put("catch-that-homework/bensound-sexy.mp3", Sound.class);
+                put("cucumber-madness/potato.png", Texture.class);
+                put("cucumber-madness/tomato.png", Texture.class);
+                put("cucumber-madness/onion.png", Texture.class);
+                put("cucumber-madness/carrot.png", Texture.class);
+                put("cucumber-madness/cat-sprite.png", Texture.class);
+                put("cucumber-madness/bensound-jazzcomedy.mp3", Sound.class);
             }
         };
     }
