@@ -87,7 +87,7 @@ public class ClickFindCat extends MiniGame {
                 super.challengeSolved();
             } else {
                 float distancia = click.dst(GatosNaTela.first().getX(), GatosNaTela.first().getY());
-                float intensidade = 1 - distancia/HipotenuzaDaTela;
+                float intensidade = (float) Math.pow((1 - distancia/HipotenuzaDaTela),10);
                 MeawSound.play(intensidade);
               
             }
@@ -103,7 +103,7 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     public void onDrawGame() {
-        MiraSprite.draw(batch);
+        //MiraSprite.draw(batch);
         for (Sprite s : GatosNaTela){
             s.draw(batch);
         }
