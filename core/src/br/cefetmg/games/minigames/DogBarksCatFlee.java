@@ -29,10 +29,8 @@ import java.time.Clock;
 public class DogBarksCatFlee extends MiniGame {
     private final int TILES_COUNT = 9;
     private Dog player;
-    private Texture DogTexture1;
-    private Texture DogTexture2;
-    private Texture DogTexture3;
-    private Texture DogTexture4;
+    private Texture DogTextureStandBy;
+    private Texture DogTexture;
     private Animation<TextureRegion> DogBarking;
     private Texture CatTexture;
     //private Array<Cat> enemies;
@@ -44,7 +42,6 @@ public class DogBarksCatFlee extends MiniGame {
     private float minimumEnemySpeed;
     private float maximumEnemySpeed;
     private float TempoDeAnimacao;
-    private static int counter = 3;
     
     public DogBarksCatFlee(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -72,30 +69,8 @@ public class DogBarksCatFlee extends MiniGame {
         if (player.isLatindo()) {
             batch.draw (player.getTexture(),player.getPos().x,player.getPos().y);
         } else {
-            Try1();
+            batch.draw (player.Anima(dt), player.getPos().x, player.getPos().y);
 //            player.InvertLatindo();
-        }
-        
-    }
-    
-    private void Try1 () {
-        
-        switch (counter) {
-            case 3 :
-                batch.draw (DogTexture2, player.getPos().x, player.getPos().y);
-                counter--;
-                break;
-            case 2 :
-                batch.draw (DogTexture3, player.getPos().x, player.getPos().y);
-                counter--;
-                break;
-            case 1 :
-                batch.draw (DogTexture3, player.getPos().x, player.getPos().y);
-                counter--;
-                break;
-            default:
-                counter = 3;
-                player.InvertLatindo();
         }
         
     }
@@ -108,10 +83,18 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     protected void onStart() {
         TempoDeAnimacao = 0;
-        DogTexture1 = assets.get("DogBarksCatFlee/dog_separado_1.png", Texture.class);
-        DogTexture2 = assets.get("DogBarksCatFlee/dog_separado_2.png", Texture.class);
-        DogTexture3 = assets.get("DogBarksCatFlee/dog_separado_3.png", Texture.class);
-        DogTexture4 = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
+        DogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_1.png", Texture.class);
+        DogTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);
+        TextureRegion[][] quadrosDeAnimacao = TextureRegion.split(DogTexture, 24, 21);
+        System.out.println(+ quadrosDeAnimacao.length);
+        DogBarking = new Animation <TextureRegion>(0.1f,
+                    quadrosDeAnimacao[0][0],
+                    quadrosDeAnimacao[0][1],
+                    quadrosDeAnimacao[0][2],
+                    quadrosDeAnimacao[0][3],
+                    quadrosDeAnimacao[0][4],
+                    quadrosDeAnimacao[0][5]);
+        DogBarking.setPlayMode(Animation.PlayMode.LOOP);
         
         CatTexture = assets.get("DogBarksCatFlee/kitten1-alt.png", Texture.class);
         //enemies = new Array<Cat>();
@@ -158,7 +141,7 @@ public class DogBarksCatFlee extends MiniGame {
 //    }
     
     private void inicializeDog(){
-        TextureRegion[][] TextureDog = TextureRegion.split(DogTexture1, DogTexture1.getWidth(), DogTexture1.getHeight());
+        TextureRegion[][] TextureDog = TextureRegion.split(DogTextureStandBy, DogTextureStandBy.getWidth(), DogTextureStandBy.getHeight());
         PosicaoInicial = new Vector2 (1,41);
         player = new Dog (3, PosicaoInicial, TextureDog[0][0], DogBarking);
     }
@@ -193,7 +176,7 @@ public class DogBarksCatFlee extends MiniGame {
         if (Gdx.input.justTouched()){
             player.Bark();
             System.out.println( player.getBarkCounter() + " " + enemy.GetScareTheresold());
-            player.InvertLatindo();
+//            player.InvertLatindo();
             System.out.println("Click");
         }
             
