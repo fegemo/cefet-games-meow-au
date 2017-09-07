@@ -9,6 +9,7 @@ import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -68,7 +69,7 @@ public class Cat extends Animal {
     }
     
     public void settarQuantidade_vidas(float variavelControleDificuldade){
-        this.quantidade_vidas = (int) (variavelControleDificuldade*100/6);
+        this.quantidade_vidas = (int)( MathUtils.ceil(variavelControleDificuldade*10/8));
     }
 //    public void update(float dt) {
 //        super.update(dt);
