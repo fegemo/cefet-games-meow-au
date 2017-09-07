@@ -34,6 +34,7 @@ public class DogBarksCatFleeFactory implements MiniGameFactory {
              put("DogBarksCatFlee/tile2.png", Texture.class);
              put("DogBarksCatFlee/tile3.png", Texture.class);
              put("DogBarksCatFlee/tile4.png", Texture.class);
+             put("DogBarksCatFlee/BarkSound.wav", Sound.class);
             }
         };
     }

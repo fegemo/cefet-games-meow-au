@@ -11,6 +11,7 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -34,6 +35,7 @@ public class DogBarksCatFlee extends MiniGame {
     private Texture DogTextureWalking;
     private Animation<TextureRegion> DogWalking;
     private Animation<TextureRegion> DogBarking;
+    private Sound BarkSound;
     private Texture CatTexture;
     //private Array<Cat> enemies;
     private Cat enemy;
@@ -94,6 +96,7 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     protected void onStart() {
         TempoDeAnimacao = 0;
+        BarkSound = assets.get("DogBarksCatFlee/BarkSound.wav", Sound.class);
         DogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
         DogTexture = assets.get("DogBarksCatFlee/dog_spritesheet.png", Texture.class);
         DogTextureWalking = assets.get("DogBarksCatFlee/spritesheet2.png",Texture.class);
@@ -186,6 +189,7 @@ public class DogBarksCatFlee extends MiniGame {
     public void onHandlePlayingInput() {
         if (Gdx.input.justTouched()){
             player.Bark(consegueOuver);
+            if (!consegueOuver) BarkSound.play();
             System.out.println( player.getBarkCounter() + " " + enemy.GetScareTheresold());
             
         }     
