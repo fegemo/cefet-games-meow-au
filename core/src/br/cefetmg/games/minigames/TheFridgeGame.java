@@ -21,21 +21,19 @@ public class TheFridgeGame extends MiniGame {
     private Texture[] foodTexture, buttonsTexture;      
     private Object[][] food;
     private Object[] shelfs;
-    private Object fish;
-    private Object background, fridge;
+    private Object fish, background, fridge;
     private Button buttons[];
     private Cat cat;
     private CHOICE currentChoice;
     
-    private int shelfAmount;  
-    private int fridgeLimitsXMax, fridgeLimitsXMin, fridgeLimitsYMax, fridgeLimitsYMin;
+    private int shelfAmount, fridgeLimitsXMax, fridgeLimitsXMin, fridgeLimitsYMax, fridgeLimitsYMin;
+    private final int initialFridgeHeight=550,  initialFridgeWidth=500; 
     private final Vector2 initialFridgePosition = new Vector2(750,100), finalFridgePosition = new Vector2(600,20);
-    private final int initialFridgeHeight=550,  initialFridgeWidth=500;       
     private boolean started, jumping , falling, mistake, ending, directionRight;
      
-    public enum CHOICE {RIGHT,LEFT,JUMP};
+    private enum CHOICE {RIGHT,LEFT,JUMP};
     
-    public class Object {
+    private class Object {
         public Vector2 position;
         public Texture texture;
         public float width, height;
@@ -53,7 +51,7 @@ public class TheFridgeGame extends MiniGame {
         
     }    
     
-    public class Button extends Object{       
+    private class Button extends Object{       
         public CHOICE choice;
         public boolean show;
 
@@ -90,7 +88,7 @@ public class TheFridgeGame extends MiniGame {
         }        
     }
     
-    public class Cat {
+    private class Cat {
         final int width = 400;
         final int height = 199;
         int nextShelf, nextPosition;
@@ -124,18 +122,18 @@ public class TheFridgeGame extends MiniGame {
         }          
     }
     
-    public void endingAnimation(){
-        if(true){//FIX ME//
+    private void endingAnimation(){
+      //  if(true){//FIX ME//
             
-        }
-        else{
+      //  }
+      //  else{
             challengeSolved();        
             ending=false;
-        }
+     //   }
     }
     
-    public void fallingAnimation(){
-        if(cat.jumping.getY()>0){
+    private void fallingAnimation(){
+        if(cat.jumping.getY()>0){//FIX ME//
              cat.jumping.setY(cat.jumping.getY()-3);     
         }
         else {
@@ -144,7 +142,7 @@ public class TheFridgeGame extends MiniGame {
         }        
     }
         
-    public void getChoice(){
+    private void getChoice(){
         if(currentChoice==CHOICE.RIGHT){
             System.out.println("Current Choice is RIGHT");
             cat.jumping.setTime(0);
@@ -154,7 +152,6 @@ public class TheFridgeGame extends MiniGame {
             cat.nextPosition++;
             cat.nextShelf++;            
             directionRight=true;
-            currentChoice = null;
         }
         else{
             if(currentChoice==CHOICE.JUMP){
@@ -177,15 +174,16 @@ public class TheFridgeGame extends MiniGame {
                 cat.jumping.flipFrames(true, false);               
             }
             directionRight=false;
-            currentChoice = null;  
         }        
-        if(cat.nextPosition<0||cat.nextPosition>2||food[cat.nextShelf][cat.nextPosition]!=null){
-            mistake=true;                
+        if(cat.nextPosition<0||cat.nextPosition>2||(cat.nextShelf<shelfAmount && food[cat.nextShelf][cat.nextPosition]!=null)){
+            mistake=true;    
+            System.out.println("Mistake!"); 
         } 
+        currentChoice = null;
         System.out.println("NextPosition: " + cat.nextPosition + "\nNextShelf: " + cat.nextShelf);   
     }
     
-    public void jumpAnimation(){         
+    private void jumpAnimation(){         
         boolean done; //flag to finish animation//
         if(currentChoice!=null){
             getChoice();
@@ -193,23 +191,23 @@ public class TheFridgeGame extends MiniGame {
         }
         else{
             done = true;
-            float shelfY = ((fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount);
-            float foodX = ((fridgeLimitsXMax-fridgeLimitsXMin)/3);
-            //verify position.y//
-            if((cat.nextShelf<shelfAmount) && cat.jumping.getY()<(shelfs[cat.nextShelf].position.y-shelfY)){
+            float shelfY = (fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount;
+            float foodX = (fridgeLimitsXMax-fridgeLimitsXMin)/3;
+            //verify position y//
+            if(cat.nextShelf<shelfAmount && cat.jumping.getY()<(shelfs[cat.nextShelf].position.y-shelfY+10)){
                 cat.jumping.setY(cat.jumping.getY()+2); 
                 done=false;
             }
-            else if((shelfAmount==cat.nextShelf) && cat.jumping.getY()<shelfs[cat.nextShelf-1].position.y){
+            else if(cat.nextShelf==shelfAmount && cat.jumping.getY()<(shelfs[cat.nextShelf-1].position.y+10)){
                 cat.jumping.setY(cat.jumping.getY()+2);    
                 done=false;
             }
-            //verify position.x//
-            if(cat.nextShelf<0 && (cat.jumping.getX()>(food[0][0].position.x-foodX))){//case jumping to the left, out of the fridge//
+            //verify position x//
+            if(cat.nextPosition<0 && (cat.jumping.getX()>(food[0][0].position.x-foodX))){//case jumping to the left, out of the fridge//
                 cat.jumping.setX(cat.jumping.getX()-2); 
                 done=false;
             }    
-            else if(cat.nextShelf>2 && (cat.jumping.getX()<(food[0][2].position.x+foodX))){//case jumping to the right, out of the fridge//
+            else if(cat.nextPosition>2 && (cat.jumping.getX()<(food[0][2].position.x+foodX))){//case jumping to the right, out of the fridge//
                 cat.jumping.setX(cat.jumping.getX()+2);  
                 done=false;
             }
@@ -219,7 +217,7 @@ public class TheFridgeGame extends MiniGame {
                     cat.jumping.setX(cat.jumping.getX()+2);
                     done=false;
                 }
-                else if(cat.jumping.getX()>aux){
+                else if(directionRight==false && cat.jumping.getX()>aux){
                     cat.jumping.setX(cat.jumping.getX()-2);
                     done=false;
                 }
@@ -236,10 +234,10 @@ public class TheFridgeGame extends MiniGame {
         }
     }
     
-    public void initialAnimation(){
+    private void initialAnimation(){
         boolean done = true;//flag to finish zooming//        
         if(fridge.position.x>finalFridgePosition.x){//zooming//
-            fridge.position.x--; 
+            fridge.position.x--; //FIX ME//
             fridge.width++;  
             fridgeLimitsXMin = Math.round((120*fridge.width)/initialFridgeWidth); //update the limits, using the ratios//
             fridgeLimitsXMax = Math.round((360*fridge.width)/initialFridgeWidth);           
@@ -270,7 +268,7 @@ public class TheFridgeGame extends MiniGame {
         setPositionsFoodMatrix();//update food's positions//
     }
     
-    public void fillFoodMatrix(){
+    private void fillFoodMatrix(){
         int emptySpace = 1; 
         int textureNumber = 0;
         System.out.println("Filling Food Matrix\nMapping:");
@@ -299,7 +297,7 @@ public class TheFridgeGame extends MiniGame {
         }
     }
     
-    public void setPositionsFoodMatrix(){
+    private void setPositionsFoodMatrix(){
         int x=fridgeLimitsXMin, y=fridgeLimitsYMin;    
         for(int i=0;i<shelfAmount;i++){
             for(int j=0;j<3;j++){
@@ -317,6 +315,7 @@ public class TheFridgeGame extends MiniGame {
     
     public TheFridgeGame(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 100f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
+        //FIX ME//set up time//
     }
 
     @Override
@@ -336,7 +335,7 @@ public class TheFridgeGame extends MiniGame {
             aux = "0" + aux; //it's 01-03//
             this.buttonsTexture[i-1] =  screen.assets.get("the-fridge-game/button" + aux + ".png",Texture.class); 
         }
-        System.out.println("\n\n--------------DEBUG--------------\n\nTextures succesfully loaded!");        
+        System.out.println("\n--------------DEBUG--------------\nTextures succesfully loaded!");        
         generator = new Random();
         background = new Object(new Vector2(0,0), viewport.getWorldWidth(), viewport.getWorldHeight(), screen.assets.get("the-fridge-game/fridge-game-background.png", Texture.class));
         fridge = new Object(initialFridgePosition, initialFridgeWidth, initialFridgeHeight, screen.assets.get("the-fridge-game/open-fridge.png", Texture.class));
@@ -358,13 +357,13 @@ public class TheFridgeGame extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        System.out.println("\n\nDifficulty: " + difficulty + "\n\n");
+        System.out.println("\n\nDifficulty: " + difficulty + "\n\n");//FIX ME// SET UP TIME//
         shelfAmount = Math.round(DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 4, 7)); //between 4 and 7//
+        System.out.println("shelfAmount: " + shelfAmount);
     }
 
     @Override
     public void onHandlePlayingInput(){
-        //obtem a posição do mouse//
         Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);   
         if(Gdx.input.isTouched()){//verify if the button was clicked//
@@ -376,7 +375,7 @@ public class TheFridgeGame extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
-        
+        //FIX ME//
     }
 
     @Override
@@ -406,12 +405,12 @@ public class TheFridgeGame extends MiniGame {
         cat.draw(batch);
         for(int i=0; i<3; i++){
             buttons[i].Draw();
-        }
+        }//FIX ME// DRAQ FISH
     }
 
     @Override
     public String getInstructions() {
-        return "Alcance os peixes antes que o tempo acabe.";
+        return "Alcance os peixes na última prateleira antes que o tempo acabe.";
     }
 
     @Override
@@ -419,4 +418,4 @@ public class TheFridgeGame extends MiniGame {
         return false;
     }
        
-}
+} 
