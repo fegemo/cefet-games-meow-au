@@ -126,10 +126,11 @@ public class DogBarksCatFlee extends MiniGame {
     private void inicializeCat(){
         TextureRegion[][] Cat = TextureRegion.split(CatTexture, CatTexture.getWidth(), CatTexture.getHeight());
         enemy = new Cat( (int) (ScareThereshold() * DifficultyCurve.S.getCurveValue(spawnInterval)),enemy.PosIniCat(),Cat[0][0] );
+        enemy.settarQuantidade_vidas(spawnInterval);
     }
     
     private int ScareThereshold (){
-        return MathUtils.random(10, 30);
+        return MathUtils.random(10, 100);
     }
 
     @Override
@@ -140,8 +141,8 @@ public class DogBarksCatFlee extends MiniGame {
 //                .getCurveValueBetween(difficulty, 240, 340);
 //        this.spawnInterval = DifficultyCurve.LINEAR_NEGATIVE
 //                .getCurveValueBetween(difficulty, 0.25f, 1.5f);
-        spawnInterval = difficulty;
-        enemy.settarQuantidade_vidas( DifficultyCurve.S.getCurveValue(difficulty) );
+        spawnInterval = DifficultyCurve.S.getCurveValue(difficulty);
+        //enemy.settarQuantidade_vidas( DifficultyCurve.S.getCurveValue(difficulty) );
   }
 
     @Override

@@ -25,11 +25,15 @@ public class Cat extends Animal {
     private int quantidade_vidas;
     private boolean morto;
 
-
-    public Cat(int BeScaredThereshold, Vector2 Pos, TextureRegion CatTexture) {
+    
+    public Cat(int BeScaredThereshold,Vector2 Pos, TextureRegion CatTexture) {
         super(Pos, CatTexture);
         this.BeScaredThereshold = BeScaredThereshold;
         this.quantidade_vidas = 1;
+    }
+    
+    public Vector2 PosIniCat(){
+        return new Vector2(POSICAO_INICIAL_GATO_X,POSICAO_INICIAL_GATO_Y);
     }
     
     public int GetWidth () {
