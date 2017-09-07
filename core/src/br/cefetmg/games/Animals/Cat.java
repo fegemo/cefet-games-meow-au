@@ -25,6 +25,8 @@ public class Cat extends Animal {
     private final int BeScaredThereshold;
     private int quantidade_vidas;
     private boolean morto;
+    public boolean mostrarGatoMorto=false;
+    public Vector2 oldPos;
 
     
     public Cat(int BeScaredThereshold,Vector2 Pos, TextureRegion CatTexture) {
@@ -56,13 +58,14 @@ public class Cat extends Animal {
         this.quantidade_vidas--;
         this.morto=true;
         System.out.println("MORREUU");
+        oldPos = this.getPos();
+        mostrarGatoMorto = !mostrarGatoMorto;
         moviment(new Vector2(POSICAO_INICIAL_GATO_X,POSICAO_INICIAL_GATO_Y));
     }
     
     public boolean vivoMorto(){
         return this.morto;
     }
-    
     public void spawn(){
         System.out.println("spawn" + this.quantidade_vidas );
         this.morto=false;
