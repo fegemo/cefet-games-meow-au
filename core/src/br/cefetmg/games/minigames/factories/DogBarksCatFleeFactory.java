@@ -23,7 +23,7 @@ public class DogBarksCatFleeFactory implements MiniGameFactory {
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
             {put("DogBarksCatFlee/dog_separado_1.png", Texture.class);
-             put("DogBarksCatFlee/Kitten1.png", Texture.class);  
+             put("DogBarksCatFlee/kitten1-alt.png", Texture.class);  
              put("DogBarksCatFlee/tile0.png", Texture.class);
              put("DogBarksCatFlee/tile1.png", Texture.class);
              put("DogBarksCatFlee/tile2.png", Texture.class);
