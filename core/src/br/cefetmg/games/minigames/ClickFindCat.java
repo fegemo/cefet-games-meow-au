@@ -87,7 +87,7 @@ public class ClickFindCat extends MiniGame {
                 super.challengeSolved();
             } else {
                 float distancia = click.dst(GatosNaTela.first().getX(), GatosNaTela.first().getY());
-                float intensidade = distancia/HipotenuzaDaTela;
+                float intensidade = 1 - distancia/HipotenuzaDaTela;
                 MeawSound.play(intensidade);
               
             }
