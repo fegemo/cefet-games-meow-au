@@ -68,9 +68,9 @@ public class DogBarksCatFlee extends MiniGame {
     protected void onStart() {
 
         
-        DogTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);
+        DogTexture = assets.get("DogBarksCatFlee/dog_separado_1.png", Texture.class);
         
-        CatTexture = assets.get("DogBarksCatFlee/dog1.png", Texture.class);
+        CatTexture = assets.get("DogBarksCatFlee/dog_separado_1.png", Texture.class);
         enemies = new Array<Cat>();
         //DogAnimation = assets.get(null);
 //        //<editor-fold defaultstate="collapsed" desc="texturas tile">
@@ -104,7 +104,7 @@ public class DogBarksCatFlee extends MiniGame {
     }
     private void inicializeDog(){
         TextureRegion[][] Dog = TextureRegion.split(DogTexture, DogTexture.getWidth(), DogTexture.getHeight());
-        PosicaoInicial = new Vector2 (1 +  DogTexture.getWidth(),41);
+        PosicaoInicial = new Vector2 (1,41);
         player = new Dog (3, PosicaoInicial, Dog[0][0]);
     }
     
