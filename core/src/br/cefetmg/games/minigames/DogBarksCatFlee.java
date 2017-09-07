@@ -241,7 +241,7 @@ public class DogBarksCatFlee extends MiniGame {
 
     @Override
     public boolean shouldHideMousePointer() {
-        return false;
+        return true;
     }
         
 }

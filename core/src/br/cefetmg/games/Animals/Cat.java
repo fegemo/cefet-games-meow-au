@@ -28,12 +28,21 @@ public class Cat extends Animal {
     public boolean mostrarGatoMorto=false;
     public Vector2 oldPos;
 
-    
+    // Construtor do Jogo DogBarksCatFlee
     public Cat(int BeScaredThereshold,Vector2 Pos, TextureRegion CatTexture) {
         super(Pos, CatTexture);
         this.morto = true;
         this.BeScaredThereshold = BeScaredThereshold;
         this.quantidade_vidas = 1;
+    }
+    
+    //Construtor do Jogo ClickFindCat
+    public Cat (Vector2 Posicao, TextureRegion CatTexture) {
+        super(Posicao, CatTexture);
+        BeScaredThereshold = 0;
+        quantidade_vidas = 0;
+        morto = false;
+        mostrarGatoMorto = false;
     }
     
     public Vector2 PosIniCat(){

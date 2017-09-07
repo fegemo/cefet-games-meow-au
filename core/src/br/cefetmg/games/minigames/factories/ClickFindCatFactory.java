@@ -5,8 +5,10 @@
  */
 package br.cefetmg.games.minigames.factories;
 
+import br.cefetmg.games.minigames.ClickFindCat;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import java.util.Map;
 
@@ -18,7 +20,7 @@ public class ClickFindCatFactory implements MiniGameFactory{
 
     @Override
     public MiniGame createMiniGame(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new ClickFindCat(screen, observer, difficulty);
     }
 
     @Override
