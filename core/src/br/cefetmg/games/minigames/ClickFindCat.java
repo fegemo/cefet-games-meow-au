@@ -6,6 +6,7 @@
 package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.Animals.Cat;
+import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -28,7 +29,7 @@ public class ClickFindCat extends MiniGame {
     private Texture CatTexture;
     private Texture MiraTexture;
     private Sprite MiraSprite;
-    private Array<Cat> GatosNaTela;
+    private Array<Sprite> GatosNaTela;
     private Sound MeawSound;
     private float initialCatScale;
 
@@ -38,6 +39,7 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     protected void onStart() {
+        GatosNaTela = new Array<Sprite>();
         CatTexture = assets.get("DogBarksCatFlee/gatinho-grande.png", Texture.class);
 
         MiraTexture = assets.get("DogBarksCatFlee/gatinho-grande.png", Texture.class);
@@ -54,7 +56,8 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        
+        this.initialCatScale = DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 1.15f, 0.8f);
     }
 
     public void spawnEnemies () {
@@ -67,8 +70,8 @@ public class ClickFindCat extends MiniGame {
         Sprite SpriteCat = new Sprite (CatTexture);
         SpriteCat.setPosition(PosicaoInicial.x, PosicaoInicial.y);
         SpriteCat.setScale(initialCatScale);
-        GatosNaTela.add(new Cat (SpriteCat));
-        if (GatosNaTela.size == 1) GatosNaTela.get(0).SetInvisivel();
+        GatosNaTela.add(SpriteCat);
+        
     }
     
     @Override
@@ -77,7 +80,7 @@ public class ClickFindCat extends MiniGame {
         viewport.unproject(click);
         this.MiraSprite.setPosition(click.x - this.MiraSprite.getWidth() / 2, click.y - this.MiraSprite.getHeight()/ 2);
         if (Gdx.input.justTouched()) {
-            if (GatosNaTela.get(0).getBoundingRectangle().overlaps(MiraSprite.getBoundingRectangle())){
+            if (GatosNaTela.first().getBoundingRectangle().overlaps(MiraSprite.getBoundingRectangle())){
                 super.challengeSolved();
             }
                 
@@ -92,7 +95,10 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     public void onDrawGame() {
-        
+        MiraSprite.draw(batch);
+        for (Sprite s : GatosNaTela){
+            s.draw(batch);
+        }
     }
 
     @Override
