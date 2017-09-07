@@ -82,16 +82,16 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     protected void onStart() {
         TempoDeAnimacao = 0;
-        DogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_1.png", Texture.class);
+        DogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
         DogTexture = assets.get("DogBarksCatFlee/dog_spritesheet.png", Texture.class);
         TextureRegion[][] quadrosDeAnimacao = TextureRegion.split(DogTexture, 128,128);
         System.out.println(+ quadrosDeAnimacao.length);
         DogBarking = new Animation <TextureRegion>(0.3f,
-                    quadrosDeAnimacao[0][0],
-                    quadrosDeAnimacao[0][1],
+                    quadrosDeAnimacao[0][3],
                     quadrosDeAnimacao[0][2],
-                    quadrosDeAnimacao[0][3]);
-        DogBarking.setPlayMode(Animation.PlayMode.LOOP_REVERSED);
+                    quadrosDeAnimacao[0][1],
+                    quadrosDeAnimacao[0][0]);
+        DogBarking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
 
         
         CatTexture = assets.get("DogBarksCatFlee/kitten1-alt.png", Texture.class);
@@ -174,15 +174,16 @@ public class DogBarksCatFlee extends MiniGame {
         if (Gdx.input.justTouched()){
             player.Bark();
             System.out.println( player.getBarkCounter() + " " + enemy.GetScareTheresold());
-            player.InvertLatindo();
-            System.out.println("Click");
+            //player.InvertLatindo();
+            //System.out.println("Click");
+            latindo_Counter=0;
         }     
     }
 
     public void onUpdate(float dt) {
         if(player.isLatindo()){
             latindo_Counter++;
-            if(latindo_Counter == 80 ){
+            if(latindo_Counter == 20 ){
                  latindo_Counter=0; 
                  player.InvertLatindo();
             }
