@@ -32,6 +32,7 @@ public class ClickFindCat extends MiniGame {
     private Array<Sprite> GatosNaTela;
     private Sound MeawSound;
     private float initialCatScale;
+    private float HipotenuzaDaTela;
 
     public ClickFindCat(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
@@ -40,24 +41,26 @@ public class ClickFindCat extends MiniGame {
     @Override
     protected void onStart() {
         GatosNaTela = new Array<Sprite>();
+        HipotenuzaDaTela =(float)  Math.sqrt(viewport.getScreenWidth() * viewport.getScreenWidth()
+                + viewport.getScreenHeight() * viewport.getScreenHeight());
+        initialCatScale = 0.1f;
         CatTexture = assets.get("DogBarksCatFlee/gatinho-grande.png", Texture.class);
-
+        
         MiraTexture = assets.get("DogBarksCatFlee/Dog_separado_1.png", Texture.class);
         MiraSprite = new Sprite(MiraTexture);
         MiraSprite.setOriginCenter();
-        //MeawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
-        //gato = new Cat(PosicaoInicial, CatTexture);
+        MeawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
         Timer.schedule(new Task () {
             public void run () {
                 spawnEnemies();
             }
         },0, 100);
+        
     }
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        this.initialCatScale = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 1.0f, 0.2f);
+        
     }
 
     public void spawnEnemies () {
@@ -82,6 +85,11 @@ public class ClickFindCat extends MiniGame {
         if (Gdx.input.justTouched()) {
             if (GatosNaTela.first().getBoundingRectangle().overlaps(MiraSprite.getBoundingRectangle())){
                 super.challengeSolved();
+            } else {
+                float distancia = click.dst(GatosNaTela.first().getX(), GatosNaTela.first().getY());
+                float intensidade = distancia/HipotenuzaDaTela;
+                MeawSound.play(intensidade);
+              
             }
                 
                 
