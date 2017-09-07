@@ -65,11 +65,11 @@ public class DogBarksCatFlee extends MiniGame {
     }
     
     private void PlayerDraw(float dt) {
-        if (player.isLatindo()) {
+        if (!player.isLatindo()) {
             batch.draw (player.getTexture(),player.getPos().x,player.getPos().y);
         } else {
             batch.draw (player.Anima(dt), player.getPos().x, player.getPos().y);
-//            player.InvertLatindo();
+            player.InvertLatindo();
         }
         
     }
@@ -86,7 +86,7 @@ public class DogBarksCatFlee extends MiniGame {
         DogTexture = assets.get("DogBarksCatFlee/dog_spritesheet.png", Texture.class);
         TextureRegion[][] quadrosDeAnimacao = TextureRegion.split(DogTexture, 128,128);
         System.out.println(+ quadrosDeAnimacao.length);
-        DogBarking = new Animation <TextureRegion>(0.1f,
+        DogBarking = new Animation <TextureRegion>(1f,
                     quadrosDeAnimacao[0][0],
                     quadrosDeAnimacao[0][1],
                     quadrosDeAnimacao[0][2],
@@ -173,7 +173,7 @@ public class DogBarksCatFlee extends MiniGame {
         if (Gdx.input.justTouched()){
             player.Bark();
             System.out.println( player.getBarkCounter() + " " + enemy.GetScareTheresold());
-//            player.InvertLatindo();
+            player.InvertLatindo();
             System.out.println("Click");
         }
             
