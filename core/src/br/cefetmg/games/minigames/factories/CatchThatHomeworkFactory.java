@@ -25,7 +25,7 @@ public class CatchThatHomeworkFactory implements MiniGameFactory {
             {
                 put("catch-that-homework/cat-spritesheet.png",
                         Texture.class);
-                put("shoo-the-tartarus/tartarus-spritesheet.png",
+                put("catch-that-homework/homework.png",
                         Texture.class);
                 put("shoo-the-tartarus/tooth.png", Texture.class);
                 put("shoo-the-tartarus/appearing1.wav", Sound.class);

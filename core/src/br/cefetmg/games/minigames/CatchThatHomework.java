@@ -28,6 +28,10 @@ public class CatchThatHomework extends MiniGame {
 
     private Texture catTexture;
     private Cat cat;
+    private Texture homeworkTexture;
+    private Array<Homework> homeworks;
+    
+    private float spawnInterval = 1;
 
     public CatchThatHomework(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -36,7 +40,8 @@ public class CatchThatHomework extends MiniGame {
     @Override
     protected void onStart() {
         catTexture = assets.get("catch-that-homework/cat-spritesheet.png", Texture.class);
-        
+        homeworkTexture = assets.get("catch-that-homework/homework.png", Texture.class);
+
         TextureRegion[][] frames = TextureRegion.split(catTexture,
                 Cat.FRAME_WIDTH, Cat.FRAME_HEIGHT);
         
@@ -45,10 +50,28 @@ public class CatchThatHomework extends MiniGame {
             viewport.getWorldWidth() / 2f,
             cat.height);
         cat.setScale(5);
+        
+        homeworks = new Array<Homework>();
+
+        timer.scheduleTask(new Task() {
+            @Override
+            public void run() {
+                spawnHomework();
+            }
+
+        }, 0, this.spawnInterval);
     }
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
+    }
+
+    private void spawnHomework() {
+        Homework homework = new Homework(homeworkTexture, new Vector2(0, 300));
+        homework.setScale(3);
+        homework.setPosition(MathUtils.random(0, viewport.getWorldWidth()), viewport.getWorldHeight());
+        homeworks.add(homework);
+        
     }
 
     @Override
@@ -60,11 +83,19 @@ public class CatchThatHomework extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
+        for (Homework homework : homeworks) {
+            homework.update(dt);
+        }
     }
 
     @Override
     public void onDrawGame() {
         this.cat.draw(batch);
+        
+        for (Homework homework : homeworks) {
+            homework.draw(batch);
+        }
+        
     }
 
     @Override
@@ -87,6 +118,30 @@ public class CatchThatHomework extends MiniGame {
         public Cat(TextureRegion texture, float height) {
             super(texture);
             this.height = height;
+        }
+    }
+    
+    class Homework extends Sprite {
+        static final int FRAME_WIDTH = 32;
+        static final int FRAME_HEIGHT = 32;
+        private Vector2 speed;
+
+        public Homework(Texture texture, Vector2 speed) {
+            super(texture);
+            this.speed = speed;
+        }
+        
+        public void update(float dt) {
+            this.setPosition(this.getX(),
+                    this.getY() - this.speed.y * dt);
+        }
+
+        public Vector2 getSpeed() {
+            return speed;
+        }
+
+        public void setSpeed(Vector2 speed) {
+            this.speed = speed;
         }
     }
 }
