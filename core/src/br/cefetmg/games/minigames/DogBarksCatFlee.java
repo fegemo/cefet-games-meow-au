@@ -31,6 +31,8 @@ public class DogBarksCatFlee extends MiniGame {
     private Dog player;
     private Texture DogTextureStandBy;
     private Texture DogTexture;
+    private Texture DogTextureWalking;
+    private Animation<TextureRegion> DogWalking;
     private Animation<TextureRegion> DogBarking;
     private Texture CatTexture;
     //private Array<Cat> enemies;
@@ -56,7 +58,7 @@ public class DogBarksCatFlee extends MiniGame {
     }
     
     private void UpdateDraw(){
-        if( enemy.getPos().dst(player.getPos()) >= 2*(player.getFrameWidth() + enemy.GetWidth() ) ){
+        if( enemy.getPos().x - player.getPos().x >= 2*(player.getFrameWidth() + enemy.GetWidth() ) ){
             consegueOuver=true;
             enemy.moviment(new Vector2( enemy.getPos().x += -0.5 , enemy.getPos().y ));
             for (Tiles tile : tilesVector) {
@@ -73,7 +75,10 @@ public class DogBarksCatFlee extends MiniGame {
     }
     
     private void PlayerDraw(float dt) {
-        if (player.isLatindo()) {
+        if(enemy.getPos().x - player.getPos().x >= 2*(player.getFrameWidth() + enemy.GetWidth() )){
+            batch.draw (player.Anima2(dt), player.getPos().x, player.getPos().y);
+        }
+        else if (player.isLatindo()) {
             batch.draw (player.Anima(dt), player.getPos().x, player.getPos().y);
         } else {
             batch.draw (player.getTexture(),player.getPos().x,player.getPos().y);
@@ -90,16 +95,23 @@ public class DogBarksCatFlee extends MiniGame {
         TempoDeAnimacao = 0;
         DogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
         DogTexture = assets.get("DogBarksCatFlee/dog_spritesheet.png", Texture.class);
+        DogTextureWalking = assets.get("DogBarksCatFlee/spirtesheet2.png",Texture.class);
         TextureRegion[][] quadrosDeAnimacao = TextureRegion.split(DogTexture, 128,128);
+        TextureRegion[][] quadrosDeAnimacao2 = TextureRegion.split(DogTextureWalking, 128,128);
         System.out.println(+ quadrosDeAnimacao.length);
         DogBarking = new Animation <TextureRegion>(0.3f,
                     quadrosDeAnimacao[0][3],
                     quadrosDeAnimacao[0][2],
                     quadrosDeAnimacao[0][1],
                     quadrosDeAnimacao[0][0]);
+                DogWalking = new Animation <TextureRegion>(0.3f,
+                    quadrosDeAnimacao2[0][0],
+                    quadrosDeAnimacao2[0][1],
+                    quadrosDeAnimacao2[0][2],
+                    quadrosDeAnimacao2[0][3],
+                    quadrosDeAnimacao2[0][4]);
         DogBarking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
-
-        
+        DogWalking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         CatTexture = assets.get("DogBarksCatFlee/kitten1-alt.png", Texture.class);
         //enemies = new Array<Cat>();
         //DogAnimation = assets.get(null);
@@ -140,7 +152,7 @@ public class DogBarksCatFlee extends MiniGame {
     private void inicializeDog(){
         TextureRegion[][] TextureDog = TextureRegion.split(DogTextureStandBy, DogTextureStandBy.getWidth(), DogTextureStandBy.getHeight());
         PosicaoInicial = new Vector2 (1,41);
-        player = new Dog (3, PosicaoInicial, TextureDog[0][0], DogBarking);
+        player = new Dog (3, PosicaoInicial, TextureDog[0][0], DogBarking,DogWalking);
     }
     
     private void inicializeCat(){

@@ -62,7 +62,7 @@ public class Dog extends Animal{
     
     
     public void Bark (boolean gatoOuve){
-        if(gatoOuve)
+        if(!gatoOuve)
             this.barkCounter ++;
         else
             this.barkCounter = 0;
