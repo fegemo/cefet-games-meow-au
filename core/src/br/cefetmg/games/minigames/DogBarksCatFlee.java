@@ -44,6 +44,7 @@ public class DogBarksCatFlee extends MiniGame {
     private float minimumEnemySpeed;
     private float maximumEnemySpeed;
     private float TempoDeAnimacao;
+    public float telaAnda= 3.5f;
     public int latindo_Counter =0;
     public boolean consegueOuver =false;
     public DogBarksCatFlee(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
@@ -60,12 +61,12 @@ public class DogBarksCatFlee extends MiniGame {
     private void UpdateDraw(){
         if( enemy.getPos().x - player.getPos().x >= 2*(player.getFrameWidth() + enemy.GetWidth() ) ){
             consegueOuver=true;
-            enemy.moviment(new Vector2( enemy.getPos().x += -5 , enemy.getPos().y ));
+            enemy.moviment(new Vector2( enemy.getPos().x += -telaAnda , enemy.getPos().y ));
             for (Tiles tile : tilesVector) {
-                tile.tileVector.x += -5; 
+                tile.tileVector.x += -telaAnda; 
                 if(tile.tileVector.x <= 0- tileTexture[0].getWidth()){
                     tile.tileChange();
-                    tile.tileVector.x = 500; // ainda não definido o num;
+                    tile.tileVector.x = 1400; // ainda não definido o num;
                 } // ainda não definido o num;   
             }
         }
@@ -152,7 +153,7 @@ public class DogBarksCatFlee extends MiniGame {
     
     private void inicializeDog(){
         TextureRegion[][] TextureDog = TextureRegion.split(DogTextureStandBy, DogTextureStandBy.getWidth(), DogTextureStandBy.getHeight());
-        PosicaoInicial = new Vector2 (1,41);
+        PosicaoInicial = new Vector2 (100,41);
         player = new Dog (3, PosicaoInicial, TextureDog[0][0], DogBarking,DogWalking);
     }
     
