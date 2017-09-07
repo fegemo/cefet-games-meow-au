@@ -75,7 +75,7 @@ public class DogBarksCatFlee extends MiniGame {
     }
     
     private void CatDraw(){
-        if(enemy.vivoMorto())
+        if( ! enemy.vivoMorto() )
             batch.draw(enemy.getTexture(),enemy.getPos().x,enemy.getPos().x);
     }
     
@@ -122,10 +122,11 @@ public class DogBarksCatFlee extends MiniGame {
     }
     
     private void UpdateEnemy(){
-        if( enemy.FleeAction( player.getBarkCounter() ))
+        if( enemy.FleeAction( player.getBarkCounter()))
             enemy.morreu();
-        if(enemy.vivoMorto()  && (enemy.get_quantidade_vidas() > 0))
-            enemy.spawn();//spawnEnemy();
+        if( enemy.vivoMorto() && (enemy.get_quantidade_vidas() > 0))
+            enemy.spawn();
+        //spawnEnemy();
         
     }
 
@@ -144,12 +145,14 @@ public class DogBarksCatFlee extends MiniGame {
     
     private void inicializeCat(){
         TextureRegion[][] Cat = TextureRegion.split(CatTexture, CatTexture.getWidth(), CatTexture.getHeight());
-        enemy = new Cat( (int) (ScareThereshold() * DifficultyCurve.S.getCurveValue(spawnInterval)),enemy.PosIniCat(),Cat[0][0] );
+        enemy = new Cat( (int) ( (float) ScareThereshold() * DifficultyCurve.S.getCurveValueBetween(spawnInterval,10f,3f)),PosicaoInicial,Cat[0][0] );
         enemy.settarQuantidade_vidas(spawnInterval);
+        enemy.moviment(enemy.PosIniCat());
+        //enemy.spawn();
     }
     
     private int ScareThereshold (){
-        return MathUtils.random(10, 100);
+        return MathUtils.random(2,10);
     }
 
     @Override
@@ -160,17 +163,23 @@ public class DogBarksCatFlee extends MiniGame {
 //                .getCurveValueBetween(difficulty, 240, 340);
 //        this.spawnInterval = DifficultyCurve.LINEAR_NEGATIVE
 //                .getCurveValueBetween(difficulty, 0.25f, 1.5f);
-        spawnInterval = DifficultyCurve.S.getCurveValue(difficulty);
+        spawnInterval = DifficultyCurve.S.getCurveValue(difficulty) +1;
         //enemy.settarQuantidade_vidas( DifficultyCurve.S.getCurveValue(difficulty) );
   }
 
     @Override
     public void onHandlePlayingInput() {
         if (Gdx.input.justTouched()){
+<<<<<<< HEAD
             player.InvertLatindo();
             System.out.println("Click");
         } else 
             player.InvertLatindo();
+=======
+            player.Bark();
+            System.out.println( player.getBarkCounter() + " " + enemy.GetScareTheresold());
+        }
+>>>>>>> b14db5eee75edc9d3e91347e95a4fe1538a2125b
         
     }
 
