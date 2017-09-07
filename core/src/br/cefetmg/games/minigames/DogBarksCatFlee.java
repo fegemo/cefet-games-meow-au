@@ -136,6 +136,7 @@ public class DogBarksCatFlee extends MiniGame {
         if( enemy.FleeAction( player.getBarkCounter())){
             enemy.morreu();
             player.BarkZero();
+            super.challengeSolved();
         }    
         if( enemy.vivoMorto() && (enemy.get_quantidade_vidas() > 0))
             enemy.spawn();
@@ -185,7 +186,6 @@ public class DogBarksCatFlee extends MiniGame {
         if (Gdx.input.justTouched()){
             player.Bark(consegueOuver);
             System.out.println( player.getBarkCounter() + " " + enemy.GetScareTheresold());
-
             
         }     
     }
