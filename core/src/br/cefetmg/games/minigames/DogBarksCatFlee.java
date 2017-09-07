@@ -153,7 +153,7 @@ public class DogBarksCatFlee extends MiniGame {
     
     private void inicializeDog(){
         TextureRegion[][] TextureDog = TextureRegion.split(DogTextureStandBy, DogTextureStandBy.getWidth(), DogTextureStandBy.getHeight());
-        PosicaoInicial = new Vector2 (100,41);
+        PosicaoInicial = new Vector2 (300,41);
         player = new Dog (3, PosicaoInicial, TextureDog[0][0], DogBarking,DogWalking);
     }
     
