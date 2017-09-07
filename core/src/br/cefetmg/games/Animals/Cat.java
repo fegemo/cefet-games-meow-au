@@ -28,7 +28,7 @@ public class Cat extends Animal {
     
     public Cat(int BeScaredThereshold,Vector2 Pos, TextureRegion CatTexture) {
         super(Pos, CatTexture);
-        this.morto = false;
+        this.morto = true;
         this.BeScaredThereshold = BeScaredThereshold;
         this.quantidade_vidas = 1;
     }
@@ -68,12 +68,13 @@ public class Cat extends Animal {
     }
     
     public void settarQuantidade_vidas(float variavelControleDificuldade){
-        this.quantidade_vidas = (int) (variavelControleDificuldade*10);
+        this.quantidade_vidas = (int) (variavelControleDificuldade*100/6);
     }
 //    public void update(float dt) {
 //        super.update(dt);
 //    }
-//    
+    
+    
     public boolean FleeAction (int BarkCounter) {
         // Caso positivo ativa a funcao de sair da dela
         // Presente na classe do jogo
