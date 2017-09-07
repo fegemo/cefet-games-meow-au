@@ -9,8 +9,11 @@ import br.cefetmg.games.Animals.Cat;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -20,8 +23,12 @@ import com.badlogic.gdx.math.Vector2;
 public class ClickFindCat extends MiniGame {
     
     private Texture CatTexture;
+    private Sprite CatSprite;
+    private Texture MiraTexture;
+    private Sprite MiraSprite;
     private Cat gato;
     private Sound MeawSound;
+    private Vector2 a;
     
 
     public ClickFindCat(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
@@ -30,30 +37,47 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     protected void onStart() {
-        CatTexture = assets.get("DogBarksCatFlee/kitten1-alt_3.png", Texture.class);
-        MeawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
-        Vector2 PosicaoInicial = new Vector2 (Math.random() * screen)
-        gato = new Cat(Vector2, CatTexture)
+        CatTexture = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
+        CatSprite = new Sprite (CatTexture);
+        CatSprite.setOriginCenter();
+        MiraTexture = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
+        MiraSprite = new Sprite(MiraTexture);
+        MiraSprite.setOriginCenter();
+        //MeawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
+        Vector2 PosicaoInicial = new Vector2 (MathUtils.random(0, viewport.getScreenWidth()),
+                                        MathUtils.random(0, viewport.getScreenHeight()));
+        a = PosicaoInicial;
+        //gato = new Cat(PosicaoInicial, CatTexture);
     }
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     @Override
     public void onHandlePlayingInput() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Vector2 click = new Vector2 (Gdx.input.getX(), Gdx.input.getY());
+        viewport.unproject(click);
+        this.MiraSprite.setPosition(click.x - this.MiraSprite.getWidth() / 2, click.y - this.MiraSprite.getHeight()/ 2);
+        if (Gdx.input.justTouched()) {
+            System.out.println(+click.x+ " " + click.y);
+            System.out.println(+a.x +" "+ a.y);
+            Sprite sprite = CatSprite;
+            if (sprite.getBoundingRectangle().overlaps(MiraSprite.getBoundingRectangle())){
+                super.challengeSolved();
+            }
+        }
     }
 
     @Override
     public void onUpdate(float dt) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     @Override
     public void onDrawGame() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     @Override
