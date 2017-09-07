@@ -41,6 +41,9 @@ public class DogBarksCatFleeFactory implements MiniGameFactory {
              //Audio Disponivel em:
              //https://freesound.org/people/tuberatanka/sounds/110011/
              put("DogBarksCatFlee/cat-meow.wav", Sound.class);
+             //Audio Disponivel em:
+             //https://freesound.org/people/Piink_Aces/sounds/257824/
+             put("DogBarksCatFlee/dog-whining-sound.mp3", Sound.class);
             }
         };
     }

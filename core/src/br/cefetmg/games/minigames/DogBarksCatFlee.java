@@ -7,6 +7,7 @@ package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.Animals.*;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
+import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -38,6 +39,7 @@ public class DogBarksCatFlee extends MiniGame {
     private Animation<TextureRegion> DogBarking;
     private Sound BarkSound;
     private Sound MeawSound;
+    private Sound WhiningSound;
     private Texture CatTexture;
     //private Array<Cat> enemies;
     private Cat enemy;
@@ -101,6 +103,7 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     protected void onStart() {
         TempoDeAnimacao = 0;
+        WhiningSound = assets.get("DogBarksCatFlee/dog-whining-sound.mp3", Sound.class);
         deadTexture = assets.get("DogBarksCatFlee/kitten1-alt_3.png", Texture.class);
         BarkSound = assets.get("DogBarksCatFlee/BarkSound.wav", Sound.class);
         DogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
@@ -204,6 +207,9 @@ public class DogBarksCatFlee extends MiniGame {
     }
 
     public void onUpdate(float dt) {
+        if (super.getState() == MiniGameState.PLAYER_FAILED ) {
+            WhiningSound.play();
+        }
         if(player.isLatindo()){
             latindo_Counter++;
             if(latindo_Counter == 25 ){
