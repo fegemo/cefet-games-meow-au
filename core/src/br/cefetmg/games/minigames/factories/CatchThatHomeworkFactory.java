@@ -27,11 +27,10 @@ public class CatchThatHomeworkFactory implements MiniGameFactory {
                         Texture.class);
                 put("catch-that-homework/homework.png",
                         Texture.class);
-                put("shoo-the-tartarus/tooth.png", Texture.class);
-                put("shoo-the-tartarus/appearing1.wav", Sound.class);
-                put("shoo-the-tartarus/appearing2.wav", Sound.class);
-                put("shoo-the-tartarus/appearing3.wav", Sound.class);
-                put("shoo-the-tartarus/tooth-breaking.wav", Sound.class);
+                put("catch-that-homework/cat-sprite.png",
+                        Texture.class);
+                put("catch-that-homework/bensound-sexy.mp3", Sound.class);
+                put("catch-that-homework/bensound-jazzcomedy.mp3", Sound.class);
             }
         };
     }

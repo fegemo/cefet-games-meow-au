@@ -30,6 +30,7 @@ public class CatchThatHomework extends MiniGame {
     private Cat cat;
     private Texture homeworkTexture;
     private Array<Homework> homeworks;
+    private Sound backgroundMusic;
     
     private float spawnInterval = 1;
 
@@ -39,13 +40,15 @@ public class CatchThatHomework extends MiniGame {
 
     @Override
     protected void onStart() {
-        catTexture = assets.get("catch-that-homework/cat-spritesheet.png", Texture.class);
+        catTexture = assets.get("catch-that-homework/cat-sprite.png", Texture.class);
         homeworkTexture = assets.get("catch-that-homework/homework.png", Texture.class);
+        backgroundMusic = assets.get("catch-that-homework/bensound-sexy.mp3", Sound.class);
 
-        TextureRegion[][] frames = TextureRegion.split(catTexture,
-                Cat.FRAME_WIDTH, Cat.FRAME_HEIGHT);
+//        TextureRegion[][] frames = TextureRegion.split(catTexture,
+//                Cat.FRAME_WIDTH, Cat.FRAME_HEIGHT);
         
-        cat = new Cat(frames[0][0], 0 + 200);
+//        cat = new Cat(frames[0][0], 0 + 200);
+        cat = new Cat(catTexture, 0 + 200);
         cat.setCenter(
             viewport.getWorldWidth() / 2f,
             cat.height);
@@ -60,6 +63,8 @@ public class CatchThatHomework extends MiniGame {
             }
 
         }, 0, this.spawnInterval);
+        
+        backgroundMusic.play();
     }
 
     @Override
@@ -71,7 +76,7 @@ public class CatchThatHomework extends MiniGame {
         homework.setScale(3);
         homework.setPosition(MathUtils.random(0, viewport.getWorldWidth()), viewport.getWorldHeight());
         homeworks.add(homework);
-        
+
     }
 
     @Override
@@ -86,11 +91,15 @@ public class CatchThatHomework extends MiniGame {
         for (Homework homework : homeworks) {
             homework.update(dt);
         }
-        
+
         for (Homework homework : homeworks) {
+//            Colisão com o gato
             if (homework.getBoundingRectangle()
                     .overlaps(cat.getBoundingRectangle())) {
                 homeworks.removeValue(homework, true);
+//                Colisão com o chão
+            } else if (homework.getY() < 0) {
+                super.challengeFailed();
             }
         }
     }
@@ -122,7 +131,7 @@ public class CatchThatHomework extends MiniGame {
         static final int FRAME_WIDTH = 50;
         static final int FRAME_HEIGHT = 50;
 
-        public Cat(TextureRegion texture, float height) {
+        public Cat(Texture texture, float height) {
             super(texture);
             this.height = height;
         }
