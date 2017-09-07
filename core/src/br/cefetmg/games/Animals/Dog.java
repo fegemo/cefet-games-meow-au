@@ -60,7 +60,9 @@ public class Dog extends Animal{
         }else
             latindo = false;
     }
-    
+    public void BarkZero(){
+        this.barkCounter =0;
+    }
     public void wasHurt () {
         lives --;
     }
