@@ -27,7 +27,7 @@ import java.time.Clock;
  * ouçam https://www.youtube.com/watch?v=Gfw4yxn_kPQ
  */
 public class DogBarksCatFlee extends MiniGame {
-    private final int TILES_COUNT = 9;
+    private final int TILES_COUNT = 18;
     private Dog player;
     private Texture DogTextureStandBy;
     private Texture DogTexture;
@@ -60,9 +60,9 @@ public class DogBarksCatFlee extends MiniGame {
     private void UpdateDraw(){
         if( enemy.getPos().x - player.getPos().x >= 2*(player.getFrameWidth() + enemy.GetWidth() ) ){
             consegueOuver=true;
-            enemy.moviment(new Vector2( enemy.getPos().x += -0.5 , enemy.getPos().y ));
+            enemy.moviment(new Vector2( enemy.getPos().x += -5 , enemy.getPos().y ));
             for (Tiles tile : tilesVector) {
-                tile.tileVector.x += -0.5; 
+                tile.tileVector.x += -5; 
                 if(tile.tileVector.x <= 0- tileTexture[0].getWidth()){
                     tile.tileChange();
                     tile.tileVector.x = 500; // ainda não definido o num;
