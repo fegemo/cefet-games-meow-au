@@ -30,6 +30,7 @@ public class ClickFindCatFactory implements MiniGameFactory{
         return new HashMap<String, Class>() {
             {
                 put("DogBarksCatFlee/gatinho-grande.png", Texture.class);
+                put("DogBarksCatFlee/Dog_separado_1.png", Texture.class);
             }
         };
     }

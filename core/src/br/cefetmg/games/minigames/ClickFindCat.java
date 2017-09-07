@@ -42,7 +42,7 @@ public class ClickFindCat extends MiniGame {
         GatosNaTela = new Array<Sprite>();
         CatTexture = assets.get("DogBarksCatFlee/gatinho-grande.png", Texture.class);
 
-        MiraTexture = assets.get("DogBarksCatFlee/gatinho-grande.png", Texture.class);
+        MiraTexture = assets.get("DogBarksCatFlee/Dog_separado_1.png", Texture.class);
         MiraSprite = new Sprite(MiraTexture);
         MiraSprite.setOriginCenter();
         //MeawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
@@ -57,7 +57,7 @@ public class ClickFindCat extends MiniGame {
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         this.initialCatScale = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 1.15f, 0.8f);
+                .getCurveValueBetween(difficulty, 1.0f, 0.2f);
     }
 
     public void spawnEnemies () {
