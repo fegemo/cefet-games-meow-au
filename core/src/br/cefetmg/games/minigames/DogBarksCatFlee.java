@@ -32,6 +32,7 @@ public class DogBarksCatFlee extends MiniGame {
     private Dog player;
     private Texture DogTextureStandBy;
     private Texture DogTexture;
+    private Texture deadTexture;
     private Texture DogTextureWalking;
     private Animation<TextureRegion> DogWalking;
     private Animation<TextureRegion> DogBarking;
@@ -46,6 +47,7 @@ public class DogBarksCatFlee extends MiniGame {
     private float minimumEnemySpeed;
     private float maximumEnemySpeed;
     private float TempoDeAnimacao;
+    private int morreu =0 ;
     public float telaAnda= 3.5f;
     public int latindo_Counter =0;
     public boolean consegueOuver =false;
@@ -91,11 +93,14 @@ public class DogBarksCatFlee extends MiniGame {
     private void CatDraw(){
         if( ! enemy.vivoMorto() )
             batch.draw(enemy.getTexture(),enemy.getPos().x,enemy.getPos().y);
+        if(enemy.vivoMorto() && morreu <10)
+            batch.draw(deadTexture,enemy.oldPos.x,enemy.oldPos.y);
     }
     
     @Override
     protected void onStart() {
         TempoDeAnimacao = 0;
+        deadTexture = assets.get("DogBarksCatFlee/kitten1-alt_3.png", Texture.class);
         BarkSound = assets.get("DogBarksCatFlee/BarkSound.wav", Sound.class);
         DogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
         DogTexture = assets.get("DogBarksCatFlee/dog_spritesheet.png", Texture.class);
@@ -203,6 +208,11 @@ public class DogBarksCatFlee extends MiniGame {
                  player.InvertLatindo();
             }
         }
+        if(enemy.mostrarGatoMorto && morreu <10)
+            morreu++;
+        else
+            enemy.mostrarGatoMorto=!enemy.mostrarGatoMorto;
+        
         TempoDeAnimacao += Gdx.graphics.getDeltaTime();
         UpdateDraw();
         UpdateEnemy();
