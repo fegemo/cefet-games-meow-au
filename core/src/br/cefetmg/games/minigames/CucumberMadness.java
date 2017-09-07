@@ -1,29 +1,18 @@
 package br.cefetmg.games.minigames;
 
-import br.cefetmg.games.minigames.util.DifficultyCurve;
-import br.cefetmg.games.graphics.MultiAnimatedSprite;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
-import java.util.HashMap;
-import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
-/**
- *
- * @author fegemo <coutinho@decom.cefetmg.br>
- */
 public class CucumberMadness extends MiniGame {
 
     private Texture catTexture;
@@ -32,7 +21,7 @@ public class CucumberMadness extends MiniGame {
     private Array<Veggie> veggies;
     private Array<Texture> veggieTextures;
     private Sound backgroundMusic;
-    private float spawnInterval = 0.2f;
+    private float spawnInterval = 1;
 
     public CucumberMadness(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -58,7 +47,7 @@ public class CucumberMadness extends MiniGame {
         cat.setCenter(
             viewport.getWorldWidth() / 2f,
             cat.height);
-        cat.setScale(5);
+        cat.setScale(3);
 
         timer.scheduleTask(new Task() {
             @Override
@@ -68,7 +57,7 @@ public class CucumberMadness extends MiniGame {
 
         }, 0, this.spawnInterval);
         
-//        backgroundMusic.play();
+        backgroundMusic.play();
     }
 
     @Override
@@ -80,32 +69,31 @@ public class CucumberMadness extends MiniGame {
 
         Vector2 direction;
         Vector2 position = new Vector2();
-        do {
-           direction = new Vector2(MathUtils.random(-1, 1) * 500, MathUtils.random(-1, 1) * 500);
-        } while (direction.x == 0f && direction.y == 0f);
-
-        Veggie veggie = new Veggie(veggieTextures.get(index), direction);
-
-        boolean appearFromSides = MathUtils.randomBoolean();
-        if (appearFromSides) {
-            position.x = MathUtils.randomBoolean()
-                    ? -veggie.FRAME_WIDTH
-                    : viewport.getWorldWidth();
-            position.y = MathUtils.random(
-                    -veggie.FRAME_HEIGHT,
-                    viewport.getWorldHeight());
-        } else {
-            position.y = MathUtils.randomBoolean()
-                    ? -veggie.FRAME_HEIGHT
-                    : viewport.getWorldHeight();
-            position.x = MathUtils.random(
-                    -veggie.FRAME_WIDTH,
-                    viewport.getWorldWidth());
-        }
         
-        veggie.setPosition(position.x, position.y);
-        veggies.add(veggie);
+        direction = new Vector2(MathUtils.random(-1, 1) * 500, MathUtils.random(-1, 1) * 500);
+        if (direction.x != 0f || direction.y != 0f) {
+            Veggie veggie = new Veggie(veggieTextures.get(index), direction);
 
+            boolean appearFromSides = MathUtils.randomBoolean();
+            if (appearFromSides) {
+                position.x = MathUtils.randomBoolean()
+                        ? 0
+                        : viewport.getWorldWidth() - veggie.FRAME_WIDTH;
+                position.y = MathUtils.random(
+                        0,
+                        viewport.getWorldHeight() - veggie.FRAME_HEIGHT);
+            } else {
+                position.y = MathUtils.randomBoolean()
+                        ? 0
+                        : viewport.getWorldHeight() - veggie.FRAME_HEIGHT;
+                position.x = MathUtils.random(
+                        0,
+                        viewport.getWorldWidth() - veggie.FRAME_WIDTH);
+            }
+
+            veggie.setPosition(position.x, position.y);
+            veggies.add(veggie);
+        }  
     }
 
     @Override
@@ -126,6 +114,12 @@ public class CucumberMadness extends MiniGame {
             if (veggie.getBoundingRectangle()
                     .overlaps(cat.getBoundingRectangle())) {
                 super.challengeFailed();
+            } else if (veggie.getX() + veggie.FRAME_WIDTH / 2f > viewport.getWorldWidth() || veggie.getX() < 0) {
+                Vector2 speed = veggie.getSpeed();
+                veggie.setSpeed(new Vector2(-speed.x, speed.y));
+            } else if (veggie.getY() + veggie.FRAME_HEIGHT / 2f > viewport.getWorldHeight() || veggie.getY() < 0) {
+                Vector2 speed = veggie.getSpeed();
+                veggie.setSpeed(new Vector2(speed.x, -speed.y));
             }
         }
     }
