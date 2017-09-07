@@ -70,7 +70,6 @@ public class DogBarksCatFlee extends MiniGame {
             batch.draw (player.getTexture(),player.getPos().x,player.getPos().y);
         } else {
             batch.draw (player.Anima(dt), player.getPos().x, player.getPos().y);
-            player.InvertLatindo();
         }
         
     }
@@ -175,6 +174,7 @@ public class DogBarksCatFlee extends MiniGame {
         if (Gdx.input.justTouched()){
             player.Bark();
             System.out.println( player.getBarkCounter() + " " + enemy.GetScareTheresold());
+            player.InvertLatindo();
             System.out.println("Click");
         }     
     }
@@ -182,7 +182,7 @@ public class DogBarksCatFlee extends MiniGame {
     public void onUpdate(float dt) {
         if(player.isLatindo()){
             latindo_Counter++;
-            if(latindo_Counter == 5 ){
+            if(latindo_Counter == 1000 ){
                  latindo_Counter=0; 
                  player.InvertLatindo();
             }
