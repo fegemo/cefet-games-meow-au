@@ -16,6 +16,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 /**
  *
@@ -27,7 +29,7 @@ public class ClickFindCat extends MiniGame {
     private Sprite CatSprite;
     private Texture MiraTexture;
     private Sprite MiraSprite;
-    private Array<Sprite> GatosNaTela;
+    private Array<Cat> GatosNaTela;
     private Sound MeawSound;
     private float initialCatScale;
 
@@ -37,13 +39,18 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     protected void onStart() {
-        CatTexture = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
+        CatTexture = assets.get("DogBarksCatFlee/gatinho-grande.png", Texture.class);
 
-        MiraTexture = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
+        MiraTexture = assets.get("DogBarksCatFlee/gatinho-grande.png", Texture.class);
         MiraSprite = new Sprite(MiraTexture);
         MiraSprite.setOriginCenter();
         //MeawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
         //gato = new Cat(PosicaoInicial, CatTexture);
+        Timer.schedule(new Task () {
+            public void run () {
+                spawnEnemies();
+            }
+        },0, 100);
     }
 
     @Override
@@ -51,7 +58,7 @@ public class ClickFindCat extends MiniGame {
         
     }
 
-        public void spawnEnemies () {
+    public void spawnEnemies () {
         // pega x e y entre 0 e 1
         Vector2 PosicaoInicial = new Vector2(rand.nextFloat(), rand.nextFloat());
         // multiplica x e y pela largura e altura da tela
@@ -61,7 +68,8 @@ public class ClickFindCat extends MiniGame {
         Sprite CatSprite = new Sprite (CatTexture);
         CatSprite.setPosition(PosicaoInicial.x, PosicaoInicial.y);
         CatSprite.setScale(initialCatScale);
-        GatosNaTela.add(CatSprite);
+        GatosNaTela.add(new Cat (CatSprite));
+        if (GatosNaTela.size == 1) GatosNaTela.get(0).SetInvisivel();
     }
     
     @Override
@@ -70,11 +78,11 @@ public class ClickFindCat extends MiniGame {
         viewport.unproject(click);
         this.MiraSprite.setPosition(click.x - this.MiraSprite.getWidth() / 2, click.y - this.MiraSprite.getHeight()/ 2);
         if (Gdx.input.justTouched()) {
-            System.out.println(+click.x+ " " + click.y);
-            Sprite sprite = CatSprite;
-            if (sprite.getBoundingRectangle().overlaps(MiraSprite.getBoundingRectangle())){
+            if (GatosNaTela.get(0).getBoundingRectangle().overlaps(MiraSprite.getBoundingRectangle())){
                 super.challengeSolved();
             }
+                
+                
         }
     }
 

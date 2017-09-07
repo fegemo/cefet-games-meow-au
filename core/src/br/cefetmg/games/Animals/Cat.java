@@ -8,6 +8,7 @@ package br.cefetmg.games.Animals;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -27,6 +28,7 @@ public class Cat extends Animal {
     private boolean morto;
     public boolean mostrarGatoMorto=false;
     public Vector2 oldPos;
+    public boolean visivel = true;
 
     // Construtor do Jogo DogBarksCatFlee
     public Cat(int BeScaredThereshold,Vector2 Pos, TextureRegion CatTexture) {
@@ -37,12 +39,16 @@ public class Cat extends Animal {
     }
     
     //Construtor do Jogo ClickFindCat
-    public Cat (Vector2 Posicao, TextureRegion CatTexture) {
-        super(Posicao, CatTexture);
+    public Cat (Sprite catSprite) {
+        super (catSprite);
         BeScaredThereshold = 0;
         quantidade_vidas = 0;
         morto = false;
         mostrarGatoMorto = false;
+    }
+    
+    public void SetInvisivel () {
+        visivel = false;
     }
     
     public Vector2 PosIniCat(){
