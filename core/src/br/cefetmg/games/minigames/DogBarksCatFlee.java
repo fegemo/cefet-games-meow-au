@@ -124,10 +124,8 @@ public class DogBarksCatFlee extends MiniGame {
     private void UpdateEnemy(){
         if( enemy.FleeAction( player.getBarkCounter()))
             enemy.morreu();
-        if( enemy.vivoMorto() && (enemy.get_quantidade_vidas() > 0)){
-            player.BarkZero();
+        if( enemy.vivoMorto() && (enemy.get_quantidade_vidas() > 0))
             enemy.spawn();
-        }
         //spawnEnemy();
         
     }
