@@ -227,7 +227,7 @@ public class DogBarksCatFlee extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "RAWR RAWR";
+        return "LATA PARA ESPANTAR O GATO";
     }
 
     @Override
