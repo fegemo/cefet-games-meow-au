@@ -69,7 +69,7 @@ public class Cat extends Animal {
     }
     
     public void settarQuantidade_vidas(float variavelControleDificuldade){
-        this.quantidade_vidas = (int)( MathUtils.ceil(variavelControleDificuldade*10/8));
+        this.quantidade_vidas = (int)( MathUtils.ceil(variavelControleDificuldade*8));
     }
 //    public void update(float dt) {
 //        super.update(dt);
