@@ -48,7 +48,7 @@ public class DogBarksCatFlee extends MiniGame {
     public int latindo_Counter =0;
     public boolean consegueOuver =false;
     public DogBarksCatFlee(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
+        super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
     }
     
     private void TilesDraw(){
