@@ -18,6 +18,9 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -30,6 +33,8 @@ public class TicCatDog extends MiniGame
     private Texture catSquareTexture; //Quadrado com um gato no centro 
     private Texture dogSquareTexture; //Quadrado com um cachorro no centro
     private Sprite mouseArrowSprite;
+    private Sound catMeowingSound;
+    private Sound dogBarkingSound;
     
     private Sprite [][]ticTacToeSprites; //Sprites que compõe os quadrados do jogo da velha
     private int [][]ticCatDogMatrix; //Matriz que armazena estado atual de cada quadrado
@@ -68,6 +73,10 @@ public class TicCatDog extends MiniGame
                 "tic-cat-dog/dog-square.png", Texture.class);
         mouseArrowSprite = new Sprite (assets.get(
                 "tic-cat-dog/mouse-arrow.png", Texture.class));
+        
+        catMeowingSound = assets.get("tic-cat-dog/cat-meowing.wav", Sound.class);
+        dogBarkingSound = assets.get("tic-cat-dog/dog-barking.wav", Sound.class);
+        
         mouseArrowSprite.setOriginCenter();
         mouseArrowSprite.setScale(initialScaleMouse, initialScaleMouse);
         
@@ -174,35 +183,55 @@ public class TicCatDog extends MiniGame
 
         //Verifica se o usuário clicou em algum quadrado do tic-tac-toe
         boolean clickHiSquare = false;
-        if(Gdx.input.justTouched() && turn == DOG_TURN) 
+        if(Gdx.input.justTouched() && turn == DOG_TURN) {
             for(int i = 2; i >= 0 && !clickHiSquare; i--)
                 for(int j = 2; j >= 0 && !clickHiSquare; j--)
                     if(ticCatDogMatrix[i][j] == EMPTY_SQUARE && 
                             ticTacToeSprites[i][j].getBoundingRectangle().overlaps(
                                     mouseArrowSprite.getBoundingRectangle())) {
+                        
+                        //Movimento realizado
                         ticCatDogMatrix[i][j] = DOG_SQUARE;
                         ticTacToeSprites[i][j].setTexture(dogSquareTexture);
                         
+                        //Passa a vez
                         clickHiSquare = true;
                         turn = CAT_TURN;
                         
-                        if (winning(ticCatDogMatrix, DOG_TURN))
+                        //Condições de fim de partida
+                        if (winning(ticCatDogMatrix, DOG_TURN)) {
+                            //Som de cachorro latindo
+                            dogBarkingSound.play();
                             super.challengeSolved();
-                        else if (!isThereAvailableSquare(ticCatDogMatrix))
+                        }
+                        else if (!isThereAvailableSquare(ticCatDogMatrix)) {    
+                            //Som de cachorro latindo
+                            dogBarkingSound.play();
                             super.challengeSolved();
+                        }
                     }
-        
+        }
         //Movimento do gato
-        if(turn == CAT_TURN && isThereAvailableSquare(ticCatDogMatrix)) {
+        else if (turn == CAT_TURN && isThereAvailableSquare(ticCatDogMatrix)) {
+            //Inteligência artificial: melhor movimento selecionado
             Move move = minimax(ticCatDogMatrix, CAT_TURN);
+            
+            //Realiza-se o movimento
             ticCatDogMatrix[move.getX()][move.getY()] = CAT_SQUARE;
             ticTacToeSprites[move.getX()][move.getY()].setTexture(catSquareTexture);
-            turn = DOG_TURN;
             
-            if(winning(ticCatDogMatrix, CAT_TURN))
+            //Condições de fim de partida
+            if(winning(ticCatDogMatrix, CAT_TURN)) {
+                //Som de gato miando
+                catMeowingSound.play();
                 super.challengeFailed();
-            else if(!isThereAvailableSquare(ticCatDogMatrix))
+            } else if(!isThereAvailableSquare(ticCatDogMatrix)) {
+                //Som de cachorro latindo
+                dogBarkingSound.play();
                 super.challengeSolved();
+            }
+            //Passa a vez para o cachorro
+            turn = DOG_TURN;
         }
     }
     

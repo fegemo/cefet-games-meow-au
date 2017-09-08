@@ -225,7 +225,7 @@ public abstract class BaseScreen extends ScreenAdapter {
      */
     public void drawCenterAlignedText(String text, float y) {
         final float horizontalPadding = 0.05f;
-        messagesFont.setColor(Color.WHITE);
+        messagesFont.setColor(Color.BLACK);
 
         final float worldWidth = this.viewport.getWorldWidth();
         messagesFont.draw(
