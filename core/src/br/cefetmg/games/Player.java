@@ -41,6 +41,10 @@ public class Player {
         sprite_Player.setPosition(positionInicial.x, positionInicial.y);
     }
 
+    public Sprite getSprite_Player() {
+        return sprite_Player;
+    }
+
     public void updateMoviment() {
         float x = sprite_Player.getX(), y = sprite_Player.getY();
 
@@ -81,36 +85,33 @@ public class Player {
             walking = true;
             right = true;
         }
-        
+
         if (y > FLOOR) {
             if (speed.y > 0) {
                 y += playerStepy;
                 walking = true;
                 up = true;
             } else if (speed.y < 0) {
-                System.out.println("playerstep" + playerStepy);
-                     y += playerStepy;
-                    walking = true;
-                    down = true;
-                
+                y += playerStepy;
+                walking = true;
+                down = true;
 
             }
-        }
-        else if(y == FLOOR){
+        } else if (y == FLOOR) {
             if (speed.y > 0) {
                 y += playerStepy;
                 walking = true;
                 up = true;
             }
         }
-        
-        if(y < FLOOR){
+
+        if (y < FLOOR) {
             y = FLOOR;
         }
-        
+
         sprite_Player.setPosition(x, y);
-        System.out.println("speed.y" + speed.y);
-        System.out.println("x: " + sprite_Player.getX() + "y: " + sprite_Player.getY());
+        System.out.println("speed x: "+ speed.x + "speed y: "+ speed.y);
+        //System.out.println("x: " + sprite_Player.getX() + "y: " + sprite_Player.getY());
     }
 
     public void actionGravity(float value) {
@@ -120,4 +121,13 @@ public class Player {
     public void draw() {
         sprite_Player.draw(batch);
     }
+
+    public Vector2 getSpeed() {
+        return speed;
+    }
+
+    public float getMass() {
+        return mass;
+    }
+    
 }

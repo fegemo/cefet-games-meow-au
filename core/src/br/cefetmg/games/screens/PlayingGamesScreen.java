@@ -4,6 +4,7 @@ import br.cefetmg.games.Config;
 import br.cefetmg.games.graphics.hud.Hud;
 import br.cefetmg.games.logic.chooser.BaseGameSequencer;
 import br.cefetmg.games.logic.chooser.GameSequencer;
+import br.cefetmg.games.minigames.HeadSoccer;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.factories.*;
 import br.cefetmg.games.minigames.util.MiniGameState;
@@ -246,5 +247,17 @@ public class PlayingGamesScreen extends BaseScreen
         FINISHED_GAME_OVER,
         FINISHED_WON
     }
+    
+    @Override
+    public void resize(int width, int height) {
+        try{
+        if(currentGame instanceof HeadSoccer)
+            ((HeadSoccer) currentGame).resize(width, height);
+        }
+        catch(Exception e){
+        }
+        this.viewport.update(width, height, true);
+    }
+
 
 }
