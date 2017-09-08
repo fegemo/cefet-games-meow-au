@@ -41,13 +41,18 @@ public class TicCatDog extends MiniGame
     private final float initialScaleMouse = (float)0.05;
     
     private final int CAT_TURN = 1, DOG_TURN = 2;
-    private int turn = DOG_TURN;
+    private int turn;
 
     public TicCatDog(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty)
     {
         super(screen, observer, difficulty, 10f,
                 TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
+        
+        if(difficulty < 1)
+            turn = DOG_TURN;
+        else
+            turn = CAT_TURN;
     }
 
     @Override
