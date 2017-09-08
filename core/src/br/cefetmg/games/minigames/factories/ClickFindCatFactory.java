@@ -30,9 +30,19 @@ public class ClickFindCatFactory implements MiniGameFactory{
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
             {
-                put("DogBarksCatFlee/gatinho-grande.png", Texture.class);
-                put("DogBarksCatFlee/Dog_separado_1.png", Texture.class);
-                put("DogBarksCatFlee/cat-meow.wav", Sound.class);
+                put("ClickFindCat/gatinho-grande.png", Texture.class);
+                put("ClickFindCat/target.png", Texture.class);
+                //Audio Disponivel em:
+                //https://freesound.org/people/tuberatanka/sounds/110011/
+                put("ClickFindCat/cat-meow.wav", Sound.class);
+                //Audio Disponivel em:
+                //https://freesound.org/people/NoiseCollector/sounds/4914/
+                put("ClickFindCat/ScaredCat.wav", Sound.class);
+                //Audio Disponivel em:
+                //https://freesound.org/people/zut50/sounds/162395/
+                put("ClickFindCat/YAY.mp3", Sound.class);
+                
+                
             }
         };
     }
