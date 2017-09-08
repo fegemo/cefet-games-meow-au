@@ -7,6 +7,7 @@ package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.Animals.Cat;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
+import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -31,6 +32,8 @@ public class ClickFindCat extends MiniGame {
     private Sprite MiraSprite;
     private Sprite CatSprite;
     private Sound MeawSound;
+    private Sound ScaredMeawSound;
+    private Sound HappyMeawSound;
     private float initialCatScale;
     private float HipotenuzaDaTela;
 
@@ -42,14 +45,16 @@ public class ClickFindCat extends MiniGame {
     protected void onStart() {
         HipotenuzaDaTela = viewport.getScreenWidth() * viewport.getScreenWidth()
                 + viewport.getScreenHeight() * viewport.getScreenHeight();
-        initialCatScale = .1f;
-        CatTexture = assets.get("DogBarksCatFlee/gatinho-grande.png", Texture.class);
+        initialCatScale = .2f;
+        CatTexture = assets.get("ClickFindCat/gatinho-grande.png", Texture.class);
         
-        MiraTexture = assets.get("DogBarksCatFlee/Dog_separado_1.png", Texture.class);
+        MiraTexture = assets.get("ClickFindCat/target.png", Texture.class);
         MiraSprite = new Sprite(MiraTexture);
-        MiraSprite.setScale(0.5f);
+        MiraSprite.setScale(1.0f);
         MiraSprite.setOriginCenter();
-        MeawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
+        MeawSound = assets.get("ClickFindCat/cat-meow.wav", Sound.class);
+        ScaredMeawSound = assets.get("ClickFindCat/ScaredCat.wav", Sound.class);
+        HappyMeawSound = assets.get("ClickFindCat/YAY.mp3", Sound.class);
         initializeCat();
     }
 
@@ -99,13 +104,20 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
-        
+        if (super.getState() == MiniGameState.PLAYER_FAILED) ScaredMeawSound.play();
+        else if (rand.nextInt() % 4 == 1 && super.getState() == MiniGameState.PLAYER_SUCCEEDED) HappyMeawSound.play();
     }
 
     @Override
     public void onDrawGame() {
+        if (super.getState() == MiniGameState.PLAYER_FAILED || super.getState() == MiniGameState.PLAYER_SUCCEEDED ) {
+            CatSprite.draw(batch); 
+        }
+        
+        //Desenha o gatoInvisivel
         //CatSprite.draw(batch);
-        //MiraSprite.draw(batch);
+        //Desenha a Mira
+        MiraSprite.draw(batch);
 
     }
 
@@ -116,7 +128,7 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     public boolean shouldHideMousePointer() {
-        return false;
+        return true;
     }
     
 }
