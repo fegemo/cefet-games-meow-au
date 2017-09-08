@@ -28,7 +28,7 @@ public class TheFridgeGame extends MiniGame {
     
     private int shelfAmount, fridgeLimitsXMax, fridgeLimitsXMin, fridgeLimitsYMax, fridgeLimitsYMin;
     private final int initialFridgeHeight=550,  initialFridgeWidth=500; 
-    private final Vector2 initialFridgePosition = new Vector2(750,100), finalFridgePosition = new Vector2(600,20);
+    private final Vector2 initialFridgePosition = new Vector2(750,100), finalFridgePosition = new Vector2(650,20);
     private boolean started, jumping , falling, mistake, ending, directionRight;
      
     private enum CHOICE {RIGHT,LEFT,JUMP};
@@ -134,7 +134,7 @@ public class TheFridgeGame extends MiniGame {
     
     private void fallingAnimation(){
         if(cat.jumping.getY()>0){//FIX ME//
-             cat.jumping.setY(cat.jumping.getY()-3);     
+             cat.jumping.setY(cat.jumping.getY()-5);     
         }
         else {
             challengeFailed();
@@ -194,11 +194,11 @@ public class TheFridgeGame extends MiniGame {
             float shelfY = (fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount;
             float foodX = (fridgeLimitsXMax-fridgeLimitsXMin)/3;
             //verify position y//
-            if(cat.nextShelf<shelfAmount && cat.jumping.getY()<(shelfs[cat.nextShelf].position.y-shelfY+10)){
+            if(cat.nextShelf<shelfAmount && cat.jumping.getY()<(shelfs[cat.nextShelf].position.y-shelfY+20)){
                 cat.jumping.setY(cat.jumping.getY()+2); 
                 done=false;
             }
-            else if(cat.nextShelf==shelfAmount && cat.jumping.getY()<(shelfs[cat.nextShelf-1].position.y+10)){
+            else if(cat.nextShelf==shelfAmount && cat.jumping.getY()<(shelfs[cat.nextShelf-1].position.y+20)){
                 cat.jumping.setY(cat.jumping.getY()+2);    
                 done=false;
             }
@@ -212,7 +212,7 @@ public class TheFridgeGame extends MiniGame {
                 done=false;
             }
             else{
-                float aux = fridge.position.x + fridgeLimitsXMin + (cat.nextPosition*foodX);
+                float aux = fridge.position.x + fridgeLimitsXMin + (cat.nextPosition*foodX) - 10;
                 if(directionRight && (cat.jumping.getX()<aux) ){
                     cat.jumping.setX(cat.jumping.getX()+2);
                     done=false;
@@ -237,12 +237,12 @@ public class TheFridgeGame extends MiniGame {
     private void initialAnimation(){
         boolean done = true;//flag to finish zooming//        
         if(fridge.position.x>finalFridgePosition.x){//zooming//
-            fridge.position.x--; //FIX ME//
-            fridge.width++;  
+            fridge.position.x-=1.25; //ratio between x and y final//
+            fridge.width+=1.25;  
             fridgeLimitsXMin = Math.round((120*fridge.width)/initialFridgeWidth); //update the limits, using the ratios//
             fridgeLimitsXMax = Math.round((360*fridge.width)/initialFridgeWidth);           
-            background.position.x--;
-            background.width++;
+            background.position.x-=2;
+            background.width+=2;
             done = false;
         } 
         if(fridge.position.y>finalFridgePosition.y){
@@ -258,7 +258,7 @@ public class TheFridgeGame extends MiniGame {
             cat.currentAnimation = cat.walking;            
             cat.walking.setSize(food[0][0].width+50,food[0][0].height+50);            
             if(cat.currentAnimation.getX()>(fridge.position.x+400)){
-                cat.currentAnimation.setX(cat.currentAnimation.getX()-2);  
+                cat.currentAnimation.setX(cat.currentAnimation.getX()-1.7f);  
             }
             else{//animation ends//
                 started=true; 
@@ -375,11 +375,6 @@ public class TheFridgeGame extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
-        //FIX ME//
-    }
-
-    @Override
-    public void onDrawGame() {
         if(started==false){
             initialAnimation();
         }
@@ -392,6 +387,10 @@ public class TheFridgeGame extends MiniGame {
         else if(ending){
             endingAnimation();
         }
+    }
+
+    @Override
+    public void onDrawGame() {
         background.Draw();
         fridge.Draw();
         for(int i=0;i<shelfAmount;i++){
