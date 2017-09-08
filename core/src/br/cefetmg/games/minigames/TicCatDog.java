@@ -172,8 +172,9 @@ public class TicCatDog extends MiniGame
         if(Gdx.input.justTouched() && turn == DOG_TURN) 
             for(int i = 2; i >= 0 && !clickHiSquare; i--)
                 for(int j = 2; j >= 0 && !clickHiSquare; j--)
-                    if(ticTacToeSprites[i][j].getBoundingRectangle().overlaps(
-                        mouseArrowSprite.getBoundingRectangle())) {
+                    if(ticCatDogMatrix[i][j] == EMPTY_SQUARE && 
+                            ticTacToeSprites[i][j].getBoundingRectangle().overlaps(
+                                    mouseArrowSprite.getBoundingRectangle())) {
                         ticCatDogMatrix[i][j] = DOG_SQUARE;
                         ticTacToeSprites[i][j].setTexture(dogSquareTexture);
                         
@@ -187,7 +188,7 @@ public class TicCatDog extends MiniGame
                     }
         
         //Movimento do gato
-        if(turn == CAT_TURN) {
+        if(turn == CAT_TURN && isThereAvailableSquare(ticCatDogMatrix)) {
             Move move = minimax(ticCatDogMatrix, CAT_TURN);
             ticCatDogMatrix[move.getX()][move.getY()] = CAT_SQUARE;
             ticTacToeSprites[move.getX()][move.getY()].setTexture(catSquareTexture);
