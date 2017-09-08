@@ -47,6 +47,7 @@ public class ClickFindCat extends MiniGame {
         
         MiraTexture = assets.get("DogBarksCatFlee/Dog_separado_1.png", Texture.class);
         MiraSprite = new Sprite(MiraTexture);
+        MiraSprite.setScale(0.1f);
         MiraSprite.setOriginCenter();
         MeawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
         initializeCat();
@@ -58,12 +59,17 @@ public class ClickFindCat extends MiniGame {
     }
 
     public void initializeCat () {
-        // pega x e y entre 0 e 1
-        Vector2 PosicaoInicial = new Vector2(rand.nextFloat(), rand.nextFloat());
-        // multiplica x e y pela largura e altura da tela
-        PosicaoInicial.scl(
-                viewport.getWorldWidth() - CatTexture.getWidth() * initialCatScale,
-                viewport.getWorldHeight() - CatTexture.getHeight() * initialCatScale);
+        Vector2 PosicaoInicial;
+        do {
+            // pega x e y entre 0 e 1
+            PosicaoInicial = new Vector2(rand.nextFloat(), rand.nextFloat());
+            // multiplica x e y pela largura e altura da tela
+            PosicaoInicial.scl(
+                    viewport.getWorldWidth() - CatTexture.getWidth() * initialCatScale,
+                    viewport.getWorldHeight() - CatTexture.getHeight() * initialCatScale);
+        }while(PosicaoInicial.x > 0 && PosicaoInicial.x < viewport.getWorldWidth()
+                && PosicaoInicial.y > 0 && PosicaoInicial.y < viewport.getWorldHeight());
+        
         CatSprite = new Sprite (CatTexture);
         CatSprite.setPosition(PosicaoInicial.x, PosicaoInicial.y);
         CatSprite.setScale(initialCatScale);
@@ -81,9 +87,8 @@ public class ClickFindCat extends MiniGame {
             if (CatSprite.getBoundingRectangle().overlaps(MiraSprite.getBoundingRectangle())){
                 super.challengeSolved();
             } else {
-
                 float distancia = click.dst2(CatSprite.getX(), CatSprite.getY());
-                float intensidade = (float) Math.pow((1 - distancia/HipotenuzaDaTela),10);
+                float intensidade = (float) Math.pow((1 - distancia/HipotenuzaDaTela),4);
                 MeawSound.play(intensidade);
               
             }
@@ -99,7 +104,7 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     public void onDrawGame() {
-        CatSprite.draw(batch);
+        //CatSprite.draw(batch);
         //MiraSprite.draw(batch);
 
     }
