@@ -36,7 +36,7 @@ public class TicCatDog extends MiniGame
     private final float squareHeight = viewport.getWorldHeight()/5;
     private final float squareWidth = viewport.getWorldWidth()/5;
     private final double hypotenuse = Math.sqrt(Math.pow(squareHeight,2) + Math.pow(squareWidth,2));
-    private final float initialScaleMouse = (float)0.3;
+    private final float initialScaleMouse = (float)0.05;
     
     private final int CAT_TURN = 1, DOG_TURN = 2;
     private int TURN = DOG_TURN;
@@ -100,15 +100,17 @@ public class TicCatDog extends MiniGame
     {
         Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         this.mouseArrowSprite.setPosition(click.x - this.mouseArrowSprite.getWidth() / 2, 
-                click.y - this.mouseArrowSprite.getHeight() / 2);
+                -click.y + this.mouseArrowSprite.getHeight() / 2);
 
+        boolean clickHiSquare = false;
         if(Gdx.input.justTouched()) 
-            for(int i = 0; i < 3; i++)
-                for(int j = 0; j < 3; j++)
+            for(int i = 2; i >= 0 && !clickHiSquare; i--)
+                for(int j = 2; j >= 0 && !clickHiSquare; j--)
                     if(ticTacToeSprites[i][j].getBoundingRectangle().overlaps(
                         mouseArrowSprite.getBoundingRectangle())) {
                         ticCatDogMatrix[i][j] = DOG_SQUARE;
                         ticTacToeSprites[i][j].setTexture(dogSquareTexture);
+                        clickHiSquare = true;
                     }
     }
     
