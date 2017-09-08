@@ -1,5 +1,6 @@
 package br.cefetmg.games.minigames;
 
+import br.cefetmg.games.minigames.ticCatDog.Move;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import java.util.ArrayList;
 
 /**
  *
@@ -39,7 +41,7 @@ public class TicCatDog extends MiniGame
     private final float initialScaleMouse = (float)0.05;
     
     private final int CAT_TURN = 1, DOG_TURN = 2;
-    private int TURN = DOG_TURN;
+    private int turn = DOG_TURN;
 
     public TicCatDog(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty)
@@ -94,24 +96,108 @@ public class TicCatDog extends MiniGame
     {
 
     }
+    
+    private boolean isThereAvailableSquare(int[][] matrix) {
+        for(int i = 0; i < 3; i++)
+            for(int j = 0; j < 3; j++)
+                if(matrix[i][j] == EMPTY_SQUARE)
+                    return true;
+        return false;
+    }
+    
+    private Move minimax(int[][] matrix, int player)
+    {
+        if (winning(matrix, DOG_SQUARE))
+            return new Move(-10);
+        else if (winning(matrix, CAT_SQUARE))
+            return new Move(10);
+        else if (!isThereAvailableSquare(matrix))
+            return new Move(0);
+        
+        ArrayList<Move> moves = new ArrayList<Move>();
+        int[][] newMatrix = matrix.clone();
+        
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++) {
+                if(matrix[i][j] == EMPTY_SQUARE) {
+                    //Haverá um objeto por espaço vazio
+                    Move move = new Move(i, j);
+                    
+                    //Define o espaço vazio para o player atual
+                    newMatrix[i][j] = player;
+                    
+                    //Armazena-se a pontuação para o minimax p/ o oponente
+                    if(player == DOG_TURN) {
+                        int result = minimax(newMatrix, CAT_TURN).getScore();
+                        move.setScore(result);
+                    } else {
+                        int result = minimax(newMatrix, DOG_TURN).getScore();
+                        move.setScore(result);
+                    }
+                    
+                    //Reseta a posição forçada
+                    matrix[i][j] = EMPTY_SQUARE;
+                    
+                    //Armazena-se o movimento
+                    moves.add(move);
+                }
+            }
+        }
+        
+        Move bestMove = moves.get(0);
+        
+        if(player == CAT_TURN) {
+            for(int i = 1; i < moves.size(); i++)
+                if(moves.get(i).getScore() > bestMove.getScore())
+                    bestMove = moves.get(i);
+        } else {
+            for(int i = 1; i < moves.size(); i++)
+                if(moves.get(i).getScore() < bestMove.getScore())
+                    bestMove = moves.get(i);
+        }
+                
+        return bestMove;
+    }
 
     @Override
     public void onHandlePlayingInput()
     {
+        //Recebe a posição do mouse e atualiza a Sprite de mouse
         Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         this.mouseArrowSprite.setPosition(click.x - this.mouseArrowSprite.getWidth() / 2, 
                 -click.y + this.mouseArrowSprite.getHeight() / 2);
 
+        //Verifica se o usuário clicou em algum quadrado do tic-tac-toe
         boolean clickHiSquare = false;
-        if(Gdx.input.justTouched()) 
+        if(Gdx.input.justTouched() && turn == DOG_TURN) 
             for(int i = 2; i >= 0 && !clickHiSquare; i--)
                 for(int j = 2; j >= 0 && !clickHiSquare; j--)
                     if(ticTacToeSprites[i][j].getBoundingRectangle().overlaps(
                         mouseArrowSprite.getBoundingRectangle())) {
                         ticCatDogMatrix[i][j] = DOG_SQUARE;
                         ticTacToeSprites[i][j].setTexture(dogSquareTexture);
+                        
                         clickHiSquare = true;
+                        turn = CAT_TURN;
+                        
+                        if (winning(ticCatDogMatrix, DOG_TURN))
+                            super.challengeSolved();
+                        else if (!isThereAvailableSquare(ticCatDogMatrix))
+                            super.challengeSolved();
                     }
+        
+        //Movimento do gato
+        if(turn == CAT_TURN) {
+            Move move = minimax(ticCatDogMatrix, CAT_TURN);
+            ticCatDogMatrix[move.getX()][move.getY()] = CAT_SQUARE;
+            ticTacToeSprites[move.getX()][move.getY()].setTexture(catSquareTexture);
+            turn = DOG_TURN;
+            
+            if(winning(ticCatDogMatrix, CAT_TURN))
+                super.challengeFailed();
+            else if(!isThereAvailableSquare(ticCatDogMatrix))
+                super.challengeSolved();
+        }
     }
     
     @Override
@@ -123,7 +209,7 @@ public class TicCatDog extends MiniGame
     @Override
     public String getInstructions()
     {
-        return "Jogo da velha em CINCO SEGUNDOS!";
+        return "SOBREVIVA ao jogo da velha!";
     }
 
     @Override
@@ -145,5 +231,23 @@ public class TicCatDog extends MiniGame
     public boolean shouldHideMousePointer()
     {
         return true;
+    }
+    
+    public boolean winning(int[][] matrix, int player) {
+        if (
+                //Horizontal
+        (matrix[0][0] == player && matrix[0][1] == player && matrix[0][2] == player) ||
+        (matrix[1][0] == player && matrix[1][1] == player && matrix[1][2] == player) ||
+        (matrix[2][0] == player && matrix[2][1] == player && matrix[2][2] == player) ||
+                //Vertical
+        (matrix[0][0] == player && matrix[1][0] == player && matrix[2][0] == player) ||
+        (matrix[0][1] == player && matrix[1][1] == player && matrix[2][1] == player) ||
+        (matrix[0][2] == player && matrix[1][2] == player && matrix[2][2] == player) ||
+                //Diagonal
+        (matrix[0][0] == player && matrix[1][1] == player && matrix[2][2] == player) ||
+        (matrix[0][2] == player && matrix[1][1] == player && matrix[2][0] == player)
+        )
+            return true;
+        return false;
     }
 }
