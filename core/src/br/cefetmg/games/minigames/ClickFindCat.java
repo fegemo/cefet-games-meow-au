@@ -47,7 +47,7 @@ public class ClickFindCat extends MiniGame {
         
         MiraTexture = assets.get("DogBarksCatFlee/Dog_separado_1.png", Texture.class);
         MiraSprite = new Sprite(MiraTexture);
-        MiraSprite.setScale(0.1f);
+        MiraSprite.setScale(0.5f);
         MiraSprite.setOriginCenter();
         MeawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
         initializeCat();
