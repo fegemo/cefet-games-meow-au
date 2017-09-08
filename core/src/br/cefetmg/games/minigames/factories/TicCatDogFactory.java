@@ -28,6 +28,9 @@ public class TicCatDogFactory implements MiniGameFactory {
             {
                 put("tic-cat-dog/main-background.jpg", Texture.class);
                 put("tic-cat-dog/white-square.png", Texture.class);
+                put("tic-cat-dog/cat-square.png", Texture.class);
+                put("tic-cat-dog/dog-square.png", Texture.class);
+                put("tic-cat-dog/mouse-arrow.png", Texture.class);
             }
         };
     }
