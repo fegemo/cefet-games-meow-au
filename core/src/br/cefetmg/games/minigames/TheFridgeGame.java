@@ -41,7 +41,7 @@ public class TheFridgeGame extends MiniGame {
     private Body catBody = null, foodBody = null;
     private PolygonShape catShape;
     
-    private int shelfAmount, fridgeLimitsXMax, fridgeLimitsXMin, fridgeLimitsYMax, fridgeLimitsYMin;
+    private int shakingCounter=0,shelfAmount, fridgeLimitsXMax, fridgeLimitsXMin, fridgeLimitsYMax, fridgeLimitsYMin;
     private final int initialFridgeHeight=550,  initialFridgeWidth=500; 
     private final Vector2 initialFridgePosition = new Vector2(750,100), finalFridgePosition = new Vector2(650,20);
     private boolean started, jumping , falling, mistake, ending, directionRight;
@@ -49,21 +49,17 @@ public class TheFridgeGame extends MiniGame {
     private enum CHOICE {RIGHT,LEFT,JUMP};
     
     private class Object {
-        public Vector2 position;
         public Sprite texture;
-        public float width, height;
        
-        public Object(Vector2 position, float width, float height,Texture texture) {
-            this.position = position;
+        public Object(Vector2 position, float width, float height,Texture texture) {           
             this.texture = new Sprite(texture);
-            this.width = width;
-            this.height = height;
+            this.texture.setPosition(position.x,position.y);
+            this.texture.setSize(width, height);
         }
         
         public void Draw(){   
-            batch.draw(texture, position.x, position.y, width, height);
-        }
-        
+            texture.draw(batch);
+        }        
     }    
     
     private class Button extends Object{       
@@ -79,13 +75,13 @@ public class TheFridgeGame extends MiniGame {
         @Override
         public void Draw(){   
             if(show){
-                batch.draw(texture, position.x, position.y, width, height);
+                this.texture.draw(batch);
             }
         }        
          
         public void clicked(Vector2 click){
             if(show && currentChoice==null && jumping==false && falling==false){
-                if( (click.x>=this.position.x && click.x<=(this.position.x+this.width)) && (click.y>=this.position.y && click.y<=(this.position.y+this.height)) ){
+                if( (click.x>=this.texture.getX() && click.x<=(this.texture.getX()+this.texture.getWidth())) && (click.y>=this.texture.getY() && click.y<=(this.texture.getY()+this.texture.getHeight())) ){
                     if(this.choice==CHOICE.JUMP){  
                         System.out.println("Button JUMP clicked!");
                         this.show=false;                    
@@ -164,22 +160,44 @@ public class TheFridgeGame extends MiniGame {
         if(cat.nextPosition>=0 && cat.nextPosition<=2){//if the cat hit an object, it will fall too//
             foodBodyDef = new BodyDef();
             foodBodyDef.type = BodyDef.BodyType.DynamicBody;
-            foodBodyDef.position.set(food[cat.nextShelf][cat.nextPosition].position);
+            foodBodyDef.position.set(food[cat.nextShelf][cat.nextPosition].texture.getX(),food[cat.nextShelf][cat.nextPosition].texture.getY());
             foodBody = world.createBody(foodBodyDef); 
         }
     }
     
     private void shakingAnimation(){//shakes the penguin on the top of fridge//
-        
+        if(shakingCounter==5){
+            
+        }
+        else{
+            if(shakingCounter%2==0 && penguin.texture.getRotation()<10){//FIX ME//
+                penguin.texture.setRotation(penguin.texture.getRotation()+0.1f);
+            }            
+            else if(shakingCounter%2==0 && penguin.texture.getRotation()>=10){
+                shakingCounter++;                
+            }
+            else if(shakingCounter%2!=0 && penguin.texture.getRotation()>-10){
+                penguin.texture.setRotation(penguin.texture.getRotation()-0.1f);
+            }
+            else if(shakingCounter%2!=0 && penguin.texture.getRotation()<=-10){
+                shakingCounter++;                
+            }
+        }
     }
     
     private void fallingAnimation(){     //FIX ME//
         shakingAnimation();
-        world.step(Gdx.graphics.getDeltaTime(), 10, 10);//update world//
-        if(foodBody!=null && food[cat.nextShelf][cat.nextPosition].position.y>=0){
-            food[cat.nextShelf][cat.nextPosition].position.y=foodBody.getPosition().y;//get new position//
-           
-            //shelfs[cat.nextShelf].texture.
+        world.step(Gdx.graphics.getDeltaTime(), 10000, 10);//update world//        
+        if(foodBody!=null && food[cat.nextShelf][cat.nextPosition].texture.getY()>=0){
+            food[cat.nextShelf][cat.nextPosition].texture.setY(foodBody.getPosition().y);//get new position//
+            if(cat.nextShelf!=2 && shelfs[cat.nextShelf-1].texture.getRotation()>-8){
+                shelfs[cat.nextShelf-1].texture.rotate(shelfs[cat.nextShelf-1].texture.getRotation()-0.1f);                
+                shelfs[cat.nextShelf-1].texture.setY(shelfs[cat.nextShelf-1].texture.getY()-8);
+            }
+            else if(cat.nextShelf==2 && shelfs[cat.nextShelf-1].texture.getRotation()<8){
+                shelfs[cat.nextShelf-1].texture.rotate(shelfs[cat.nextShelf-1].texture.getRotation()+0.1f);
+                shelfs[cat.nextShelf-1].texture.setY(shelfs[cat.nextShelf-1].texture.getY()-8);
+            }
         }
         if(cat.currentAnimation.getY()>=0){
               cat.currentAnimation.setY(catBody.getPosition().y);
@@ -245,25 +263,25 @@ public class TheFridgeGame extends MiniGame {
             float shelfY = (fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount;
             float foodX = (fridgeLimitsXMax-fridgeLimitsXMin)/3;
             //verify position y//
-            if(cat.nextShelf<shelfAmount && cat.currentAnimation.getY()<(shelfs[cat.nextShelf].position.y-shelfY+20)){
+            if(cat.nextShelf<shelfAmount && cat.currentAnimation.getY()<(shelfs[cat.nextShelf].texture.getY()-shelfY+20)){
                 cat.currentAnimation.setY(cat.currentAnimation.getY()+1.5f); 
                 done=false;
             }
-            else if(cat.nextShelf==shelfAmount && cat.currentAnimation.getY()<(shelfs[cat.nextShelf-1].position.y+20)){
+            else if(cat.nextShelf==shelfAmount && cat.currentAnimation.getY()<(shelfs[cat.nextShelf-1].texture.getY()+20)){
                 cat.currentAnimation.setY(cat.currentAnimation.getY()+1.5f);    
                 done=false;
             }
             //verify position x//
-            if(cat.nextPosition<0 && (cat.currentAnimation.getX()>(food[0][0].position.x-foodX))){//case jumping to the left, out of the fridge//
+            if(cat.nextPosition<0 && (cat.currentAnimation.getX()>(food[0][0].texture.getX()-foodX))){//case jumping to the left, out of the fridge//
                 cat.currentAnimation.setX(cat.currentAnimation.getX()-1.5f); 
                 done=false;
             }    
-            else if(cat.nextPosition>2 && (cat.currentAnimation.getX()<(food[0][2].position.x+foodX))){//case jumping to the right, out of the fridge//
+            else if(cat.nextPosition>2 && (cat.currentAnimation.getX()<(food[0][2].texture.getX()+foodX))){//case jumping to the right, out of the fridge//
                 cat.currentAnimation.setX(cat.currentAnimation.getX()+1.5f);  
                 done=false;
             }
             else{
-                float aux = fridge.position.x + fridgeLimitsXMin + (cat.nextPosition*foodX) - 10;
+                float aux = fridge.texture.getX() + fridgeLimitsXMin + (cat.nextPosition*foodX) - 10;
                 if(directionRight && (cat.currentAnimation.getX()<aux) ){
                     cat.currentAnimation.setX(cat.currentAnimation.getX()+1.5f);
                     done=false;
@@ -293,28 +311,28 @@ public class TheFridgeGame extends MiniGame {
     
     private void initialAnimation(){
         boolean done = true;//flag to finish zooming//        
-        if(fridge.position.x>finalFridgePosition.x){//zooming//
-            fridge.position.x-=1.25; //ratio between x and y final//
-            fridge.width+=1.25;  
-            fridgeLimitsXMin = Math.round((120*fridge.width)/initialFridgeWidth); //update the limits, using the ratios//
-            fridgeLimitsXMax = Math.round((360*fridge.width)/initialFridgeWidth);           
-            background.position.x-=2;
-            background.width+=2;
+        if(fridge.texture.getX()>finalFridgePosition.x){//zooming//
+            fridge.texture.setX(fridge.texture.getX()-1.25f); //ratio between x and y final//
+            fridge.texture.setSize(fridge.texture.getWidth()+1.25f,fridge.texture.getHeight());  
+            fridgeLimitsXMin = Math.round((120*fridge.texture.getWidth())/initialFridgeWidth); //update the limits, using the ratios//
+            fridgeLimitsXMax = Math.round((360*fridge.texture.getWidth())/initialFridgeWidth);           
+            background.texture.setX(background.texture.getX()-2);
+            background.texture.setSize(background.texture.getWidth()+2,background.texture.getHeight());
             done = false;
         } 
-        if(fridge.position.y>finalFridgePosition.y){
-            fridge.position.y--;
-            fridge.height++; 
-            fridgeLimitsYMin = Math.round((50*fridge.height)/initialFridgeHeight);
-            fridgeLimitsYMax =  Math.round((400*fridge.height)/initialFridgeHeight);
-            background.position.y--;
-            background.height++;           
+        if(fridge.texture.getY()>finalFridgePosition.y){
+            fridge.texture.setY(fridge.texture.getY()-1);
+            fridge.texture.setSize(fridge.texture.getWidth(),fridge.texture.getHeight()+1); 
+            fridgeLimitsYMin = Math.round((50*fridge.texture.getHeight())/initialFridgeHeight);
+            fridgeLimitsYMax =  Math.round((400*fridge.texture.getHeight())/initialFridgeHeight);
+            background.texture.setY(background.texture.getY()-1);            
+            background.texture.setSize(background.texture.getWidth(),background.texture.getHeight()+1);  
             done = false;
         }           
         if(done){ //cat starts to walk//
             cat.currentAnimation = cat.walking;            
-            cat.currentAnimation.setSize(food[0][0].width+30,food[0][0].height+30);            
-            if(cat.currentAnimation.getX()>(fridge.position.x+375)){
+            cat.currentAnimation.setSize(food[0][0].texture.getWidth()+30,food[0][0].texture.getHeight()+30);            
+            if(cat.currentAnimation.getX()>(fridge.texture.getX()+375)){
                 cat.currentAnimation.setX(cat.currentAnimation.getX()-1.7f);  
             }
             else{//animation ends//
@@ -352,10 +370,8 @@ public class TheFridgeGame extends MiniGame {
             }
             System.out.println();
         }
-        fish.width = (fridgeLimitsXMax-fridgeLimitsXMin)/3;
-        fish.height = (fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount-20;
-        penguin.width = (fridgeLimitsXMax-fridgeLimitsXMin)/3+10;
-        penguin.height = (fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount;
+        fish.texture.setSize((fridgeLimitsXMax-fridgeLimitsXMin)/3,(fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount-20);
+        penguin.texture.setSize((fridgeLimitsXMax-fridgeLimitsXMin)/3+10,(fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount);
     }
     
     private void setPositionsFoodMatrix(){
@@ -363,17 +379,17 @@ public class TheFridgeGame extends MiniGame {
         for(int i=0;i<shelfAmount;i++){
             for(int j=0;j<3;j++){
                 if(food[i][j]!=null){
-                    food[i][j].position.x=fridge.position.x + x; 
-                    food[i][j].position.y=fridge.position.y + y;                       
+                    food[i][j].texture.setX(fridge.texture.getX() + x); 
+                    food[i][j].texture.setY(fridge.texture.getY() + y);                       
                 }
                 x+=(fridgeLimitsXMax-fridgeLimitsXMin)/3;//set the food's position according to the fridge limits//
             }                                            //and the amount of food and shelfs//
             x=fridgeLimitsXMin; y+=(fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount;
-            shelfs[i] = new Object(new Vector2((fridge.position.x + x)*0.99f,fridge.position.y+y-30),(fridgeLimitsXMax-fridgeLimitsXMin),(fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount+80,
+            shelfs[i] = new Object(new Vector2((fridge.texture.getX() + x)*0.99f,fridge.texture.getY()+y-30),(fridgeLimitsXMax-fridgeLimitsXMin),(fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount+80,
                         screen.assets.get("the-fridge-game/shelf.png",Texture.class));
         }
-        fish.position = new Vector2(fridge.position.x + fridgeLimitsXMin + (fridgeLimitsXMax-fridgeLimitsXMin)/3, shelfs[shelfAmount-1].position.y+30);
-        penguin.position = new Vector2(fridge.position.x + fridgeLimitsXMin + (fridgeLimitsXMax-fridgeLimitsXMin)/3, fridge.height);
+        fish.texture.setPosition((fridge.texture.getX() + fridgeLimitsXMin + (fridgeLimitsXMax-fridgeLimitsXMin)/3), shelfs[shelfAmount-1].texture.getY()+30);
+        penguin.texture.setPosition((fridge.texture.getX() + fridgeLimitsXMin + (fridgeLimitsXMax-fridgeLimitsXMin)/3), fridge.texture.getHeight());
     }
     
     public TheFridgeGame(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
