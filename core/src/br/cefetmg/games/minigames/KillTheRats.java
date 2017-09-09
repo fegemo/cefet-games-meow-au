@@ -12,7 +12,6 @@ import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -50,6 +49,8 @@ public class KillTheRats extends MiniGame {
     private Vector2 mousePos;
     
     private float countTimer;
+    private float fireSoundInterval;
+    private float fireSoundMinimumInterval;
     private boolean releaseFire;
     private boolean stopAllSounds;
     
@@ -85,11 +86,13 @@ public class KillTheRats extends MiniGame {
         maxNumRats = 100;
         maxNumFires = 100;
         countTimer = 0;
+        fireSoundInterval = 0;
+        fireSoundMinimumInterval = 6.0f;
         releaseFire = true;
         stopAllSounds = false;
         
-        levelSound.play();
-        ratsSound.play(3.0f);
+        levelSound.play(0.8f);
+        ratsSound.play();
     }
     
     private void initBackground() {
@@ -170,7 +173,7 @@ public class KillTheRats extends MiniGame {
             
             for (Rat rat : this.rats) {
                 if (fire.getBoundCirle().overlaps(rat.getBoundCirle())) {
-                    rat.reset();
+                    rat.kill();
                     //fire.reset();
                     break;
                 }
@@ -396,14 +399,18 @@ public class KillTheRats extends MiniGame {
             setPosition(viewport.getWorldWidth() + getWidth(), posY);
             setRotation(90);
             direction.x = -1;
-            direction.y = -1 + (float) Math.random() * 2;
+            direction.y = -0.5f + (float) Math.random();
             direction.nor();
             speed = (float) Math.random() * maxSpeed + minSpeed;
             folowPlayer = false;
             probabilityFollow = 0.001f;
             
             sound.stop();
-            sound.play(0.2f);
+            sound.play(0.1f);
+        }
+        
+        public void kill() {
+            reset();
         }
         
         public void setSound(Sound s) {
@@ -451,17 +458,21 @@ public class KillTheRats extends MiniGame {
         public void setSpeed(float speed) {
             this.speed = speed;
         }
+        
+        public void lookAhead() {
+            double angle = Math.atan(direction.y / direction.x);
+            angle += (direction.x > 0) ? -Math.PI/2 : Math.PI/2;
+            angle *= 180 / Math.PI;
+            
+            setRotation((float) angle);
+        }
 
         public void setDirection(Vector2 v) {
             direction.x = v.x - getX();
             direction.y = v.y - getY();
             direction.nor();
             
-            double angle = Math.atan(direction.y / direction.x);
-            angle += (direction.x > 0) ? -Math.PI/2 : Math.PI/2;
-            angle *= 180 / Math.PI;
-            
-            setRotation((float) angle);
+            lookAhead();
         }
         
         public void walk(Vector2 direction) {
@@ -496,6 +507,26 @@ public class KillTheRats extends MiniGame {
             return tangent.sub(getPosition()).nor();
         }
         
+        public void behaviorMove() {
+            if (folowPlayer)
+                setDirection(cat.getPosition());
+            else {
+                folowPlayer = (Math.random() < probabilityFollow);
+            }
+            
+            if (cat.getEnableFieldForce()) {
+                folowPlayer = true;
+                walk(tangentForceField());
+            }
+            else {
+                if (getY() < 0 || getY() > viewport.getWorldHeight())
+                    direction.y *= -0.8f;
+                
+                lookAhead();
+                walk(direction);
+            }
+        }
+        
         @Override
         public void update(float dt) {
             super.update(dt);
@@ -512,19 +543,7 @@ public class KillTheRats extends MiniGame {
             if (flipX)
                 setFlip(true, false);
             
-            if (folowPlayer)
-                setDirection(cat.getPosition());
-            else {
-                folowPlayer = (Math.random() < probabilityFollow);
-            }
-            
-            if (cat.getEnableFieldForce()) {
-                folowPlayer = true;
-                walk(tangentForceField());
-            }
-            else {
-                walk(direction);
-            }
+            behaviorMove();
             
             if (getX() < 0)
                 reset();
@@ -648,7 +667,10 @@ public class KillTheRats extends MiniGame {
                 launched = true;
                 releaseFire = false;
                 
-                sound.play(0.2f);
+                if (fireSoundInterval >= fireSoundMinimumInterval) {
+                    sound.play(0.2f);
+                    fireSoundInterval = 0;
+                }
             }
         }
         
@@ -656,6 +678,7 @@ public class KillTheRats extends MiniGame {
         public void update(float dt) {
             super.update(dt);
             
+            fireSoundInterval += dt;
             if (stopAllSounds)
                 sound.stop();
             
