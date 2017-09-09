@@ -35,9 +35,8 @@ public class KillTheRatsFactory implements MiniGameFactory {
                 
                 put("kill-the-rats/JerryFive.mp3", Sound.class);
                 put("kill-the-rats/Rats_Ambience.mp3", Sound.class);
-                put("kill-the-rats/FieldRat.mp3", Sound.class);
+                put("kill-the-rats/rat.mp3", Sound.class);
                 put("kill-the-rats/pistol_silenced_walther.mp3", Sound.class);
-                put("kill-the-rats/Punch_Mark.mp3", Sound.class);
             }
         };
     }
