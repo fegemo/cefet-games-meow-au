@@ -28,11 +28,19 @@ public class basCATballFactory implements MiniGameFactory {
             {
                 put("bascatball/ball.png", Texture.class);
                 put("bascatball/ball2.png", Texture.class);
-                put("bascatball/basket.png", Texture.class);
                 put("bascatball/player.png", Texture.class);
                 put("bascatball/bar.png", Texture.class);
                 put("bascatball/target.png", Texture.class);
                 put("bascatball/selector.png", Texture.class);
+                put("bascatball/court.png", Texture.class);
+                put("bascatball/dorami.png", Texture.class);
+                put("bascatball/back.png", Texture.class);
+                put("bascatball/ahead.png", Texture.class);
+                put("bascatball/pointer.png", Texture.class);
+                
+                
+                
+                
                 
                 
               //  put("shoot-the-caries/basket.png", Texture.class);
