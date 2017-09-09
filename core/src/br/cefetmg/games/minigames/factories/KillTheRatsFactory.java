@@ -32,7 +32,7 @@ public class KillTheRatsFactory implements MiniGameFactory {
                 put("kill-the-rats/lakitu.png", Texture.class);
                 put("kill-the-rats/ratframes.png", Texture.class);
                 put("kill-the-rats/fireball_0.png", Texture.class);
-                //put("kill-the-rats/sound.wav", Sound.class);
+                put("kill-the-rats/JerryFive.mp3", Sound.class);
             }
         };
     }

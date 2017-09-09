@@ -11,6 +11,7 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -35,6 +36,8 @@ public class KillTheRats extends MiniGame {
     private Texture catTexture;
     private Texture ratsSpriteSheet;
     private Texture fireTexture;
+    
+    private Sound levelSound;
     
     private Background background;
     private Cat cat;
@@ -63,33 +66,38 @@ public class KillTheRats extends MiniGame {
         ratsSpriteSheet = assets.get("kill-the-rats/ratframes.png", Texture.class);
         fireTexture = assets.get("kill-the-rats/fireball_0.png", Texture.class);
         
-        background = new Background(backgroundTexture);
-        cat = new Cat(catTexture);
-        rats = new Array<Rat>();
-        fires = new Array<Fire>();
+        levelSound = assets.get("kill-the-rats/JerryFive.mp3", Sound.class);
         
+        init();
+        initBackground();
+        initCat();
+        initRat();
+        initFire();
+    }
+    
+    private void init() {
+        mousePos = new Vector2(0, 0);
         maxNumRats = 100;
         maxNumFires = 100;
         countTimer = 0;
         releaseFire = true;
         
-        initBackground();
-        initCat();
-        initRat();
-        initFire();
-        
-        mousePos = new Vector2(0, 0);
+        levelSound.play();
     }
     
     private void initBackground() {
+        background = new Background(backgroundTexture);
         background.setCenter(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
     }
     
     private void initCat() {
+        cat = new Cat(catTexture);
         cat.setCenter(viewport.getWorldWidth() * 0.2f, viewport.getWorldHeight() / 2f);
     }
     
     private void initRat() {
+        rats = new Array<Rat>();
+        
         for (int i = 0; i < maxNumRats; i++) {
             Rat rat = new Rat(ratsSpriteSheet);
             //rat.setCenter(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
@@ -98,6 +106,7 @@ public class KillTheRats extends MiniGame {
     }
     
     private void initFire() {
+        fires = new Array<Fire>();
         //TextureRegion[][] frames = TextureRegion.split(fireTexture,
         //        fireTexture.getWidth(), fireTexture.getHeight());
         
@@ -106,6 +115,11 @@ public class KillTheRats extends MiniGame {
             //fire.setCenter(viewport.getWorldWidth() * 0.1f, viewport.getWorldHeight() / 2f);
             this.fires.add(fire);
         }
+    }
+    
+    @Override
+    protected void onEnd() {
+        levelSound.stop();
     }
     
     @Override
@@ -234,6 +248,7 @@ public class KillTheRats extends MiniGame {
         private float collisionRadius;
         private Circle forceField;
         private boolean enableFieldForce;
+        private float fieldForceInterval;
 
         Cat(final Texture catTexture) {
             super(new Animation(frameDuration, new Array<TextureRegion>() {
@@ -253,6 +268,7 @@ public class KillTheRats extends MiniGame {
         }
         
         public void reset() {
+            fieldForceInterval = 7f;
             collisionRadius = 50;
             setScale(0.6f);
             setPosition(getOriginX(), getOriginY());
@@ -286,7 +302,7 @@ public class KillTheRats extends MiniGame {
             forceField.x = getX();
             forceField.y = getY();
             
-            if (getTime() > 4)
+            if (getTime() > fieldForceInterval)
                 enableFieldForce = true;
             
             if (enableFieldForce) {
@@ -355,7 +371,7 @@ public class KillTheRats extends MiniGame {
             wallDist = 80;
             direction = new Vector2();
             speed = 1;
-            minSpeed = 1f;
+            minSpeed = 2f;
             maxSpeed = 5f;
         }
         

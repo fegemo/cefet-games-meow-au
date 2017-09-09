@@ -2,3 +2,6 @@ https://opengameart.org/content/fireball-spell
 http://hartley.nu/game-art/index.php?sprites
 https://opengameart.org/content/animated-fireball
 http://texturelib.com/#!/category/?path=/Textures/brick/pavement
+
+musicas:
+http://incompetech.com/music/royalty-free/music.html
