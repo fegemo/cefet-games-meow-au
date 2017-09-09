@@ -38,6 +38,9 @@ public class KillTheRats extends MiniGame {
     private Texture fireTexture;
     
     private Sound levelSound;
+    private Sound ratsSound;
+    private Array<Sound> ratSound;
+    private Array<Sound> fireSound;
     
     private Background background;
     private Cat cat;
@@ -48,6 +51,7 @@ public class KillTheRats extends MiniGame {
     
     private float countTimer;
     private boolean releaseFire;
+    private boolean stopAllSounds;
     
     // variáveis de desafio
     private float minimumEnemySpeed;
@@ -67,6 +71,7 @@ public class KillTheRats extends MiniGame {
         fireTexture = assets.get("kill-the-rats/fireball_0.png", Texture.class);
         
         levelSound = assets.get("kill-the-rats/JerryFive.mp3", Sound.class);
+        ratsSound = assets.get("kill-the-rats/Rats_Ambience.mp3", Sound.class);
         
         init();
         initBackground();
@@ -81,8 +86,10 @@ public class KillTheRats extends MiniGame {
         maxNumFires = 100;
         countTimer = 0;
         releaseFire = true;
+        stopAllSounds = false;
         
         levelSound.play();
+        ratsSound.play(3.0f);
     }
     
     private void initBackground() {
@@ -97,9 +104,11 @@ public class KillTheRats extends MiniGame {
     
     private void initRat() {
         rats = new Array<Rat>();
+        ratSound = new Array<Sound>();
         
         for (int i = 0; i < maxNumRats; i++) {
-            Rat rat = new Rat(ratsSpriteSheet);
+            ratSound.add(assets.get("kill-the-rats/FieldRat.mp3", Sound.class));
+            Rat rat = new Rat(ratsSpriteSheet, ratSound.get(i));
             //rat.setCenter(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
             this.rats.add(rat);
         }
@@ -109,17 +118,22 @@ public class KillTheRats extends MiniGame {
         fires = new Array<Fire>();
         //TextureRegion[][] frames = TextureRegion.split(fireTexture,
         //        fireTexture.getWidth(), fireTexture.getHeight());
+        fireSound = new Array<Sound>();
         
         for (int i = 0; i < maxNumFires; i++) {
             Fire fire = new Fire(fireTexture);
             //fire.setCenter(viewport.getWorldWidth() * 0.1f, viewport.getWorldHeight() / 2f);
+            fireSound.add(assets.get("kill-the-rats/pistol_silenced_walther.mp3", Sound.class));
+            fire.setSound(fireSound.get(i));
             this.fires.add(fire);
         }
     }
     
     @Override
     protected void onEnd() {
+        stopAllSounds = true;
         levelSound.stop();
+        ratsSound.stop();
     }
     
     @Override
@@ -329,6 +343,7 @@ public class KillTheRats extends MiniGame {
     
     class Rat extends MultiAnimatedSprite {
 
+        private Sound sound;
         private Vector2 direction;
         private float speed;
         private float minSpeed;
@@ -346,7 +361,7 @@ public class KillTheRats extends MiniGame {
         static final int ROWS = 6;
         static final int COLS = 8;
 
-        public Rat(final Texture ratsSpriteSheet) {
+        public Rat(final Texture ratsSpriteSheet, Sound s) {
             super(new HashMap<String, Animation>() {
                 {
                     TextureRegion[][] frames = TextureRegion
@@ -358,6 +373,7 @@ public class KillTheRats extends MiniGame {
                 }
             }, "walking");
             
+            sound = s;
             init();
             reset();
         }
@@ -380,10 +396,18 @@ public class KillTheRats extends MiniGame {
             setPosition(viewport.getWorldWidth() + getWidth(), posY);
             setRotation(90);
             direction.x = -1;
-            direction.y = 0;
+            direction.y = -1 + (float) Math.random() * 2;
+            direction.nor();
             speed = (float) Math.random() * maxSpeed + minSpeed;
             folowPlayer = false;
             probabilityFollow = 0.001f;
+            
+            sound.stop();
+            sound.play(0.2f);
+        }
+        
+        public void setSound(Sound s) {
+            sound = s;
         }
         
         @Override
@@ -476,6 +500,9 @@ public class KillTheRats extends MiniGame {
         public void update(float dt) {
             super.update(dt);
             
+            if (stopAllSounds)
+                sound.stop();
+            
             time += dt;
             if (time >= 2*COLS*frameDuration) {
                 flipX = !flipX;
@@ -495,8 +522,9 @@ public class KillTheRats extends MiniGame {
                 folowPlayer = true;
                 walk(tangentForceField());
             }
-            else
+            else {
                 walk(direction);
+            }
             
             if (getX() < 0)
                 reset();
@@ -511,6 +539,7 @@ public class KillTheRats extends MiniGame {
         static final int WIDTH = 64;
         static final int HEIGHT = 64;
         
+        private Sound sound;
         private float speed;
         private float offset;
         private float collisionRadius;
@@ -548,6 +577,10 @@ public class KillTheRats extends MiniGame {
             setPosition(cat.getX(), cat.getY());
             speed = 20;
             launched = false;
+        }
+        
+        public void setSound(Sound s) {
+            sound = s;
         }
         
         @Override
@@ -614,12 +647,17 @@ public class KillTheRats extends MiniGame {
             if (releaseFire && !launched) {
                 launched = true;
                 releaseFire = false;
+                
+                sound.play(0.2f);
             }
         }
         
         @Override
         public void update(float dt) {
             super.update(dt);
+            
+            if (stopAllSounds)
+                sound.stop();
             
             if (launched)
                 follow();
