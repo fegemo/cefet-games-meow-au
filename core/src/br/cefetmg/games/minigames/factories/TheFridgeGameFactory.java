@@ -50,7 +50,8 @@ public class TheFridgeGameFactory implements MiniGameFactory{
                 put("the-fridge-game/City Shoping - Blues Music.mp3", Sound.class);   
                 put("the-fridge-game/Whistle Up - Sound FX.mp3", Sound.class);   
                 put("the-fridge-game/Whistle Down - Sound FX.mp3", Sound.class);  
-                put("the-fridge-game/crash.mp3", Sound.class);    
+                put("the-fridge-game/Crash.mp3", Sound.class);    
+                put("the-fridge-game/Clap.mp3", Sound.class);  
             }
         };
     }
