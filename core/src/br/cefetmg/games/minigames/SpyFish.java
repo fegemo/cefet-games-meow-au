@@ -45,7 +45,7 @@ public class SpyFish extends MiniGame {
     private static float diff;
 
     public SpyFish(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 1000f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
+        super(screen, observer, difficulty, 20f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
 
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaFundo = assets.get("spy-fish/fundo.png", Texture.class);
