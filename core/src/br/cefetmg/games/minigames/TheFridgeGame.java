@@ -153,12 +153,16 @@ public class TheFridgeGame extends MiniGame {
     
     private boolean shakingAnimation(){//shakes the penguin on the top of fridge//
         boolean done = true;
-        if(shakingCounter==3){
-            
+        if(shakingCounter==2){
+            if(penguin.texture.getRotation()<70){
+                penguin.texture.setRotation(penguin.texture.getRotation()+5);
+                penguin.texture.setY(penguin.texture.getY()+1.25f);
+                done = false;
+            }
         }
         else{
-            if(shakingCounter%2==0 && penguin.texture.getRotation()<15){//FIX ME//
-                penguin.texture.setRotation(penguin.texture.getRotation()+1);
+            if(shakingCounter%2==0 && penguin.texture.getRotation()<15){
+                penguin.texture.setRotation(penguin.texture.getRotation()+3);
                 done = false;
             }            
             else if(shakingCounter%2==0 && penguin.texture.getRotation()>=15){
@@ -166,7 +170,7 @@ public class TheFridgeGame extends MiniGame {
                 done = false;
             }
             else if(shakingCounter%2!=0 && penguin.texture.getRotation()>-15){
-                penguin.texture.setRotation(penguin.texture.getRotation()-1);
+                penguin.texture.setRotation(penguin.texture.getRotation()-3);
                 done = false;
             }
             else if(shakingCounter%2!=0 && penguin.texture.getRotation()<=-15){
@@ -531,7 +535,7 @@ public class TheFridgeGame extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        System.out.println("\n\nDifficulty: " + difficulty + "\n\n");//FIX ME// SET UP TIME//
+        System.out.println("\n\nDifficulty: " + difficulty + "\n\n");
         shelfAmount = Math.round(DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 4, 7)); //between 4 and 7//
         System.out.println("shelfAmount: " + shelfAmount);
     }
