@@ -81,7 +81,7 @@ public class MemoryChip implements Collidable {
     @Override
     public boolean collidesWith(Collidable other) {
         if (other instanceof Fish) {
-            // se ocorrer colisão
+            // se ocorrer colisão com objeto Fish
             return Collision.circlesOverlap(circle, other.getMinimumEnclosingBall());
         } else {
             return false;

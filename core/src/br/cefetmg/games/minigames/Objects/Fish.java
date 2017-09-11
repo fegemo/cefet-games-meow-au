@@ -7,13 +7,19 @@ package br.cefetmg.games.minigames.Objects;
 
 import br.cefetmg.games.Config;
 import br.cefetmg.games.collision.Collidable;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import java.util.Random;
 
 /**
  *
@@ -21,27 +27,61 @@ import static java.lang.Math.min;
  */
 public class Fish extends Sprite implements Collidable {
 
-    private Vector2 dposi;
+    private Vector2 position = new Vector2();
+    ;
     private int lado;
-    //private final Texture texture;
 
-    static final int FRAME_WIDTH = 28;
-    static final int FRAME_HEIGHT = 36;
+    private Sprite sprite;
+    private Circle circle;
+    private ShapeRenderer shapeRenderer;
 
-    public Fish(Texture fishSprite) {
-        super(fishSprite);
+    public Fish(Texture texture) {
+        this.sprite = new Sprite(texture);
+        this.circle = new Circle();
+        this.shapeRenderer = new ShapeRenderer();
+
+        this.position.x = 20.0f;
+        this.position.y = 220.0f;
+
+        this.circle.x = this.position.x + 64.0f;
+        this.circle.y = this.position.y + 59.0f;
+        this.circle.radius = 88.576f;
+
+        this.sprite.setPosition(this.position.x, this.position.y);
     }
 
-    public void update(float dt) {
-        float auxX = dposi.x > 0 ? min(Config.WORLD_WIDTH, super.getX() + dposi.x) : max(0, super.getX() + dposi.x);
-        float auxY = dposi.y > 0 ? min(Config.WORLD_HEIGHT, super.getY() + dposi.y) : max(0, super.getY() + dposi.y);
-        super.setPosition(auxX, auxY);
-        setDposi(0, 0);
+    public void update(float x, float y) {
+        this.position.x = x;
+        this.position.y = y;
+        this.circle.x = this.position.x + 64.0f;
+        this.circle.y = this.position.y + 59.0f;
+        this.sprite.setPosition(this.position.x, this.position.y);
     }
 
-    public void setDposi(float x, float y) {
-        this.dposi.x = x;
-        this.dposi.y = y;
+    public void render(SpriteBatch sb, float x, float y) {
+
+        this.sprite.draw(sb);
+
+        if (((x <= (this.circle.x + this.circle.radius)) && (x >= (this.circle.x - this.circle.radius)))
+                && ((y <= (this.circle.y + this.circle.radius)) && (y >= (this.circle.y - this.circle.radius)))) {
+            // se o ponteiro do mouse estiver dentro da area de colisão
+            if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+                //se clicar com o mouse sobre o objeto Fish
+                update(x,y);
+            }
+        }
+
+    }
+
+    public void render_area_collision() {
+
+        // metodo para mostrar o circulo de colisão
+        this.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        this.shapeRenderer.identity();
+        this.shapeRenderer.setColor(Color.RED);
+        this.shapeRenderer.circle(this.circle.x, this.circle.y, this.circle.radius);
+        this.shapeRenderer.end();
+
     }
 
     @Override
