@@ -20,6 +20,7 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Rectangle;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -29,7 +30,7 @@ import java.util.Iterator;
  */
 public class HeadSoccer extends MiniGame {
 
-    private float floorBall, reflected;
+    private float floorBall, reflected, limit;
     private Texture backgroundTexture;
     private Texture catTexture;
     private Texture goalLeftTexture;
@@ -48,9 +49,12 @@ public class HeadSoccer extends MiniGame {
     private Obstacle backgroundRight;
     private Obstacle backgroundTop;
     private Obstacle backgroundDown;
+    private Rectangle player_Rect;
     private Sprite background;
     private Sprite goalLeft;
     private Sprite goalRight;
+    private Sprite TraveD;
+    private Sprite TraveE;
     private ArrayList objects;
     private ArrayList obstacles;
 
@@ -177,7 +181,7 @@ public class HeadSoccer extends MiniGame {
                 speed.x = 0;
                 movingH = false;
             }
-
+            //System.out.println("speed x: "+ speed.x + "speed y: "+ speed.y);
             setPositionBall(x, y);
         }
 
@@ -203,14 +207,21 @@ public class HeadSoccer extends MiniGame {
         backgroundTexture = assets.get("head-soccer/Arena.png", Texture.class);
         goalLeftTexture = assets.get("head-soccer/goalLeft.png", Texture.class);
         goalRightTexture = assets.get("head-soccer/goalRight.png", Texture.class);
-        catTexture = assets.get("head-soccer/cat.png", Texture.class);
+        catTexture = assets.get("head-soccer/cat1.png", Texture.class);
 
+        TraveD = new Sprite(assets.get("head-soccer/TraveD.png", Texture.class));
+        TraveE = new Sprite(assets.get("head-soccer/TraveE.png", Texture.class));
         goalLeft = new Sprite(goalLeftTexture);
         goalRight = new Sprite(goalRightTexture);
         background = new Sprite(backgroundTexture);
 
         goalLeft.setPosition(INITIALXLEFTGOAL, INITIALYGOAL);
         goalRight.setPosition(INITIALXRIGHTGOAL, INITIALYGOAL);
+
+        TraveD = new Sprite(assets.get("head-soccer/TraveD.png", Texture.class));
+        TraveE = new Sprite(assets.get("head-soccer/TraveE.png", Texture.class));
+        TraveD.setPosition(INITIALXRIGHTGOAL, INITIALYGOAL);
+        TraveE.setPosition(INITIALXLEFTGOAL, INITIALYGOAL);
 
         objects = new ArrayList();
 
@@ -221,6 +232,7 @@ public class HeadSoccer extends MiniGame {
         objects.add(cat);
         objects.add(ball);
 
+        limit = 0.004f;
         int width = 7;
         int height = 7;
         int widthscreen = 1280;
@@ -232,17 +244,32 @@ public class HeadSoccer extends MiniGame {
         backgroundTop = new Obstacle(batch, new Vector2(0, heightscreen - width), widthscreen, height);
         backgroundDown = new Obstacle(batch, new Vector2(0, floorBall), widthscreen, height);
 
-        leftGoal = new Obstacle(batch, new Vector2(99, floorBall), width, 173);
-        goalCrossLeft = new Obstacle(batch, new Vector2(0, 246), 127, height);
-        rightGoal = new Obstacle(batch, new Vector2(842, floorBall), width, 173);
+        leftGoal = new Obstacle(batch, new Vector2(99, floorBall), width, 160);
+        goalCrossLeft = new Obstacle(batch, new Vector2(0, 264), 127, height);
+        rightGoal = new Obstacle(batch, new Vector2(1184, floorBall), width, 160);
         goalCrossRight = new Obstacle(batch, new Vector2(1164, 264), 127, height);
 
     }
 
     public void verifyCollision(float dt) {
-        if (Colision.rectCircleOverlap(cat.getSprite_Player().getBoundingRectangle(), ball.circle) != null) {
-            ball.setSpeed(ball.getSpeed().add(cat.getSpeed()).scl(cat.getMass()));
+        player_Rect = cat.getSprite_Player().getBoundingRectangle();
+
+        //Colisão jogador bola
+        if (Colision.rectCircleOverlap(player_Rect, ball.circle) != null) {
+            float x = Colision.rectCircleOverlap(player_Rect, ball.circle).x;
+            float y = Colision.rectCircleOverlap(player_Rect, ball.circle).y;
+            if (cat.walking) {
+                ball.setSpeed(ball.getSpeed().add(cat.getSpeed()).scl(cat.getMass()));
+            } else {
+                if (y == player_Rect.y || y == player_Rect.y + player_Rect.height) {
+                    ball.setSpeed(ball.getSpeed().x * reflected, ball.getSpeed().y * -reflected);
+                } else {
+                    ball.setSpeed(ball.getSpeed().x * -reflected, ball.getSpeed().y * reflected);
+                }
+            }
         }
+
+        //Colisão chão e bola
         if (Colision.rectCircleOverlap(backgroundDown.getRec(), ball.circle) != null) {
             if (ball.movingV) {
                 ball.setSpeed(ball.getSpeed().x * reflected, ball.getSpeed().y * -reflected);
@@ -253,38 +280,55 @@ public class HeadSoccer extends MiniGame {
                     ball.setSpeed(ball.getSpeed().add(2.25f * dt, 0));
                 }
             }
-        } else if (Colision.rectCircleOverlap(backgroundTop.getRec(), ball.circle) != null) {
+        } //Colisão teto e bola
+        else if (Colision.rectCircleOverlap(backgroundTop.getRec(), ball.circle) != null) {
             ball.setSpeed(ball.getSpeed().x * reflected, ball.getSpeed().y * -reflected);
         }
-
+        //Colisão lateral esquerda e bola
         if (Colision.rectCircleOverlap(backgroundLeft.getRec(), ball.circle) != null) {
             ball.setSpeed(ball.getSpeed().x * -reflected, ball.getSpeed().y * reflected);
-        } else if (Colision.rectCircleOverlap(backgroundRight.getRec(), ball.circle) != null) {
+        }//Colisão lateral direita e bola
+        else if (Colision.rectCircleOverlap(backgroundRight.getRec(), ball.circle) != null) {
             ball.setSpeed(ball.getSpeed().x * -reflected, ball.getSpeed().y * reflected);
         }
-
+        //Colisão travessão esquerdo e bola
         if (Colision.rectCircleOverlap(goalCrossLeft.getRec(), ball.circle) != null) {
             float x = Colision.rectCircleOverlap(goalCrossLeft.getRec(), ball.circle).x;
             float y = Colision.rectCircleOverlap(goalCrossLeft.getRec(), ball.circle).y;
-            if(goalCrossLeft.getRec().y + goalCrossLeft.getRec().height == y || goalCrossLeft.getRec().y == y)
+
+            if (goalCrossRight.getRec().y + goalCrossRight.getRec().height == y) {
+                ball.setSpeed(ball.getSpeed().x * 1, ball.getSpeed().y * -1);
+            } else if (goalCrossRight.getRec().y == y) {
                 ball.setSpeed(ball.getSpeed().x * reflected, ball.getSpeed().y * -reflected);
-            else{
-                ball.setSpeed(ball.getSpeed().x * -reflected, ball.getSpeed().y * reflected);
+            } else {
+                ball.setSpeed(ball.getSpeed().x * -1, ball.getSpeed().y * 1);
             }
-        } else if (Colision.rectCircleOverlap(leftGoal.getRec(), ball.circle) != null) {
+        }//Colisão gol esquerdo e bola 
+        else if (Colision.rectCircleOverlap(leftGoal.getRec(), ball.circle) != null) {
             //Gol na esquerda
-        } else if (Colision.rectCircleOverlap(goalCrossRight.getRec(), ball.circle) != null) {
+        }
+        //Colisão travessão direito e bola
+        if (Colision.rectCircleOverlap(goalCrossRight.getRec(), ball.circle) != null) {
             float x = Colision.rectCircleOverlap(goalCrossRight.getRec(), ball.circle).x;
             float y = Colision.rectCircleOverlap(goalCrossRight.getRec(), ball.circle).y;
-            if(goalCrossRight.getRec().y + goalCrossRight.getRec().height == y || goalCrossRight.getRec().y == y)
+            if (goalCrossRight.getRec().y + goalCrossRight.getRec().height == y) {
+                ball.setSpeed(ball.getSpeed().x * 1, ball.getSpeed().y * -1);
+            } else if (goalCrossRight.getRec().y == y) {
                 ball.setSpeed(ball.getSpeed().x * reflected, ball.getSpeed().y * -reflected);
-            else{
-                ball.setSpeed(ball.getSpeed().x * -reflected, ball.getSpeed().y * reflected);
+            } else {
+                ball.setSpeed(ball.getSpeed().x * -1, ball.getSpeed().y * 1);
             }
-        } else if (Colision.rectCircleOverlap(rightGoal.getRec(), ball.circle) != null) {
+        }//Colisão gol esquerdo e bola 
+        else if (Colision.rectCircleOverlap(rightGoal.getRec(), ball.circle) != null) {
             //Gol na Direita
         }
 
+        if (ball.getSpeed().x < limit && ball.getSpeed().x > -limit) {
+            ball.setSpeed(0, ball.getSpeed().y);
+        }
+        if (ball.getSpeed().y < limit && ball.getSpeed().y > -limit) {
+            ball.setSpeed(ball.getSpeed().x, 0);
+        }
     }
 
     @Override
@@ -345,7 +389,6 @@ public class HeadSoccer extends MiniGame {
             }
         }
 
-        //Gdx.graphics.getDeltaTime()
         /*
         // vai diminuindo o tamanho das cáries existentes
         for (int i = 0; i < enemies.size; i++) {
@@ -357,6 +400,7 @@ public class HeadSoccer extends MiniGame {
         }
          */
         cat.updateMoviment();
+        cat.moveFoot(dt);
         verifyCollision(dt);
         ball.updateMovement();
     }
@@ -373,6 +417,18 @@ public class HeadSoccer extends MiniGame {
         goalRight.draw(batch);
         cat.draw();
         ball.draw();
+        TraveD.draw(batch);
+        TraveE.draw(batch);
+        /*
+        leftGoal.draw();
+        goalCrossLeft.draw();
+        rightGoal.draw();      
+        goalCrossRight.draw();
+        backgroundLeft.draw();
+        backgroundRight.draw();
+        backgroundTop.draw();
+        backgroundDown.draw();
+         */
     }
 
     @Override

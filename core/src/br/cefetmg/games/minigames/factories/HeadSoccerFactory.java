@@ -38,11 +38,15 @@ public class HeadSoccerFactory implements MiniGameFactory {
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
             {
+                put("head-soccer/shoes.png", Texture.class);
                 put("head-soccer/Arena.png", Texture.class);
-                put("head-soccer/cat.png", Texture.class);
+                put("head-soccer/cat1.png", Texture.class);
+                put("head-soccer/cat2.png", Texture.class);
                 put("head-soccer/ball.png", Texture.class);
                 put("head-soccer/goalLeft.png", Texture.class);
                 put("head-soccer/goalRight.png", Texture.class);
+                put("head-soccer/TraveD.png", Texture.class);
+                put("head-soccer/TraveE.png", Texture.class);
             }
         };
     }
