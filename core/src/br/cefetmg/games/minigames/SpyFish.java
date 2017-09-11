@@ -29,10 +29,7 @@ public class SpyFish extends MiniGame {
 
     //texturas
     private Texture texturaFish;
-    private Texture texturaCard;
     private Texture texturaFundo;
-    private Texture texturaFcontrol;
-    private Texture texturaMcontrol;
     private Texture texturaMemoCard;
 
     private ArrayList<MemoryChip> chip;
@@ -51,10 +48,7 @@ public class SpyFish extends MiniGame {
         super(screen, observer, difficulty, 1000f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
 
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
-        this.texturaCard = assets.get("spy-fish/memory-card.png", Texture.class);
         this.texturaFundo = assets.get("spy-fish/fundo.png", Texture.class);
-        this.texturaFcontrol = assets.get("spy-fish/fundo-controle.png", Texture.class);
-        this.texturaMcontrol = assets.get("spy-fish/controle-principal.png", Texture.class);
         this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
 
         this.fish = new Fish(texturaFish);
@@ -73,18 +67,9 @@ public class SpyFish extends MiniGame {
 
     @Override
     protected void onStart() {
-
         chip = new ArrayList<MemoryChip>();
         MAX_CHIPS = 5;
         for (int i = 0; i < MAX_CHIPS; i++) {
-            chip.add(new MemoryChip(texturaMemoCard));
-        }
-
-        chip = new ArrayList<MemoryChip>();
-        MAX_CHIPS = 100;
-        for (int i = 0;
-                i < MAX_CHIPS;
-                i++) {
             chip.add(new MemoryChip(texturaMemoCard));
         }
     }
@@ -98,13 +83,13 @@ public class SpyFish extends MiniGame {
 
     @Override
     public void onHandlePlayingInput() {
-        /*Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);
-        if(Gdx.input.isTouched())
-            control.update(click);
+       /* if(Gdx.input.isTouched())
+            fish.update(click);
         else
-            control.update();
-         */// throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            fish.update();*/
+        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -125,7 +110,9 @@ public class SpyFish extends MiniGame {
         batch.begin();
 
         fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
-
+        batch.draw(texturaFish, 0, 0);
+        batch.draw(texturaFundo, 100, 100);
+        this.fish.draw(batch);
         for (MemoryChip chip : chip) {
             chip.render(batch, this.fish);
         }
@@ -155,3 +142,5 @@ public class SpyFish extends MiniGame {
         return camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
     }
 }
+
+
