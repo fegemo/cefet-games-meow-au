@@ -153,12 +153,16 @@ public class TheFridgeGame extends MiniGame {
     
     private boolean shakingAnimation(){//shakes the penguin on the top of fridge//
         boolean done = true;
-        if(shakingCounter==3){
-            
+        if(shakingCounter==2){
+            if(penguin.texture.getRotation()<70){
+                penguin.texture.setRotation(penguin.texture.getRotation()+5);
+                penguin.texture.setY(penguin.texture.getY()+1.25f);
+                done = false;
+            }
         }
         else{
-            if(shakingCounter%2==0 && penguin.texture.getRotation()<15){//FIX ME//
-                penguin.texture.setRotation(penguin.texture.getRotation()+1);
+            if(shakingCounter%2==0 && penguin.texture.getRotation()<15){
+                penguin.texture.setRotation(penguin.texture.getRotation()+3);
                 done = false;
             }            
             else if(shakingCounter%2==0 && penguin.texture.getRotation()>=15){
@@ -166,7 +170,7 @@ public class TheFridgeGame extends MiniGame {
                 done = false;
             }
             else if(shakingCounter%2!=0 && penguin.texture.getRotation()>-15){
-                penguin.texture.setRotation(penguin.texture.getRotation()-1);
+                penguin.texture.setRotation(penguin.texture.getRotation()-3);
                 done = false;
             }
             else if(shakingCounter%2!=0 && penguin.texture.getRotation()<=-15){
@@ -345,22 +349,23 @@ public class TheFridgeGame extends MiniGame {
                 done=false;
             }
             //verify position x//
+            int deltaX = 5;
             if(cat.nextPosition<0 && (cat.currentAnimation.getX()>(food[0][0].texture.getX()-foodX))){//case jumping to the left, out of the fridge//
-                cat.currentAnimation.setX(cat.currentAnimation.getX()-1.1f); 
+                cat.currentAnimation.setX(cat.currentAnimation.getX()-deltaX); 
                 done=false;
             }    
             else if(cat.nextPosition>2 && (cat.currentAnimation.getX()<(food[0][2].texture.getX()+foodX))){//case jumping to the right, out of the fridge//
-                cat.currentAnimation.setX(cat.currentAnimation.getX()+1.1f);  
+                cat.currentAnimation.setX(cat.currentAnimation.getX()+deltaX);  
                 done=false;
             }
             else{
                 float aux = fridge.texture.getX() + fridgeLimitsXMin + (cat.nextPosition*foodX);
                 if(directionRight && (cat.currentAnimation.getX()<aux-15)){
-                    cat.currentAnimation.setX(cat.currentAnimation.getX()+1.1f);
+                    cat.currentAnimation.setX(cat.currentAnimation.getX()+deltaX);
                     done=false;
                 }
                 else if(directionRight==false && (cat.jumping.getX()>aux)){
-                    cat.currentAnimation.setX(cat.currentAnimation.getX()-1.1f);
+                    cat.currentAnimation.setX(cat.currentAnimation.getX()-deltaX);
                     done=false;
                 }
             }
@@ -531,7 +536,7 @@ public class TheFridgeGame extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        System.out.println("\n\nDifficulty: " + difficulty + "\n\n");//FIX ME// SET UP TIME//
+        System.out.println("\n\nDifficulty: " + difficulty + "\n\n");
         shelfAmount = Math.round(DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 4, 7)); //between 4 and 7//
         System.out.println("shelfAmount: " + shelfAmount);
     }
