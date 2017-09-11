@@ -37,7 +37,6 @@ public class GatoFantasma extends MiniGame{
     private int enemiesKilled;
     private int spawnedEnemies;
     private int cont;
-    
     private float initialEnemyScale;
     private int totalEnemies;
     private float spawnInterval;
@@ -70,10 +69,6 @@ public class GatoFantasma extends MiniGame{
                 if (++spawnedEnemies < totalEnemies) {
                     scheduleEnemySpawn();
                 }
-                else{
-                    //perdeu playboy
-                    challengeFailed();
-                }
             }
         };
         // spawnInterval * 15% para mais ou para menos
@@ -95,7 +90,7 @@ public class GatoFantasma extends MiniGame{
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         this.initialEnemyScale = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 0.5f, 0.25f);
+                .getCurveValueBetween(difficulty, 0.05f, 0.25f);
         this.spawnInterval = DifficultyCurve.S_NEGATIVE
                 .getCurveValueBetween(difficulty, 0.5f, 1.5f);
         this.totalEnemies = (int)(20*DifficultyCurve.LINEAR.getCurveValueBetween(difficulty,0.f,1.0f))+3;
@@ -143,9 +138,14 @@ public class GatoFantasma extends MiniGame{
         for (int i = 0; i < enemies.size; i++) {
             Sprite sprite = enemies.get(i);   
             // diminui só até x% do tamanho da imagem
-            if ((sprite.getHeight()/viewport.getScreenHeight())<0.75f ) {
+            if (sprite.getScaleY()<2.0f ) {
+                System.out.println(sprite.getScaleY()+"enemies"+enemies.size);
                 sprite.setScale(sprite.getScaleX() + 0.3f * dt);
             }
+            else{
+                    //perdeu playboy
+                    challengeFailed();
+                }
         }
         enemies.sort(new Comparator<Sprite>() {
             @Override
@@ -160,7 +160,7 @@ public class GatoFantasma extends MiniGame{
     @Override
     public void onDrawGame() {
         batch.draw(fundoTexture, 0,0);
-        for (int i = enemies.size-1; i > 0; i--) {
+        for (int i = enemies.size-1; i >= 0; i--) {
             Sprite sprite = enemies.get(i);
             sprite.draw(batch);
         }
