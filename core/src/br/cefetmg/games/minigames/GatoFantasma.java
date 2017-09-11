@@ -17,6 +17,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
+import java.util.Comparator;
+import java.util.function.Function;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 /**
  *
@@ -28,6 +33,7 @@ public class GatoFantasma extends MiniGame{
     private Sprite target;
     private Texture catsTexture;
     private Texture targetTexture;
+    private Texture fundoTexture;
     private int enemiesKilled;
     private int spawnedEnemies;
 
@@ -44,9 +50,11 @@ public class GatoFantasma extends MiniGame{
     protected void onStart() {
          enemies = new Array<Sprite>();
         catsTexture = assets.get(
-                "", Texture.class);
+                "gato-fantasma/gato-fantasma.png", Texture.class);
         targetTexture = assets.get(
-                "", Texture.class);
+                "gato-fantasma/target.png", Texture.class);
+        fundoTexture = assets.get(
+                "gato-fantasma/fundo.jpg", Texture.class);
         target = new Sprite(targetTexture);
         target.setOriginCenter();
         enemiesKilled = 0;
@@ -74,25 +82,22 @@ public class GatoFantasma extends MiniGame{
         Vector2 position = new Vector2(rand.nextFloat(), rand.nextFloat());
         // multiplica x e y pela largura e altura da tela
         position.scl(
-                viewport.getWorldWidth() - cariesTexture.getWidth()
+                viewport.getWorldWidth() - catsTexture.getWidth()
                 * initialEnemyScale,
                 viewport.getWorldHeight()
-                - cariesTexture.getHeight() * initialEnemyScale);
+                - catsTexture.getHeight() * initialEnemyScale);
 
-        Sprite enemy = new Sprite(cariesTexture);
+        Sprite enemy = new Sprite(catsTexture);
         enemy.setPosition(position.x, position.y);
         enemy.setScale(initialEnemyScale);
         enemies.add(enemy);
-
-        // toca um efeito sonoro
-        cariesAppearingSound.play(0.5f);
     }
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         this.initialEnemyScale = DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 1.15f, 0.8f);
-        this.minimumEnemyScale = DifficultyCurve.LINEAR_NEGATIVE
+        this.maxEnemyScale = DifficultyCurve.LINEAR_NEGATIVE
                 .getCurveValueBetween(difficulty, 0.15f, 0.4f);
         this.spawnInterval = DifficultyCurve.S_NEGATIVE
                 .getCurveValueBetween(difficulty, 0.5f, 1.5f);
@@ -120,7 +125,6 @@ public class GatoFantasma extends MiniGame{
                     this.enemiesKilled++;
                     // remove o inimigo do array
                     this.enemies.removeValue(sprite, true);
-                    cariesDyingSound.play();
                     // se tiver matado todos os inimigos, o desafio
                     // está resolvido
                     if (this.enemiesKilled >= this.totalEnemies) {
@@ -137,18 +141,22 @@ public class GatoFantasma extends MiniGame{
 
     @Override
     public void onUpdate(float dt) {
-        // vai diminuindo o tamanho das cáries existentes
         for (int i = 0; i < enemies.size; i++) {
             Sprite sprite = enemies.get(i);
-            // diminui só até x% do tamanho da imagem
+            // aumenta só até x% do tamanho da imagem
             if (sprite.getScaleX() < maxEnemyScale) {
                 sprite.setScale(sprite.getScaleX() + 0.3f * dt);
             }
         }
-        enemies.sort();
+        enemies.sort(new Comparator<Sprite>() {
+            @Override
+            public int compare(Sprite b1, Sprite b2) {
+                //TODO testar nulos 
+                return b1.getScaleX()>b2.getScaleX()?-1:b1.getScaleX()==b2.getScaleX()?0:1;
+            }
+        });
     }
 
-    private boolean comp(Sprite a, Sprite b){ return a.getScaleX()>b.getScaleX();}
     
     @Override
     public void onDrawGame() {
