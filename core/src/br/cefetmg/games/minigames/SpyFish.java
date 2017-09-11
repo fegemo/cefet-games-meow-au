@@ -43,7 +43,7 @@ public class SpyFish extends MiniGame {
     private static float diff;
 
     public SpyFish(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 10000, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
+        super(screen, observer, difficulty, 20f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
 
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaFundo = assets.get("spy-fish/fundo.png", Texture.class);
@@ -89,20 +89,18 @@ public class SpyFish extends MiniGame {
 
     @Override
     public void onHandlePlayingInput() {
-        /*Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);
-        if(Gdx.input.isTouched())
-            control.update(click);
+       /* if(Gdx.input.isTouched())
+            fish.update(click);
         else
-            control.update();
-         */// throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            fish.update();*/
+        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void onUpdate(float dt) {
-        /*fish.update(dt);
-        memoryCard.update();*/
-
+        
     }
 
     @Override

@@ -59,38 +59,7 @@ public class GatoFantasma extends MiniGame{
         target.setOriginCenter();
         enemiesKilled = 0;
         spawnedEnemies = 0;
-        scheduleEnemySpawn();
-    }
-
-    private void scheduleEnemySpawn() {
-        Timer.Task t = new Timer.Task() {
-            @Override
-            public void run() {
-                spawnEnemy();
-                if (++spawnedEnemies < totalEnemies) {
-                    scheduleEnemySpawn();
-                }
-            }
-        };
-        // spawnInterval * 15% para mais ou para menos
-        float nextSpawnMillis = this.spawnInterval
-                * (rand.nextFloat() / 3 + 0.15f);
-        timer.scheduleTask(t, nextSpawnMillis);
-    }
-    private void spawnEnemy() {
-        // pega x e y entre 0 e 1
-        Vector2 position = new Vector2(rand.nextFloat(), rand.nextFloat());
-        // multiplica x e y pela largura e altura da tela
-        position.scl(
-                viewport.getWorldWidth() - catsTexture.getWidth()
-                * initialEnemyScale,
-                viewport.getWorldHeight()
-                - catsTexture.getHeight() * initialEnemyScale);
-
-        Sprite enemy = new Sprite(catsTexture);
-        enemy.setPosition(position.x, position.y);
-        enemy.setScale(initialEnemyScale);
-        enemies.add(enemy);
+        //scheduleEnemySpawn();
     }
 
     @Override
@@ -143,10 +112,6 @@ public class GatoFantasma extends MiniGame{
     public void onUpdate(float dt) {
         for (int i = 0; i < enemies.size; i++) {
             Sprite sprite = enemies.get(i);
-            // aumenta só até x% do tamanho da imagem
-            if (sprite.getScaleX() < maxEnemyScale) {
-                sprite.setScale(sprite.getScaleX() + 0.3f * dt);
-            }
         }
         enemies.sort(new Comparator<Sprite>() {
             @Override
@@ -160,7 +125,7 @@ public class GatoFantasma extends MiniGame{
     
     @Override
     public void onDrawGame() {
-
+        batch.draw(fundoTexture, 0,0);
         for (int i = 0; i < enemies.size; i++) {
             Sprite sprite = enemies.get(i);
             sprite.draw(batch);
