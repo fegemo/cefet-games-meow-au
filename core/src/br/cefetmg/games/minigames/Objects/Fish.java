@@ -73,7 +73,7 @@ public class Fish extends Sprite implements Collidable {
                 update(x,y);
                 float ultimo_x = this.position.x;
                 if( ultimo_x > x){
-                    this.sprite.flip(false,false);
+                    this.sprite.flip(true,false);
                 }else if( ultimo_x < x){
                     this.sprite.flip(true,false);
                 }

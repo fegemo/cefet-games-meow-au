@@ -9,6 +9,7 @@ import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import static br.cefetmg.games.screens.BaseScreen.camera;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -49,8 +50,9 @@ public class SpyFish extends MiniGame {
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaFundo = assets.get("spy-fish/fundo.png", Texture.class);
         this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
+        this.texturaFundo = assets.get("spy-fish/ocean.jpeg",Texture.class);
 
-        this.fish = new Fish(texturaFish);
+        
 
         batch = new SpriteBatch();
 
@@ -69,6 +71,8 @@ public class SpyFish extends MiniGame {
         for (int i = 0; i < MAX_CHIPS; i++) {
             chip.add(new MemoryChip(texturaMemoCard));
         }
+        
+        this.fish = new Fish(texturaFish);
     }
 
     @Override
@@ -82,6 +86,10 @@ public class SpyFish extends MiniGame {
     public void onHandlePlayingInput() {
         // move o peixe
         this.fish.updateAccordingToTheMouse(getMousePosInGameWorld().x, getMousePosInGameWorld().y);
+        if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT)){
+            this.fish.flip(true, false);
+            System.out.println("hey");
+        }
     }
 
     @Override
@@ -103,9 +111,10 @@ public class SpyFish extends MiniGame {
 
         update(Gdx.graphics.getDeltaTime());
         batch.begin();
+        batch.draw(texturaFundo,0f,0f,1280f,720f);
 
         this.fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
-
+        this.fish.flip(true, false);
         for (MemoryChip chip : chip) {
             chip.render(batch);
         }
@@ -116,8 +125,6 @@ public class SpyFish extends MiniGame {
             //mostra os circulos de colisão
             chip.render_area_collision();
         }
-
-        System.out.println(this.chip);
 
     }
 

@@ -22,6 +22,9 @@ public class MemoryChip implements Collidable {
 
     private final Circle circle;
     private final Sprite sprite;
+    
+    private final Float Velocidade_Queda;
+    private final Float Rotation;
 
     private ShapeRenderer shapeRenderer;
 
@@ -32,10 +35,13 @@ public class MemoryChip implements Collidable {
         this.shapeRenderer = new ShapeRenderer();
 
         this.position.x = (float) new Random().nextInt(1271);
-        this.position.y = 720.0f;
+        this.position.y = 600.0f + (float) new Random().nextInt(120) ;
 
         this.circle.x = this.position.x + 12.5f;
         this.circle.y = this.position.y + 17f;
+        
+        this.Velocidade_Queda = 1 + (float) new Random().nextInt(7);
+        this.Rotation = (-30) + (float) new Random().nextInt(20);
 
         //25x34 dimensão do png, o raio de colisão é 21.1
         this.circle.radius = 21.1f;
@@ -47,7 +53,7 @@ public class MemoryChip implements Collidable {
     public void update(float dt) {
 
         //atualiza posição do memo card
-        this.position.y -= dt*10;
+        this.position.y -= this.Velocidade_Queda;
         this.sprite.rotate((float) 10);
         this.sprite.setPosition(this.position.x, this.position.y);
 
