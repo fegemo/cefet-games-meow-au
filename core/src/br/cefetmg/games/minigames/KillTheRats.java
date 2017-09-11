@@ -307,7 +307,6 @@ public class KillTheRats extends MiniGame {
             
             if (c.contains(v)) {
                 changeWeapon = !changeWeapon;
-                releaseFire = false;
                 
                 if (changeWeapon)
                     setColor(Color.valueOf("EE7600"));
@@ -702,6 +701,7 @@ public class KillTheRats extends MiniGame {
         static final float frameDuration = 0.05f;
         static final float weaponChangeTimer = 10.0f;
         static final float explodeDuration = 1.0f;
+        static final float arcHeight = 100.0f;
         
         private Sound sound;
         private float fireInterval;
@@ -715,6 +715,7 @@ public class KillTheRats extends MiniGame {
         private boolean explodeMode;
         private Vector2 direction;
         private Vector2 explodePos;
+        Circle arcCircle;
 
         public Fire(final Texture fireTexture) {
             super(new HashMap<String, Animation>() {
@@ -755,6 +756,7 @@ public class KillTheRats extends MiniGame {
             collisionRadius = 10;
             rocketMode = false;
             a = b = c = 0;
+            arcCircle = new Circle();
         }
         
         public void reset() {
@@ -814,6 +816,10 @@ public class KillTheRats extends MiniGame {
             return explodeMode;
         }
         
+        public Circle getArcCircle() {
+            return arcCircle;
+        }
+        
         public void explode() {
             explodeMode = true;
             
@@ -853,8 +859,8 @@ public class KillTheRats extends MiniGame {
         public void follow() {
             lookAhead();
             
-            if (direction.len() < offset)
-                return;
+            //if (direction.len() < offset)
+            //    return;
             
             Vector2 normalized = new Vector2(direction);
             normalized.nor(); // normaliza o vetor
@@ -886,7 +892,37 @@ public class KillTheRats extends MiniGame {
             //c += mousePos.y;
         }
         
+        public Vector2 tangentCircle(Circle c) {
+            Vector2 radiusVec = getPosition().sub(c.x, c.y);
+            radiusVec.nor();
+            radiusVec.scl(c.radius);
+            Vector2 intersectionPoint = new Vector2(radiusVec.y, -radiusVec.x); // rotaciona em -90 graus
+            return intersectionPoint.nor();
+        }
+        
+        public void arc(float height) {
+            float halfDist = getPosition().dst(explodePos) / 2;
+            
+            if (height >= halfDist)
+                height = halfDist;
+            
+            float radius = (halfDist*halfDist + height*height) / (2*height);
+            
+            Vector2 halfVec = (new Vector2(explodePos)).sub(getPosition());
+            halfVec.nor();
+            halfVec.scl(halfDist);
+            Vector2 dir = new Vector2(halfVec.y, -halfVec.x); // rotaciona -90 graus
+            dir.nor();
+            dir.scl(radius - height);
+            
+            // centro da circunferencia
+            Vector2 center = halfVec.add(getPosition()).add(dir);
+            arcCircle = new Circle(center.x, center.y, radius);
+            System.out.println("arcCircle = " + arcCircle.x + " " + arcCircle.y + " " + arcCircle.radius);
+        }
+        
         public void trajectoryCurve(float x) {
+            /*
             x += speed; // obtem a abscissa do próximo ponto
             float y = (a*x*x - b*x + c);
             
@@ -894,8 +930,11 @@ public class KillTheRats extends MiniGame {
             direction.x = x - getX();
             direction.y = y - getY();
             //setPosition(x+speed, y);
+            */
             
-            Circle c = new Circle(getX(), getY(), Math.max(getWidth(), getHeight())*2.5f);
+            direction = tangentCircle(arcCircle);
+            
+            Circle c = new Circle(getX(), getY(), Math.max(getWidth(), getHeight()));
             if (c.contains(explodePos)) {
                 explode();
             }
@@ -908,8 +947,9 @@ public class KillTheRats extends MiniGame {
                     fireSoundInterval = 0;
                 }
                 
-                parabole();
                 explodePos = mousePos;
+                //parabole();
+                arc(arcHeight);
                 setDirection(mousePos);
                 
                 launched = true;
