@@ -11,6 +11,7 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -35,7 +36,18 @@ public class KillTheRats extends MiniGame {
     private Texture catTexture;
     private Texture ratsSpriteSheet;
     private Texture fireTexture;
+    private Texture rocketTexture;
+    private Texture miniExplosionTexture;
+    private Texture bigExplosionTexture;
+    private Texture swapTexture;
     
+    private Sound levelSound;
+    private Sound ratsSound;
+    private Sound bombSound;
+    private Sound ratSound;
+    private Sound fireSound;
+    
+    private SwapButton swapButton;
     private Background background;
     private Cat cat;
     private Array<Rat> rats;
@@ -43,14 +55,20 @@ public class KillTheRats extends MiniGame {
     
     private Vector2 mousePos;
     
-    private float countTimer;
+    private float countFireTimer;
+    private float fireSoundInterval;
+    private float fireSoundMinimumInterval;
     private boolean releaseFire;
+    private boolean stopAllSounds;
+    private boolean changeWeapon;
     
     // variáveis de desafio
     private float minimumEnemySpeed;
     private float maximumEnemySpeed;
+    private float percentIgnoreRats;
     private int maxNumRats;
     private int maxNumFires;
+    private int countRatsSurvived;
     
     public KillTheRats(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 20f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -59,45 +77,73 @@ public class KillTheRats extends MiniGame {
     @Override
     protected void onStart() {
         backgroundTexture = assets.get("kill-the-rats/Background_Sewer.png", Texture.class);
-        catTexture = assets.get("kill-the-rats/lakitu.png", Texture.class);
+        catTexture = assets.get("kill-the-rats/cat_sprite.png", Texture.class);
         ratsSpriteSheet = assets.get("kill-the-rats/ratframes.png", Texture.class);
         fireTexture = assets.get("kill-the-rats/fireball_0.png", Texture.class);
+        rocketTexture = assets.get("kill-the-rats/rocket.png", Texture.class);
+        miniExplosionTexture = assets.get("kill-the-rats/mini_explosion.png", Texture.class);
+        bigExplosionTexture = assets.get("kill-the-rats/big_explosion.png", Texture.class);
+        swapTexture = assets.get("kill-the-rats/swap.png", Texture.class);
         
-        background = new Background(backgroundTexture);
-        cat = new Cat(catTexture);
-        rats = new Array<Rat>();
-        fires = new Array<Fire>();
+        levelSound = assets.get("kill-the-rats/JerryFive.mp3", Sound.class);
+        ratsSound = assets.get("kill-the-rats/Rats_Ambience.mp3", Sound.class);
+        ratSound = assets.get("kill-the-rats/rat.mp3", Sound.class);
+        fireSound = assets.get("kill-the-rats/pistol_silenced_walther.mp3", Sound.class);
+        bombSound = assets.get("kill-the-rats/bomb.mp3", Sound.class);
         
-        maxNumRats = 100;
-        maxNumFires = 100;
-        countTimer = 0;
-        releaseFire = true;
-        
+        init();
+        initSwapButton();
         initBackground();
         initCat();
         initRat();
         initFire();
-        
+    }
+    
+    private void init() {
         mousePos = new Vector2(0, 0);
+        countFireTimer = 0;
+        countRatsSurvived = 0;
+        //percentIgnoreRats = 0.4f;
+        //maxNumRats = 100;
+        maxNumFires = 100;
+        fireSoundInterval = 0;
+        fireSoundMinimumInterval = 6.0f;
+        releaseFire = true;
+        stopAllSounds = false;
+        changeWeapon = false;
+        
+        levelSound.play(0.8f);
+        ratsSound.play();
+    }
+    
+    private void initSwapButton() {
+        swapButton = new SwapButton(swapTexture);
+        swapButton.setCenter(swapTexture.getWidth(), 
+                             viewport.getWorldHeight() - swapTexture.getHeight()/1.5f);
     }
     
     private void initBackground() {
+        background = new Background(backgroundTexture);
         background.setCenter(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
     }
     
     private void initCat() {
+        cat = new Cat(catTexture);
         cat.setCenter(viewport.getWorldWidth() * 0.2f, viewport.getWorldHeight() / 2f);
     }
     
     private void initRat() {
+        rats = new Array<Rat>();
+        
         for (int i = 0; i < maxNumRats; i++) {
-            Rat rat = new Rat(ratsSpriteSheet);
+            Rat rat = new Rat(ratsSpriteSheet, ratSound);
             //rat.setCenter(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
             this.rats.add(rat);
         }
     }
     
     private void initFire() {
+        fires = new Array<Fire>();
         //TextureRegion[][] frames = TextureRegion.split(fireTexture,
         //        fireTexture.getWidth(), fireTexture.getHeight());
         
@@ -109,11 +155,24 @@ public class KillTheRats extends MiniGame {
     }
     
     @Override
+    protected void onEnd() {
+        stopAllSounds = true;
+        levelSound.stop();
+        ratsSound.stop();
+    }
+    
+    @Override
     protected void configureDifficultyParameters(float difficulty) {
+        this.maxNumRats = (int) DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 100, 250);
         this.minimumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 120, 220);
+                .getCurveValueBetween(difficulty, 2, 6);
         this.maximumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 240, 340);
+                .getCurveValueBetween(difficulty, 4, 7);
+        this.percentIgnoreRats = DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 0.75f, 0.3f);
+        
+        System.out.println("maxNumRats = " + maxNumRats);
     }
     
     @Override
@@ -124,9 +183,10 @@ public class KillTheRats extends MiniGame {
         mousePos = new Vector2(click.x, click.y);
         //cat.setCenter(click.x, click.y);
         
+        if (Gdx.input.justTouched())
+            swapButton.swap(mousePos);
+        
         for (Fire fire : this.fires) {
-            fire.setDirection(mousePos);
-            
             if (Gdx.input.isTouched()) {
                 fire.enableOnceFollow();
             }
@@ -135,15 +195,23 @@ public class KillTheRats extends MiniGame {
     
     @Override
     public void onUpdate(float dt) {
+        swapButton.update(dt);
         cat.update(dt);
         
         for (Fire fire : this.fires) {
             fire.update(dt);
             
             for (Rat rat : this.rats) {
-                if (fire.getBoundCirle().overlaps(rat.getBoundCirle())) {
-                    rat.reset();
-                    //fire.reset();
+                if (fire.getRocketMode()) {
+                    if (fire.getExplodeMode())
+                        rat.explode(fire.getPosition());
+                }
+                else if (fire.getBoundCirle().overlaps(rat.getBoundCirle())) {
+                    if (!fire.getExplodeMode())
+                        rat.kill();
+
+                    if (rat.getHP() > 1)
+                        fire.explode();
                     break;
                 }
             }
@@ -151,6 +219,10 @@ public class KillTheRats extends MiniGame {
         
         for (Rat rat : this.rats) {
             rat.update(dt);
+        }
+        
+        if (countRatsSurvived > maxNumRats * percentIgnoreRats) {
+            challengeFailed();
         }
     }
     
@@ -168,6 +240,7 @@ public class KillTheRats extends MiniGame {
         }
         
         cat.draw(batch);
+        swapButton.draw(batch);
     }
 
     @Override
@@ -180,7 +253,71 @@ public class KillTheRats extends MiniGame {
         return false;
     }
     
-    class Background extends AnimatedSprite {
+    private class SwapButton extends AnimatedSprite {
+
+        static final int FRAME_WIDTH = 96;
+        static final int FRAME_HEIGHT = 96;
+        
+        private Color defaultColor;
+        private float radius;
+
+        SwapButton(final Texture swapTexture) {
+            super(new Animation(0.1f, new Array<TextureRegion>() {
+                {
+                    TextureRegion[][] frames = TextureRegion.split(
+                            swapTexture, FRAME_WIDTH, FRAME_HEIGHT);
+                    super.addAll(new TextureRegion[]{
+                        frames[0][0]
+                    });
+                }
+            }));
+            super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
+            super.setAutoUpdate(false);
+            
+            init();
+        }
+        
+        public void init() {
+            defaultColor = getColor();
+            radius = getWidth()/2;
+            setPosition(getOriginX(), getOriginY());
+        }
+        
+        @Override
+        public void setPosition(float x, float y) {
+            super.setPosition(x - super.getWidth()/2, y - super.getHeight()/2);
+        }
+        
+        @Override
+        public float getX() {
+            return super.getX() + super.getWidth() / 2;
+        }
+        
+        @Override
+        public float getY() {
+            return super.getY() + super.getHeight() / 2;
+        }
+
+        public Vector2 getPosition() {
+            return new Vector2(getX(), getY());
+        }
+        
+        public void swap(Vector2 v) {
+            Circle c = new Circle(getX(), getY(), radius);
+            
+            if (c.contains(v)) {
+                changeWeapon = !changeWeapon;
+                releaseFire = false;
+                
+                if (changeWeapon)
+                    setColor(Color.valueOf("EE7600"));
+                else
+                    setColor(defaultColor);
+            }
+        }
+    }
+    
+    private class Background extends AnimatedSprite {
         
         static final float frameDuration = 1.0f;
         
@@ -224,16 +361,17 @@ public class KillTheRats extends MiniGame {
         }
     }
     
-    class Cat extends AnimatedSprite {
+    private class Cat extends AnimatedSprite {
 
-        static final float frameDuration = 1.0f;
+        static final float frameDuration = 0.1f;
         
-        static final int FRAME_WIDTH = 200;
-        static final int FRAME_HEIGHT = 259;
+        static final int FRAME_WIDTH = 118;
+        static final int FRAME_HEIGHT = 150;
         
         private float collisionRadius;
         private Circle forceField;
         private boolean enableFieldForce;
+        private float fieldForceInterval;
 
         Cat(final Texture catTexture) {
             super(new Animation(frameDuration, new Array<TextureRegion>() {
@@ -241,8 +379,7 @@ public class KillTheRats extends MiniGame {
                     TextureRegion[][] frames = TextureRegion.split(
                             catTexture, FRAME_WIDTH, FRAME_HEIGHT);
                     super.addAll(new TextureRegion[]{
-                        frames[0][0],
-                        frames[0][1],
+                        frames[0][0]
                     });
                 }
             }));
@@ -253,6 +390,7 @@ public class KillTheRats extends MiniGame {
         }
         
         public void reset() {
+            fieldForceInterval = 10f;
             collisionRadius = 50;
             setScale(0.6f);
             setPosition(getOriginX(), getOriginY());
@@ -286,7 +424,7 @@ public class KillTheRats extends MiniGame {
             forceField.x = getX();
             forceField.y = getY();
             
-            if (getTime() > 4)
+            if (getTime() > fieldForceInterval)
                 enableFieldForce = true;
             
             if (enableFieldForce) {
@@ -311,26 +449,31 @@ public class KillTheRats extends MiniGame {
         }
     }
     
-    class Rat extends MultiAnimatedSprite {
+    private class Rat extends MultiAnimatedSprite {
+        
+        static final float frameDuration = 0.02f;
+        static final float maxDistExplode = 200.0f;
+        static final float explodeDuration = 1.0f;
+        static final int ROWS = 6;
+        static final int COLS = 8;
 
+        private Sound sound;
+        private Color defaultColor;
         private Vector2 direction;
         private float speed;
-        private float minSpeed;
-        private float maxSpeed;
         private float offset;
         private float wallDist;
         private float time;
         private float collisionRadius;
         private float probabilityFollow;
-        private int numCollisions;
+        private float sumTimer;
+        private int countHit;
+        private int HP;
         private boolean flipX;
-        private boolean folowPlayer;
+        private boolean surroundPlayer;
+        private boolean explodeMode;
         
-        static final float frameDuration = 0.02f;
-        static final int ROWS = 6;
-        static final int COLS = 8;
-
-        public Rat(final Texture ratsSpriteSheet) {
+        public Rat(final Texture ratsSpriteSheet, Sound s) {
             super(new HashMap<String, Animation>() {
                 {
                     TextureRegion[][] frames = TextureRegion
@@ -342,32 +485,52 @@ public class KillTheRats extends MiniGame {
                 }
             }, "walking");
             
+            sound = s;
             init();
             reset();
         }
         
         public void init() {
+            defaultColor = getColor();
             time = 0;
             flipX = false;
             collisionRadius = 15;
-            numCollisions = 0;
             offset = 10;
             wallDist = 80;
             direction = new Vector2();
             speed = 1;
-            minSpeed = 1f;
-            maxSpeed = 5f;
+            minimumEnemySpeed = 2f;
+            maximumEnemySpeed = 5f;
         }
         
         public void reset() {
+            setColor(defaultColor);
             float posY = (float) Math.random() * (viewport.getWorldHeight() - 2*wallDist) + wallDist;
             setPosition(viewport.getWorldWidth() + getWidth(), posY);
             setRotation(90);
             direction.x = -1;
-            direction.y = 0;
-            speed = (float) Math.random() * maxSpeed + minSpeed;
-            folowPlayer = false;
+            direction.y = -0.5f + (float) Math.random();
+            direction.nor();
+            speed = (float) Math.random() * maximumEnemySpeed + minimumEnemySpeed;
+            surroundPlayer = false;
+            explodeMode = false;
+            countHit = 0;
+            HP = 1;
             probabilityFollow = 0.001f;
+            sumTimer = 0;
+            
+            sound.stop();
+            sound.play(0.1f);
+        }
+        
+        public void kill() {
+            countHit++;
+            if (countHit >= HP)
+                reset();
+        }
+        
+        public int getHP() {
+            return HP;
         }
         
         @Override
@@ -401,7 +564,7 @@ public class KillTheRats extends MiniGame {
         
         public void verifyCollision(Circle c) {
             if (getBoundCirle().overlaps(c))
-                numCollisions++;
+                countHit++;
         }
 
         public float getSpeed() {
@@ -411,17 +574,34 @@ public class KillTheRats extends MiniGame {
         public void setSpeed(float speed) {
             this.speed = speed;
         }
+        
+        public void lookAhead() {
+            double angle = Math.atan(direction.y / direction.x);
+            angle += (direction.x > 0) ? -Math.PI/2 : Math.PI/2;
+            angle *= 180 / Math.PI;
+            
+            setRotation((float) angle);
+        }
 
         public void setDirection(Vector2 v) {
             direction.x = v.x - getX();
             direction.y = v.y - getY();
             direction.nor();
             
-            double angle = Math.atan(direction.y / direction.x);
-            angle += (direction.x > 0) ? -Math.PI/2 : Math.PI/2;
-            angle *= 180 / Math.PI;
+            lookAhead();
+        }
+        
+        public void explode(Vector2 v) {
+            float dist = getPosition().dst2(v);
             
-            setRotation((float) angle);
+            if (dist <= maxDistExplode*maxDistExplode) {
+                explodeMode = true;
+                direction = getPosition().sub(v);
+                direction.nor();
+                speed += 1;
+                
+                setColor(Color.valueOf("FF4500"));
+            }
         }
         
         public void walk(Vector2 direction) {
@@ -434,31 +614,49 @@ public class KillTheRats extends MiniGame {
             setPosition(normalized.x, normalized.y);
         }
         
-        // cálculo do vetor tangente ao campo de força
-        public Vector2 tangentForceField() {
-            Circle forceField = cat.getForceField();
+        // cálculo do vetor tangente a um circulo a partir de uma posição qualquer
+        public Vector2 tangentForceField(Circle c) {
             float distance = cat.getPosition().dst(getPosition());
             
-            float a = forceField.radius*forceField.radius / (distance);
+            float a = c.radius*c.radius / (distance);
             Vector2 aux = new Vector2(getPosition());
-            // vetor que aponta do centro de "forceField" para a posicao atual
+            // vetor que aponta do centro do circulo para a posicao atual
             aux.sub(cat.getPosition());
             aux.nor().scl(a); // o tamanho do vetor é limitado à projeção ortogonal do ponto de intersecção com a tangente
             
-            // altura do triangulo retângulo formado pelos pontos "intersectionPoint", posição atual e o centro de "forceField"
+            // altura do triangulo retângulo formado pelos pontos "intersectionPoint", posição atual e o centro do circulo
             float h = (float) Math.sqrt(a*(distance - a));
             Vector2 intersectionPoint = new Vector2(-aux.y, aux.x); // rotaciona em +90 graus
             intersectionPoint.nor().scl(h); // vetor que representa a altura do triangulo retângulo
-            // vetor que aponta do centro de "forceField" para o ponto de intercecção com a tangente
-            intersectionPoint.add(aux).add(forceField.x, forceField.y);
+            // vetor que aponta do centro do circulo para o ponto de intercecção com a tangente
+            return intersectionPoint.add(aux).add(c.x, c.y);
             
-            Vector2 tangent = new Vector2(intersectionPoint);
-            return tangent.sub(getPosition()).nor();
+            //Vector2 tangent = new Vector2(intersectionPoint);
+            //return tangent.sub(getPosition()).nor();
         }
         
-        @Override
-        public void update(float dt) {
-            super.update(dt);
+        private void behaviorMove() {
+            if (surroundPlayer) {
+                HP = 3;
+                speed = maximumEnemySpeed;
+                Circle c = new Circle(cat.getForceField());
+                setDirection(tangentForceField(c));
+                walk(direction);
+            }
+            else {
+                if (getY() < wallDist || getY() > viewport.getWorldHeight() - wallDist)
+                    direction.y *= -0.8f;
+                
+                lookAhead();
+                walk(direction);
+                
+                surroundPlayer = (Math.random() < probabilityFollow);
+            }
+        }
+        
+        private void updateAnimation(float dt) {
+            if (stopAllSounds)
+                sound.stop();
             
             time += dt;
             if (time >= 2*COLS*frameDuration) {
@@ -468,70 +666,111 @@ public class KillTheRats extends MiniGame {
             
             if (flipX)
                 setFlip(true, false);
+        }
+        
+        @Override
+        public void update(float dt) {
+            super.update(dt);
             
-            if (folowPlayer)
-                setDirection(cat.getPosition());
-            else {
-                folowPlayer = (Math.random() < probabilityFollow);
-            }
+            updateAnimation(dt);
             
-            if (cat.getEnableFieldForce()) {
-                folowPlayer = true;
-                walk(tangentForceField());
-            }
-            else
+            if (explodeMode) {
+                float rotate = (float)Math.random() * 10;
+                setRotation(getRotation() + rotate);
+                speed += 0.2f;
+                
                 walk(direction);
+                
+                sumTimer += dt;
+                if (sumTimer > explodeDuration)
+                    reset();
+                
+                return;
+            }
             
-            if (getX() < 0)
+            behaviorMove();
+            
+            if (getX() < 0) {
+                countRatsSurvived++;
                 reset();
+            }
         }
     }
     
-    class Fire extends AnimatedSprite {
+    private class Fire extends MultiAnimatedSprite {
 
-        static final float fireInterval = 2.0f;
-        static final float frameDuration = 0.1f;
+        static final float frameDuration = 0.05f;
+        static final float weaponChangeTimer = 10.0f;
+        static final float explodeDuration = 1.0f;
         
-        static final int WIDTH = 64;
-        static final int HEIGHT = 64;
-        
+        private Sound sound;
+        private float fireInterval;
         private float speed;
         private float offset;
         private float collisionRadius;
+        private float a, b, c;
+        private float sumTimer;
         private boolean launched;
+        private boolean rocketMode;
+        private boolean explodeMode;
         private Vector2 direction;
+        private Vector2 explodePos;
 
         public Fire(final Texture fireTexture) {
-            super(new Animation(frameDuration, new Array<TextureRegion>() {
+            super(new HashMap<String, Animation>() {
                 {
-                    TextureRegion[][] frames = TextureRegion.split(
-                            fireTexture, WIDTH, HEIGHT);
-                    super.addAll(new TextureRegion[]{
-                        frames[0][0], frames[0][1],
-                        frames[0][2], frames[0][3],
-                        frames[0][4], frames[0][5],
-                        frames[0][6], frames[0][7]
-                    });
+                    TextureRegion[][] frames = TextureRegion.split(fireTexture, 64, 64);
+                    Animation fireball = new Animation(frameDuration, frames[0]); // todas as colunas da linha 0
+                    fireball.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+                    put("fireball", fireball);
+                    
+                    frames = TextureRegion.split(rocketTexture, 360, 720);
+                    Animation rocket = new Animation(frameDuration, frames[0]); // todas as colunas da linha 0
+                    rocket.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+                    put("rocket", rocket);
+                    
+                    frames = TextureRegion.split(miniExplosionTexture, 96, 96);
+                    Animation miniExplosion = new Animation(frameDuration, frames[0]); // todas as colunas da linha 0
+                    miniExplosion.setPlayMode(Animation.PlayMode.LOOP);
+                    put("miniExplosion", miniExplosion);
+                    
+                    frames = TextureRegion.split(bigExplosionTexture, 96, 96);
+                    Animation bigExplosion = new Animation(frameDuration, 
+                            frames[0][0], frames[0][1], frames[0][2], frames[0][3], frames[0][4],
+                            frames[1][0], frames[1][1], frames[2][2], frames[1][3], frames[1][4],
+                            frames[2][0], frames[2][1], frames[1][2], frames[2][3], frames[2][4]);
+                    bigExplosion.setPlayMode(Animation.PlayMode.LOOP);
+                    put("bigExplosion", bigExplosion);
                 }
-            }));
-            super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
-            super.setAutoUpdate(false);
+            }, "fireball");
             
             init();
             reset();
         }
         
         public void init() {
-            //setScale(0.1f);
+            sound = fireSound;
+            fireInterval = 2.0f;
             offset = 10;
             collisionRadius = 10;
+            rocketMode = false;
+            a = b = c = 0;
         }
         
         public void reset() {
+            setScale(1.0f);
+            sound = fireSound;
             direction = new Vector2(0, 0);
             setPosition(cat.getX(), cat.getY());
             speed = 20;
             launched = false;
+            explodeMode = false;
+            sumTimer = 0;
+            
+            if (rocketMode)
+                fireInterval = 60.0f;
+            else
+                fireInterval = 2.0f;
         }
         
         @Override
@@ -567,20 +806,53 @@ public class KillTheRats extends MiniGame {
             return launched;
         }
         
+        public Boolean getRocketMode() {
+            return rocketMode;
+        }
+        
+        public Boolean getExplodeMode() {
+            return explodeMode;
+        }
+        
+        public void explode() {
+            explodeMode = true;
+            
+            if (rocketMode) {
+                setScale(4.0f);
+                startAnimation("bigExplosion");
+                sound = bombSound;
+                sound.play(0.5f);
+            }
+            else
+                startAnimation("miniExplosion");
+        }
+        
+        public void lookAhead() {
+            double angle = Math.atan(direction.y / direction.x);
+            if (rocketMode)
+                angle += (direction.x > 0) ? -Math.PI/2 : Math.PI/2;
+            else
+                angle += (direction.x > 0) ? Math.PI : 0;
+            angle *= 180 / Math.PI;
+            
+            if (explodeMode)
+                setRotation(0);
+            else
+                setRotation((float) angle);
+        }
+        
         public void setDirection(Vector2 v) {
             if (launched) return;
             
             direction.x = v.x - getX();
             direction.y = v.y - getY();
             
-            double angle = Math.atan(direction.y / direction.x);
-            angle += (direction.x > 0) ? Math.PI : 0;
-            angle *= 180 / Math.PI;
-            
-            setRotation((float) angle);
+            lookAhead();
         }
         
         public void follow() {
+            lookAhead();
+            
             if (direction.len() < offset)
                 return;
             
@@ -594,10 +866,76 @@ public class KillTheRats extends MiniGame {
             setPosition(normalized.x, normalized.y);
         }
         
+        public void parabole() {
+            float x1 = getX();
+            float x2 = mousePos.x;
+            
+            a = -1;
+            b = -(x1 + x2); // soma das raizes da equação
+            c = -(x1 * x2); // produto das raizes da equação
+            
+            float delta = b*b - 4*a*c;
+            float paraboleHeight = -delta/(4*a);
+            float height = viewport.getWorldHeight() / 3;
+            
+            float newHeight = height / paraboleHeight;
+            a *= newHeight;
+            b *= newHeight;
+            c *= newHeight;
+            c += getY();
+            //c += mousePos.y;
+        }
+        
+        public void trajectoryCurve(float x) {
+            x += speed; // obtem a abscissa do próximo ponto
+            float y = (a*x*x - b*x + c);
+            
+            // calcula o vetor que inicia na posição atual e aponta para a próxima posição
+            direction.x = x - getX();
+            direction.y = y - getY();
+            //setPosition(x+speed, y);
+            
+            Circle c = new Circle(getX(), getY(), Math.max(getWidth(), getHeight())*2.5f);
+            if (c.contains(explodePos)) {
+                explode();
+            }
+        }
+        
         public void enableOnceFollow() {
             if (releaseFire && !launched) {
+                if (fireSoundInterval >= fireSoundMinimumInterval) {
+                    sound.play(0.2f);
+                    fireSoundInterval = 0;
+                }
+                
+                parabole();
+                explodePos = mousePos;
+                setDirection(mousePos);
+                
                 launched = true;
                 releaseFire = false;
+            }
+        }
+        
+        private void updateWeapon() {
+            if (launched) {
+                if (rocketMode)
+                    trajectoryCurve(getX());
+                follow();
+            }
+            
+            if (!changeWeapon && getTime() >= weaponChangeTimer)
+                changeWeapon = true;
+            
+            if (!rocketMode && changeWeapon) {
+                rocketMode = true;
+                startAnimation("rocket");
+                reset();
+            }
+            else if (rocketMode && !changeWeapon) {
+                rocketMode = false;
+                startAnimation("fireball");
+                reset();
             }
         }
         
@@ -605,18 +943,35 @@ public class KillTheRats extends MiniGame {
         public void update(float dt) {
             super.update(dt);
             
-            if (launched)
-                follow();
+            fireSoundInterval += dt;
+            if (stopAllSounds)
+                sound.stop();
             
-            if (countTimer > fireInterval) {
-                countTimer = 0;
-                releaseFire = true;
+            if (explodeMode) {
+                sumTimer += dt;
+                
+                if (sumTimer >= explodeDuration) {
+                    if (rocketMode)
+                        startAnimation("rocket");
+                    else
+                        startAnimation("fireball");
+                    
+                    reset();
+                }
             }
-            if (!releaseFire)
-                countTimer += dt;
+            else {
+                updateWeapon();
             
-            if (getX() < 0 || getX() > viewport.getWorldWidth() || getY() < 0 || getY() > viewport.getWorldHeight())
-                reset();
+                if (countFireTimer >= fireInterval) {
+                    countFireTimer = 0;
+                    releaseFire = true;
+                }
+                if (!releaseFire)
+                    countFireTimer += dt;
+
+                if (getX() < 0 || getX() > viewport.getWorldWidth() || getY() < 0 || getY() > viewport.getWorldHeight())
+                    reset();
+            }
         }
     }
 }
