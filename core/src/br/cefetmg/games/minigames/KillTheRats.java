@@ -895,10 +895,9 @@ public class KillTheRats extends MiniGame {
             direction.y = y - getY();
             //setPosition(x+speed, y);
             
-            if (explodePos.x >= cat.getPosition().x) {
-                if (getX() >= explodePos.x && getY() <= explodePos.y) {
-                    explode();
-                }
+            Circle c = new Circle(getX(), getY(), Math.max(getWidth(), getHeight())*2.5f);
+            if (c.contains(explodePos)) {
+                explode();
             }
         }
         
