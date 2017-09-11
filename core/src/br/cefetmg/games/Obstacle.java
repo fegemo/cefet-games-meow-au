@@ -14,18 +14,16 @@ public class Obstacle {
     private Sprite visible;
     private Vector2 position;
     private Rectangle rec;
-    private ShapeRenderer shapeRenderer;
     private SpriteBatch batch;
     private static float friction = 2;
     public Obstacle(SpriteBatch batch, Vector2 position, float width, float height) {
-        this.color = new Texture("head-soccer/purple.jpg");
+        this.color = new Texture("avoider/grey.png");
         this.batch = batch;
         this.position = position;
         rec = new Rectangle(this.position.x, this.position.y, width, height);
         visible = new Sprite(color);
         visible.setPosition(this.position.x, this.position.y);
         visible.setSize(width, height);
-        shapeRenderer = new ShapeRenderer();
     }
 
     public void draw() {
