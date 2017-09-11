@@ -59,18 +59,49 @@ public class GatoFantasma extends MiniGame{
         target.setOriginCenter();
         enemiesKilled = 0;
         spawnedEnemies = 0;
-        //scheduleEnemySpawn();
+        scheduleEnemySpawn();
+    }
+    private void scheduleEnemySpawn() {
+        Timer.Task t = new Timer.Task() {
+            @Override
+            public void run() {
+                spawnEnemy();
+                if (++spawnedEnemies < totalEnemies) {
+                    scheduleEnemySpawn();
+                }
+            }
+        };
+        // spawnInterval * 15% para mais ou para menos
+        float nextSpawnMillis = this.spawnInterval
+                * (rand.nextFloat() / 3 + 0.15f);
+        timer.scheduleTask(t, nextSpawnMillis);
     }
 
+    private void spawnEnemy() {
+        // pega x e y entre 0 e 1
+        Vector2 position = new Vector2(0.5f,0.4f);
+        // multiplica x e y pela largura e altura da tela
+        position.scl(
+                viewport.getWorldWidth() - catsTexture.getWidth()
+                * initialEnemyScale,
+                viewport.getWorldHeight()
+                - catsTexture.getHeight() * initialEnemyScale);
+
+        Sprite enemy = new Sprite(catsTexture);
+        enemy.setPosition(position.x, position.y);
+        enemy.setScale(initialEnemyScale);
+        enemies.add(enemy);
+    }
+    
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        this.initialEnemyScale = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 1.15f, 0.8f);
+        this.initialEnemyScale = DifficultyCurve.LINEAR_NEGATIVE
+                .getCurveValueBetween(difficulty, 0.5f, 0.25f);
         this.maxEnemyScale = DifficultyCurve.LINEAR_NEGATIVE
                 .getCurveValueBetween(difficulty, 0.15f, 0.4f);
         this.spawnInterval = DifficultyCurve.S_NEGATIVE
                 .getCurveValueBetween(difficulty, 0.5f, 1.5f);
-        this.totalEnemies = (int) Math.ceil(maxDuration / spawnInterval) - 3;
+        this.totalEnemies = (int)(20*DifficultyCurve.LINEAR.getCurveValueBetween(difficulty,0.f,1.0f));
     }
 
     @Override
@@ -111,7 +142,7 @@ public class GatoFantasma extends MiniGame{
     @Override
     public void onUpdate(float dt) {
         for (int i = 0; i < enemies.size; i++) {
-            Sprite sprite = enemies.get(i);
+            Sprite sprite = enemies.get(i);   
         }
         enemies.sort(new Comparator<Sprite>() {
             @Override
