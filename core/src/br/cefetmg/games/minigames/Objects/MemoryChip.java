@@ -47,7 +47,7 @@ public class MemoryChip implements Collidable {
     public void update(float dt) {
 
         //atualiza posição do memo card
-        this.position.y -= dt*100;
+        this.position.y -= dt*10;
         this.sprite.rotate((float) 10);
         this.sprite.setPosition(this.position.x, this.position.y);
 
