@@ -7,12 +7,14 @@ import br.cefetmg.games.minigames.Objects.MemoryChip;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import static br.cefetmg.games.screens.BaseScreen.camera;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import java.util.Random;
 import static java.lang.Math.max;
@@ -43,11 +45,12 @@ public class SpyFish extends MiniGame {
     private static float diff;
 
     public SpyFish(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 20f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
+        super(screen, observer, difficulty, 1000f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
 
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaFundo = assets.get("spy-fish/fundo.png", Texture.class);
         this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
+
         this.fish = new Fish(texturaFish);
 
         batch = new SpriteBatch();
@@ -64,19 +67,10 @@ public class SpyFish extends MiniGame {
 
     @Override
     protected void onStart() {
-        if (diff == 0.047425874f) {
-
-            chip = new ArrayList<MemoryChip>();
-            MAX_CHIPS = 5;
-            for (int i = 0; i < MAX_CHIPS; i++) {
-                chip.add(new MemoryChip(texturaMemoCard));
-            }
-        } else {
-            chip = new ArrayList<MemoryChip>();
-            MAX_CHIPS = 100;
-            for (int i = 0; i < MAX_CHIPS; i++) {
-                chip.add(new MemoryChip(texturaMemoCard));
-            }
+        chip = new ArrayList<MemoryChip>();
+        MAX_CHIPS = 5;
+        for (int i = 0; i < MAX_CHIPS; i++) {
+            chip.add(new MemoryChip(texturaMemoCard));
         }
     }
 
@@ -101,6 +95,15 @@ public class SpyFish extends MiniGame {
     @Override
     public void onUpdate(float dt) {
         
+        for ( MemoryChip chip : chip){
+            chip.update(dt);
+            if (chip.collidesWith(fish)) {
+                   //se o peixe colidir com o cartão de memoria
+                   System.out.println("BUUUUUUUUUUUUUUUUUUUUUUUUUUUU");
+                   
+            }
+        }
+
     }
 
     @Override
@@ -108,18 +111,20 @@ public class SpyFish extends MiniGame {
 
         update(Gdx.graphics.getDeltaTime());
         batch.begin();
-        batch.draw(texturaFish, 0, 0);
-        batch.draw(texturaFundo, 100, 100);
-        this.fish.draw(batch);
+
+        fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
+        
         for (MemoryChip chip : chip) {
-            chip.render(batch, this.fish);
+            chip.render(batch);
         }
         batch.end();
 
+        fish.render_area_collision();
         for (MemoryChip chip : this.chip) {
             //mostra os circulos de colisão
             chip.render_area_collision();
         }
+        
 
     }
 
@@ -134,5 +139,9 @@ public class SpyFish extends MiniGame {
         //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-
+    private Vector3 getMousePosInGameWorld() {
+        return camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+    }
 }
+
+

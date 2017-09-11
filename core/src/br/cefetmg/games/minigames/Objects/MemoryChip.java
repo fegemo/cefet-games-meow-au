@@ -47,7 +47,7 @@ public class MemoryChip implements Collidable {
     public void update(float dt) {
 
         //atualiza posição do memo card
-        this.position.y -= dt;
+        this.position.y -= dt*100;
         this.sprite.rotate((float) 10);
         this.sprite.setPosition(this.position.x, this.position.y);
 
@@ -68,21 +68,22 @@ public class MemoryChip implements Collidable {
 
     }
 
-    public void render(SpriteBatch sb, Collidable other) {
+    public void render(SpriteBatch sb) {
 
         // se dentro da tela e sem colisão com other - desenha
-        if (this.position.y >= -35 || collidesWith(other)) {
+        if (this.position.y >= -35) {
             this.sprite.draw(sb);
-            update(.5f);
         }
+        
 
     }
 
     @Override
     public boolean collidesWith(Collidable other) {
         if (other instanceof Fish) {
-            // se ocorrer colisão
+            // se ocorrer colisão com objeto Fish
             return Collision.circlesOverlap(circle, other.getMinimumEnclosingBall());
+            
         } else {
             return false;
         }
