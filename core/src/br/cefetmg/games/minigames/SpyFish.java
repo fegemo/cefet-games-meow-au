@@ -20,6 +20,7 @@ import java.util.Random;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
@@ -40,12 +41,10 @@ public class SpyFish extends MiniGame {
     //elementos de logica
     private Fish fish;
 
-    private static int MAX_CHIPS;
-
-    private static float diff;
+    private int MAX_CHIPS;
 
     public SpyFish(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 1000f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
+        super(screen, observer, difficulty, 20f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
 
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaFundo = assets.get("spy-fish/fundo.png", Texture.class);
@@ -54,8 +53,6 @@ public class SpyFish extends MiniGame {
         this.fish = new Fish(texturaFish);
 
         batch = new SpriteBatch();
-
-        diff = difficulty;
 
     }
 
@@ -83,27 +80,22 @@ public class SpyFish extends MiniGame {
 
     @Override
     public void onHandlePlayingInput() {
-        Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-        viewport.unproject(click);
-       /* if(Gdx.input.isTouched())
-            fish.update(click);
-        else
-            fish.update();*/
-        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // move o peixe
+        this.fish.updateAccordingToTheMouse(getMousePosInGameWorld().x, getMousePosInGameWorld().y);
     }
 
     @Override
     public void onUpdate(float dt) {
-        
-        for ( MemoryChip chip : chip){
-            chip.update(dt);
-            if (chip.collidesWith(fish)) {
-                   //se o peixe colidir com o cartão de memoria
-                   System.out.println("BUUUUUUUUUUUUUUUUUUUUUUUUUUUU");
-                   
+
+        for (Iterator<MemoryChip> iterator = chip.iterator(); iterator.hasNext();) {
+            MemoryChip mc = iterator.next();
+            mc.update(dt);
+            if (mc.collidesWith(this.fish)) {
+                //se o peixe colidir com o cartão de memoria
+                iterator.remove();
             }
         }
-
+        
     }
 
     @Override
@@ -112,19 +104,20 @@ public class SpyFish extends MiniGame {
         update(Gdx.graphics.getDeltaTime());
         batch.begin();
 
-        fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
-        
+        this.fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
+
         for (MemoryChip chip : chip) {
             chip.render(batch);
         }
         batch.end();
 
-        fish.render_area_collision();
+        this.fish.render_area_collision();
         for (MemoryChip chip : this.chip) {
             //mostra os circulos de colisão
             chip.render_area_collision();
         }
-        
+
+        System.out.println(this.chip);
 
     }
 
@@ -143,5 +136,3 @@ public class SpyFish extends MiniGame {
         return camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
     }
 }
-
-

@@ -62,6 +62,9 @@ public class Fish extends Sprite implements Collidable {
 
         this.sprite.draw(sb);
 
+    }
+    
+    public void updateAccordingToTheMouse(float x , float y){
         if (((x <= (this.circle.x + this.circle.radius)) && (x >= (this.circle.x - this.circle.radius)))
                 && ((y <= (this.circle.y + this.circle.radius)) && (y >= (this.circle.y - this.circle.radius)))) {
             // se o ponteiro do mouse estiver dentro da area de colisão
@@ -70,7 +73,6 @@ public class Fish extends Sprite implements Collidable {
                 update(x,y);
             }
         }
-
     }
 
     public void render_area_collision() {
