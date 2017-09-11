@@ -19,5 +19,5 @@
   * Gatos Fantasmas("alvos")
 
 * Movimento
- * Impressao de andar no chao
- * "comecar em qlq lugar do chao e no fundo"
+  * Impressao de andar no chao
+  * "comecar em qlq lugar do chao e no fundo"
