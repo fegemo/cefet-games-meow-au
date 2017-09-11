@@ -349,22 +349,23 @@ public class TheFridgeGame extends MiniGame {
                 done=false;
             }
             //verify position x//
+            int deltaX = 5;
             if(cat.nextPosition<0 && (cat.currentAnimation.getX()>(food[0][0].texture.getX()-foodX))){//case jumping to the left, out of the fridge//
-                cat.currentAnimation.setX(cat.currentAnimation.getX()-1.1f); 
+                cat.currentAnimation.setX(cat.currentAnimation.getX()-deltaX); 
                 done=false;
             }    
             else if(cat.nextPosition>2 && (cat.currentAnimation.getX()<(food[0][2].texture.getX()+foodX))){//case jumping to the right, out of the fridge//
-                cat.currentAnimation.setX(cat.currentAnimation.getX()+1.1f);  
+                cat.currentAnimation.setX(cat.currentAnimation.getX()+deltaX);  
                 done=false;
             }
             else{
                 float aux = fridge.texture.getX() + fridgeLimitsXMin + (cat.nextPosition*foodX);
                 if(directionRight && (cat.currentAnimation.getX()<aux-15)){
-                    cat.currentAnimation.setX(cat.currentAnimation.getX()+1.1f);
+                    cat.currentAnimation.setX(cat.currentAnimation.getX()+deltaX);
                     done=false;
                 }
                 else if(directionRight==false && (cat.jumping.getX()>aux)){
-                    cat.currentAnimation.setX(cat.currentAnimation.getX()-1.1f);
+                    cat.currentAnimation.setX(cat.currentAnimation.getX()-deltaX);
                     done=false;
                 }
             }
