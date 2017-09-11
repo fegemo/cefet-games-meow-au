@@ -101,6 +101,6 @@ public class Fish extends Sprite implements Collidable {
 
     @Override
     public Circle getMinimumEnclosingBall() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return this.circle;
     }
 }

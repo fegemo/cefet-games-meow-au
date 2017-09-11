@@ -94,12 +94,15 @@ public class SpyFish extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
-        /*for (MemoryChip chip : chip) {
+        
+        for ( MemoryChip chip : chip){
+            chip.update(dt);
             if (chip.collidesWith(fish)) {
                    //se o peixe colidir com o cartão de memoria
+                   System.out.println("BUUUUUUUUUUUUUUUUUUUUUUUUUUUU");
                    
             }
-        }*/
+        }
 
     }
 
@@ -121,7 +124,7 @@ public class SpyFish extends MiniGame {
             //mostra os circulos de colisão
             chip.render_area_collision();
         }
-        System.out.println("x:" + getMousePosInGameWorld().x + " y:" + getMousePosInGameWorld().y);
+        
 
     }
 
