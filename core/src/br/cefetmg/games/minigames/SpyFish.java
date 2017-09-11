@@ -95,7 +95,7 @@ public class SpyFish extends MiniGame {
                 iterator.remove();
             }
         }
-        
+
     }
 
     @Override

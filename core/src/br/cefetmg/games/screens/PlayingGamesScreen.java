@@ -42,8 +42,8 @@ public class PlayingGamesScreen extends BaseScreen
                         // flávio
                        // new ShootTheCariesFactory(),
                         //new ShooTheTartarusFactory(),
-                        new SpyFishFactory(),
-                        new GatoFantasmaFactory()
+                        new SpyFishFactory()
+                        //new GatoFantasmaFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);

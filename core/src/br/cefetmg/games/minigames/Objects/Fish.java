@@ -71,6 +71,12 @@ public class Fish extends Sprite implements Collidable {
             if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
                 //se clicar com o mouse sobre o objeto Fish
                 update(x,y);
+                float ultimo_x = this.position.x;
+                if( ultimo_x > x){
+                    this.sprite.flip(false,false);
+                }else if( ultimo_x < x){
+                    this.sprite.flip(true,false);
+                }
             }
         }
     }
