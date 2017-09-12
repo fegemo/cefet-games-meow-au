@@ -180,7 +180,7 @@ public class DogBarksCatFlee extends MiniGame {
     }
     
     private int ScareThereshold (){
-        return MathUtils.random(2,7);
+        return MathUtils.random(1, 5);
     }
 
     @Override
