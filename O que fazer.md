@@ -10,6 +10,10 @@
 * Movimento
   * Peixe
   * Cartao mais aleatorio
+  
+* Logica
+  * eu fiz colisao de quadrado para mause e peixe (movimentação)
+  * falta pegar o cartao
 
 ## Gato Fantasma
 

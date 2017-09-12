@@ -62,6 +62,7 @@ public class Fish extends Sprite implements Collidable {
                 update(x-sprite.getWidth()/2,y-sprite.getHeight()/2);
                 float ultimo_x = this.sprite.getX();
                 if( ultimo_x > x){
+                    // da um mirror 
                     this.sprite.flip(true,false);
                 }else if( ultimo_x < x){
                     this.sprite.flip(true,false);
