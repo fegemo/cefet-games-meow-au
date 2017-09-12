@@ -319,23 +319,23 @@ public class TheFridgeGame extends MiniGame {
             float foodX = (fridgeLimitsXMax-fridgeLimitsXMin)/3;
             float initialVelocity = 3;
             //verify position y// 
-            if(cat.jump==false && cat.nextShelf<shelfAmount && cat.currentAnimation.getY()<(shelfs[cat.nextShelf].texture.getY()-shelfY+40)){
+            if(cat.jump==false && cat.nextShelf<shelfAmount && cat.currentAnimation.getY()<(shelfs[cat.nextShelf].texture.getY()-shelfY+60)){
                 cat.currentAnimation.setY(MyPhysics_UpdateJumpingPosition(initialVelocity,cat.initialJumpingPosition,cat.jumpingTime)); 
                 cat.jumpingTime += Gdx.graphics.getDeltaTime();
                 done=false; //jumping//
             }
-            else if(cat.jump==false && cat.nextShelf<shelfAmount && cat.currentAnimation.getY()>=(shelfs[cat.nextShelf].texture.getY()-shelfY+40)){
+            else if(cat.jump==false && cat.nextShelf<shelfAmount && cat.currentAnimation.getY()>=(shelfs[cat.nextShelf].texture.getY()-shelfY+60)){
                cat.jump = true;//starts to fall//
                cat.initialFallingPosition = cat.currentAnimation.getY();
                cat.fallingTime = 0;
                done=false;
             }
-            else if(cat.jump==false && cat.nextShelf==shelfAmount && cat.currentAnimation.getY()<(shelfs[cat.nextShelf-1].texture.getY()+40)){
+            else if(cat.jump==false && cat.nextShelf==shelfAmount && cat.currentAnimation.getY()<(shelfs[cat.nextShelf-1].texture.getY()+60)){
                 cat.currentAnimation.setY(MyPhysics_UpdateJumpingPosition(initialVelocity,cat.initialJumpingPosition,cat.jumpingTime));   
                 cat.jumpingTime += Gdx.graphics.getDeltaTime();
                 done=false;    //jumping//
             }
-            else if(cat.jump==false && cat.nextShelf==shelfAmount && cat.currentAnimation.getY()>=(shelfs[cat.nextShelf-1].texture.getY()+40)){
+            else if(cat.jump==false && cat.nextShelf==shelfAmount && cat.currentAnimation.getY()>=(shelfs[cat.nextShelf-1].texture.getY()+60)){
                cat.jump = true;//starts to fall//
                cat.initialFallingPosition = cat.currentAnimation.getY();
                cat.fallingTime = 0;
