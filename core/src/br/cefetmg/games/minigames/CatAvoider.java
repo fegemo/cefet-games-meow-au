@@ -40,7 +40,8 @@ public class CatAvoider extends MiniGame {
     private Sprite cat;
     private Sprite mouse;
     private Vector2 mousePosition;
-
+    private float speed = 3;
+    
     public CatAvoider(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f,
@@ -105,39 +106,17 @@ public class CatAvoider extends MiniGame {
     @Override
     public void onHandlePlayingInput() {
     }
-
-    public void followMouse(Vector2 mousePosition) {
+    
+    public void followMouse(float dt) {
+        float dx = Gdx.input.getX() - cat.getX();
+        float dy = Gdx.input.getY() - cat.getY();
+        float norm = (float) Math.sqrt(dx * dx + dy * dy);
         
-    }
-    
-    public float lineEquation(Vector2 v1, Vector2 v2) {
-        float m;
-        float y;
-        m = (v2.y - v1.y) / (v2.x - v1.x);
-        y = m*(v2.x - v1.x) + v1.y;
-        return y;
-    }
-    
-    public void followClick(float dt) {
-        float x;
-        Vector2 aux;
-        Vector2 mousePosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-        System.out.println(Gdx.input.getX() +" "+ Gdx.input.getY());
-        Vector2 catPosition = new Vector2(cat.getX()+dt, cat.getY());
-            
-        if(cat.getX()>Gdx.input.getX()) {
-            x = cat.getX()-dt;
-            aux = new Vector2(x, cat.getY());
-            cat.setPosition(cat.getX()-dt, lineEquation(aux, mousePosition));
-        }   
-        else if(cat.getX()<Gdx.input.getX()) {
-            x = cat.getX()+dt;
-            aux = new Vector2(x, cat.getY());
-            cat.setPosition(cat.getX()+dt, lineEquation(aux, mousePosition));
-        }
-        else
-            cat.setPosition(cat.getX(), lineEquation(catPosition, mousePosition));
-        System.out.println(lineEquation(catPosition, mousePosition));    
+        Vector2 catPosition = new Vector2(cat.getX(), cat.getY());
+        Vector2 delta = new Vector2(dx, dy);
+        Vector2 newPosition = catPosition.add(delta);
+        
+        cat.setPosition(newPosition.x, newPosition.y);
     }
     
     public void getMousePosition() {
@@ -147,7 +126,7 @@ public class CatAvoider extends MiniGame {
     
     @Override
     public void onUpdate(float dt) {
-        followClick(3);
+        followMouse(5);
     }
 
     @Override
