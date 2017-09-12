@@ -80,7 +80,7 @@ public class GatoFantasma extends MiniGame{
 
     private void spawnEnemy() {
         // pega x e y entre 0 e 1
-        Vector2 position = new Vector2(rand.nextInt()%(720-535)+535f,rand.nextInt()%(470-230)+230f);
+        Vector2 position = new Vector2(rand.nextInt()%(720-535)+535f,rand.nextInt()%(370-230)+230f);
         TextureRegion tr = new TextureRegion(catsTexture);
         TextureRegion t2 = new TextureRegion(catsTexture, tr.getRegionWidth()/2, tr.getRegionHeight());
         Sprite enemy = new Sprite(t2);
