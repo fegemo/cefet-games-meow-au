@@ -32,7 +32,7 @@ public class Collision {
 
         //se a distância entre os centros de cada Circle for menor ou igual a soma dos raios dos
         //Circles, então ocorreu uma colisão(true)
-        if (vector_c1.dst(vector_c2) <= (c1.radius + c2.radius)) {
+        if (vector_c1.dst2(vector_c2) <= ((c1.radius + c2.radius)*(c1.radius + c2.radius))) {
             return true;
         } else {
             return false;

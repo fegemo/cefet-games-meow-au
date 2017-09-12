@@ -88,7 +88,7 @@ public class MemoryChip implements Collidable {
     public boolean collidesWith(Collidable other) {
         if (other instanceof Fish) {
             // se ocorrer colisão com objeto Fish
-            return Collision.circleRectCollision(other.getMinimumBoundingRectangle(),circle);
+            return Collision.circlesOverlap(other.getMinimumEnclosingBall(),circle);
             
         } else {
             return false;

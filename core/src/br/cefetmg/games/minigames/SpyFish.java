@@ -92,13 +92,14 @@ public class SpyFish extends MiniGame {
     @Override
     public void onUpdate(float dt) {
         
-        for (Iterator<MemoryChip> iterator = chip.iterator(); iterator.hasNext();) {
-            MemoryChip mc = iterator.next();
+        for (MemoryChip mc:chip) {
             mc.update(dt);
             if (mc.collidesWith(this.fish)) {
                 System.out.println("colidiuuu");
                 //se o peixe colidir com o cartão de memoria
-                iterator.remove();
+                chip.remove(mc);
+                super.challengeSolved();
+                break;
             }
         }
 

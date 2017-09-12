@@ -32,6 +32,7 @@ public class Fish extends Sprite implements Collidable {
 
     private Sprite sprite;
     private Rectangle rectangle;
+    private Circle circle;
     private ShapeRenderer shapeRenderer;
 
     public Fish(Texture texture) {
@@ -39,12 +40,15 @@ public class Fish extends Sprite implements Collidable {
         this.shapeRenderer = new ShapeRenderer();
         this.sprite.setPosition(20.0f, 220.0f);
         this.rectangle = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
+        this.circle = new Circle(sprite.getX()+sprite.getWidth()/2,sprite.getY()+ sprite.getHeight()/2,sprite.getWidth()>sprite.getHeight()?sprite.getWidth()/2:sprite.getHeight()/2);
     }
 
     public void update(float x, float y) {
         this.sprite.setPosition(x,y);
         this.rectangle.x = x;
         this.rectangle.y = y;
+        this.circle.x=x;
+        this.circle.y=y;
         
     }
 
@@ -73,11 +77,12 @@ public class Fish extends Sprite implements Collidable {
 
     public void render_area_collision() {
 
-        // metodo para mostrar o circulo de colisão
+        // metodo para mostrar o retangulo e circulo de colisão
         this.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         this.shapeRenderer.identity();
         this.shapeRenderer.setColor(Color.RED);
         this.shapeRenderer.rect(this.rectangle.x, this.rectangle.y, this.rectangle.width,this.rectangle.height);
+        this.shapeRenderer.circle(this.circle.x+this.sprite.getWidth()/2,this.circle.y+this.getHeight()/2, this.circle.radius);
         this.shapeRenderer.end();
 
     }
@@ -99,7 +104,6 @@ public class Fish extends Sprite implements Collidable {
 
     @Override
     public Circle getMinimumEnclosingBall() {
-        throw new UnsupportedOperationException("Not supported yet.");
-       // return this.circle;
+       return this.circle;
     }
 }
