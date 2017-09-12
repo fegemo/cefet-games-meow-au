@@ -441,6 +441,7 @@ public class HeadSoccer extends MiniGame {
         float heightscreen = viewport.getScreenHeight();
         float diferenceWidth = width / widthscreen;
         float diferenceHeight = height / heightscreen;
+        
         float w = 5 * diferenceWidth;
         float h = 5 * diferenceHeight;
         widthscreen = viewport.getScreenWidth() * diferenceWidth;
