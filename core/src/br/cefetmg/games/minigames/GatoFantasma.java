@@ -107,7 +107,7 @@ public class GatoFantasma extends MiniGame{
         // verifica se matou um inimigo
         if (Gdx.input.justTouched()) {
             // itera no array de inimigos
-                    System.out.println("X:"+click.x+"   Y:"+click.y);
+            //        System.out.println("X:"+click.x+"   Y:"+click.y);
 
             for (int i = 0; i < enemies.size; i++) {
                 Sprite sprite = enemies.get(i);
@@ -139,7 +139,6 @@ public class GatoFantasma extends MiniGame{
             Sprite sprite = enemies.get(i);   
             // diminui só até x% do tamanho da imagem
             if (sprite.getScaleY()<2.0f ) {
-                System.out.println(sprite.getScaleY()+"enemies"+enemies.size);
                 sprite.setScale(sprite.getScaleX() + 0.3f * dt);
             }
             else{
