@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Rectangle;
 
 
@@ -33,14 +34,17 @@ public class Running extends MiniGame{
     private Texture boneTexture;
     private Texture kitTexture;
     private Sprite ball;
-    
+    //sprites
     private Array<Sprite> woolArray;
     private Array<Sprite> boneArray;
     private Array<Sprite> kitArray;
-    
-    
-    private Vector2 positionBall;
+    //sons
+    private Sound pickupWoolSound;
+    private Sound pickupKitSound;
+    private Sound finalSound;
+    private Sound loseSound;
     private float catSpeed;
+    //constantes de velocidade
     private static final float CAT_SPEED_CONSTANT = (float) 0.25;
     private static final float DOG_SPEED_CONSTANT = (float) 0.002;
     // variáveis do desafio - variam com a dificuldade do minigame
@@ -76,6 +80,15 @@ public class Running extends MiniGame{
         kitTexture = assets.get(
                 "running/kit.png", Texture.class);
         
+        pickupWoolSound = assets.get(
+                "running/pickup_wool.wav", Sound.class);
+        pickupKitSound = assets.get(
+                "running/pickup_kit.wav", Sound.class);
+        finalSound = assets.get(
+                "running/final.wav", Sound.class);
+        loseSound = assets.get(
+                "running/lose.wav", Sound.class);
+        
         //cat.setOrigin(0,0);
         cat.setPosition(0,viewport.getWorldHeight()*0.1f);
         catSpeed = (float) 0.5;
@@ -83,8 +96,7 @@ public class Running extends MiniGame{
         dog.setPosition(0,viewport.getWorldHeight()*0.6f);
         
         ball = new Sprite(ballTexture);
-        ball.setPosition(1240, viewport.getWorldHeight()*0.3f);
-        positionBall = new Vector2(1240, viewport.getWorldHeight()*0.3f);
+        ball.setPosition(1240, viewport.getWorldHeight()*rand.nextFloat());
         Vector2 dogGoal = new Vector2(ball.getX() - dog.getX(), ball.getY() - dog.getY());
         dogSpeed = (float)0.005;
         dogGoal = dogGoal.nor().scl(minimumdogSpeed);
@@ -113,13 +125,13 @@ public class Running extends MiniGame{
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         this.minimumdogSpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 120, 220);
+                .getCurveValueBetween(difficulty, 120, 180);
         this.totalBone = (int) DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 0, 5) + 1;
         this.totalKit = (int) DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 0, 5) + 1;
+                .getCurveValueBetween(difficulty, 0, 8) + 1;
         this.totalWool = (int) DifficultyCurve.LINEAR_NEGATIVE
-                .getCurveValueBetween(difficulty, 0, 5) + 1;
+                .getCurveValueBetween(difficulty, 3, 6) + 1;
     }
 
     @Override
@@ -135,15 +147,22 @@ public class Running extends MiniGame{
         dog.update(dt);
         
         //colisao com a bola
-        if(dog.getBoundingRectangle().overlaps(ball.getBoundingRectangle()))
+        if(dog.getBoundingRectangle().overlaps(ball.getBoundingRectangle())){
             challengeFailed();
-        if(cat.getBoundingRectangle().overlaps(ball.getBoundingRectangle()))
+            loseSound.play();
+        }
+            
+        if(cat.getBoundingRectangle().overlaps(ball.getBoundingRectangle())){
             challengeSolved();
+            finalSound.play();
+        }
+            
         //se o gato encostar na bola de la, ele aumenta a velocidade
         for (int i = 0; i < this.woolArray.size; i++) {
             if(cat.getBoundingRectangle().overlaps(woolArray.get(i).getBoundingRectangle())){
                 catSpeed += CAT_SPEED_CONSTANT;
                 woolArray.removeIndex(i);
+                pickupWoolSound.play();
             }
                 
         }
@@ -153,6 +172,7 @@ public class Running extends MiniGame{
                 if(catSpeed > 0.5)
                     catSpeed -= CAT_SPEED_CONSTANT;
                 kitArray.removeIndex(i);
+                pickupKitSound.play();
             }
                 
         }
@@ -261,7 +281,7 @@ public class Running extends MiniGame{
                 }
             }));
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
-            //super.setAutoUpdate(false);
+            super.setAutoUpdate(false);
         }
         
         @Override
@@ -304,7 +324,7 @@ public class Running extends MiniGame{
                 }
             }));
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
-            //super.setAutoUpdate(false);
+            super.setAutoUpdate(false);
         }
 
         @Override

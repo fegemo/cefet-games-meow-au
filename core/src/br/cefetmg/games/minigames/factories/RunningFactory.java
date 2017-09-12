@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
 import java.util.Map;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import com.badlogic.gdx.audio.Sound;
 /**
  *
  * @author gustavo
@@ -22,20 +23,17 @@ public class RunningFactory implements MiniGameFactory{
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
             {
-                put("running/dog-run-spritesheet.png",
-                        Texture.class);
-                put("running/cat-run-spritesheet.png",
-                        Texture.class);
-                put("running/fundo.png",
-                        Texture.class);
-                put("running/ball.png",
-                        Texture.class);
-                put("running/wool.png",
-                        Texture.class);
-                put("running/bone.png",
-                        Texture.class);
-                put("running/kit.png",
-                        Texture.class);
+                put("running/dog-run-spritesheet.png", Texture.class);
+                put("running/cat-run-spritesheet.png", Texture.class);
+                put("running/fundo.png", Texture.class);
+                put("running/ball.png", Texture.class);
+                put("running/wool.png", Texture.class);
+                put("running/bone.png", Texture.class);
+                put("running/kit.png", Texture.class);
+                put("running/pickup_wool.wav", Sound.class);
+                put("running/pickup_kit.wav", Sound.class);
+                put("running/final.wav", Sound.class);
+                put("running/lose.wav", Sound.class);
             }
         };
     }
