@@ -107,6 +107,22 @@ public class CatAvoider extends MiniGame {
     public void onHandlePlayingInput() {
     }
     
+    public void move(float dt) {
+        float MoveToX = Gdx.input.getX();
+        float MoveToY = Gdx.input.getY();
+        float x=0, y=0;
+        
+        float distance = (float) Math.sqrt(Math.pow(MoveToX - cat.getX(), 2) + Math.pow(MoveToY - cat.getY(), 2));
+
+        float amountToMoveX = (((MoveToX - cat.getX()) / distance) * dt);
+        float amountToMoveY = (((MoveToY - cat.getY()) / distance) * dt);
+
+        x += amountToMoveX;
+        y += amountToMoveY;
+        
+        cat.setPosition(x, y);
+    }
+    
     public void followMouse(float dt) {
         float dx = Gdx.input.getX() - cat.getX();
         float dy = Gdx.input.getY() - cat.getY();
@@ -114,9 +130,10 @@ public class CatAvoider extends MiniGame {
         
         Vector2 catPosition = new Vector2(cat.getX(), cat.getY());
         Vector2 delta = new Vector2(dx, dy);
-        Vector2 newPosition = catPosition.add(delta);
+        Vector2 newPosition = new Vector2(catPosition.x+delta.x, catPosition.y+delta.y);
         
         cat.setPosition(newPosition.x, newPosition.y);
+        //cat.setPosition(dx, dy);
     }
     
     public void getMousePosition() {
