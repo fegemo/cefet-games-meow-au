@@ -22,6 +22,7 @@ import java.util.HashMap;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 
 public class CatAvoider extends MiniGame {
@@ -38,6 +39,7 @@ public class CatAvoider extends MiniGame {
     private Rectangle catRect;
     private Sprite cat;
     private Sprite mouse;
+    private Vector2 mousePosition;
 
     public CatAvoider(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -108,15 +110,23 @@ public class CatAvoider extends MiniGame {
         
     }
     
-    public void followClick(Vector2 mousePosition, float dt) {
-        if(cat.getX()!=mousePosition.x){
-            //float step = ;
-        }
+    public void followClick(float dt) {
+        Vector2 mousePosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        System.out.println(Gdx.input.getX() +" "+ Gdx.input.getY());
+        mousePosition.set(mousePosition.x/dt, mousePosition.x/dt);
+        Vector2 catPosition = new Vector2(cat.getX(), cat.getY());
+        catPosition.add(mousePosition);
+            cat.setPosition(cat.getX()+mousePosition.x/1000, cat.getY()+mousePosition.y/1000);
+    }
+    
+    public void getMousePosition() {
+        Gdx.input.getX();
+        Gdx.input.getY();
     }
     
     @Override
     public void onUpdate(float dt) {
-        
+        followClick(1);
     }
 
     @Override
@@ -136,6 +146,6 @@ public class CatAvoider extends MiniGame {
 
     @Override
     public boolean shouldHideMousePointer() {
-        return true;
+        return false;
     }   
 }
