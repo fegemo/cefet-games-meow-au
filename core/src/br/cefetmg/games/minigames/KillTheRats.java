@@ -896,6 +896,10 @@ public class KillTheRats extends MiniGame {
             Vector2 radiusVec = getPosition().sub(c.x, c.y);
             radiusVec.nor();
             radiusVec.scl(c.radius);
+            
+            if (explodePos.x < cat.getPosition().x)
+                radiusVec.scl(-1f);
+            
             Vector2 intersectionPoint = new Vector2(radiusVec.y, -radiusVec.x); // rotaciona em -90 graus
             return intersectionPoint.nor();
         }
