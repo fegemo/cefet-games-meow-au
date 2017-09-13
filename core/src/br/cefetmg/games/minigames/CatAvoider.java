@@ -43,7 +43,7 @@ public class CatAvoider extends MiniGame {
     private Sprite cat;
     private Sprite mouse;
     private Vector2 mousePosition, direction;
-    private float speed = 4, timeAnimation = 1;
+    private float speed = 10, timeAnimation = 1;
 
     public CatAvoider(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -76,7 +76,7 @@ public class CatAvoider extends MiniGame {
         left = new Obstacle(batch, new Vector2(0, width), width, WORLD_HEIGHT);
         right = new Obstacle(batch, new Vector2(WORLD_WIDTH - width, width), width, WORLD_HEIGHT);
     }
-
+    
     public void verifyCollision(float dt) {
         catRect = cat.getBoundingRectangle();
         /*
@@ -87,18 +87,18 @@ public class CatAvoider extends MiniGame {
          */
         //Colisão gato chao
         if (Colision.rectsOverlap(down.getRec(), catRect)) {
-
+            reflect();
         } //Colisão gato teto
         else if (Colision.rectsOverlap(up.getRec(), catRect)) {
-
+            reflect();
         }
 
         //Colisão lateral esquerda e gato
         if (Colision.rectsOverlap(left.getRec(), catRect)) {
-
+            reflect();
         }//Colisão lateral direita e gato
         else if (Colision.rectsOverlap(right.getRec(), catRect)) {
-
+            reflect();
         }
 
     }
@@ -124,7 +124,7 @@ public class CatAvoider extends MiniGame {
 
     public void updateCatPosition() {
         if (jumped) {
-            setDirection();//atualiza ou não a direção
+            //setDirection();//atualiza ou não a direção
             Vector2 normalized = new Vector2(direction);
             normalized.nor(); // normaliza o vetor
             normalized.scl(speed);
@@ -139,19 +139,18 @@ public class CatAvoider extends MiniGame {
     }
 
     public void setDirection() {
-        /*
-        if (jumped) {
-            return;
-        }
-        */
-        
-        
-        
         direction.x = mousePosition.x - (cat.getX() + cat.getWidth()/2);
         direction.y = mousePosition.y - (cat.getY() + cat.getHeight()/2);
         lookAhead();
     }
-    public void test(){
+    
+    public void reflect() {
+        direction.x = mousePosition.x - (cat.getX() + cat.getWidth()/2);
+        direction.y = mousePosition.y - (cat.getY() + cat.getHeight()/2);
+        //lookAhead();
+    }
+  
+    public void jump(){
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             if (jumped == false) {
                 setDirection();
@@ -161,9 +160,6 @@ public class CatAvoider extends MiniGame {
     }
 
     public void follow() {
-        //lookAhead();
-        
-
         Vector2 normalized = new Vector2(direction);
         normalized.nor(); // normaliza o vetor
         normalized.scl(speed);
@@ -174,23 +170,6 @@ public class CatAvoider extends MiniGame {
         cat.setPosition(normalized.x, normalized.y);
     }
 
-    
-    public void jump() {
-        /*
-        float dx = Gdx.input.getX() - cat.getX();
-        float dy = Gdx.input.getY() - cat.getY();
-        float norm = (float) Math.sqrt(dx * dx + dy * dy);
-
-        Vector2 catPosition = new Vector2(cat.getX(), cat.getY());
-        Vector2 delta = new Vector2(dx, dy);
-        Vector2 newPosition = new Vector2(catPosition.x + delta.x, catPosition.y + delta.y);
-
-        cat.setPosition(newPosition.x, newPosition.y);
-        //cat.setPosition(dx, dy);
-*/
-        updateCatPosition();
-    }
-
     public void getMousePosition() {
         mousePosition.x = Gdx.input.getX()*WORLD_WIDTH/viewport.getScreenWidth();
         mousePosition.y = WORLD_HEIGHT - (Gdx.input.getY()*WORLD_HEIGHT/viewport.getScreenHeight());
@@ -198,10 +177,10 @@ public class CatAvoider extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
-        
         getMousePosition();
-        test();
         jump();
+        updateCatPosition();
+        verifyCollision(1);
     }
 
     @Override
