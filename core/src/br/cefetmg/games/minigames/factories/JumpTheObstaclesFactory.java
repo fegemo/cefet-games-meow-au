@@ -27,6 +27,7 @@ public class JumpTheObstaclesFactory implements MiniGameFactory {
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
             {
+                put("jump-the-obstacles/kong.png", Texture.class);
                 put("jump-the-obstacles/kong_walking.png", Texture.class);
                 put("jump-the-obstacles/sprite02.png", Texture.class);
                 put("shoo-the-tartarus/toothbrush-spritesheet.png",
@@ -38,6 +39,7 @@ public class JumpTheObstaclesFactory implements MiniGameFactory {
                 put("shoo-the-tartarus/appearing2.wav", Sound.class);
                 put("shoo-the-tartarus/appearing3.wav", Sound.class);
                 put("shoo-the-tartarus/tooth-breaking.wav", Sound.class);
+                put("jump-the-obstacles/01-theme.mp3", Sound.class);
             }
         };
     }

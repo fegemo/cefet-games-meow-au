@@ -20,6 +20,7 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.utils.Timer;
 
 /**
@@ -33,7 +34,7 @@ public class JumpTheObstacles extends MiniGame {
     private Texture tartarusTexture;
     private Texture toothTexture;
     private Array<Sound> tartarusAppearingSound;
-    private Sound toothBreakingSound;
+    private Sound backgroundSound;
     private Array<Obstacle> enemies;
     private int numberOfBrokenTeeth;
     
@@ -51,7 +52,7 @@ public class JumpTheObstacles extends MiniGame {
     @Override
     protected void onStart() {
         kongTexture = assets.get(
-                "jump-the-obstacles/kong_walking.png", Texture.class);
+                "jump-the-obstacles/kong.png", Texture.class);
         kong = new Kong(kongTexture);
         tartarusTexture = assets.get(
                 "jump-the-obstacles/sprite02.png", Texture.class);
@@ -64,11 +65,15 @@ public class JumpTheObstacles extends MiniGame {
                         "shoo-the-tartarus/appearing2.wav", Sound.class),
                 assets.get(
                         "shoo-the-tartarus/appearing3.wav", Sound.class));
-        toothBreakingSound = assets.get(
-                "shoo-the-tartarus/tooth-breaking.wav", Sound.class);
+        backgroundSound = assets.get(
+                "jump-the-obstacles/01-theme.mp3", Sound.class);
         enemies = new Array<Obstacle>();
         numberOfBrokenTeeth = 0;
 
+        backgroundSound.stop();
+        
+        backgroundSound.play();
+        
         timer.scheduleTask(new Task() {
             @Override
             public void run() {
@@ -99,11 +104,11 @@ public class JumpTheObstacles extends MiniGame {
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         this.minimumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 300, 400);
+                .getCurveValueBetween(difficulty, 800, 1000);
         this.maximumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 450, 550);
+                .getCurveValueBetween(difficulty, 1000, 1200);
         this.spawnInterval = DifficultyCurve.LINEAR_NEGATIVE
-                .getCurveValueBetween(difficulty, 1.0f, 1.5f);
+                .getCurveValueBetween(difficulty, 0.9f, 1.2f);
     }
 
     @Override
@@ -115,7 +120,6 @@ public class JumpTheObstacles extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
-        
         // atualiza a escova (quadro da animação)
         kong.update(dt);
 
@@ -133,9 +137,9 @@ public class JumpTheObstacles extends MiniGame {
 
                 // verifica se este inimigo está colidindo com algum dente
                 //for (Tooth tooth : this.teeth) {
-                    if (obstacle.getBoundingRectangle()
-                            .overlaps(kong.getBoundingRectangle())) {
+                    if (obstacle.getCollisionCircle().overlaps(kong.getCollisionCircle())) {
                         super.challengeFailed();
+                        backgroundSound.stop();
                     }
                 //}
             }
@@ -162,10 +166,10 @@ public class JumpTheObstacles extends MiniGame {
 
     class Kong extends MultiAnimatedSprite {
 
-        static final float SPEED = 320.0f;
+        static final float SPEED = 700.0f;
         
-        static final int FRAME_WIDTH = 36;
-        static final int FRAME_HEIGHT = 38;
+        static final int FRAME_WIDTH = 100;//36;
+        static final int FRAME_HEIGHT = 100;//38;
         
         static final float TOTAL_JUMPING_TIME = 0.75f;
         
@@ -186,21 +190,26 @@ public class JumpTheObstacles extends MiniGame {
                             kongTexture, FRAME_WIDTH, FRAME_HEIGHT);
                     
                     Animation walking = new Animation(0.2f,
-                            frames[0][0],
+                            /*frames[0][0],
                             frames[0][1],
                             frames[0][2],
-                            frames[0][1]);
+                            frames[0][3],
+                            frames[0][4],*/
+                            frames[0][5],
+                            frames[0][6]);
+                    
                     walking.setPlayMode(Animation.PlayMode.LOOP);
                     put("walking", walking);
                     
-/*                    Animation jumping = new Animation(0.2f,
+                    Animation jumping = new Animation(0.2f,
                             frames[1][0],
                             frames[1][1],
                             frames[1][2],
-                            frames[1][3]);
+                            frames[1][1],
+                            frames[1][0]);
                     jumping.setPlayMode(Animation.PlayMode.NORMAL);
                     put("jumping", jumping);
-  */                  
+                    
                 }
             }, "walking");
             
@@ -240,17 +249,19 @@ public class JumpTheObstacles extends MiniGame {
                     jumpingTime += dt;
                     speed.y = SPEED;
                     
-                    if(jumpingTime >= TOTAL_JUMPING_TIME/2.0f)
+                    if(jumpingTime >= TOTAL_JUMPING_TIME/2.0f){
                         state = JumpState.FALLING;
-                    
+                        startAnimation("jumping");
+                    }
                     break;
                 case FALLING:
                     jumpingTime -= dt;
                     speed.y = -SPEED;
                     
-                    if(jumpingTime <= 0.0f)
+                    if(jumpingTime <= 0.0f){
                         state = JumpState.NONE;
-                    
+                        startAnimation("walking");
+                    }
                     break;
             }
             
@@ -269,14 +280,21 @@ public class JumpTheObstacles extends MiniGame {
                 //        ? -1 : 1, 1);
             }
         }
+        
+        public Circle getCollisionCircle(){
+            Vector2 position = new Vector2(this.getX(), this.getY());
+            Vector2 center = position.add(FRAME_WIDTH/2.0f, FRAME_HEIGHT/2.0f);
+            
+            return new Circle(center, (FRAME_WIDTH+FRAME_HEIGHT)/4.0f);
+        }
     }
 
     class Obstacle extends AnimatedSprite {
 
         static final float SPEED = 160.0f;
         
-        static final int FRAME_WIDTH = 40;
-        static final int FRAME_HEIGHT = 40;
+        static final int FRAME_WIDTH = 100;
+        static final int FRAME_HEIGHT = 100;
         
         static final float MIN_SPACE = 80.0f;
         
@@ -290,10 +308,12 @@ public class JumpTheObstacles extends MiniGame {
                     TextureRegion[][] frames = TextureRegion.split(
                             kongTexture, FRAME_WIDTH, FRAME_HEIGHT);
                     super.addAll(new TextureRegion[]{
-                        frames[0][0]/*,
-                        frames[0][1],
+                        frames[0][5],
+                        frames[0][4],
+                        frames[0][3],
                         frames[0][2],
-                        frames[0][3]*/
+                        frames[0][1],
+                        frames[0][0]
                     });
                 }
             }));
@@ -322,6 +342,13 @@ public class JumpTheObstacles extends MiniGame {
             
             super.setPosition(Math.max(super.getX() + this.speed.x * dt, 0.0f),
                     super.getY() + this.speed.y * dt);
+        }
+        
+        public Circle getCollisionCircle(){
+            Vector2 position = new Vector2(this.getX(), this.getY());
+            Vector2 center = position.add(FRAME_WIDTH/2.0f, FRAME_HEIGHT/2.0f - 10);
+            
+            return new Circle(center, 30);
         }
         
     }
