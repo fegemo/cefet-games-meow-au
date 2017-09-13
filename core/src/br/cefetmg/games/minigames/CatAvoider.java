@@ -221,6 +221,7 @@ public class CatAvoider extends MiniGame {
         }
     }
     
+    //tratar a colisão em Random moviment
     public void moveRandom() {
         Random randomGenerator = new Random();
         int move = randomGenerator.nextInt(20);
@@ -274,7 +275,11 @@ public class CatAvoider extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
-       getMousePosition();
+       Random randomGenerator = new Random();
+       int changeState = randomGenerator.nextInt(30);
+       if(changeState==29)
+           state = 1;
+        getMousePosition();
         jump(dt);
        //move();
     }
