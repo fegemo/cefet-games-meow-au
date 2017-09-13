@@ -175,81 +175,82 @@ public class CatAvoider extends MiniGame {
         cat.setY(cat.getY()-delta);
     }
     
-    public void randomMovementDown() {
-        int random = randomGenerator.nextInt(3);
+   public void randomMovementDown(float dt) {
+        int random = randomGenerator.nextInt(2);
         if(random==0) {
-            setDirection();
-            if(jumped==false) {
-                setDirection();
-                jumped = true;
-            }
-        }
-        else if(random==1) {
-            jumped = false;
             catIncrementX(catDelta);
         }
-        else {
+        else if(random==1){
             catDecrementX(catDelta);
         }
     }
     
-    public void randomMovementUp() {
-        int random = randomGenerator.nextInt(3);
+    public void randomMovementUp(float dt) {
+        int random = randomGenerator.nextInt(2);
         if(random==0) {
-            setDirection();
-        }
-        else if(random==1)
             catIncrementX(catDelta);
-        else
+        }
+        else if(random==1){
             catDecrementX(catDelta);
+        }
     }
     
-    public void randomMovementLeft() {
-        int random = randomGenerator.nextInt(3);
+    public void randomMovementLeft(float dt) {
+        int random = randomGenerator.nextInt(2);
         if(random==0) {
-            setDirection();
-            jumped = true;
-        }
-        else if(random==1)
             catIncrementY(catDelta);
-        else
+        }
+        else if(random==1){
             catDecrementY(catDelta);
+        }
     }
     
-    public void randomMovementRight() {
-        int random = randomGenerator.nextInt(3);
+    public void randomMovementRight(float dt) {
+        int random = randomGenerator.nextInt(2);
         if(random==0) {
-            setDirection();
-            jumped = true;
-        }
-        else if(random==1)
             catIncrementY(catDelta);
-        else
+        }
+        else if(random==1){
             catDecrementY(catDelta);
+        }
     }
     
     public void move() {
         if(moveType=='D') {
-            randomMovementDown();
+            if(jumped)
+                updateCatPosition();
+            else
+                randomMovementDown(5);
         }
         if(moveType=='U') {
-            randomMovementUp();
+            if(jumped)
+                updateCatPosition();
+            else
+                randomMovementUp(5);
         }
         if(moveType=='L') {
-            randomMovementLeft();
+            if(jumped)
+                updateCatPosition();
+            else
+                randomMovementLeft(5);
         }
         if(moveType=='R') {
-            randomMovementRight();
+            if(jumped)
+                updateCatPosition();
+            else
+                randomMovementRight(5);
         }
     }
     
-    public void jump(){
+    public void jump(float dt){
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             if (jumped == false) {
                 setDirection();
                 jumped = true;
             }
         }
+        updateCatPosition();
+        verifyCollision(1);
     }
 
     public void follow() {
@@ -271,10 +272,8 @@ public class CatAvoider extends MiniGame {
     @Override
     public void onUpdate(float dt) {
        getMousePosition();
-        jump();
+        jump(dt);
        //move();
-       updateCatPosition();
-       verifyCollision(1);
     }
 
     @Override
