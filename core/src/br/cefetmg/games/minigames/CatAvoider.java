@@ -45,9 +45,10 @@ public class CatAvoider extends MiniGame {
     private Sprite mouse;
     private Vector2 mousePosition, direction;
     private float speed = 10, timeAnimation = 1;
-    private float catDelta = 3;
+    private float catDelta = 100;
     Random randomGenerator = new Random();
     private char moveType;
+    public int state;//indicate if the cat is moving or stoped '1=moving and ==stped'
 
     public CatAvoider(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -80,6 +81,7 @@ public class CatAvoider extends MiniGame {
         left = new Obstacle(batch, new Vector2(0, width), width, WORLD_HEIGHT);
         right = new Obstacle(batch, new Vector2(WORLD_WIDTH - width, width), width, WORLD_HEIGHT);
         moveType = 'D';
+        state = 0;
     }
     
     public void verifyCollision(float dt) {
@@ -94,20 +96,24 @@ public class CatAvoider extends MiniGame {
         if (Colision.rectsOverlap(down.getRec(), catRect)) {
             reflect();
             moveType = 'D';
+            state = 0;
         } //Colisão gato teto
         else if (Colision.rectsOverlap(up.getRec(), catRect)) {
             reflect();
             moveType = 'U';
+            state = 0;
         }
 
         //Colisão lateral esquerda e gato
         if (Colision.rectsOverlap(left.getRec(), catRect)) {
             reflect();
             moveType = 'L';
+            state = 0;
         }//Colisão lateral direita e gato
         else if (Colision.rectsOverlap(right.getRec(), catRect)) {
             reflect();
             moveType = 'D';
+            state = 0;
         }
 
     }
@@ -164,7 +170,7 @@ public class CatAvoider extends MiniGame {
     }
     
     public void catDecrementX(float delta) {
-        cat.setY(cat.getY()-delta);
+        cat.setX(cat.getX()-delta);
     }
     
     public void catIncrementY(float delta) {
@@ -215,42 +221,39 @@ public class CatAvoider extends MiniGame {
         }
     }
     
-    public void move() {
-        if(moveType=='D') {
-            if(jumped)
-                updateCatPosition();
-            else
+    public void moveRandom() {
+        Random randomGenerator = new Random();
+        int move = randomGenerator.nextInt(20);
+        if(move==19) {
+            if(moveType=='D') {
                 randomMovementDown(5);
-        }
-        if(moveType=='U') {
-            if(jumped)
-                updateCatPosition();
-            else
+            }
+            if(moveType=='U') {
                 randomMovementUp(5);
-        }
-        if(moveType=='L') {
-            if(jumped)
-                updateCatPosition();
-            else
+            }
+            if(moveType=='L') {
                 randomMovementLeft(5);
-        }
-        if(moveType=='R') {
-            if(jumped)
-                updateCatPosition();
-            else
+            }
+            if(moveType=='R') {
                 randomMovementRight(5);
+            }
         }
     }
     
     public void jump(float dt){
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+        Random randomGenerator = new Random();
+        int changeState = randomGenerator.nextInt();
+        if (state==1) {
             if (jumped == false) {
                 setDirection();
                 jumped = true;
             }
+            updateCatPosition();
+            verifyCollision(1);
         }
-        updateCatPosition();
-        verifyCollision(1);
+        if(state==0) {
+            moveRandom();
+        }
     }
 
     public void follow() {
