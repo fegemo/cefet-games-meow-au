@@ -147,7 +147,7 @@ public class CatAvoider extends MiniGame {
     public void reflect() {
         direction.x = mousePosition.x - (cat.getX() + cat.getWidth()/2);
         direction.y = mousePosition.y - (cat.getY() + cat.getHeight()/2);
-        //lookAhead();
+        lookAhead();
     }
   
     public void jump(){
