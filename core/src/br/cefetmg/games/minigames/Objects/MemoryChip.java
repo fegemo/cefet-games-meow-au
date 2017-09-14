@@ -43,7 +43,6 @@ public class MemoryChip implements Collidable {
         this.Velocidade_Queda = 1 + (float) new Random().nextInt(7);
         this.Rotation = (-30) + (float) new Random().nextInt(20);
 
-        //25x34 dimensão do png, o raio de colisão é 21.1
         this.circle.radius = 21.1f;
 
         this.sprite.setPosition(this.position.x, this.position.y);
@@ -82,6 +81,10 @@ public class MemoryChip implements Collidable {
         }
         
 
+    }
+    
+    public Vector2 getPositionMemoryCard(){
+        return this.position;
     }
 
     @Override

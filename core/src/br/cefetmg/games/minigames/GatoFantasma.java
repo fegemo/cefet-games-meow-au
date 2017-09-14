@@ -27,8 +27,8 @@ import java.util.function.ToLongFunction;
  *
  * @author Alberto
  */
-public class GatoFantasma extends MiniGame{
-    
+public class GatoFantasma extends MiniGame {
+
     private Array<Sprite> enemies;
     private Sprite target;
     private Texture catsTexture;
@@ -40,15 +40,15 @@ public class GatoFantasma extends MiniGame{
     private float initialEnemyScale;
     private int totalEnemies;
     private float spawnInterval;
-    
+
     public GatoFantasma(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
     }
 
     @Override
     protected void onStart() {
-        cont =0;
-         enemies = new Array<Sprite>();
+        cont = 0;
+        enemies = new Array<Sprite>();
         catsTexture = assets.get(
                 "gato-fantasma/gato-fantasma.png", Texture.class);
         targetTexture = assets.get(
@@ -61,6 +61,7 @@ public class GatoFantasma extends MiniGame{
         spawnedEnemies = 0;
         scheduleEnemySpawn();
     }
+
     private void scheduleEnemySpawn() {
         Timer.Task t = new Timer.Task() {
             @Override
@@ -79,21 +80,21 @@ public class GatoFantasma extends MiniGame{
 
     private void spawnEnemy() {
         // pega x e y entre 0 e 1
-        Vector2 position = new Vector2(rand.nextInt()%(720-565)+565f,360);
-        
+        Vector2 position = new Vector2(rand.nextInt() % (720 - 565) + 565f, 360);
+
         Sprite enemy = new Sprite(catsTexture);
         enemy.setPosition(position.x, position.y);
         enemy.setScale(initialEnemyScale);
         enemies.add(enemy);
     }
-    
+
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         this.initialEnemyScale = DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 0.05f, 0.25f);
         this.spawnInterval = DifficultyCurve.S_NEGATIVE
                 .getCurveValueBetween(difficulty, 0.5f, 1.5f);
-        this.totalEnemies = (int)(20*DifficultyCurve.LINEAR.getCurveValueBetween(difficulty,0.f,1.0f))+3;
+        this.totalEnemies = (int) (20 * DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 0.f, 1.0f)) + 3;
     }
 
     @Override
@@ -107,7 +108,7 @@ public class GatoFantasma extends MiniGame{
         // verifica se matou um inimigo
         if (Gdx.input.justTouched()) {
             // itera no array de inimigos
-                    System.out.println("X:"+click.x+"   Y:"+click.y);
+            System.out.println("X:" + click.x + "   Y:" + click.y);
 
             for (int i = 0; i < enemies.size; i++) {
                 Sprite sprite = enemies.get(i);
@@ -136,31 +137,29 @@ public class GatoFantasma extends MiniGame{
     @Override
     public void onUpdate(float dt) {
         for (int i = 0; i < enemies.size; i++) {
-            Sprite sprite = enemies.get(i);   
+            Sprite sprite = enemies.get(i);
             // diminui só até x% do tamanho da imagem
-            if (sprite.getScaleY()<2.0f ) {
-                System.out.println(sprite.getScaleY()+"enemies"+enemies.size);
+            if (sprite.getScaleY() < 2.0f) {
+                System.out.println(sprite.getScaleY() + "enemies" + enemies.size);
                 sprite.setScale(sprite.getScaleX() + 0.3f * dt);
+            } else {
+                //perdeu playboy
+                challengeFailed();
             }
-            else{
-                    //perdeu playboy
-                    challengeFailed();
-                }
         }
         enemies.sort(new Comparator<Sprite>() {
             @Override
             public int compare(Sprite b1, Sprite b2) {
                 //TODO testar nulos 
-                return b1.getScaleX()>b2.getScaleX()?-1:b1.getScaleX()==b2.getScaleX()?0:1;
+                return b1.getScaleX() > b2.getScaleX() ? -1 : b1.getScaleX() == b2.getScaleX() ? 0 : 1;
             }
         });
     }
 
-    
     @Override
     public void onDrawGame() {
-        batch.draw(fundoTexture, 0,0);
-        for (int i = enemies.size-1; i >= 0; i--) {
+        batch.draw(fundoTexture, 0, 0);
+        for (int i = enemies.size - 1; i >= 0; i--) {
             Sprite sprite = enemies.get(i);
             sprite.draw(batch);
         }
@@ -176,5 +175,5 @@ public class GatoFantasma extends MiniGame{
     public boolean shouldHideMousePointer() {
         return true;
     }
-    
+
 }

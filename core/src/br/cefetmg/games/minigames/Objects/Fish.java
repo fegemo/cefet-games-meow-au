@@ -11,8 +11,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
@@ -32,11 +34,20 @@ public class Fish extends Sprite implements Collidable {
     private int lado;
 
     private Sprite sprite;
+    private TextureRegion[][] region;
     private Circle circle;
     private ShapeRenderer shapeRenderer;
+    
+    private Animation normal;
 
     public Fish(Texture texture) {
         this.sprite = new Sprite(texture);
+        
+        /*this.region = TextureRegion.split(texture , 188 , 240);
+        this.normal = new Animation(0.01f,this.region[1][0],this.region[1][1],this.region[1][2],
+        this.region[1][3],this.region[1][4],this.region[1][5],this.region[1][6],this.region[1][7],
+        this.region[1][8]);*/
+        
         this.circle = new Circle();
         this.shapeRenderer = new ShapeRenderer();
 
@@ -59,8 +70,9 @@ public class Fish extends Sprite implements Collidable {
     }
 
     public void render(SpriteBatch sb, float x, float y) {
-
+        
         this.sprite.draw(sb);
+        //sb.draw((TextureRegion) this.normal.getKeyFrame(0.1f), this.position.x, this.position.y);;
 
     }
     
@@ -74,9 +86,9 @@ public class Fish extends Sprite implements Collidable {
                 float ultimo_x = this.position.x;
                 if( ultimo_x > x){
                     // da um mirror 
-                    this.sprite.flip(true,false);
+                    //this.sprite.flip(true,false);
                 }else if( ultimo_x < x){
-                    this.sprite.flip(true,false);
+                    //this.sprite.flip(true,false);
                 }
             }
         }
