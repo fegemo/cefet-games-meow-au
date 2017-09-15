@@ -1,5 +1,4 @@
 package br.cefetmg.games.minigames.factories;
-
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.NinjaCat;
 import br.cefetmg.games.screens.BaseScreen;
@@ -22,7 +21,6 @@ public class NinjaCatFactory implements MiniGameFactory {
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
             {
-              
                 put("ninja-cat/bg1.jpg",Texture.class);
                 put("ninja-cat/arrow.png",Texture.class);
                 put("ninja-cat/atk.png",Texture.class);

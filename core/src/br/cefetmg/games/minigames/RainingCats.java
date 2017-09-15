@@ -9,11 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
-import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.*;
 public class RainingCats extends MiniGame{
     
    
@@ -71,8 +67,6 @@ public class RainingCats extends MiniGame{
         player.setScale(0.4f);
         player.setOrigin(0,0); 
         player.setPosition(viewport.getWorldWidth()*0.2f,0);
-        
-        
         scheduleCatsSpawn();
         
     }
@@ -109,7 +103,7 @@ public class RainingCats extends MiniGame{
     }
     
     
-      @Override
+    @Override
     protected void configureDifficultyParameters(float difficulty) {
         
          this.speed = DifficultyCurve.LINEAR
@@ -150,12 +144,10 @@ public class RainingCats extends MiniGame{
                 if(this.helpedCats >= this.totalCats){
                     super.challengeSolved();
                 }
-            }
-                    
+            }        
         }
     }
-    
-      
+     
     @Override
     public void onUpdate(float dt) {
         if(jump){
@@ -175,11 +167,8 @@ public class RainingCats extends MiniGame{
             if(cats.get(i).getY()<=-100)
                 super.challengeFailed();
         }
-        
-       
     }
     
-     
     @Override
     public String getInstructions(){
         return "Salve os gatos";
@@ -190,14 +179,13 @@ public class RainingCats extends MiniGame{
         
         backGround.draw(batch);
         player.draw(batch);
-        arrow.draw(batch);
         
-       
+               
         for(int i = 0; i < cats.size;i++){
             Sprite sprite = cats.get (i);
             sprite.draw(batch);
         }  
-       
+        arrow.draw(batch);
         
     }
     
