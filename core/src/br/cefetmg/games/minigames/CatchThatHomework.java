@@ -31,6 +31,7 @@ public class CatchThatHomework extends MiniGame {
     private Texture homeworkTexture;
     private Array<Homework> homeworks;
     private Sound backgroundMusic;
+    private float speedMultiplier;
     
     private float spawnInterval = 1;
 
@@ -69,11 +70,13 @@ public class CatchThatHomework extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
+        this.speedMultiplier = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 1f, 3f);
     }
 
     private void spawnHomework() {
         Homework homework = new Homework(homeworkTexture, new Vector2(0, 300));
         homework.setScale(3);
+        homework.speed.scl(this.speedMultiplier);
         homework.setPosition(MathUtils.random(0, viewport.getWorldWidth()), viewport.getWorldHeight());
         homeworks.add(homework);
 
