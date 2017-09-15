@@ -1,5 +1,6 @@
 package br.cefetmg.games.minigames;
 
+import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
@@ -21,6 +22,8 @@ public class CucumberMadness extends MiniGame {
     private Array<Veggie> veggies;
     private Array<Texture> veggieTextures;
     private Sound backgroundMusic;
+    private float speedMultiplier;
+    private float spawnIntervalMultiplier;
     private float spawnInterval = 1;
 
     public CucumberMadness(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
@@ -48,6 +51,8 @@ public class CucumberMadness extends MiniGame {
             viewport.getWorldWidth() / 2f,
             cat.height);
         cat.setScale(3);
+        
+        System.out.print(this.spawnIntervalMultiplier);
 
         timer.scheduleTask(new Task() {
             @Override
@@ -55,13 +60,15 @@ public class CucumberMadness extends MiniGame {
                 spawnVeggies();
             }
 
-        }, 0, this.spawnInterval);
+        }, 0, this.spawnIntervalMultiplier * this.spawnInterval);
         
         backgroundMusic.play();
     }
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
+        this.speedMultiplier = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 1f, 2f);
+        this.spawnIntervalMultiplier = DifficultyCurve.S.getCurveValueBetween(difficulty, 1f, 0.5f);
     }
 
     private void spawnVeggies() {
@@ -70,9 +77,9 @@ public class CucumberMadness extends MiniGame {
         Vector2 direction;
         Vector2 position = new Vector2();
         
-        direction = new Vector2(MathUtils.random(-1, 1) * 500, MathUtils.random(-1, 1) * 500);
+        direction = new Vector2(MathUtils.random(-1, 1) * 300, MathUtils.random(-1, 1) * 300);
         if (direction.x != 0f || direction.y != 0f) {
-            Veggie veggie = new Veggie(veggieTextures.get(index), direction);
+            Veggie veggie = new Veggie(veggieTextures.get(index), direction.scl(this.speedMultiplier));
 
             boolean appearFromSides = MathUtils.randomBoolean();
             if (appearFromSides) {
