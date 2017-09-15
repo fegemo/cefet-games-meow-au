@@ -39,7 +39,8 @@ public class KillTheRats extends MiniGame {
     private Texture rocketTexture;
     private Texture miniExplosionTexture;
     private Texture bigExplosionTexture;
-    private Texture swapTexture;
+    private Texture primaryWeapon_Texture;
+    private Texture secondaryWeapon_Texture;
     
     private Sound levelSound;
     private Sound ratsSound;
@@ -83,7 +84,8 @@ public class KillTheRats extends MiniGame {
         rocketTexture = assets.get("kill-the-rats/rocket.png", Texture.class);
         miniExplosionTexture = assets.get("kill-the-rats/mini_explosion.png", Texture.class);
         bigExplosionTexture = assets.get("kill-the-rats/big_explosion.png", Texture.class);
-        swapTexture = assets.get("kill-the-rats/swap.png", Texture.class);
+        primaryWeapon_Texture = assets.get("kill-the-rats/primary_weapon.png", Texture.class);
+        secondaryWeapon_Texture = assets.get("kill-the-rats/secondary_weapon.png", Texture.class);
         
         levelSound = assets.get("kill-the-rats/JerryFive.mp3", Sound.class);
         ratsSound = assets.get("kill-the-rats/Rats_Ambience.mp3", Sound.class);
@@ -117,9 +119,9 @@ public class KillTheRats extends MiniGame {
     }
     
     private void initSwapButton() {
-        swapButton = new SwapButton(swapTexture);
-        swapButton.setCenter(swapTexture.getWidth(), 
-                             viewport.getWorldHeight() - swapTexture.getHeight()/1.5f);
+        swapButton = new SwapButton(primaryWeapon_Texture);
+        swapButton.setCenter(primaryWeapon_Texture.getWidth()/2.5f, 
+                             viewport.getWorldHeight() - primaryWeapon_Texture.getHeight()/3.0f);
     }
     
     private void initBackground() {
@@ -195,7 +197,6 @@ public class KillTheRats extends MiniGame {
     
     @Override
     public void onUpdate(float dt) {
-        swapButton.update(dt);
         cat.update(dt);
         
         for (Fire fire : this.fires) {
@@ -253,33 +254,21 @@ public class KillTheRats extends MiniGame {
         return false;
     }
     
-    private class SwapButton extends AnimatedSprite {
+    private class SwapButton extends Sprite {
 
-        static final int FRAME_WIDTH = 96;
-        static final int FRAME_HEIGHT = 96;
+        static final int FRAME_WIDTH = 256;
+        static final int FRAME_HEIGHT = 256;
         
-        private Color defaultColor;
         private float radius;
 
-        SwapButton(final Texture swapTexture) {
-            super(new Animation(0.1f, new Array<TextureRegion>() {
-                {
-                    TextureRegion[][] frames = TextureRegion.split(
-                            swapTexture, FRAME_WIDTH, FRAME_HEIGHT);
-                    super.addAll(new TextureRegion[]{
-                        frames[0][0]
-                    });
-                }
-            }));
-            super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
-            super.setAutoUpdate(false);
-            
+        SwapButton(final Texture weaponTexture) {
+            super(weaponTexture);
             init();
         }
         
         public void init() {
-            defaultColor = getColor();
-            radius = getWidth()/2;
+            setScale(0.4f);
+            radius = getWidth()/5;
             setPosition(getOriginX(), getOriginY());
         }
         
@@ -309,9 +298,9 @@ public class KillTheRats extends MiniGame {
                 changeWeapon = !changeWeapon;
                 
                 if (changeWeapon)
-                    setColor(Color.valueOf("EE7600"));
+                    setTexture(secondaryWeapon_Texture);
                 else
-                    setColor(defaultColor);
+                    setTexture(primaryWeapon_Texture);
             }
         }
     }
@@ -699,7 +688,7 @@ public class KillTheRats extends MiniGame {
     private class Fire extends MultiAnimatedSprite {
 
         static final float frameDuration = 0.05f;
-        static final float weaponChangeTimer = 10.0f;
+        //static final float weaponChangeTimer = 10.0f;
         static final float explodeDuration = 1.0f;
         static final float arcHeight = 100.0f;
         
@@ -968,8 +957,8 @@ public class KillTheRats extends MiniGame {
                 follow();
             }
             
-            if (!changeWeapon && getTime() >= weaponChangeTimer)
-                changeWeapon = true;
+            //if (!changeWeapon && getTime() >= weaponChangeTimer)
+                //changeWeapon = true;
             
             if (!rocketMode && changeWeapon) {
                 rocketMode = true;
