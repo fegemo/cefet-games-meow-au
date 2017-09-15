@@ -173,8 +173,6 @@ public class KillTheRats extends MiniGame {
                 .getCurveValueBetween(difficulty, 4, 7);
         this.percentIgnoreRats = DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 0.75f, 0.3f);
-        
-        System.out.println("maxNumRats = " + maxNumRats);
     }
     
     @Override
