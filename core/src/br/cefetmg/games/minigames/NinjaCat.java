@@ -16,10 +16,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import com.badlogic.gdx.physics.box2d.*;
-/**
- *
- * @author Rógenes
- */
+
 public class NinjaCat extends MiniGame{
     
    

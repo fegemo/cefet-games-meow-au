@@ -14,10 +14,6 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
-/**
- *
- * @author Rógenes
- */
 public class RainingCats extends MiniGame{
     
    
