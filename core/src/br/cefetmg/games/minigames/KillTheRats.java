@@ -861,6 +861,7 @@ public class KillTheRats extends MiniGame {
             setPosition(normalized.x, normalized.y);
         }
         
+        /*
         public void parabole() {
             float x1 = getX();
             float x2 = mousePos.x;
@@ -880,6 +881,7 @@ public class KillTheRats extends MiniGame {
             c += getY();
             //c += mousePos.y;
         }
+        */
         
         public Vector2 tangentCircle(Circle c) {
             Vector2 radiusVec = getPosition().sub(c.x, c.y);
@@ -894,24 +896,23 @@ public class KillTheRats extends MiniGame {
         }
         
         public void arc(float height) {
-            float halfDist = getPosition().dst(explodePos) / 2;
+            Vector2 distVec = (new Vector2(explodePos)).sub(getPosition());
+            float halfDist = distVec.len() / 2;
             
             if (height >= halfDist)
                 height = halfDist;
             
             float radius = (halfDist*halfDist + height*height) / (2*height);
             
-            Vector2 halfVec = (new Vector2(explodePos)).sub(getPosition());
-            halfVec.nor();
-            halfVec.scl(halfDist);
-            Vector2 dir = new Vector2(halfVec.y, -halfVec.x); // rotaciona -90 graus
+            distVec.nor();
+            distVec.scl(halfDist);
+            Vector2 dir = new Vector2(distVec.y, -distVec.x); // rotaciona -90 graus
             dir.nor();
             dir.scl(radius - height);
             
             // centro da circunferencia
-            Vector2 center = halfVec.add(getPosition()).add(dir);
+            Vector2 center = distVec.add(getPosition()).add(dir);
             arcCircle = new Circle(center.x, center.y, radius);
-            System.out.println("arcCircle = " + arcCircle.x + " " + arcCircle.y + " " + arcCircle.radius);
         }
         
         public void trajectoryCurve(float x) {

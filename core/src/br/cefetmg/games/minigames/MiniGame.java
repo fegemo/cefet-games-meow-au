@@ -78,7 +78,8 @@ public abstract class MiniGame {
     public final void start() {
         this.configureDifficultyParameters(this.difficulty);
 
-        transitionTo(MiniGameState.PLAYING);
+        transitionTo(MiniGameState.SHOWING_INSTRUCTIONS);
+        //transitionTo(MiniGameState.PLAYING); // inicialização direta
     }
 
     public final void handleInput() {

@@ -42,7 +42,7 @@ public class PlayingGamesScreen extends BaseScreen
                         // flávio
                         //new ShootTheCariesFactory(),
                         //new ShooTheTartarusFactory(),
-                        //new TheFridgeGameFactory()
+                        new TheFridgeGameFactory(),
                         new KillTheRatsFactory()
                 )
         ), 0, 1, this, this);
