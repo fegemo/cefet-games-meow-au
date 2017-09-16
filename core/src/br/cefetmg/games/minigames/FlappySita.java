@@ -2,6 +2,7 @@ package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.graphics.MultiAnimatedSprite;
+import br.cefetmg.games.minigames.ShooTheTartarus.ToothBrush;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
@@ -24,16 +25,18 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
  *
  * @author fegemo <coutinho@decom.cefetmg.br>
  */
-public class ShooTheTartarus extends MiniGame {
+public class FlappySita extends MiniGame {
 
     private Texture toothbrushTexture;
     private ToothBrush toothBrush;
+    private Calopsita calopsita;
+    private Texture calopsitaTextura;
     private Texture tartarusTexture;
     private Texture toothTexture;
     private Array<Sound> tartarusAppearingSound;
     private Sound toothBreakingSound;
-    private Array<Tartarus> enemies;
-    private Array<Tooth> teeth;
+  //  private Array<Tartarus> enemies;
+   // private Array<Tooth> teeth;
     private int numberOfBrokenTeeth;
 
     // variáveis do desafio - variam com a dificuldade do minigame
@@ -41,8 +44,10 @@ public class ShooTheTartarus extends MiniGame {
     private float maximumEnemySpeed;
     private float spawnInterval;
     private int totalTeeth;
-
-    public ShooTheTartarus(BaseScreen screen,
+    private float ScreenWidth;
+    private float ScreenHeight;
+    private float posX,posY;
+    public FlappySita(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f,
                 TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -50,10 +55,17 @@ public class ShooTheTartarus extends MiniGame {
 
     @Override
     protected void onStart() {
-        toothbrushTexture = assets.get(
-                "shoo-the-tartarus/toothbrush-spritesheet.png", Texture.class);
-        toothBrush = new ToothBrush(toothbrushTexture);
-        tartarusTexture = assets.get(
+         calopsitaTextura = assets.get("FlappySita/bird-sprite-reverse.png",Texture.class);
+
+      //  toothbrushTexture = assets.get(
+      //          "shoo-the-tartarus/toothbrush-spritesheet.png", Texture.class);
+       // toothBrush = new ToothBrush(toothbrushTexture);
+        calopsita= new Calopsita(calopsitaTextura);
+        ScreenHeight = Gdx.graphics.getHeight();
+        ScreenWidth = Gdx.graphics.getWidth();
+        posX = (float)(ScreenWidth*0.2);
+        posY = (float)(ScreenHeight*0.5);
+      /*  tartarusTexture = assets.get(
                 "shoo-the-tartarus/tartarus-spritesheet.png", Texture.class);
         toothTexture = assets.get(
                 "shoo-the-tartarus/tooth.png", Texture.class);
@@ -65,12 +77,12 @@ public class ShooTheTartarus extends MiniGame {
                 assets.get(
                         "shoo-the-tartarus/appearing3.wav", Sound.class));
         toothBreakingSound = assets.get(
-                "shoo-the-tartarus/tooth-breaking.wav", Sound.class);
-        enemies = new Array<Tartarus>();
-        teeth = new Array<Tooth>();
-        numberOfBrokenTeeth = 0;
+                "shoo-the-tartarus/tooth-breaking.wav", Sound.class);*/
+      //  enemies = new Array<Tartarus>();
+     //   teeth = new Array<Tooth>();
+      //  numberOfBrokenTeeth = 0;
 
-        initializeTeeth();
+       // initializeTeeth();
         timer.scheduleTask(new Task() {
             @Override
             public void run() {
@@ -81,7 +93,7 @@ public class ShooTheTartarus extends MiniGame {
     }
 
     private void initializeTeeth() {
-        TextureRegion[][] frames = TextureRegion.split(toothTexture,
+        /*TextureRegion[][] frames = TextureRegion.split(toothTexture,
                 Tooth.FRAME_WIDTH, Tooth.FRAME_HEIGHT);
 
         switch (this.totalTeeth) {
@@ -133,11 +145,11 @@ public class ShooTheTartarus extends MiniGame {
                     this.teeth.add(tooth);
                 }
                 break;
-        }
+        }*/
     }
 
     private void spawnEnemy() {
-        Vector2 goalCenter = new Vector2();
+       /* Vector2 goalCenter = new Vector2();
         Vector2 tartarusGoal = this.teeth.random()
                 .getBoundingRectangle()
                 .getCenter(goalCenter);
@@ -172,7 +184,7 @@ public class ShooTheTartarus extends MiniGame {
         Sound sound = tartarusAppearingSound.random();
         long id = sound.play(0.5f);
         sound.setPan(id, tartarusPosition.x < viewport.getWorldWidth()
-                ? -1 : 1, 1);
+                ? -1 : 1, 1);*/
     }
 
     @Override
@@ -190,10 +202,12 @@ public class ShooTheTartarus extends MiniGame {
     @Override
     public void onHandlePlayingInput() {
         // atualiza a posição do alvo de acordo com o mouse
-        Vector3 click = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        viewport.unproject(click);
-        toothBrush.setCenter(click.x, click.y);
-
+        Vector3 Posi;
+        Posi = new Vector3(posX , posY, 0);
+        viewport.unproject(Posi);
+      //  toothBrush.setCenter(click.x, click.y);
+        calopsita.setCenter(Posi.x, Posi.y);
+    /*
         // verifica se a cabeça da escova está próxima dos tártarus
         for (Tartarus tart : this.enemies) {
             float distance = toothBrush.getHeadDistanceTo(
@@ -201,26 +215,27 @@ public class ShooTheTartarus extends MiniGame {
             if (distance <= 30) {
                 tart.startFleeing(toothBrush.getHeadPosition());
             }
-        }
+        }*/
     }
 
-    private void toothWasHurt(Tooth tooth, Tartarus enemy) {
-        enemies.removeValue(enemy, false);
-        numberOfBrokenTeeth += tooth.wasHurt() ? 1 : 0;
+    private void toothWasHurt(/*Tooth tooth, Tartarus enemy*/) {
+        //enemies.removeValue(enemy, false);
+        //numberOfBrokenTeeth += tooth.wasHurt() ? 1 : 0;
 
-        if (numberOfBrokenTeeth >= totalTeeth) {
-            super.challengeFailed();
-        }
-        toothBreakingSound.play();
+       // if (numberOfBrokenTeeth >= totalTeeth) {
+      //      super.challengeFailed();
+     //   }
+     //   toothBreakingSound.play();
     }
 
     @Override
     public void onUpdate(float dt) {
+        calopsita.update(dt);
         // atualiza a escova (quadro da animação)
-        toothBrush.update(dt);
+        //toothBrush.update(dt);
 
         // atualiza os inimigos (quadro de animação + colisão com dentes)
-        for (int i = 0; i < this.enemies.size; i++) {
+     /*   for (int i = 0; i < this.enemies.size; i++) {
             Tartarus tart = this.enemies.get(i);
             tart.update(dt);
 
@@ -231,37 +246,37 @@ public class ShooTheTartarus extends MiniGame {
                     toothWasHurt(tooth, tart);
                 }
             }
-        }
+        }*/
     }
 
     @Override
     public void onDrawGame() {
-        for (Tooth tooth : this.teeth) {
+      /* // for (Tooth tooth : this.teeth) {
             tooth.draw(batch);
         }
         for (Tartarus tart : this.enemies) {
             tart.draw(batch);
-        }
-        toothBrush.draw(batch);
+        }*/
+        //toothBrush.draw(batch);
+        calopsita.draw(batch);
+        
     }
 
     @Override
     public String getInstructions() {
-        return "Espante o Tártaro";
+        return "Voe!";
     }
 
     @Override
     public boolean shouldHideMousePointer() {
         return true;
     }
-
-    class ToothBrush extends AnimatedSprite {
-
-        static final int FRAME_WIDTH = 120;
-        static final int FRAME_HEIGHT = 280;
-
-        ToothBrush(final Texture toothbrushTexture) {
-            super(new Animation(0.1f, new Array<TextureRegion>() {
+    
+    class Calopsita extends AnimatedSprite{
+        static final int FRAME_WIDTH = 168;
+        static final int FRAME_HEIGHT = 183;
+        public Calopsita(final Texture toothbrushTexture) {
+             super(new Animation(0.1f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             toothbrushTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -269,6 +284,42 @@ public class ShooTheTartarus extends MiniGame {
                         frames[0][0],
                         frames[0][1],
                         frames[0][2],
+                        frames[0][3]
+                    });
+                }
+            }));
+            super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
+            super.setAutoUpdate(false);
+        }
+
+       
+         Vector2 getHeadPosition() {
+            return new Vector2(
+                    this.getX() + this.getWidth() * 0.5f,
+                    this.getY() + this.getHeight() * 0.8f);
+        }
+
+        float getHeadDistanceTo(float enemyX, float enemyY) {
+            return getHeadPosition().dst(enemyX, enemyY);
+        }
+    }
+    
+
+  /*  class ToothBrush extends AnimatedSprite {
+
+        static final  int FRAME_WIDTH = 183;
+        static final int FRAME_HEIGHT = 168;
+
+        ToothBrush(final Texture toothbrushTexture) {
+           super(new Animation(0.1f, new Array<TextureRegion>() {
+                {
+                    TextureRegion[][] frames = TextureRegion.split(
+                            toothbrushTexture, FRAME_WIDTH, FRAME_HEIGHT);
+                    super.addAll(new TextureRegion[]{
+                        frames[0][0],
+                        frames[0][1],
+                        frames[0][2],
+                        frames[0][3]
                     });
                 }
             }));
@@ -285,10 +336,10 @@ public class ShooTheTartarus extends MiniGame {
         float getHeadDistanceTo(float enemyX, float enemyY) {
             return getHeadPosition().dst(enemyX, enemyY);
         }
-    }
-
+    }*/
+/*
     class Tartarus extends MultiAnimatedSprite {
-
+        
         private Vector2 speed;
         private boolean isFleeing = false;
 
@@ -360,5 +411,5 @@ public class ShooTheTartarus extends MiniGame {
             super.setRegion(lives > 0 ? hurt : broken);
             return lives == 0;
         }
-    }
+    }*/
 }
