@@ -64,16 +64,8 @@ public class ClickFindCat extends MiniGame {
     }
 
     public void initializeCat () {
-        Vector2 PosicaoInicial;
-        do {
-            // pega x e y entre 0 e 1
-            PosicaoInicial = new Vector2(rand.nextFloat(), rand.nextFloat());
-            // multiplica x e y pela largura e altura da tela
-            PosicaoInicial.scl(
-                    viewport.getWorldWidth() - CatTexture.getWidth() * initialCatScale,
-                    viewport.getWorldHeight() - CatTexture.getHeight() * initialCatScale);
-        }while(PosicaoInicial.x > 0 && PosicaoInicial.x + CatTexture.getWidth() < viewport.getWorldWidth()
-                && PosicaoInicial.y > 0 && PosicaoInicial.y + CatTexture.getHeight() < viewport.getWorldHeight());
+        Vector2 PosicaoInicial = new Vector2 ( MathUtils.random(0, viewport.getWorldWidth() - CatTexture.getWidth()/2),
+                MathUtils.random(0, viewport.getWorldHeight() - CatTexture.getHeight()/2));
         
         CatSprite = new Sprite (CatTexture);
         CatSprite.setPosition(PosicaoInicial.x, PosicaoInicial.y);
