@@ -25,6 +25,7 @@ public class CucumberMadness extends MiniGame {
     private float speedMultiplier;
     private float spawnIntervalMultiplier;
     private float spawnInterval = 1;
+    private Texture backgroundImage;
 
     public CucumberMadness(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -33,6 +34,7 @@ public class CucumberMadness extends MiniGame {
     @Override
     protected void onStart() {
         catTexture = assets.get("cucumber-madness/cat-sprite.png", Texture.class);
+        backgroundImage = assets.get("cucumber-madness/background.png", Texture.class);
         veggieTextures = new Array<Texture>();
         veggies = new Array<Veggie>();
         veggieTextures.addAll(
@@ -42,17 +44,11 @@ public class CucumberMadness extends MiniGame {
             assets.get("cucumber-madness/potato.png", Texture.class));
         backgroundMusic = assets.get("cucumber-madness/bensound-jazzcomedy.mp3", Sound.class);
 
-//        TextureRegion[][] frames = TextureRegion.split(catTexture,
-//                Cat.FRAME_WIDTH, Cat.FRAME_HEIGHT);
-        
-//        cat = new Cat(frames[0][0], 0 + 200);
         cat = new Cat(catTexture, 0 + 200);
         cat.setCenter(
             viewport.getWorldWidth() / 2f,
             cat.height);
         cat.setScale(3);
-        
-        System.out.print(this.spawnIntervalMultiplier);
 
         timer.scheduleTask(new Task() {
             @Override
@@ -132,7 +128,13 @@ public class CucumberMadness extends MiniGame {
     }
 
     @Override
+    public void onEnd() {
+        backgroundMusic.stop();
+    }
+
+    @Override
     public void onDrawGame() {
+        batch.draw(backgroundImage, 0, 0);
         this.cat.draw(batch);
 
         for (Veggie veggie : veggies) {
@@ -143,7 +145,7 @@ public class CucumberMadness extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "run.";
+        return "dodge the veggies";
     }
 
     @Override

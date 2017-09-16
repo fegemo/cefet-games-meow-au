@@ -27,6 +27,7 @@ public class CucumberMadnessFactory implements MiniGameFactory {
                 put("cucumber-madness/onion.png", Texture.class);
                 put("cucumber-madness/carrot.png", Texture.class);
                 put("cucumber-madness/cat-sprite.png", Texture.class);
+                put("cucumber-madness/background.png", Texture.class);
                 put("cucumber-madness/bensound-jazzcomedy.mp3", Sound.class);
             }
         };
