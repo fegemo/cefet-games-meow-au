@@ -166,19 +166,23 @@ public class CatAvoider extends MiniGame {
     }
   
     public void catIncrementX(float delta) {
-        cat.setX(cat.getX()+delta);
+        if((cat.getX()+width)+delta<WORLD_WIDTH)
+            cat.setX(cat.getX()+delta);
     }
     
     public void catDecrementX(float delta) {
-        cat.setX(cat.getX()-delta);
+        if((cat.getX()-width)-delta>0)
+            cat.setX(cat.getX()-delta);
     }
     
     public void catIncrementY(float delta) {
-        cat.setY(cat.getY()+delta);
+        if((cat.getX()+height)+delta<WORLD_HEIGHT)
+            cat.setY(cat.getY()+delta);
     }
     
     public void catDecrementY(float delta) {
-        cat.setY(cat.getY()-delta);
+        if((cat.getY()-height)-delta>0)
+            cat.setY(cat.getY()-delta);
     }
     
    public void randomMovementDown(float dt) {
@@ -227,16 +231,16 @@ public class CatAvoider extends MiniGame {
         int move = randomGenerator.nextInt(20);
         if(move==19) {
             if(moveType=='D') {
-                randomMovementDown(5);
+                randomMovementDown(10);
             }
             if(moveType=='U') {
-                randomMovementUp(5);
+                randomMovementUp(10);
             }
             if(moveType=='L') {
-                randomMovementLeft(5);
+                randomMovementLeft(10);
             }
             if(moveType=='R') {
-                randomMovementRight(5);
+                randomMovementRight(10);
             }
         }
     }
@@ -280,7 +284,7 @@ public class CatAvoider extends MiniGame {
        if(changeState==29)
            state = 1;
         getMousePosition();
-        jump(dt);
+        jump(1000);
        //move();
     }
 
