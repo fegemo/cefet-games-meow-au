@@ -81,16 +81,13 @@ public class GatoFantasma extends MiniGame {
 
     private void spawnEnemy() {
         // pega x e y entre 0 e 1
-<<<<<<< HEAD
-        Vector2 position = new Vector2(rand.nextInt() % (720 - 565) + 565f, 360);
+        //Vector2 position = new Vector2(rand.nextInt() % (720 - 565) + 565f, 360);
 
-        Sprite enemy = new Sprite(catsTexture);
-=======
+        //Sprite enemy = new Sprite(catsTexture);
         Vector2 position = new Vector2(rand.nextInt()%(720-535)+535f,rand.nextInt()%(370-230)+230f);
         TextureRegion tr = new TextureRegion(catsTexture);
         TextureRegion t2 = new TextureRegion(catsTexture, tr.getRegionWidth()/2, tr.getRegionHeight());
         Sprite enemy = new Sprite(t2);
->>>>>>> cc0a0f0bd55a9b2deecf67ccd1a79743c39c07fb
         enemy.setPosition(position.x, position.y);
         enemy.setScale(initialEnemyScale);
         enemies.add(enemy);
@@ -116,11 +113,8 @@ public class GatoFantasma extends MiniGame {
         // verifica se matou um inimigo
         if (Gdx.input.justTouched()) {
             // itera no array de inimigos
-<<<<<<< HEAD
             System.out.println("X:" + click.x + "   Y:" + click.y);
-=======
              //       System.out.println("X:"+click.x+"   Y:"+click.y);
->>>>>>> cc0a0f0bd55a9b2deecf67ccd1a79743c39c07fb
 
             for (int i = 0; i < enemies.size; i++) {
                 Sprite sprite = enemies.get(i);
@@ -151,12 +145,9 @@ public class GatoFantasma extends MiniGame {
         for (int i = 0; i < enemies.size; i++) {
             Sprite sprite = enemies.get(i);
             // diminui só até x% do tamanho da imagem
-<<<<<<< HEAD
-            if (sprite.getScaleY() < 2.0f) {
-                System.out.println(sprite.getScaleY() + "enemies" + enemies.size);
-=======
+            //if (sprite.getScaleY() < 2.0f) {
+              //  System.out.println(sprite.getScaleY() + "enemies" + enemies.size);
             if (sprite.getScaleY()<2.0f ) {
->>>>>>> cc0a0f0bd55a9b2deecf67ccd1a79743c39c07fb
                 sprite.setScale(sprite.getScaleX() + 0.3f * dt);
             } else {
                 //perdeu playboy

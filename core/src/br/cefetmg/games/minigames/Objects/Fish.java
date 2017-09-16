@@ -33,16 +33,24 @@ public class Fish extends Sprite implements Collidable {
     private int lado;
 
     private Sprite sprite;
+<<<<<<< HEAD
     
+=======
+>>>>>>> 4597d3ee9f729307fdea8d8b3c0b552bbb17bfd3
     private TextureRegion[][] region;
     private Rectangle rectangle;
     private Circle circle;
     private ShapeRenderer shapeRenderer;
+    private SeekDynamic movimentacao;
     
     private Animation normal;
 
     public Fish(Texture texture) {
         this.sprite = new Sprite(texture);
+<<<<<<< HEAD
+=======
+        
+>>>>>>> 4597d3ee9f729307fdea8d8b3c0b552bbb17bfd3
         /*this.region = TextureRegion.split(texture , 188 , 240);
         this.normal = new Animation(0.01f,this.region[1][0],this.region[1][1],this.region[1][2],
         this.region[1][3],this.region[1][4],this.region[1][5],this.region[1][6],this.region[1][7],
@@ -53,6 +61,7 @@ public class Fish extends Sprite implements Collidable {
         this.sprite.setPosition(20.0f, 220.0f);
         this.rectangle = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         this.circle = new Circle(sprite.getX()+sprite.getWidth()/2,sprite.getY()+ sprite.getHeight()/2,sprite.getWidth()>sprite.getHeight()?sprite.getWidth()/2:sprite.getHeight()/2);
+        this.movimentacao=new SeekDynamic(new Vector2(sprite.getX(),sprite.getY()));
     }
 
     public void update(float x, float y) {
@@ -72,7 +81,7 @@ public class Fish extends Sprite implements Collidable {
     public void render(SpriteBatch sb) {
         this.sprite.draw(sb);
     }
-    
+    /* vo modificar a movimentacao toda se der certo a gente apaga isso
     public void updateAccordingToTheMouse(float x , float y){
         Rectangle c1 = new Rectangle(x, y, 1,1);
         Collision cc = new Collision();
@@ -90,6 +99,16 @@ public class Fish extends Sprite implements Collidable {
                 }
             }
         }
+    }*/
+    
+    public void updateAccordingToTheMouse(float x , float y){
+        Rectangle c1 = new Rectangle(x, y, 1,1);
+        Collision cc = new Collision();
+        if (Gdx.input.isTouched()||Gdx.input.justTouched())      
+            movimentacao.Calculate(new Vector2(x, y));
+        else
+            movimentacao.Calculate();
+        update(movimentacao.getPos().getPosicao().x,movimentacao.getPos().getPosicao().y);
     }
 
     public void render_area_collision() {
