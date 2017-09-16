@@ -38,7 +38,7 @@ public class Fish extends Sprite implements Collidable {
     private Circle circle;
     private ShapeRenderer shapeRenderer;
     private SeekDynamic movimentacao;
-    
+
     private Animation normal;
 
     public Fish(Texture texture) {
@@ -47,34 +47,36 @@ public class Fish extends Sprite implements Collidable {
         this.normal = new Animation(0.01f,this.region[1][0],this.region[1][1],this.region[1][2],
         this.region[1][3],this.region[1][4],this.region[1][5],this.region[1][6],this.region[1][7],
         this.region[1][8]);*/
-        
+
         this.circle = new Circle();
         this.shapeRenderer = new ShapeRenderer();
         this.sprite.setPosition(20.0f, 220.0f);
         this.rectangle = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
-        this.circle = new Circle(sprite.getX()+sprite.getWidth()/2,sprite.getY()+ sprite.getHeight()/2,sprite.getWidth()>sprite.getHeight()?sprite.getWidth()/2:sprite.getHeight()/2);
-        this.movimentacao=new SeekDynamic(new Vector2(sprite.getX(),sprite.getY()));
+        this.circle = new Circle(sprite.getX() + sprite.getWidth() / 2, sprite.getY() + sprite.getHeight() / 2, sprite.getWidth() > sprite.getHeight() ? sprite.getWidth() / 2 : sprite.getHeight() / 2);
+        this.movimentacao = new SeekDynamic(new Vector2(sprite.getX(), sprite.getY()));
     }
 
     public void update(float x, float y) {
-        this.sprite.setPosition(x,y);
+        this.sprite.setPosition(x, y);
         this.rectangle.x = x;
         this.rectangle.y = y;
-        this.circle.x=x;
-        this.circle.y=y;
-        
+        this.circle.x = x;
+        this.circle.y = y;
+
     }
 
     public void render(SpriteBatch sb, float x, float y) {
-        
+
         this.sprite.draw(sb);
         //sb.draw((TextureRegion) this.normal.getKeyFrame(0.1f), this.position.x, this.position.y);;
     }
+
     public void render(SpriteBatch sb) {
         this.sprite.draw(sb);
     }
-    /* vo modificar a movimentacao toda se der certo a gente apaga isso
-    public void updateAccordingToTheMouse(float x , float y){
+
+    // vo modificar a movimentacao toda se der certo a gente apaga isso
+    /*public void updateAccordingToTheMouse(float x , float y){
         Rectangle c1 = new Rectangle(x, y, 1,1);
         Collision cc = new Collision();
         if (Gdx.input.isTouched()||Gdx.input.justTouched()) {     
@@ -92,8 +94,21 @@ public class Fish extends Sprite implements Collidable {
             }
         }
     }*/
-    
-    public void updateAccordingToTheMouse(float x , float y){
+
+    public void updateAccordingToTheMouse(float x, float y) {
+        if (Gdx.input.isTouched() || Gdx.input.justTouched()) {
+            float raio = 0.5f;
+            while ((this.sprite.getX() <= (x - raio)) || (this.sprite.getX() >= (x + raio))) {
+                if (this.sprite.getX() < x) {
+                    update(this.sprite.getX() + 0.00005f, this.sprite.getY());
+                } else if (this.sprite.getX() > x) {
+                    update(this.sprite.getX() - 0.00005f, this.sprite.getY());
+                }
+            }
+        }
+    }
+
+    /*public void updateAccordingToTheMouse(float x , float y){
         Rectangle c1 = new Rectangle(x, y, 1,1);
         Collision cc = new Collision();
         if (Gdx.input.isTouched()||Gdx.input.justTouched())      
@@ -101,16 +116,15 @@ public class Fish extends Sprite implements Collidable {
         else
             movimentacao.Calculate();
         update(movimentacao.getPos().getPosicao().x,movimentacao.getPos().getPosicao().y);
-    }
-
+    }*/
     public void render_area_collision() {
 
         // metodo para mostrar o retangulo e circulo de colisão
         this.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         this.shapeRenderer.identity();
         this.shapeRenderer.setColor(Color.RED);
-        this.shapeRenderer.rect(this.rectangle.x, this.rectangle.y, this.rectangle.width,this.rectangle.height);
-        this.shapeRenderer.circle(this.circle.x+this.sprite.getWidth()/2,this.circle.y+this.getHeight()/2, this.circle.radius);
+        this.shapeRenderer.rect(this.rectangle.x, this.rectangle.y, this.rectangle.width, this.rectangle.height);
+        this.shapeRenderer.circle(this.circle.x + this.sprite.getWidth() / 2, this.circle.y + this.getHeight() / 2, this.circle.radius);
         this.shapeRenderer.end();
 
     }
@@ -132,6 +146,6 @@ public class Fish extends Sprite implements Collidable {
 
     @Override
     public Circle getMinimumEnclosingBall() {
-       return this.circle;
+        return this.circle;
     }
 }

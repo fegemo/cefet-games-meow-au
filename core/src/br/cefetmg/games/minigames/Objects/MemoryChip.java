@@ -40,7 +40,7 @@ public class MemoryChip implements Collidable {
         this.circle.x = this.position.x + 12.5f;
         this.circle.y = this.position.y + 17f;
         
-        this.Velocidade_Queda = 1 + (float) new Random().nextInt(7);
+        this.Velocidade_Queda = 1 + (float) new Random().nextInt(5);
         this.Rotation = (-30) + (float) new Random().nextInt(20);
 
         this.circle.radius = 21.1f;
@@ -49,7 +49,7 @@ public class MemoryChip implements Collidable {
 
     }
 
-    public void update(float dt) {
+    public void update() {
 
         //atualiza posição do memo card
         this.position.y -= this.Velocidade_Queda;
@@ -78,9 +78,8 @@ public class MemoryChip implements Collidable {
         // se dentro da tela e sem colisão com other - desenha
         if (this.position.y >= -35) {
             this.sprite.draw(sb);
+            update();
         }
-        
-
     }
     
     public Vector2 getPositionMemoryCard(){

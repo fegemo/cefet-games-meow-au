@@ -48,7 +48,7 @@ public class SpyFish extends MiniGame {
     private int MAX_CHIPS;
 
     public SpyFish(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
+        super(screen, observer, difficulty, 10000f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
 
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
@@ -76,16 +76,15 @@ public class SpyFish extends MiniGame {
     @Override
     protected void configureDifficultyParameters(float difficulty) {
 
-        this.MAX_CHIPS = (int) DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 5, 25);
-        System.out.println("<<<<<<<<<" + this.MAX_CHIPS);
+        this.MAX_CHIPS = (int) DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 2, 8);
     }
 
     @Override
     public void onHandlePlayingInput() {
         // move o peixe
         this.fish.updateAccordingToTheMouse(getMousePosInGameWorld().x, getMousePosInGameWorld().y);
-        Vector3 mause = getMousePosInGameWorld();
-        this.fish.updateAccordingToTheMouse(mause.x, mause.y);
+        /*Vector3 mause = getMousePosInGameWorld();
+        this.fish.updateAccordingToTheMouse(mause.x, mause.y);*/
     }
 
     @Override
@@ -93,19 +92,20 @@ public class SpyFish extends MiniGame {
         for (Iterator<MemoryChip> iterator = chip.iterator(); iterator.hasNext();) {
             MemoryChip mc = iterator.next();
 
+            
             if (mc.collidesWith(this.fish)) {
                 //se o peixe pegar um cartão de memoria
                 iterator.remove();
 
                 if (this.chip.isEmpty()) {
                     // se pegar todos os chips ganha
-                    super.challengeSolved();
+                    //super.challengeSolved();
                 }
             }
 
             if (mc.getPositionMemoryCard().y < 0) {
                 //se um chip não for pego perde
-                super.challengeFailed();
+                //super.challengeFailed();
                 break;
             }
 

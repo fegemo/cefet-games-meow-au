@@ -11,6 +11,12 @@ import java.util.Vector;
 /**
  *
  * @author Alberto
+ * 
+ * Input -> posição do clique do mouse na tela , posição do peixe
+ * Output -> vetor velocidade do peixe que aponta para a posição do clique
+ * 
+ * A ideia é calcular  distância e 
+ * 
  */
 public class SeekDynamic {
     public final int maxAcceleration;
