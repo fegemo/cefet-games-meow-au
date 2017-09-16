@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -70,13 +71,14 @@ public class FlappySita extends MiniGame {
 
         spawnedEnemies = 0;
         posX=viewport.getScreenWidth()*0.4f;posY= viewport.getScreenHeight()*0.5f;
-        timer.scheduleTask(new Task() {
+      /*  timer.scheduleTask(new Task() {
             @Override
             public void run() {
                 spawnEnemy();
             }
 
-        }, 0,  (float)Math.random()+1f);//this.spawnInterval);
+        }, 0,  (float)Math.random()+1f);//this.spawnInterval);*/
+        spawnEnemy();
          srcX=0; 
     }
     private void spawnEnemy() {
@@ -96,17 +98,10 @@ public class FlappySita extends MiniGame {
                 .scl(this.minimumEnemySpeed);
         Tube enemy = new Tube(cattubeTexture);
        // enemy.setScale(0.4f);
-        float height; height=100;
-        if( troca==0){
-           // height=0;
-            troca=1;
-        }else{ //height=Gdx.graphics.getHeight();
-            troca=0;
-        }
-        enemy.setPosition(Gdx.graphics.getWidth()+viewport.getScreenWidth()*0.41f,height);//, Ddwown);
-
-        enemy.setSpeed(tartarusSpeed);
         enemy.setsize(new Random().nextInt(4));
+        enemy.setsize(0);
+        enemy.setPosition(Gdx.graphics.getWidth()+viewport.getScreenWidth()*0.41f,60*enemy.getsize());//, Ddwown);
+        enemy.setSpeed(tartarusSpeed);
         enemies.add(enemy);
 
         // toca um efeito sonoro
@@ -143,7 +138,15 @@ public class FlappySita extends MiniGame {
         //  toothBrush.setCenter(click.x, click.y);
         calopsita.setCenter(Posi.x, Posi.y);
 
-
+        for (Tube tubes : this.enemies) {
+            float distance = calopsita.getHeadDistanceTo(
+                    tubes.getX(), tubes.getY());
+            System.out.printf("D%.2f\n", distance);
+            if (distance <= 30) {
+               // tubes.startFleeing(calopsita.getHeadPosition());
+                super.challengeFailed();
+            }
+        }
     }
 
     @Override
@@ -152,12 +155,12 @@ public class FlappySita extends MiniGame {
      //   System.out.printf("x=%.2f,Y=%.2f,Speed=%.2f\n",posX,posY,0.0);
         srcX+=5;
         if(posY<ScreenHeight+2)
-            posY+=2.5;
+            posY+=1;//2.5; 1;
         if(posX>ScreenWidth/2-16)
             posX-=1;
         if(Gdx.input.justTouched()) {
           //  System.out.printf("Heeee\n");
-            posY-=100;
+            posY-=70;
             posX+=2;
         }
         // atualiza a escova (quadro da animação)
@@ -189,9 +192,9 @@ public class FlappySita extends MiniGame {
 
         for (Tube tubes : this.enemies) {
           tubes.draw(batch);
-           // for (int i;i<tubes.getsize();i++){
-                batch.draw(tubeTexture,tubes.getX(),0,450,135);
-           // }
+            for (int i=0;i<tubes.getsize();i++){
+                batch.draw(tubeTexture,tubes.getX(),60*i);
+            }
 
         }
 
@@ -233,8 +236,8 @@ public class FlappySita extends MiniGame {
        
          Vector2 getHeadPosition() {
             return new Vector2(
-                    this.getX() + this.getWidth() * 0.5f,
-                    this.getY() + this.getHeight() * 0.8f);
+                    this.getX() + this.getWidth() ,
+                    this.getY() + this.getHeight() );
         }
 
         float getHeadDistanceTo(float enemyX, float enemyY) {
@@ -269,11 +272,11 @@ public class FlappySita extends MiniGame {
 
       @Override
       public void update(float dt) {
-      //    System.out.printf ("X%.2f Sx %.2f Y%.2f SY%.2f dy%.2f",super.getX() + this.speed.x,super.getY() , this.speed.y,dt );
+          System.out.printf ("X%.2f Sx %.2f Y%.2f SY%.2f dy%.2f",super.getX() + this.speed.x,super.getY() , this.speed.y,dt );
 
           super.update(dt);
-          /*super.setPosition(super.getX() + this.speed.x * dt,
-                  super.getY() + this.speed.y * dt);*/
+          super.setPosition(super.getX() + this.speed.x * dt,
+                  super.getY() + this.speed.y * dt);
       }
       public void setsize(int siz){
           this.size=siz;
