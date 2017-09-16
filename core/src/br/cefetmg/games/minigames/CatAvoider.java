@@ -45,10 +45,15 @@ public class CatAvoider extends MiniGame {
     private Sprite mouse;
     private Vector2 mousePosition, direction;
     private float speed = 10, timeAnimation = 1;
-    private float catDelta = 100;
+    private float catDelta = 50;
     Random randomGenerator = new Random();
     private char moveType;
     public int state;//indicate if the cat is moving or stoped '1=moving and ==stped'
+    private final int jumpState = 0;
+    private final int downState = 1;
+    private final int upState = 2;
+    private final int leftState = 3;
+    private final int rightState = 4;
 
     public CatAvoider(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -81,7 +86,7 @@ public class CatAvoider extends MiniGame {
         left = new Obstacle(batch, new Vector2(0, width), width, WORLD_HEIGHT);
         right = new Obstacle(batch, new Vector2(WORLD_WIDTH - width, width), width, WORLD_HEIGHT);
         moveType = 'D';
-        state = 0;
+        state = leftState;
     }
     
     public void verifyCollision(float dt) {
@@ -96,24 +101,24 @@ public class CatAvoider extends MiniGame {
         if (Colision.rectsOverlap(down.getRec(), catRect)) {
             reflect();
             moveType = 'D';
-            state = 0;
+            state = downState;
         } //Colisão gato teto
         else if (Colision.rectsOverlap(up.getRec(), catRect)) {
             reflect();
             moveType = 'U';
-            state = 0;
+            state = upState;
         }
 
         //Colisão lateral esquerda e gato
         if (Colision.rectsOverlap(left.getRec(), catRect)) {
             reflect();
             moveType = 'L';
-            state = 0;
+            state = leftState;
         }//Colisão lateral direita e gato
         else if (Colision.rectsOverlap(right.getRec(), catRect)) {
             reflect();
             moveType = 'D';
-            state = 0;
+            state = rightState;
         }
 
     }
@@ -166,22 +171,22 @@ public class CatAvoider extends MiniGame {
     }
   
     public void catIncrementX(float delta) {
-        if((cat.getX()+width)+delta<WORLD_WIDTH && (moveType=='L' || moveType=='R'))
+        if((cat.getX()+width+delta)<WORLD_WIDTH && (state==downState || state==upState))
             cat.setX(cat.getX()+delta);
     }
     
     public void catDecrementX(float delta) {
-        if((cat.getX()-width)-delta>0 && (moveType=='L' || moveType=='R'))
+        if((cat.getX()-width-delta>0) && (state==downState || state==upState))
             cat.setX(cat.getX()-delta);
     }
     
     public void catIncrementY(float delta) {
-        if((cat.getX()+height)+delta<WORLD_HEIGHT && (moveType=='U' || moveType=='D'))
+        if((cat.getX()+height+delta)<WORLD_HEIGHT && (state==leftState || state==rightState))
             cat.setY(cat.getY()+delta);
     }
     
     public void catDecrementY(float delta) {
-        if((cat.getY()-height)-delta>0 && (moveType=='U' || moveType=='D'))
+        if((cat.getY()-height-delta)>0 && (state==leftState || state==rightState))
             cat.setY(cat.getY()-delta);
     }
     
@@ -248,7 +253,7 @@ public class CatAvoider extends MiniGame {
     public void jump(float dt){
         Random randomGenerator = new Random();
         int changeState = randomGenerator.nextInt();
-        if (state==1) {
+        if (state==jumpState) {
             if (jumped == false) {
                 setDirection();
                 jumped = true;
@@ -256,7 +261,7 @@ public class CatAvoider extends MiniGame {
             updateCatPosition();
             verifyCollision(1);
         }
-        if(state==0) {
+        else {
             moveRandom();
         }
     }
@@ -282,9 +287,9 @@ public class CatAvoider extends MiniGame {
        Random randomGenerator = new Random();
        int changeState = randomGenerator.nextInt(30);
        if(changeState==29)
-           state = 1;
+           state = jumpState;
         getMousePosition();
-        jump(1000);
+        jump(10);
        //move();
     }
 
