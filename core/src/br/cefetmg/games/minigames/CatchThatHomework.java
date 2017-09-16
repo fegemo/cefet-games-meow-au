@@ -32,6 +32,7 @@ public class CatchThatHomework extends MiniGame {
     private Array<Homework> homeworks;
     private Sound backgroundMusic;
     private float speedMultiplier;
+    private Texture backgroundImage;
     
     private float spawnInterval = 1;
 
@@ -44,11 +45,8 @@ public class CatchThatHomework extends MiniGame {
         catTexture = assets.get("catch-that-homework/cat-sprite.png", Texture.class);
         homeworkTexture = assets.get("catch-that-homework/homework.png", Texture.class);
         backgroundMusic = assets.get("catch-that-homework/bensound-sexy.mp3", Sound.class);
+        backgroundImage = assets.get("catch-that-homework/valley.png", Texture.class);
 
-//        TextureRegion[][] frames = TextureRegion.split(catTexture,
-//                Cat.FRAME_WIDTH, Cat.FRAME_HEIGHT);
-        
-//        cat = new Cat(frames[0][0], 0 + 200);
         cat = new Cat(catTexture, 0 + 200);
         cat.setCenter(
             viewport.getWorldWidth() / 2f,
@@ -108,8 +106,14 @@ public class CatchThatHomework extends MiniGame {
     }
 
     @Override
+    public void onEnd() {
+        backgroundMusic.stop();
+    }
+
+    @Override
     public void onDrawGame() {
-        this.cat.draw(batch);
+        batch.draw(backgroundImage, 0, 0);
+        cat.draw(batch);
 
         for (Homework homework : homeworks) {
             homework.draw(batch);

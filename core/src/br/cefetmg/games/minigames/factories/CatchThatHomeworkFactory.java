@@ -30,6 +30,7 @@ public class CatchThatHomeworkFactory implements MiniGameFactory {
                 put("catch-that-homework/cat-sprite.png",
                         Texture.class);
                 put("catch-that-homework/bensound-sexy.mp3", Sound.class);
+                put("catch-that-homework/valley.png", Texture.class);
             }
         };
     }
