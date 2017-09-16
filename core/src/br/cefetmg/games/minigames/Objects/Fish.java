@@ -33,10 +33,6 @@ public class Fish extends Sprite implements Collidable {
     private int lado;
 
     private Sprite sprite;
-<<<<<<< HEAD
-    
-=======
->>>>>>> 4597d3ee9f729307fdea8d8b3c0b552bbb17bfd3
     private TextureRegion[][] region;
     private Rectangle rectangle;
     private Circle circle;
@@ -47,10 +43,6 @@ public class Fish extends Sprite implements Collidable {
 
     public Fish(Texture texture) {
         this.sprite = new Sprite(texture);
-<<<<<<< HEAD
-=======
-        
->>>>>>> 4597d3ee9f729307fdea8d8b3c0b552bbb17bfd3
         /*this.region = TextureRegion.split(texture , 188 , 240);
         this.normal = new Animation(0.01f,this.region[1][0],this.region[1][1],this.region[1][2],
         this.region[1][3],this.region[1][4],this.region[1][5],this.region[1][6],this.region[1][7],

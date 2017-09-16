@@ -54,15 +54,10 @@ public class SpyFish extends MiniGame {
         this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
         this.texturaFundo = assets.get("spy-fish/ocean.jpeg", Texture.class);
         this.textureFishSheet = assets.get("spy-fish/fishsheet.png", Texture.class);
-<<<<<<< HEAD
+
         this.texturaFundo = assets.get("spy-fish/ocean.jpeg", Texture.class);
         this.pointerTexture = assets.get("spy-fish/pointer.png", Texture.class);
 
-=======
-        this.texturaFundo = assets.get("spy-fish/ocean.jpeg",Texture.class);
-        this.pointerTexture =assets.get("spy-fish/pointer.png",Texture.class);
-        
->>>>>>> 4597d3ee9f729307fdea8d8b3c0b552bbb17bfd3
         batch = new SpriteBatch();
 
     }
@@ -97,52 +92,30 @@ public class SpyFish extends MiniGame {
     public void onUpdate(float dt) {
         for (Iterator<MemoryChip> iterator = chip.iterator(); iterator.hasNext();) {
             MemoryChip mc = iterator.next();
-<<<<<<< HEAD
-            for(MemoryChip mc : chip) {
-                mc.update(dt);
-                if (mc.collidesWith(this.fish)) {
-                    System.out.println("colidiuuu");
-                    //se o peixe colidir com o cartão de memoria
-                    iterator.remove();
 
-                    if (this.chip.isEmpty()) {
-                        // se pegar todos os chips ganha
-                        super.challengeSolved();
-                    }
-                }
-
-                System.out.print(mc.getPositionMemoryCard().y + "===");
-                if (mc.getPositionMemoryCard().y < 0) {
-                    //se um chip não for pego perde
-                    super.challengeFailed();
-                    chip.remove(mc);
-=======
-            mc.update(dt);
             if (mc.collidesWith(this.fish)) {
-                System.out.println("colidiuuu");
-                //se o peixe colidir com o cartão de memoria
+                //se o peixe pegar um cartão de memoria
                 iterator.remove();
 
                 if (this.chip.isEmpty()) {
                     // se pegar todos os chips ganha
->>>>>>> 4597d3ee9f729307fdea8d8b3c0b552bbb17bfd3
                     super.challengeSolved();
-                    break;
                 }
             }
 
-<<<<<<< HEAD
-=======
-            System.out.print(mc.getPositionMemoryCard().y + "===");
             if (mc.getPositionMemoryCard().y < 0) {
                 //se um chip não for pego perde
                 super.challengeFailed();
-                chip.remove(mc);
-                super.challengeSolved();
                 break;
             }
->>>>>>> 4597d3ee9f729307fdea8d8b3c0b552bbb17bfd3
+
         }
+    }
+
+    private Vector3 getMousePosInGameWorld() {
+        Vector3 click = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        viewport.unproject(click);
+        return click;
     }
 
     @Override
@@ -167,24 +140,17 @@ public class SpyFish extends MiniGame {
             //mostra os circulos de colisão
             chip.render_area_collision();
         }
-
     }
 
     @Override
     public String getInstructions() {
         return "Pegue o cartão de memória";
+
     }
 
     @Override
     public boolean shouldHideMousePointer() {
-        return true;
-        //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private Vector3 getMousePosInGameWorld() {
-        Vector3 click = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        viewport.unproject(click);
-        return click;
+        return false;
     }
 
 }
