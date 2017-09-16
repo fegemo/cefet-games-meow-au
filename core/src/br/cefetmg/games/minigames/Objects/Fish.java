@@ -33,11 +33,9 @@ public class Fish extends Sprite implements Collidable {
     private int lado;
 
     private Sprite sprite;
-<<<<<<< HEAD
+    
     private TextureRegion[][] region;
-=======
     private Rectangle rectangle;
->>>>>>> cc0a0f0bd55a9b2deecf67ccd1a79743c39c07fb
     private Circle circle;
     private ShapeRenderer shapeRenderer;
     
@@ -45,16 +43,12 @@ public class Fish extends Sprite implements Collidable {
 
     public Fish(Texture texture) {
         this.sprite = new Sprite(texture);
-<<<<<<< HEAD
-        
         /*this.region = TextureRegion.split(texture , 188 , 240);
         this.normal = new Animation(0.01f,this.region[1][0],this.region[1][1],this.region[1][2],
         this.region[1][3],this.region[1][4],this.region[1][5],this.region[1][6],this.region[1][7],
         this.region[1][8]);*/
         
         this.circle = new Circle();
-=======
->>>>>>> cc0a0f0bd55a9b2deecf67ccd1a79743c39c07fb
         this.shapeRenderer = new ShapeRenderer();
         this.sprite.setPosition(20.0f, 220.0f);
         this.rectangle = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
@@ -70,16 +64,13 @@ public class Fish extends Sprite implements Collidable {
         
     }
 
-<<<<<<< HEAD
     public void render(SpriteBatch sb, float x, float y) {
         
         this.sprite.draw(sb);
         //sb.draw((TextureRegion) this.normal.getKeyFrame(0.1f), this.position.x, this.position.y);;
-
-=======
+    }
     public void render(SpriteBatch sb) {
         this.sprite.draw(sb);
->>>>>>> cc0a0f0bd55a9b2deecf67ccd1a79743c39c07fb
     }
     
     public void updateAccordingToTheMouse(float x , float y){
