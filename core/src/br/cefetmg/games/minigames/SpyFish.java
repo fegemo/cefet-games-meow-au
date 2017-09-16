@@ -34,11 +34,8 @@ public class SpyFish extends MiniGame {
     private Texture texturaFish;
     private Texture texturaFundo;
     private Texture texturaMemoCard;
-<<<<<<< HEAD
     private Texture textureFishSheet;
-=======
     private Texture pointerTexture;
->>>>>>> cc0a0f0bd55a9b2deecf67ccd1a79743c39c07fb
 
     private ArrayList<MemoryChip> chip;
 
@@ -55,15 +52,11 @@ public class SpyFish extends MiniGame {
 
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
-<<<<<<< HEAD
         this.texturaFundo = assets.get("spy-fish/ocean.jpeg", Texture.class);
         this.textureFishSheet = assets.get("spy-fish/fishsheet.png", Texture.class);
-=======
         this.texturaFundo = assets.get("spy-fish/ocean.jpeg",Texture.class);
         this.pointerTexture =assets.get("spy-fish/pointer.png",Texture.class);
         
->>>>>>> cc0a0f0bd55a9b2deecf67ccd1a79743c39c07fb
-
         batch = new SpriteBatch();
 
     }
@@ -89,28 +82,19 @@ public class SpyFish extends MiniGame {
     @Override
     public void onHandlePlayingInput() {
         // move o peixe
-<<<<<<< HEAD
         this.fish.updateAccordingToTheMouse(getMousePosInGameWorld().x, getMousePosInGameWorld().y);
-=======
         Vector3 mause = getMousePosInGameWorld();
         this.fish.updateAccordingToTheMouse(mause.x, mause.y);
->>>>>>> cc0a0f0bd55a9b2deecf67ccd1a79743c39c07fb
     }
 
     @Override
     public void onUpdate(float dt) {
-<<<<<<< HEAD
         for (Iterator<MemoryChip> iterator = chip.iterator(); iterator.hasNext();) {
             MemoryChip mc = iterator.next();
-=======
-        
-        for (MemoryChip mc:chip) {
->>>>>>> cc0a0f0bd55a9b2deecf67ccd1a79743c39c07fb
             mc.update(dt);
             if (mc.collidesWith(this.fish)) {
                 System.out.println("colidiuuu");
                 //se o peixe colidir com o cartão de memoria
-<<<<<<< HEAD
                 iterator.remove();
 
                 if (this.chip.isEmpty()) {
@@ -123,14 +107,11 @@ public class SpyFish extends MiniGame {
             if (mc.getPositionMemoryCard().y < 0) {
                 //se um chip não for pego perde
                 super.challengeFailed();
-=======
                 chip.remove(mc);
                 super.challengeSolved();
                 break;
->>>>>>> cc0a0f0bd55a9b2deecf67ccd1a79743c39c07fb
             }
         }
-
     }
 
     @Override
@@ -141,12 +122,9 @@ public class SpyFish extends MiniGame {
         batch.begin();
         batch.draw(texturaFundo, 0f, 0f, 1280f, 720f);
 
-<<<<<<< HEAD
         this.fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
-=======
         this.fish.render(batch);
         this.fish.flip(true, false);
->>>>>>> cc0a0f0bd55a9b2deecf67ccd1a79743c39c07fb
         for (MemoryChip chip : chip) {
             chip.render(batch);
         }
