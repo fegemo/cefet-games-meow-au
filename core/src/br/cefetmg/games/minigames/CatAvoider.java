@@ -166,22 +166,22 @@ public class CatAvoider extends MiniGame {
     }
   
     public void catIncrementX(float delta) {
-        if((cat.getX()+width)+delta<WORLD_WIDTH)
+        if((cat.getX()+width)+delta<WORLD_WIDTH && (moveType=='L' || moveType=='R'))
             cat.setX(cat.getX()+delta);
     }
     
     public void catDecrementX(float delta) {
-        if((cat.getX()-width)-delta>0)
+        if((cat.getX()-width)-delta>0 && (moveType=='L' || moveType=='R'))
             cat.setX(cat.getX()-delta);
     }
     
     public void catIncrementY(float delta) {
-        if((cat.getX()+height)+delta<WORLD_HEIGHT)
+        if((cat.getX()+height)+delta<WORLD_HEIGHT && (moveType=='U' || moveType=='D'))
             cat.setY(cat.getY()+delta);
     }
     
     public void catDecrementY(float delta) {
-        if((cat.getY()-height)-delta>0)
+        if((cat.getY()-height)-delta>0 && (moveType=='U' || moveType=='D'))
             cat.setY(cat.getY()-delta);
     }
     
