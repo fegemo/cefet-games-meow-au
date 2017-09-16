@@ -52,7 +52,18 @@ public class Fish extends Sprite implements Collidable {
         this.shapeRenderer = new ShapeRenderer();
         this.sprite.setPosition(20.0f, 220.0f);
         this.rectangle = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
-        this.circle = new Circle(sprite.getX() + sprite.getWidth() / 2, sprite.getY() + sprite.getHeight() / 2, sprite.getWidth() > sprite.getHeight() ? sprite.getWidth() / 2 : sprite.getHeight() / 2);
+        
+        System.out.println(sprite.getX() + "  " +  sprite.getY());
+        System.out.println(sprite.getWidth() + "  " + sprite.getHeight() );
+        System.out.println(sprite.getWidth() / 2 + "  " + sprite.getHeight() / 2 );
+        System.out.println(sprite.getX() + sprite.getWidth()/2 + "  " + sprite.getY() + sprite.getHeight()/2 );
+        
+        this.circle = new Circle();
+        // por algum motivo this.sprite.getX() + this.sprite.getWidth()/2 não estava dando certo
+        this.circle.x = sprite.getX();
+        this.circle.y = sprite.getY() + sprite.getHeight()/2;
+        this.circle.radius = (float) Math.sqrt( (Math.pow(this.sprite.getHeight()/2 ,2)) + (Math.pow(this.sprite.getWidth()/2,2)) );
+        
         this.movimentacao = new SeekDynamic(new Vector2(sprite.getX(), sprite.getY()));
     }
 
