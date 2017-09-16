@@ -41,7 +41,7 @@ public class SplashScreen extends BaseScreen {
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         timeWhenScreenShowedUp = TimeUtils.millis();
-        logo = new Sprite(new Texture("cefet-games-logo.png"));
+        logo = new Sprite(new Texture("splash/cefet-games-logo.png"));
         logo.getTexture().setFilter(
                 Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         logo.setCenter(
