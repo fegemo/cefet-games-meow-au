@@ -39,6 +39,8 @@ public class FlappySitaFactory implements MiniGameFactory {
                         Texture.class);
                 put("FlappySita/tube.png",
                         Texture.class);
+                put("FlappySita/jatmouse.png",
+                        Texture.class);
             }
         };
     }

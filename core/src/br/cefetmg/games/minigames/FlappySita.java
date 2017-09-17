@@ -56,7 +56,7 @@ public class FlappySita extends MiniGame {
     @Override
     protected void onStart() {
         troca=0;
-        calopsitaTextura = assets.get("FlappySita/crow.png",Texture.class);
+        calopsitaTextura = assets.get("FlappySita/jatmouse.png",Texture.class);
         cattubeTexture = assets.get("FlappySita/tubecat.png",Texture.class);
         bg1= assets.get("FlappySita/background.png",Texture.class);
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -71,14 +71,14 @@ public class FlappySita extends MiniGame {
 
         spawnedEnemies = 0;
         posX=viewport.getScreenWidth()*0.4f;posY= viewport.getScreenHeight()*0.5f;
-      /*  timer.scheduleTask(new Task() {
+        timer.scheduleTask(new Task() {
             @Override
             public void run() {
                 spawnEnemy();
             }
 
-        }, 0,  (float)Math.random()+1f);//this.spawnInterval);*/
-        spawnEnemy();
+        }, 0,  (float)Math.random()+0.8f);//this.spawnInterval);*/
+      //  spawnEnemy();
          srcX=0; 
     }
     private void spawnEnemy() {
@@ -99,7 +99,7 @@ public class FlappySita extends MiniGame {
         Tube enemy = new Tube(cattubeTexture);
        // enemy.setScale(0.4f);
         enemy.setsize(new Random().nextInt(4));
-        enemy.setsize(0);
+
         enemy.setPosition(Gdx.graphics.getWidth()+viewport.getScreenWidth()*0.41f,60*enemy.getsize());//, Ddwown);
         enemy.setSpeed(tartarusSpeed);
         enemies.add(enemy);
@@ -139,13 +139,20 @@ public class FlappySita extends MiniGame {
         calopsita.setCenter(Posi.x, Posi.y);
 
         for (Tube tubes : this.enemies) {
-            float distance = calopsita.getHeadDistanceTo(
-                    tubes.getX(), tubes.getY());
+          /*  float distance = calopsita.getHeadDistanceTo(
+                    tubes.getX(), tubes.getY()+tubes.getHeight());
             System.out.printf("D%.2f\n", distance);
-            if (distance <= 30) {
+            if (distance <= 110) {
                // tubes.startFleeing(calopsita.getHeadPosition());
                 super.challengeFailed();
+            }*/
+            if(calopsita.getY()+70<=tubes.getHeight()+tubes.getsize()*60&&
+                    (calopsita.getX()>tubes.getX()-80&&calopsita.getX()<tubes.getX()+80)){
+                super.challengeFailed();
+
             }
+            System.out.printf("c %.2f %.2f Tube %.2f %.2f\n",calopsita.getX(),
+                    calopsita.getY(),tubes.getX(),tubes.getHeight());
         }
     }
 
@@ -157,7 +164,7 @@ public class FlappySita extends MiniGame {
         if(posY<ScreenHeight+2)
             posY+=1;//2.5; 1;
         if(posX>ScreenWidth/2-16)
-            posX-=1;
+            posX-=0.5;
         if(Gdx.input.justTouched()) {
           //  System.out.printf("Heeee\n");
             posY-=70;
@@ -213,8 +220,8 @@ public class FlappySita extends MiniGame {
     }
     
     class Calopsita extends AnimatedSprite{
-        static final int FRAME_WIDTH =97;
-        static final int FRAME_HEIGHT = 120;
+        static final int FRAME_WIDTH =131;//131
+        static final int FRAME_HEIGHT = 156;//156
         public Calopsita(final Texture toothbrushTexture) {
              super(new Animation(0.22f, new Array<TextureRegion>() {
                 {
@@ -225,6 +232,7 @@ public class FlappySita extends MiniGame {
                         frames[0][1],
                         frames[0][2],
                         frames[0][3],
+
                        
                     });
                 }
