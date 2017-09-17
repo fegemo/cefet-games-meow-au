@@ -11,9 +11,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Timer.Task;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+
 public class RainingCats extends MiniGame{
     
-   
     private Sprite player;
     private Sprite backGround;
     private Sprite arrow;
@@ -26,14 +26,12 @@ public class RainingCats extends MiniGame{
     private boolean jump;
     private float gravity;
     
-   
     private Sound music;
     
     private Texture playerTexture;
     private Texture arrowTexture;
     private Texture sakamoto,sakamoto2;
     private Texture bgTexture;
-    
     
     public RainingCats(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -49,7 +47,6 @@ public class RainingCats extends MiniGame{
         ground = true;
         jump=false;
       
-        
         bgTexture = assets.get("raining-cats/sakamoto2.jpg",Texture.class);      
         playerTexture = assets.get("raining-cats/player.png",Texture.class);
         sakamoto = assets.get("raining-cats/sakamoto.png",Texture.class);
@@ -67,7 +64,6 @@ public class RainingCats extends MiniGame{
         backGround.setOrigin(0,0);
         backGround.setScale(viewport.getWorldWidth()/backGround.getWidth(), viewport.getWorldHeight()/backGround.getHeight());
         backGround.setPosition(0,0);
-        
         
         player = new Sprite(playerTexture);
         player.setScale(0.4f);
@@ -134,15 +130,13 @@ public class RainingCats extends MiniGame{
                 > click.x-arrow.getWidth()/2*arrow.getScaleX())
                       player.setX(player.getX()-(player.getX()-click.x-arrow.getWidth()/2*arrow.getScaleX())/5);
        
-        
          if (Gdx.input.justTouched()) {
            if(ground){
                jump=true;
                gravity=20;
            }
         }
-        
-        
+
         for(int i = 0; i< cats.size; i++){
             Sprite sprite = cats.get(i);
             if(sprite.getBoundingRectangle().overlaps(player.getBoundingRectangle())){

@@ -16,29 +16,31 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 
 public class NinjaCat extends MiniGame{
-    
-   
-    private Sprite backGround;
-    private Sprite arrow;
+       
     private int spawnedZombies,totalZombies;
+    private int gcount;
+    private int enemiesKilled;
+    
     private float spawnInterval;
     private float speed;
+    
+    private Sprite backGround;
+    private Sprite arrow;
     private Cat cat;
     private catIntro ci;
-    private int enemiesKilled;
     private Array<Zombie> zombies;
     private Array<DeadZombie> deadzomb;
+    
     private boolean rampage;
     private boolean right;
     private boolean flip;
     private boolean hit;
     private boolean gameover;
     private boolean pose;
-    private int gcount;
+    
+    
     private killingZombie god;
     
-    
-   
     private Texture playerTexture;
     private Texture arrowTexture;
     private Texture sakamoto,sakamoto2;
@@ -55,8 +57,6 @@ public class NinjaCat extends MiniGame{
     
     private Sound intro;
     private Sound ken1,ken2;
-    
-  
     
     public NinjaCat(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -105,7 +105,7 @@ public class NinjaCat extends MiniGame{
         
         ci = new catIntro(catPose);
         ci.setOrigin(0, 0);
-        ci.setScale(1.5f);
+        ci.setScale(1.75f);
         ci.setPosition(viewport.getWorldWidth()*0.45f,viewport.getWorldHeight()*.1f);
         
         intro.play(.3f);
@@ -116,8 +116,7 @@ public class NinjaCat extends MiniGame{
         gameover = false;
         pose=true;
         gcount = 0;
-        
-        
+
     }
     
     private void scheduleZombiesSpawn(){
@@ -136,24 +135,21 @@ public class NinjaCat extends MiniGame{
                
     }
     private void spawnZombies(){
-        Zombie zomb = new Zombie(zombieTex) ;
-
+        Zombie zomb = new Zombie(zombieTex);
         zomb.setCenter(0, 0);
         zomb.setScale(2.25f);
-        if(rand.nextInt()%2 == 0){
+        
+        if(rand.nextInt()%2 == 0)
             zomb.setPosition(0,viewport.getWorldHeight()*.1f+35);
-            
-        }
-        else{
+        else
             zomb.setPosition(viewport.getWorldWidth(),viewport.getWorldHeight()*.1f+35);
             
-        }
         if(zomb.getX() > cat.getX())
             zomb.flipFrames(true, false);
+        
         zombies.add(zomb);
     }
-    
-    
+
       @Override
     protected void configureDifficultyParameters(float difficulty) {
         
@@ -162,7 +158,6 @@ public class NinjaCat extends MiniGame{
         this.spawnInterval = DifficultyCurve.S_NEGATIVE
                 .getCurveValueBetween(difficulty, 1.5f, 2.5f);
         this.totalZombies = (int) Math.ceil(maxDuration / spawnInterval) - 3;
-    
     }
     
     @Override
@@ -222,8 +217,7 @@ public class NinjaCat extends MiniGame{
             super.setAutoUpdate(false);
         }
     } 
-    
-     
+
      class Zombie extends AnimatedSprite {
 
         static final int FRAME_WIDTH = 50;
@@ -257,7 +251,6 @@ public class NinjaCat extends MiniGame{
             }
         }   
     
-     
      class DeadZombie extends AnimatedSprite {
 
         static final int FRAME_WIDTH = 52;
@@ -336,8 +329,7 @@ public class NinjaCat extends MiniGame{
             super.setAutoUpdate(true);
 
             }
-        }  
-     
+     }
      
      void setCat(Texture tex){
          float x,y;
@@ -370,7 +362,6 @@ public class NinjaCat extends MiniGame{
                 setCat(texhit1);
             }
         }
-        
         else if(gameover){
            if(gcount==0)
                setCat(d1);
@@ -395,7 +386,6 @@ public class NinjaCat extends MiniGame{
                     this.deadzomb.removeValue(deadzomb.get(i), true);
                 else deadzomb.get(i).update();
             }
-            
             if(rampage){
 
                 setCat(rampageTex);
@@ -432,7 +422,6 @@ public class NinjaCat extends MiniGame{
                     }
                 }
             }
-
             cat.update();
 
             for(int i = 0; i < zombies.size; i++){
@@ -449,7 +438,6 @@ public class NinjaCat extends MiniGame{
                     god.setPosition(zomb.getX(),zomb.getY());
                     if(zomb.getX() > cat.getX()) god.flipFrames(true, false);
                     zombies.removeValue(zomb, true);
-                    
                 }
             }
         }
@@ -486,6 +474,5 @@ public class NinjaCat extends MiniGame{
     @Override
     public boolean shouldHideMousePointer() {
         return true;
-    }
-    
+    } 
 }
