@@ -29,12 +29,12 @@ import com.badlogic.gdx.utils.Timer;
  */
 public class JumpTheObstacles extends MiniGame {
 
-    private Texture kongTexture;
-    private Kong kong;
-    private Texture tartarusTexture;
-    private Texture toothTexture;
-    private Array<Sound> tartarusAppearingSound;
-    private Sound backgroundSound;
+    private Texture dogTexture;
+    private Dog dog;
+    private Texture obstaclesTexture;
+    private Texture backgroundTexture;
+    private Array<Sound> obstaclesAppearingSound;
+    private Sound jumpSound;
     private Array<Obstacle> enemies;
     private int numberOfBrokenTeeth;
     
@@ -51,29 +51,24 @@ public class JumpTheObstacles extends MiniGame {
 
     @Override
     protected void onStart() {
-        kongTexture = assets.get(
-                "jump-the-obstacles/kong.png", Texture.class);
-        kong = new Kong(kongTexture);
-        tartarusTexture = assets.get(
-                "jump-the-obstacles/sprite02.png", Texture.class);
-        /*toothTexture = assets.get(
-                "shoo-the-tartarus/tooth.png", Texture.class);*/
-        tartarusAppearingSound = new Array<Sound>(3);
-        tartarusAppearingSound.addAll(assets.get(
-                "shoo-the-tartarus/appearing1.wav", Sound.class),
+        dogTexture = assets.get(
+                "jump-the-obstacles/dog.png", Texture.class);
+        dog = new Dog(dogTexture);
+        obstaclesTexture = assets.get(
+                "jump-the-obstacles/obstacles.png", Texture.class);
+        backgroundTexture = assets.get(
+                "jump-the-obstacles/background.png", Texture.class);
+        obstaclesAppearingSound = new Array<Sound>(3);
+        obstaclesAppearingSound.addAll(assets.get(
+                "jump-the-obstacles/appearing1.wav", Sound.class),
                 assets.get(
-                        "shoo-the-tartarus/appearing2.wav", Sound.class),
+                        "jump-the-obstacles/appearing2.wav", Sound.class),
                 assets.get(
-                        "shoo-the-tartarus/appearing3.wav", Sound.class));
-        backgroundSound = assets.get(
-                "jump-the-obstacles/01-theme.mp3", Sound.class);
+                        "jump-the-obstacles/appearing3.wav", Sound.class));
+        jumpSound = assets.get("jump-the-obstacles/29-extra-life-balloon.mp3", Sound.class);
         enemies = new Array<Obstacle>();
         numberOfBrokenTeeth = 0;
 
-        backgroundSound.stop();
-        
-        backgroundSound.play();
-        
         timer.scheduleTask(new Task() {
             @Override
             public void run() {
@@ -89,16 +84,16 @@ public class JumpTheObstacles extends MiniGame {
         
         Vector2 cannonballSpeed = new Vector2(-this.minimumEnemySpeed, 0.0f);
 
-        Obstacle enemy = new Obstacle(tartarusTexture);
+        Obstacle enemy = new Obstacle(obstaclesTexture);
         enemy.setPosition(cannonballPosition.x, cannonballPosition.y);
         enemy.speed = cannonballSpeed;
         enemies.add(enemy);
         
         // toca um efeito sonoro
-        Sound sound = tartarusAppearingSound.random();
-        //long id = sound.play(0.5f);
-        //sound.setPan(id, cannonballPosition.x < viewport.getWorldWidth()
-        //        ? -1 : 1, 1);
+        Sound sound = obstaclesAppearingSound.random();
+        long id = sound.play(0.5f);
+        sound.setPan(id, cannonballPosition.x < viewport.getWorldWidth()
+                ? -1 : 1, 1);
     }
 
     @Override
@@ -115,13 +110,13 @@ public class JumpTheObstacles extends MiniGame {
     public void onHandlePlayingInput() {
         
         if(Gdx.input.justTouched())
-            kong.jump();
+            dog.jump();
     }
 
     @Override
     public void onUpdate(float dt) {
         // atualiza a escova (quadro da animação)
-        kong.update(dt);
+        dog.update(dt);
 
         // atualiza os inimigos (quadro de animação + colisão com dentes)
         for (int i = 0; i < this.enemies.size; i++) {
@@ -136,22 +131,23 @@ public class JumpTheObstacles extends MiniGame {
                 obstacle.update(dt);
 
                 // verifica se este inimigo está colidindo com algum dente
-                //for (Tooth tooth : this.teeth) {
-                    if (obstacle.getCollisionCircle().overlaps(kong.getCollisionCircle())) {
-                        super.challengeFailed();
-                        backgroundSound.stop();
-                    }
-                //}
+                if (obstacle.getCollisionCircle().overlaps(dog.getCollisionCircle())) {
+                    super.challengeFailed();
+                }
+                
             }
         }
     }
 
     @Override
     public void onDrawGame() {
+        //Background
+        batch.draw(backgroundTexture, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+                
         for (Obstacle tart : this.enemies) {
             tart.draw(batch);
         }
-        kong.draw(batch);
+        dog.draw(batch);
     }
 
     @Override
@@ -164,49 +160,52 @@ public class JumpTheObstacles extends MiniGame {
         return true;
     }
 
-    class Kong extends MultiAnimatedSprite {
+    class Dog extends MultiAnimatedSprite {
 
         static final float SPEED = 700.0f;
         
-        static final int FRAME_WIDTH = 100;//36;
-        static final int FRAME_HEIGHT = 100;//38;
+        static final int FRAME_WIDTH = 120;
+        static final int FRAME_HEIGHT = 130;
         
         static final float TOTAL_JUMPING_TIME = 0.75f;
         
-        static final float X_POSITION = 300.0f;
+        static final float X_POSITION = 250.0f;
         
-        private Timer jumpTimer;
-        JumpState state;
+        private JumpState state;
 
         private Vector2 speed;
         
         private float jumpingTime = 0.0f;
         
-        Kong(final Texture kongTexture) {
+        Dog(final Texture kongTexture) {
             super(new HashMap<String, Animation>() {
                 {
-                    //new Animation(0.1f, new Array<TextureRegion>() {
                     TextureRegion[][] frames = TextureRegion.split(
                             kongTexture, FRAME_WIDTH, FRAME_HEIGHT);
                     
-                    Animation walking = new Animation(0.2f,
-                            /*frames[0][0],
-                            frames[0][1],
-                            frames[0][2],
-                            frames[0][3],
-                            frames[0][4],*/
-                            frames[0][5],
-                            frames[0][6]);
-                    
-                    walking.setPlayMode(Animation.PlayMode.LOOP);
-                    put("walking", walking);
-                    
-                    Animation jumping = new Animation(0.2f,
+                    Animation walking = new Animation(0.05f,
                             frames[1][0],
                             frames[1][1],
                             frames[1][2],
-                            frames[1][1],
-                            frames[1][0]);
+                            frames[1][3],
+                            frames[1][4],
+                            frames[1][5],
+                            frames[1][6],
+                            frames[1][7],
+                            frames[1][8]
+                    );
+                    
+                    walking.setPlayMode(Animation.PlayMode.LOOP_RANDOM);
+                    put("walking", walking);
+                    
+                    Animation jumping = new Animation(Dog.TOTAL_JUMPING_TIME/6.0f,
+                            frames[0][0],
+                            frames[0][2],
+                            frames[0][4],
+                            frames[0][6],
+                            frames[0][8],
+                            frames[0][0]
+                    );
                     jumping.setPlayMode(Animation.PlayMode.NORMAL);
                     put("jumping", jumping);
                     
@@ -221,9 +220,7 @@ public class JumpTheObstacles extends MiniGame {
             speed = new Vector2(0.0f, 0.0f);
             
             state = JumpState.NONE;
-            
-            jumpTimer = new Timer();
-            jumpTimer.stop();
+
         }
 
         Vector2 getHeadPosition() {
@@ -274,10 +271,9 @@ public class JumpTheObstacles extends MiniGame {
                 state = JumpState.JUMPING;
                 
                 // toca um efeito sonoro
-                Sound sound = tartarusAppearingSound.random();
-                //long id = sound.play(0.5f);
-                //sound.setPan(id, cannonballPosition.x < viewport.getWorldWidth()
-                //        ? -1 : 1, 1);
+                Sound sound = jumpSound;
+                long id = sound.play(0.5f);
+                sound.setPan(id, dog.getX(), 0.25f);
             }
         }
         
