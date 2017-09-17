@@ -29,99 +29,215 @@ import java.util.Random;
 
 public class CatAvoider extends MiniGame {
 
-    private boolean jumped;
-    private Texture backgroundTexture;
-    private Sprite background;
-    private Texture limits;
-    private float width;
-    private float height;
-    private Obstacle down;
-    private Obstacle up;
-    private Obstacle left;
-    private Obstacle right;
-    private Texture catTexture;
-    private Rectangle catRect;
-    private Sprite cat;
-    private Sprite mouse;
-    private Vector2 mousePosition, direction;
-    private float speed = 10, timeAnimation = 1;
-    private float catDelta = 50;
-    Random randomGenerator = new Random();
-    private char moveType;
-    public int state;//indicate if the cat is moving or stoped '1=moving and ==stped'
-    private final int jumpState = 0;
-    private final int downState = 1;
-    private final int upState = 2;
-    private final int leftState = 3;
-    private final int rightState = 4;
-
     public CatAvoider(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f,
                 TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
     }
+    
+    private Texture backgroundTexture; //backgroud texture of the world
+    private Sprite background;//sprite created for the background
+    
+    private Texture limits;//texture created for the screen limits
+    private float limitsWidth;//width of the screen limits
+    private float limitsHeight;//height of the screen limits
+    private Obstacle down;//scren limit down
+    private Obstacle up;//screen limit up
+    private Obstacle left;//screen limit left
+    private Obstacle right;//screen limit right
+    
+    protected Random randomGenerator = new Random();//objetct to generate random numbers
+    
+    class Mouse {
+        protected Sprite mouse;//sprite for the mouse(playable character)
+        protected Vector2 position;//vector to get the mouse positon on the screen
+        
+        public void getPosition() {
+            position.x = Gdx.input.getX()*WORLD_WIDTH/viewport.getScreenWidth();
+            position.y = WORLD_HEIGHT - (Gdx.input.getY()*WORLD_HEIGHT/viewport.getScreenHeight());
+        }
+    }
+    
+    class Cat {
+        protected Rectangle rect;//rectangle to enclose the cat and treat the collision
+        protected Texture texture;//texture for the non playable character ninja cat
+        protected Sprite sprite;//sprite of the non non playable character ninja cat
+        protected Vector2 direction;//vetor to get the cat direction on the screen
+        protected float speed = 10;//variable used to set the cat ninja speed
+        protected float delta = 50;//variable used to set the delta of displacemento of the cat ninja in the screen per period of time
+        protected char moveType; //variable to set the type of moviment of the cat (jump or random)
+        protected int state;//variable to indicate the type of moviment of the cat (jump or random)
+        protected final int randomState = 0;
+        protected final int jumpState = 1;
+        protected Mouse mouse = new Mouse();
+        
+        public void lookAhead() {
+        double angle = Math.atan(direction.y / direction.x);
+
+            angle += (direction.x > 0) ? -Math.PI / 2 : Math.PI / 2;
+            angle *= 180 / Math.PI;
+            sprite.setRotation((float) angle);
+        }
+        
+        public void setDirection() {
+            direction.x = mouse.position.x - (sprite.getX() + sprite.getWidth()/2);
+            direction.y = mouse.position.y - (sprite.getY() + sprite.getHeight()/2);
+            lookAhead();
+        }
+  
+        public void incrementX(float delta) {
+        if((sprite.getX()+limitsWidth+delta)<WORLD_WIDTH && (moveType=='D' || moveType=='U'))
+            sprite.setX(sprite.getX()+delta);
+        }
+    
+        public void decrementX(float delta) {
+            if((sprite.getX()-limitsWidth-delta>0) && (moveType=='D' || moveType=='U'))
+                sprite.setX(sprite.getX()-delta);
+        }
+    
+        public void incrementY(float delta) {
+            if((sprite.getX()+limitsHeight+delta)<WORLD_HEIGHT && (moveType=='L' || moveType=='R'))
+                sprite.setY(sprite.getY()+delta);
+        }
+    
+        public void decrementY(float delta) {
+            if((sprite.getY()-limitsHeight-delta)>0 && (moveType=='L' || moveType=='R'))
+                sprite.setY(sprite.getY()-delta);
+        }
+    
+        public void randomMovementX(int signal) {
+            if(signal==0) {
+                incrementX(delta);
+            }
+            else if(signal==1){
+                decrementX(delta);
+            }
+        }
+    
+        public void randomMovementY(int signal) {
+            if(signal==0) {
+                incrementY(delta);
+            }
+            else if(signal==1){
+                decrementY(delta);
+            }
+        }
+    
+        //tratar a colisão em Random moviment
+        public void moveRandom(int signal) {
+            final int move = 1;
+            int movement = randomGenerator.nextInt(30);
+            
+            if(movement==move) {
+                if(moveType=='D' || moveType=='U') {
+                    randomMovementX(signal);
+                }
+                if(moveType=='L' || moveType=='R') {
+                    randomMovementY(signal);
+                }
+            }
+        }
+    
+        public void move(){
+            int changeState = randomGenerator.nextInt(30);
+            int signal = 0;
+            if (state==jumpState) {
+                jump();
+                verifyCollision();
+                signal = randomGenerator.nextInt(2);
+            }
+            else {
+                //moveRandom(signal);
+            }
+        }
+
+        public void jump() {
+            Vector2 normalized = new Vector2(direction);
+            normalized.nor();
+            normalized.scl(speed);
+
+            normalized.x += sprite.getX();
+            normalized.y += sprite.getY();
+
+            sprite.setPosition(normalized.x, normalized.y);
+            System.out.println("Mouse: "+mouse.position.x +" "+ mouse.position.y);
+            System.out.println("Cat: "+sprite.getX() +" "+ sprite.getY());
+        }
+
+        public void reflect() {
+            direction.x = mouse.position.x - (sprite.getX() + sprite.getWidth()/2);
+            direction.y = mouse.position.y - (sprite.getY() + sprite.getHeight()/2);
+            lookAhead();
+        }
+
+        public void verifyCollision() {
+            cat.rect = cat.sprite.getBoundingRectangle();
+            /*
+            //collision cat mouse
+            if (Colision.rectCircleOverlap(catRect, ball.circle) != null) {
+
+            }
+             */
+            
+            /**collision cat floor*/
+            if (Colision.rectsOverlap(down.getRec(), rect)) {
+                reflect();
+                moveType = 'D';
+                state = randomState;
+            }
+            
+            /**collision cat roof*/
+            else if (Colision.rectsOverlap(up.getRec(), rect)) {
+                reflect();
+                moveType = 'U';
+                state = randomState;
+            }
+
+            /**collision cat left wall*/
+            if (Colision.rectsOverlap(left.getRec(), rect)) {
+                reflect();
+                moveType = 'L';
+                state = randomState;
+            }
+            
+            /**collision cat right wall*/
+            else if (Colision.rectsOverlap(right.getRec(), rect)) {
+                reflect();
+                moveType = 'D';
+                state = randomState;
+            }
+        }
+    }
+    
+    Cat cat = new Cat();
 
     @Override
     protected void onStart() {
-        width = 20;
-        height = 20;
-        jumped = false;
-        direction = new Vector2(0, 0);
-        mousePosition = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         backgroundTexture = assets.get("avoider/backgroundTexture.png", Texture.class);
-        limits = assets.get("avoider/grey.png", Texture.class);
-        catTexture = assets.get("avoider/cat.png", Texture.class);
-
         background = new Sprite(backgroundTexture);
-
-        cat = new Sprite(catTexture);
-        cat.setSize(100, 100);
-        cat.setOrigin(cat.getWidth()/2, cat.getHeight()/2);
-        cat.setPosition(WORLD_WIDTH / 2, width);
-
         background.setSize(WORLD_WIDTH, WORLD_HEIGHT);
-
-        up = new Obstacle(batch, new Vector2(0, WORLD_HEIGHT - height), WORLD_WIDTH, height);
-        down = new Obstacle(batch, new Vector2(0, 0), WORLD_WIDTH, height);
-        left = new Obstacle(batch, new Vector2(0, width), width, WORLD_HEIGHT);
-        right = new Obstacle(batch, new Vector2(WORLD_WIDTH - width, width), width, WORLD_HEIGHT);
-        moveType = 'D';
-        state = leftState;
+        
+        limitsWidth = 20;
+        limitsHeight = 20;
+        limits = assets.get("avoider/grey.png", Texture.class);
+        up = new Obstacle(batch, new Vector2(0, WORLD_HEIGHT - limitsHeight), WORLD_WIDTH, limitsHeight);
+        down = new Obstacle(batch, new Vector2(0, 0), WORLD_WIDTH, limitsHeight);
+        left = new Obstacle(batch, new Vector2(0, limitsWidth), limitsWidth, WORLD_HEIGHT);
+        right = new Obstacle(batch, new Vector2(WORLD_WIDTH - limitsWidth, limitsWidth), limitsWidth, WORLD_HEIGHT);
+        
+        cat.texture = assets.get("avoider/cat.png", Texture.class);
+        cat.direction = new Vector2(0, 0);
+        cat.sprite = new Sprite(cat.texture);
+        cat.sprite.setSize(100, 100);
+        cat.sprite.setOrigin(cat.sprite.getWidth()/2, cat.sprite.getHeight()/2);
+        cat.sprite.setPosition(WORLD_WIDTH / 2, limitsWidth);
+        cat.moveType = 'D';
+        cat.state = cat.randomState;
+        
+        cat.mouse.position = new Vector2(Gdx.input.getX(), Gdx.input.getY());
     }
     
-    public void verifyCollision(float dt) {
-        catRect = cat.getBoundingRectangle();
-        /*
-        //Colisão cat mouse
-        if (Colision.rectCircleOverlap(catRect, ball.circle) != null) {
-            
-        }
-         */
-        //Colisão gato chao
-        if (Colision.rectsOverlap(down.getRec(), catRect)) {
-            reflect();
-            moveType = 'D';
-            state = downState;
-        } //Colisão gato teto
-        else if (Colision.rectsOverlap(up.getRec(), catRect)) {
-            reflect();
-            moveType = 'U';
-            state = upState;
-        }
-
-        //Colisão lateral esquerda e gato
-        if (Colision.rectsOverlap(left.getRec(), catRect)) {
-            reflect();
-            moveType = 'L';
-            state = leftState;
-        }//Colisão lateral direita e gato
-        else if (Colision.rectsOverlap(right.getRec(), catRect)) {
-            reflect();
-            moveType = 'D';
-            state = rightState;
-        }
-
-    }
+    
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
@@ -131,181 +247,32 @@ public class CatAvoider extends MiniGame {
     public void onHandlePlayingInput() {
     }
 
-    public void lookAhead() {
-        double angle = Math.atan(direction.y / direction.x);
-
-        angle += (direction.x > 0) ? -Math.PI / 2 : Math.PI / 2;
-        /*else
-			angle += (direction.x > 0) ? Math.PI : 0;
-         */
-        angle *= 180 / Math.PI;
-        cat.setRotation((float) angle);
-    }
-
-    public void updateCatPosition() {
-        if (jumped) {
-            //setDirection();//atualiza ou não a direção
-            Vector2 normalized = new Vector2(direction);
-            normalized.nor(); // normaliza o vetor
-            normalized.scl(speed);
-
-            normalized.x += cat.getX();
-            normalized.y += cat.getY();
-
-            cat.setPosition(normalized.x, normalized.y);
-            System.out.println("Mouse: "+mousePosition.x +" "+ mousePosition.y);
-            System.out.println("Cat: "+cat.getX() +" "+ cat.getY());
-        }
-    }
-
-    public void setDirection() {
-        direction.x = mousePosition.x - (cat.getX() + cat.getWidth()/2);
-        direction.y = mousePosition.y - (cat.getY() + cat.getHeight()/2);
-        lookAhead();
-    }
     
-    public void reflect() {
-        direction.x = mousePosition.x - (cat.getX() + cat.getWidth()/2);
-        direction.y = mousePosition.y - (cat.getY() + cat.getHeight()/2);
-        lookAhead();
-    }
-  
-    public void catIncrementX(float delta) {
-        if((cat.getX()+width+delta)<WORLD_WIDTH && (state==downState || state==upState))
-            cat.setX(cat.getX()+delta);
-    }
-    
-    public void catDecrementX(float delta) {
-        if((cat.getX()-width-delta>0) && (state==downState || state==upState))
-            cat.setX(cat.getX()-delta);
-    }
-    
-    public void catIncrementY(float delta) {
-        if((cat.getX()+height+delta)<WORLD_HEIGHT && (state==leftState || state==rightState))
-            cat.setY(cat.getY()+delta);
-    }
-    
-    public void catDecrementY(float delta) {
-        if((cat.getY()-height-delta)>0 && (state==leftState || state==rightState))
-            cat.setY(cat.getY()-delta);
-    }
-    
-   public void randomMovementDown(float dt) {
-        int random = randomGenerator.nextInt(2);
-        if(random==0) {
-            catIncrementX(catDelta);
-        }
-        else if(random==1){
-            catDecrementX(catDelta);
-        }
-    }
-    
-    public void randomMovementUp(float dt) {
-        int random = randomGenerator.nextInt(2);
-        if(random==0) {
-            catIncrementX(catDelta);
-        }
-        else if(random==1){
-            catDecrementX(catDelta);
-        }
-    }
-    
-    public void randomMovementLeft(float dt) {
-        int random = randomGenerator.nextInt(2);
-        if(random==0) {
-            catIncrementY(catDelta);
-        }
-        else if(random==1){
-            catDecrementY(catDelta);
-        }
-    }
-    
-    public void randomMovementRight(float dt) {
-        int random = randomGenerator.nextInt(2);
-        if(random==0) {
-            catIncrementY(catDelta);
-        }
-        else if(random==1){
-            catDecrementY(catDelta);
-        }
-    }
-    
-    //tratar a colisão em Random moviment
-    public void moveRandom() {
-        Random randomGenerator = new Random();
-        int move = randomGenerator.nextInt(20);
-        if(move==19) {
-            if(moveType=='D') {
-                randomMovementDown(10);
-            }
-            if(moveType=='U') {
-                randomMovementUp(10);
-            }
-            if(moveType=='L') {
-                randomMovementLeft(10);
-            }
-            if(moveType=='R') {
-                randomMovementRight(10);
-            }
-        }
-    }
-    
-    public void jump(float dt){
-        Random randomGenerator = new Random();
-        int changeState = randomGenerator.nextInt();
-        if (state==jumpState) {
-            if (jumped == false) {
-                setDirection();
-                jumped = true;
-            }
-            updateCatPosition();
-            verifyCollision(1);
-        }
-        else {
-            moveRandom();
-        }
-    }
-
-    public void follow() {
-        Vector2 normalized = new Vector2(direction);
-        normalized.nor(); // normaliza o vetor
-        normalized.scl(speed);
-
-        normalized.x += cat.getX();
-        normalized.y += cat.getY();
-
-        cat.setPosition(normalized.x, normalized.y);
-    }
-
-    public void getMousePosition() {
-        mousePosition.x = Gdx.input.getX()*WORLD_WIDTH/viewport.getScreenWidth();
-        mousePosition.y = WORLD_HEIGHT - (Gdx.input.getY()*WORLD_HEIGHT/viewport.getScreenHeight());
-    }
 
     @Override
     public void onUpdate(float dt) {
-       Random randomGenerator = new Random();
        int changeState = randomGenerator.nextInt(30);
        if(changeState==29)
-           state = jumpState;
-        getMousePosition();
-        jump(10);
-       //move();
+           cat.state = cat.jumpState;
+        cat.mouse.getPosition();
+        cat.move();
     }
 
     @Override
     public void onDrawGame() {
         background.draw(batch);
+        
         down.draw();
         up.draw();
         left.draw();
         right.draw();
-        cat.draw(batch);
+        
+        cat.sprite.draw(batch);
     }
 
     @Override
     public String getInstructions() {
-        return "Não deixe o gato pegar o mouse";
+        return "Não deixe o gato pegar o novelo!!!";
     }
 
     @Override

@@ -29,7 +29,7 @@ public abstract class MiniGame {
     protected float maxDuration;
     private float timeSpentOnInstructions;
     private float timeSpentPlaying;
-    private MiniGameState state;
+    MiniGameState state;
     protected Random rand;
     protected final Timer timer;
     private boolean isPaused;
