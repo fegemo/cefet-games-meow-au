@@ -97,8 +97,8 @@ public class Running extends MiniGame{
         catSpeed = (float) 0.5;
         ball = new Sprite(ballTexture);
         float fltBall = rand.nextFloat();
-        if(fltBall > 0.9)
-            fltBall = (float) 0.9;
+        if(fltBall > 0.8)
+            fltBall = (float) 0.8;
         ball.setPosition(1240, viewport.getWorldHeight()*fltBall);
         dogSpeed = (float)0.005;
         if(blnChange){
