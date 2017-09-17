@@ -28,8 +28,9 @@ public class MemoryChip implements Collidable {
 
     private ShapeRenderer shapeRenderer;
 
-    public MemoryChip(Texture texture) {
-
+    public MemoryChip(Texture texture,float velocidade) {
+        Random r = new Random();
+        
         this.sprite = new Sprite(texture);
         this.circle = new Circle();
         this.shapeRenderer = new ShapeRenderer();
@@ -40,7 +41,7 @@ public class MemoryChip implements Collidable {
         this.circle.x = this.position.x + 12.5f;
         this.circle.y = this.position.y + 17f;
         
-        this.Velocidade_Queda = 1 + (float) new Random().nextInt(1);
+        this.Velocidade_Queda = 1 + (float) new Random().nextFloat()*(velocidade - 1) ;
         this.Rotation = (-30) + (float) new Random().nextInt(20);
 
         this.circle.radius = 21.1f;

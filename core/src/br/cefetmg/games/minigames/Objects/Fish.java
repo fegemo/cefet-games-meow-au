@@ -43,8 +43,11 @@ public class Fish extends Sprite implements Collidable {
     private Circle circle;
     private ShapeRenderer shapeRenderer;
     
-   
+    private float x_tempo = 0.0f;
+    private boolean aux = true;
+
     public Fish(Texture texture) {
+        
         this.sprite = new Sprite(texture);
         this.shapeRenderer = new ShapeRenderer();
         this.sprite.setPosition(20.0f, 220.0f);
@@ -59,6 +62,21 @@ public class Fish extends Sprite implements Collidable {
         this.sprite.setPosition(x, y);
         //atualiza a posicao do retangulo de colisao
         this.circle.setPosition(x + (this.sprite.getWidth()/2) , y + (this.sprite.getHeight()/2));
+        if( aux ){
+            this.x_tempo = x;
+            aux = !aux;
+        }
+        
+        if( this.x_tempo > x){
+            if(!this.sprite.isFlipX()){
+                this.sprite.flip(true,false);
+            }
+        }else{
+            if(this.sprite.isFlipX()){
+               this.sprite.flip(true,false); 
+            }
+            
+        }
     }
 
     public void update(float dt) {
@@ -79,25 +97,11 @@ public class Fish extends Sprite implements Collidable {
         if ((1280 >= x_sprite && 0 <= x_sprite) && (720 >= y_sprite && 0 <= y_sprite)) {
             //se estiver dentro da tela
             //update(x,y);
+        if ((1280 >= this.sprite.getX() && 0 <= this.sprite.getX()) && (720 >= this.sprite.getY() && 0 <= this.sprite.getY())) {
+            // se dentro da tela
             this.sprite.draw(sb);
         }
-    }
-
-    // vo modificar a movimentacao toda se der certo a gente apaga isso
- /*   public void updateAccordingToTheMouse(float x , float y){
-        if (Gdx.input.isTouched()||Gdx.input.justTouched()) {     
-        //se clicar com o mouse sobre o objeto Fish
-            if ( (x >= (this.circle.x-this.circle.radius) && x <= (this.circle.x+this.circle.radius))
-                    && (y >= (this.circle.y-this.circle.radius) && y <= (this.circle.y+this.circle.radius)) ){
-                float delta_x = (x - this.circle.x);
-                float delta_y = (y - this.circle.y);
-                
-                update( this.sprite.getX() + delta_x , this.sprite.getY() + delta_y );
-                
-                }
-            }     
-        }
-*/
+        }}
     public void updateAccordingToTheMouse(float x , float y){
         Rectangle c1 = new Rectangle(x, y, 1,1);
         Collision cc = new Collision();
@@ -105,9 +109,10 @@ public class Fish extends Sprite implements Collidable {
             alvo= new Vector2(x, y);
     }
     
+    
     public void render_area_collision() {
 
-        // metodo para mostrar o retangulo e circulo de colisão
+        // metodo para mostrar circulo de colisão
         this.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         this.shapeRenderer.identity();
         this.shapeRenderer.setColor(Color.RED);
