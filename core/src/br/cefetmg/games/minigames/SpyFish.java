@@ -99,10 +99,7 @@ public class SpyFish extends MiniGame {
                 //se o peixe pegar um cartão de memoria
                 iterator.remove();
 
-                if (this.chip.isEmpty()) {
-                    // se pegar todos os chips ganha
-                    //super.challengeSolved();
-                }
+                super.challengeSolved();
             }
 
             if (mc.getPositionMemoryCard().y < 0) {
