@@ -14,11 +14,12 @@ public class Player {
     private float playerStep, playerWidth, playerHeight;
     public Sprite sprite_Player, sprite_Shoes;
     public Vector2 position, positionMin, positionMax, speed, footPosition;
-    private Texture playerTexture, shoesL,shoesR;
+    private Texture playerTexture;
     private SpriteBatch batch;
-    private float maxSpeed;
+    public float maxSpeed;
     private float mass, aTime;
-    private float rotation_angle,initial_angle, final_angle, radiusfoot, correctionX, correctionY, aCorrectionX, aCorrectionY;
+    private float rotation_angle,initial_angle, final_angle, correctionX, correctionY, aCorrectionX, aCorrectionY;
+    public float kick_power;
     private int oldOrientation;
 
     public Player(Vector2 positionInicial, Vector2 positionMin, Vector2 positionMax, Texture playerTexture, SpriteBatch batch, float playerStep, float maxSpeed, float sizeX, float sizeY, float mass) {
@@ -35,7 +36,7 @@ public class Player {
         footUp = false;
         footDown = false;
         movingFoot = false;
-
+        kick_power = 20;
         this.sprite_Player = new Sprite(playerTexture);
         this.sprite_Player.setSize(sizeX, sizeY);
         this.sprite_Player.setFlip(true, false);
@@ -54,7 +55,6 @@ public class Player {
         oldOrientation = 0;
         this.playerWidth = sprite_Player.getWidth();
         this.playerHeight = sprite_Player.getHeight();
-        radiusfoot = playerHeight/2;
 
         this.position = positionInicial;
         footPosition = new Vector2(positionInicial.x, positionInicial.y - sprite_Shoes.getHeight() / 2) ;
@@ -183,7 +183,6 @@ public class Player {
     public void updateMoviment() {
         float x = sprite_Player.getX(), y = sprite_Player.getY();
         rotation_angle = sprite_Shoes.getRotation();
-        System.out.println("------------");
         walking = false;
         up = false;
         down = false;
@@ -217,7 +216,8 @@ public class Player {
         }
 
         if ((Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) && y == FLOOR) {
-            speed.y = JUMP;
+            if(sprite_Player.getY() == FLOOR)
+                speed.y = JUMP;
         }
 
         if (Gdx.input.isKeyPressed(Keys.SPACE)) {
@@ -267,7 +267,6 @@ public class Player {
         }
         
         sprite_Player.setPosition(x, y);
-    
         sprite_Shoes.setPosition(x + correctionX + aCorrectionX, y - sprite_Shoes.getHeight() / 2 + correctionY + aCorrectionY);
     }
 
