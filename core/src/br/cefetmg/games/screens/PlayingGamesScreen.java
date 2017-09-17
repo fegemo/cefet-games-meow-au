@@ -41,7 +41,7 @@ public class PlayingGamesScreen extends BaseScreen
                 Arrays.asList(
 //                        new ShootTheCariesFactory(),
 //                        new ShooTheTartarusFactory(),
-//                        new TicCatDogFactory(),
+                        new TicCatDogFactory(),
                         new JumpTheObstaclesFactory()
                 )
         ), 0, 1, this, this);
