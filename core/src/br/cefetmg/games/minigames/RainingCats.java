@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Timer.Task;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 public class RainingCats extends MiniGame{
@@ -26,6 +27,8 @@ public class RainingCats extends MiniGame{
     private float gravity;
     
    
+    private Sound music;
+    
     private Texture playerTexture;
     private Texture arrowTexture;
     private Texture sakamoto,sakamoto2;
@@ -52,6 +55,9 @@ public class RainingCats extends MiniGame{
         sakamoto = assets.get("raining-cats/sakamoto.png",Texture.class);
         sakamoto2 = assets.get("raining-cats/sakamoto1.png",Texture.class);
         arrowTexture = assets.get("raining-cats/arrow.png",Texture.class);
+        
+        music = assets.get("raining-cats/music.mp3",Sound.class);
+        
         arrow = new Sprite(arrowTexture);
         arrow.setScale(0.08f);
         arrow.setOrigin(0,0);
@@ -67,6 +73,7 @@ public class RainingCats extends MiniGame{
         player.setScale(0.4f);
         player.setOrigin(0,0); 
         player.setPosition(viewport.getWorldWidth()*0.2f,0);
+        music.play(.3f);
         scheduleCatsSpawn();
         
     }
@@ -142,6 +149,7 @@ public class RainingCats extends MiniGame{
                 this.cats.removeValue(sprite,true);
                 this.helpedCats++;
                 if(this.helpedCats >= this.totalCats){
+                    music.stop();
                     super.challengeSolved();
                 }
             }        
@@ -164,8 +172,10 @@ public class RainingCats extends MiniGame{
         for(int i = 0; i < cats.size; i++){
             cats.get(i).setPosition(cats.get(i).getX(),cats.get(i).getY()-speed);
             cats.get(i).rotate(7*speed/3);
-            if(cats.get(i).getY()<=-100)
+            if(cats.get(i).getY()<=-100){
+                music.stop();
                 super.challengeFailed();
+            }
         }
     }
     
