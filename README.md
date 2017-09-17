@@ -67,8 +67,7 @@ A imagem de _background_ foi desenhada na origem (0,0) com comprimento "viewport
 
 ##### Sons
 
-Som de surgimento de obstáculo
-*Projeto Shoot the Tartarus
+* Som de surgimento de obstáculo - Projeto Shoot the Tartarus
 
 * [Som de pulo](https://downloads.khinsider.com/game-soundtracks/album/donkey-kong-country-snes-/29-extra-life-balloon.mp3)
 
@@ -80,7 +79,7 @@ Som de surgimento de obstáculo
 
 * [Casa de cachorro](http://clubpenguin.wikia.com/wiki/File:Gray_Puffle_House_sprite_001.png)
 
-* [Grama]([a link](https://www.packtpub.com/mapt/book/game_development/9781783559046/6/ch06lvl1sec58/adding-a-background)
+* [Grama](https://www.packtpub.com/mapt/book/game_development/9781783559046/6/ch06lvl1sec58/adding-a-background)
 
 ## Instruções para Começar
 
