@@ -64,7 +64,7 @@ public class CatAvoider extends MiniGame {
         protected Sprite sprite;//sprite of the non non playable character ninja cat
         protected Vector2 direction;//vetor to get the cat direction on the screen
         protected float speed = 10;//variable used to set the cat ninja speed
-        protected float delta = 50;//variable used to set the delta of displacemento of the cat ninja in the screen per period of time
+        protected float delta = 10;//variable used to set the delta of displacemento of the cat ninja in the screen per period of time
         protected char moveType; //variable to set the type of moviment of the cat (jump or random)
         protected int state;//variable to indicate the type of moviment of the cat (jump or random)
         protected final int randomState = 0;
@@ -86,22 +86,22 @@ public class CatAvoider extends MiniGame {
         }
   
         public void incrementX(float delta) {
-        if((sprite.getX()+limitsWidth+delta)<WORLD_WIDTH && (moveType=='D' || moveType=='U'))
+        if((sprite.getX()+limitsWidth+sprite.getWidth()+delta)<WORLD_WIDTH && (moveType=='D' || moveType=='U'))
             sprite.setX(sprite.getX()+delta);
         }
     
         public void decrementX(float delta) {
-            if((sprite.getX()-limitsWidth-delta>0) && (moveType=='D' || moveType=='U'))
+            if((sprite.getX()-limitsWidth-sprite.getWidth()-delta>0) && (moveType=='D' || moveType=='U'))
                 sprite.setX(sprite.getX()-delta);
         }
     
         public void incrementY(float delta) {
-            if((sprite.getX()+limitsHeight+delta)<WORLD_HEIGHT && (moveType=='L' || moveType=='R'))
+            if((sprite.getY()+limitsHeight+sprite.getHeight()+delta)<WORLD_HEIGHT && (moveType=='L' || moveType=='R'))
                 sprite.setY(sprite.getY()+delta);
         }
     
         public void decrementY(float delta) {
-            if((sprite.getY()-limitsHeight-delta)>0 && (moveType=='L' || moveType=='R'))
+            if((sprite.getY()-limitsHeight-sprite.getHeight()-delta)>0 && (moveType=='L' || moveType=='R'))
                 sprite.setY(sprite.getY()-delta);
         }
     
@@ -126,7 +126,7 @@ public class CatAvoider extends MiniGame {
         //tratar a colisão em Random moviment
         public void moveRandom(int signal) {
             final int move = 1;
-            int movement = randomGenerator.nextInt(30);
+            int movement = move;
             
             if(movement==move) {
                 if(moveType=='D' || moveType=='U') {
@@ -147,7 +147,7 @@ public class CatAvoider extends MiniGame {
                 signal = randomGenerator.nextInt(2);
             }
             else {
-                //moveRandom(signal);
+                moveRandom(signal);
             }
         }
 
@@ -203,7 +203,7 @@ public class CatAvoider extends MiniGame {
             /**collision cat right wall*/
             else if (Colision.rectsOverlap(right.getRec(), rect)) {
                 reflect();
-                moveType = 'D';
+                moveType = 'R';
                 state = randomState;
             }
         }
