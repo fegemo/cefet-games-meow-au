@@ -10,7 +10,6 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
 public class RainingCatsFactory implements MiniGameFactory {
     
-    
     @Override
     public MiniGame createMiniGame(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -27,7 +26,9 @@ public class RainingCatsFactory implements MiniGameFactory {
                 put("raining-cats/sakamoto1.png",Texture.class);
                 put("raining-cats/sakamoto2.jpg",Texture.class);
                 put("raining-cats/arrow.png",Texture.class);
+                
                 put("raining-cats/music.mp3",Sound.class);
+                put("raining-cats/Pop.mp3",Sound.class);
                 
                 
              

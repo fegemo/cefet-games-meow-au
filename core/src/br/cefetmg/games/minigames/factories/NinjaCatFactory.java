@@ -10,7 +10,6 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
 public class NinjaCatFactory implements MiniGameFactory {
     
-    
     @Override
     public MiniGame createMiniGame(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -44,6 +43,7 @@ public class NinjaCatFactory implements MiniGameFactory {
                 put("ninja-cat/Intro.mp3",Sound.class);
                 put("ninja-cat/ken1.mp3",Sound.class);
                 put("ninja-cat/ken2.mp3",Sound.class);
+                put("ninja-cat/GameOver.mp3",Sound.class);
              
             }
         };

@@ -38,12 +38,12 @@ public class NinjaCat extends MiniGame{
     private boolean hit;
     private boolean gameover;
     private boolean pose;
-   
+    
+    
     private killingZombie god;
     
     private Texture playerTexture;
     private Texture arrowTexture;
-    private Texture sakamoto,sakamoto2;
     private Texture bgTexture;
     private Texture catTexture;
     private Texture zombieTex;
@@ -57,6 +57,7 @@ public class NinjaCat extends MiniGame{
     
     private Sound intro;
     private Sound ken1,ken2;
+    private Sound gosound;
     
     public NinjaCat(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -89,6 +90,7 @@ public class NinjaCat extends MiniGame{
         intro = assets.get("ninja-cat/Intro.mp3",Sound.class);
         ken1 = assets.get("ninja-cat/ken1.mp3",Sound.class);
         ken2 = assets.get("ninja-cat/ken2.mp3",Sound.class);
+        gosound = assets.get("ninja-cat/GameOver.mp3",Sound.class);
 
         arrow = new Sprite(arrowTexture);
         arrow.setScale(0.08f);
@@ -430,6 +432,7 @@ public class NinjaCat extends MiniGame{
                 else
                     zomb.setPosition(zomb.getX() - speed ,zomb.getY());
                 if(zomb.getBoundingRectangle().overlaps(cat.getBoundingRectangle()) && !rampage){
+                    gosound.play();
                     gameover = true;
                     this.god = new killingZombie(killZombie);
                     god.setCenter(0, 0);

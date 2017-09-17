@@ -27,6 +27,7 @@ public class RainingCats extends MiniGame{
     private float gravity;
     
     private Sound music;
+    private Sound pop;
     
     private Texture playerTexture;
     private Texture arrowTexture;
@@ -54,6 +55,7 @@ public class RainingCats extends MiniGame{
         arrowTexture = assets.get("raining-cats/arrow.png",Texture.class);
         
         music = assets.get("raining-cats/music.mp3",Sound.class);
+        pop = assets.get("raining-cats/Pop.mp3",Sound.class);
         
         arrow = new Sprite(arrowTexture);
         arrow.setScale(0.08f);
@@ -137,9 +139,15 @@ public class RainingCats extends MiniGame{
            }
         }
 
+        
+    }
+     
+    @Override
+    public void onUpdate(float dt) {
         for(int i = 0; i< cats.size; i++){
             Sprite sprite = cats.get(i);
             if(sprite.getBoundingRectangle().overlaps(player.getBoundingRectangle())){
+                pop.play();
                 this.cats.removeValue(sprite,true);
                 this.helpedCats++;
                 if(this.helpedCats >= this.totalCats){
@@ -148,10 +156,7 @@ public class RainingCats extends MiniGame{
                 }
             }        
         }
-    }
-     
-    @Override
-    public void onUpdate(float dt) {
+        
         if(jump){
             ground=false;
             gravity-=1.7;
