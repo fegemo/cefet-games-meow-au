@@ -78,7 +78,6 @@ public class SpyFish extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-
         this.MAX_CHIPS = (int) DifficultyCurve.LINEAR_NEGATIVE.getCurveValueBetween(difficulty, 7, 15);
         this.NUM_CHIPS_TO_TAKE = (int) DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 1, 5);
         this.VELOCIDADE_MAX_CHIP = (float) DifficultyCurve.S.getCurveValueBetween(difficulty, 1, 9);

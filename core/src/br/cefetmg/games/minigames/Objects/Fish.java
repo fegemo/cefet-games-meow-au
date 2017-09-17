@@ -1,4 +1,4 @@
-/*
+/*  
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -42,12 +42,14 @@ public class Fish extends Sprite implements Collidable {
     private TextureRegion[][] region;
     private Circle circle;
     private ShapeRenderer shapeRenderer;
+    private SeekDynamic movimentacao;
     
     private float x_tempo = 0.0f;
     private boolean aux = true;
 
     public Fish(Texture texture) {
         
+        this.sprite = new Sprite(texture);        
         this.sprite = new Sprite(texture);
         this.shapeRenderer = new ShapeRenderer();
         this.sprite.setPosition(20.0f, 220.0f);
@@ -77,6 +79,7 @@ public class Fish extends Sprite implements Collidable {
             }
             
         }
+        
     }
 
     public void update(float dt) {
@@ -102,14 +105,42 @@ public class Fish extends Sprite implements Collidable {
             this.sprite.draw(sb);
         }
         }}
+
     public void updateAccordingToTheMouse(float x , float y){
+        if (Gdx.input.isTouched()||Gdx.input.justTouched()) {     
+        //se clicar com o mouse sobre o objeto Fish
+            if ( (x >= (this.circle.x-this.circle.radius) && x <= (this.circle.x+this.circle.radius))
+                    && (y >= (this.circle.y-this.circle.radius) && y <= (this.circle.y+this.circle.radius)) ){
+                // coloca o ponteiro do mouse no centro da sprite
+                float delta_x = (x - this.circle.x);
+                float delta_y = (y - this.circle.y);
+                
+                update( this.sprite.getX() + delta_x , this.sprite.getY() + delta_y );
+                
+                //this.sprite.flip(true, false);
+                System.out.println( this.sprite.getX() + " _ " + this.sprite.getY() + " " +
+                        this.sprite.getOriginX() + " " + this.sprite.isFlipX());
+                
+                }
+            }     
+        }
+
+
+ /*public void updateAccordingToTheMouse(float x , float y){
+>>>>>>> a4d9ac8a60af557eba18f89a2b645b663cceb73e
         Rectangle c1 = new Rectangle(x, y, 1,1);
         Collision cc = new Collision();
         if (Gdx.input.isTouched()||Gdx.input.justTouched())
             alvo= new Vector2(x, y);
+<<<<<<< HEAD
     }
     
-    
+=======
+            //movimentacao.Calculate(new Vector2(x, y),dt);
+        //else
+            //movimentacao.Calculate(dt);
+        //update(movimentacao.getPos().getPosicao().x,movimentacao.getPos().getPosicao().y);
+    }*/
     public void render_area_collision() {
 
         // metodo para mostrar circulo de colisão
