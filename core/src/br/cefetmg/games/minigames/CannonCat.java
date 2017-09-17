@@ -103,7 +103,7 @@ public class CannonCat extends MiniGame {
         else{
             c=0;
         }
-        if(tiro<=0){
+        if(tiro<=0 && c<8){
             super.challengeFailed();
         }
 
