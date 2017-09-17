@@ -6,7 +6,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class Player {
@@ -14,12 +13,12 @@ public class Player {
     public boolean walking, up, down, left, right, orientation, footUp, footDown, movingFoot;
     private float playerStep, playerWidth, playerHeight;
     public Sprite sprite_Player, sprite_Shoes;
-    public Vector2 position, positionMin, positionMax, speed;
-    private Texture playerTexture;
+    public Vector2 position, positionMin, positionMax, speed, footPosition;
+    private Texture playerTexture, shoesL,shoesR;
     private SpriteBatch batch;
     private float maxSpeed;
     private float mass, aTime;
-    private float rotation_angle, initial_angle, final_angle, correctionX, correctionY, fcorrectionX, fcorrectionY;
+    private float rotation_angle,initial_angle, final_angle, radiusfoot, correctionX, correctionY, aCorrectionX, aCorrectionY;
     private int oldOrientation;
 
     public Player(Vector2 positionInicial, Vector2 positionMin, Vector2 positionMax, Texture playerTexture, SpriteBatch batch, float playerStep, float maxSpeed, float sizeX, float sizeY, float mass) {
@@ -41,36 +40,46 @@ public class Player {
         this.sprite_Player.setSize(sizeX, sizeY);
         this.sprite_Player.setFlip(true, false);
         this.sprite_Shoes = new Sprite(new Texture("head-soccer/shoes.png"));
-        this.sprite_Shoes.setSize(0.8f * sizeX, 0.5f * sizeY);
-        this.sprite_Shoes.setOrigin(sprite_Shoes.getWidth() / 2, sprite_Shoes.getHeight() / 2);
-        this.sprite_Shoes.rotate(-27);
+        this.sprite_Shoes.setSize(0.7f * sizeX, 0.3f * sizeY);
+        this.sprite_Shoes.setOriginCenter();
+        this.sprite_Shoes.setRotation(-27);
         this.initial_angle = -27;
-        final_angle = 9;
+        final_angle = 45;
 
-        this.correctionX = 0;
-        this.correctionY = 0;
-        this.fcorrectionX = 0;
-        this.fcorrectionY = 0;
-
+        correctionY = -sprite_Shoes.getHeight()/2;
+        
+        aCorrectionX = 0;
+        aCorrectionY = 0;
+        
         oldOrientation = 0;
         this.playerWidth = sprite_Player.getWidth();
         this.playerHeight = sprite_Player.getHeight();
+        radiusfoot = playerHeight/2;
 
         this.position = positionInicial;
-        orientation = true;//true= Diireita false = left
-
+        footPosition = new Vector2(positionInicial.x, positionInicial.y - sprite_Shoes.getHeight() / 2) ;
+        
+        orientation = true;//true= Direita false = left
+        correctionX = 0;
+        
         sprite_Player.setPosition(positionInicial.x, positionInicial.y);
-        sprite_Shoes.setPosition(positionInicial.x, positionInicial.y - sprite_Shoes.getHeight() / 2);
+        sprite_Shoes.setPosition(footPosition.x,footPosition.y);
     }
 
     public Sprite getSprite_Player() {
         return sprite_Player;
     }
 
+    public float getRotation_angle() {
+        return rotation_angle;
+    }
+
+    
     public void moveFoot(float dt) {
         if (oldOrientation == 0 || (oldOrientation == 1 && orientation)
                 || (oldOrientation == 2 && orientation == false)) {
             if (movingFoot == true) {
+               
                 if (oldOrientation == 0) {
                     if (orientation == true) {
                         oldOrientation = 1;
@@ -78,65 +87,68 @@ public class Player {
                         oldOrientation = 2;
                     }
                 }
+                
                 float prop = dt / aTime;
-                float rotation = sprite_Shoes.getRotation() ;
+                float limitX = playerWidth/1.5f;
+                float limitY = 20;
+                float speedUp = 2.5f;
+                rotation_angle = sprite_Shoes.getRotation();
                 if (orientation == true) {
                     if (footDown == false) {
-                        if (rotation + prop * initial_angle > final_angle) {
-                            sprite_Shoes.rotate(-prop * initial_angle);
-                            if(fcorrectionX + prop * 60 < 60)
-                                fcorrectionX += prop * 60;
-                            if(fcorrectionY + prop * 5 < 5)
-                                  fcorrectionY += prop * 5;
+                        if (rotation_angle - prop * speedUp * initial_angle < final_angle) {
+                            sprite_Shoes.setRotation(rotation_angle - prop * speedUp * initial_angle );
+                             if(aCorrectionX + prop * limitX < limitX)
+                                aCorrectionX += prop * limitX;
+                             if(aCorrectionY + prop * limitY < limitY)
+                                  aCorrectionY += prop * limitY;    
                         } else {
-                            sprite_Shoes.rotate(final_angle - rotation);
+                            aCorrectionX = limitX;
+                            aCorrectionY = limitY;
+                            sprite_Shoes.setRotation(final_angle);
                             footDown = true;
-                            fcorrectionX = 60;
-                            fcorrectionY = 5;
                         }
                     } else {
-                        if (rotation - (dt / 1) * initial_angle > initial_angle) {
-                            sprite_Shoes.rotate(prop * initial_angle);
-                            if(fcorrectionX + prop * 60 > 0)
-                                fcorrectionX -=  prop * 60;
-                            if(fcorrectionY + prop * 5 > 0)
-                                fcorrectionY -= prop * 5;
+                        if (rotation_angle + prop * speedUp * initial_angle > initial_angle) {
+                            sprite_Shoes.setRotation(rotation_angle + prop * speedUp * initial_angle);
+                            if(aCorrectionX - prop * limitX > 0)
+                                aCorrectionX -= prop * limitX;
+                             if(aCorrectionY - prop * limitY > 0)
+                                  aCorrectionY -= prop * limitY;  
                         } else {
-                            sprite_Shoes.rotate(initial_angle - rotation);
+                            aCorrectionX = 0;
+                            aCorrectionY = 0;
+                            sprite_Shoes.setRotation(initial_angle);
                             footUp = true;
-                            fcorrectionX = 0;
-                            fcorrectionY = 0;
                         }
                     }
-                } else {
+                } 
+         
+                else {
                     if (footDown == false) {
-                        if (rotation + prop * initial_angle > -final_angle) {
-                            sprite_Shoes.rotate(prop * initial_angle);
-                           
-                            if(fcorrectionX + prop * -72 > -72)
-                                fcorrectionX += prop * -72;
-                            if(fcorrectionY + prop * 40 < 40)
-                                fcorrectionY += prop * 40;
-                            
+                        if (rotation_angle +  prop * speedUp * initial_angle > -final_angle) {
+                            sprite_Shoes.setRotation(rotation_angle + prop * speedUp * initial_angle);
+                            if(aCorrectionX - prop * limitX > -limitX)
+                                aCorrectionX -= prop * limitX;
+                             if(aCorrectionY + prop * limitY < limitY)
+                                  aCorrectionY += prop * limitY;  
                         } else {
-                            sprite_Shoes.rotate(-final_angle - rotation);
+                            aCorrectionX = -limitX;
+                            aCorrectionY = limitY;
+                            sprite_Shoes.setRotation(-final_angle);
                             footDown = true;
-                            fcorrectionX = -72;
-                            fcorrectionY = 40;
                         }
                     } else {
-                        if (rotation - prop * initial_angle > -initial_angle) {
-                            sprite_Shoes.rotate(-prop * initial_angle);
-                            if(fcorrectionX - prop * -72 < 0)
-                                fcorrectionX -= prop * -72;
-                            if(fcorrectionY - prop * 40 > 0)
-                                fcorrectionY -= prop * 40;
-    
+                        if (rotation_angle - prop * speedUp * initial_angle < -initial_angle) {
+                            sprite_Shoes.setRotation(rotation_angle - prop * speedUp * initial_angle);  
+                            if(aCorrectionX + prop * limitX < 0)
+                                aCorrectionX += prop * limitX;
+                             if(aCorrectionY - prop * limitY > 0)
+                                  aCorrectionY -= prop * limitY;  
                         } else {
-                            sprite_Shoes.rotate(-initial_angle - rotation);
+                            aCorrectionX = 0;
+                            aCorrectionY = 0;
+                            sprite_Shoes.setRotation(-initial_angle);
                             footUp = true;
-                            fcorrectionX = 0;
-                            fcorrectionY = 0;
                         }
                     }
 
@@ -154,21 +166,24 @@ public class Player {
             footDown = false;
             movingFoot = false;
             oldOrientation = 0;
-            fcorrectionX = 0;
-            fcorrectionY = 0;
-
+            aCorrectionX = 0;
+            aCorrectionY = 0;
             if (orientation) {
-                sprite_Shoes.rotate(initial_angle - sprite_Shoes.getRotation());
+                sprite_Shoes.setRotation(initial_angle);
             } else {
-                sprite_Shoes.rotate(-initial_angle - sprite_Shoes.getRotation());
+                sprite_Shoes.setRotation(-initial_angle);
             }
         }
+    }
+
+    public Sprite getSprite_Shoes() {
+        return sprite_Shoes;
     }
 
     public void updateMoviment() {
         float x = sprite_Player.getX(), y = sprite_Player.getY();
         rotation_angle = sprite_Shoes.getRotation();
-
+        System.out.println("------------");
         walking = false;
         up = false;
         down = false;
@@ -181,9 +196,9 @@ public class Player {
             if (orientation == true) {
                 this.sprite_Player.setFlip(false, false);
                 this.sprite_Shoes.setFlip(true, false);
-                this.sprite_Shoes.rotate(rotation_angle * -2);
+                this.sprite_Shoes.setRotation(27);
                 correctionX = sprite_Player.getWidth() / 3;
-                correctionY = -sprite_Shoes.getHeight() / 2 - 10;
+            
                 orientation = false;
             }
         } else if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
@@ -192,10 +207,9 @@ public class Player {
             }
             if (orientation == false) {
                 correctionX = 0;
-                correctionY = 0;
                 this.sprite_Player.setFlip(true, false);
                 this.sprite_Shoes.setFlip(false, false);
-                this.sprite_Shoes.rotate(rotation_angle * -2);
+                this.sprite_Shoes.setRotation(-27);
                 orientation = true;
             }
         } else {
@@ -251,11 +265,10 @@ public class Player {
         if (y < FLOOR) {
             y = FLOOR;
         }
-        this.sprite_Shoes.setOrigin(0, 0);
+        
         sprite_Player.setPosition(x, y);
-        sprite_Shoes.setPosition(x + correctionX + fcorrectionX, y - sprite_Shoes.getHeight() / 2 + correctionY + fcorrectionY);
-        //System.out.println("speed x: "+ speed.x + "speed y: "+ speed.y);
-        //System.out.println("x: " + sprite_Player.getX() + "y: " + sprite_Player.getY());
+    
+        sprite_Shoes.setPosition(x + correctionX + aCorrectionX, y - sprite_Shoes.getHeight() / 2 + correctionY + aCorrectionY);
     }
 
     public void actionGravity(float value) {

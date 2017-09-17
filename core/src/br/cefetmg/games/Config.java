@@ -12,6 +12,7 @@ public class Config {
     public static final int FLOOR = 81;
     public static final int JUMP = 7;
     public static final int GRAVITY = 10;
+    public static final float convertToRad = 3.14159265359f/180;
     
     public static final int INITIALXLEFTGOAL = -45;
     public static final int INITIALXRIGHTGOAL = 1135;

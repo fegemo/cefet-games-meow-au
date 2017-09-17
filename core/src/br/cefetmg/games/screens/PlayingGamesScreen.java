@@ -41,8 +41,8 @@ public class PlayingGamesScreen extends BaseScreen
         sequencer = new GameSequencer(5, new HashSet<MiniGameFactory>(
                 Arrays.asList(
                         // flávio
-                        //new HeadSoccerFactory()
-                        new AvoiderFactory()
+                        new HeadSoccerFactory()
+                        //new AvoiderFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);
@@ -250,12 +250,6 @@ public class PlayingGamesScreen extends BaseScreen
     
     @Override
     public void resize(int width, int height) {
-        try{
-        if(currentGame instanceof HeadSoccer)
-            ((HeadSoccer) currentGame).resize(width, height);
-        }
-        catch(Exception e){
-        }
         this.viewport.update(width, height, true);
     }
 

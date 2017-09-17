@@ -68,7 +68,6 @@ public class HeadSoccer extends MiniGame {
         public Vector2 speed;
         private float ballStep;
         private SpriteBatch batch;
-        private float mass;
         private final float maxSpeed;
 
         public Ball(SpriteBatch batch, float maxSpeed, float ballStep) {
@@ -84,7 +83,6 @@ public class HeadSoccer extends MiniGame {
             movingV = false;
             circle = new Circle(620, 111, 30);
             speed = new Vector2(0, 0);
-            mass = 1;
         }
 
         public Vector2 getPositionBall() {
@@ -203,7 +201,8 @@ public class HeadSoccer extends MiniGame {
 
     @Override
     protected void onStart() {
-        reflected = 0.90f;
+        reflected = 0.50f;
+        
         backgroundTexture = assets.get("head-soccer/Arena.png", Texture.class);
         goalLeftTexture = assets.get("head-soccer/goalLeft.png", Texture.class);
         goalRightTexture = assets.get("head-soccer/goalRight.png", Texture.class);
@@ -253,7 +252,10 @@ public class HeadSoccer extends MiniGame {
 
     public void verifyCollision(float dt) {
         player_Rect = cat.getSprite_Player().getBoundingRectangle();
-
+        //Colisão pé jogador bola
+        if(Colision.collideCircleWithRotatedRectangle(ball.circle, cat.sprite_Shoes.getBoundingRectangle(), cat.getRotation_angle())){
+            System.out.println("ROtation " + cat.getRotation_angle() );
+        }
         //Colisão jogador bola
         if (Colision.rectCircleOverlap(player_Rect, ball.circle) != null) {
             float x = Colision.rectCircleOverlap(player_Rect, ball.circle).x;
@@ -435,29 +437,4 @@ public class HeadSoccer extends MiniGame {
     public boolean shouldHideMousePointer() {
         return true;
     }
-
-    public void resize(int width, int height) {
-        float widthscreen = viewport.getScreenWidth();
-        float heightscreen = viewport.getScreenHeight();
-        float diferenceWidth = width / widthscreen;
-        float diferenceHeight = height / heightscreen;
-        
-        float w = 5 * diferenceWidth;
-        float h = 5 * diferenceHeight;
-        widthscreen = viewport.getScreenWidth() * diferenceWidth;
-        heightscreen = viewport.getScreenHeight() * diferenceHeight;
-        floorBall = 81 - Math.round(ball.getWidht() / 2);
-
-        backgroundLeft = new Obstacle(batch, new Vector2(0, h + floorBall), w, heightscreen - w - floorBall);
-        backgroundRight = new Obstacle(batch, new Vector2(widthscreen - w, h + floorBall), w, heightscreen - w - floorBall);
-        backgroundTop = new Obstacle(batch, new Vector2(0, heightscreen - w), widthscreen, h);
-        backgroundDown = new Obstacle(batch, new Vector2(0, floorBall), widthscreen, h);
-
-        leftGoal = new Obstacle(batch, new Vector2(70 * diferenceWidth, floorBall), w, 120 * diferenceHeight);
-        goalCrossLeft = new Obstacle(batch, new Vector2(0, 185 * diferenceHeight), 90 * diferenceWidth, h);
-        rightGoal = new Obstacle(batch, new Vector2(842 * diferenceWidth, floorBall), w, 120 * diferenceHeight);
-        goalCrossRight = new Obstacle(batch, new Vector2(827 * diferenceWidth, 185 * diferenceHeight), 90 * diferenceWidth, h);
-        this.viewport.update(width, height, true);
-    }
-
 }
