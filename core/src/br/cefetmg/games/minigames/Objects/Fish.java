@@ -29,9 +29,11 @@ import java.util.Random;
  * @author Thepe
  */
 public class Fish extends Sprite implements Collidable {
-
+    
+    private Vector2 alvo;
+    
     private int lado;
-
+    
     private Sprite sprite;
     private TextureRegion[][] region;
     private Rectangle rectangle;
@@ -52,7 +54,7 @@ public class Fish extends Sprite implements Collidable {
         this.shapeRenderer = new ShapeRenderer();
         this.sprite.setPosition(20.0f, 220.0f);
         this.rectangle = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
-        
+        alvo=null;
         System.out.println(sprite.getX() + "  " +  sprite.getY());
         System.out.println(sprite.getWidth() + "  " + sprite.getHeight() );
         System.out.println(sprite.getWidth() / 2 + "  " + sprite.getHeight() / 2 );
@@ -73,6 +75,16 @@ public class Fish extends Sprite implements Collidable {
         this.rectangle.y = y;
         this.circle.x = x;
         this.circle.y = y;
+
+    }
+    public void update(float dt) {
+        if(alvo==null)
+            movimentacao.Calculate(dt);
+        else{
+            movimentacao.Calculate(new Vector2(alvo.x, alvo.y),dt);
+        System.out.println(alvo.x +"  alvos  "+alvo.y);}
+        System.out.println(movimentacao.getPos().getPosicao().x+"   possicao  "+movimentacao.getPos().getPosicao().y);
+        update(movimentacao.getPos().getPosicao().x,movimentacao.getPos().getPosicao().y);
 
     }
 
@@ -106,7 +118,7 @@ public class Fish extends Sprite implements Collidable {
         }
     }*/
 
-    public void updateAccordingToTheMouse(float x, float y) {
+    /*public void updateAccordingToTheMouse(float x, float y) {
         if (Gdx.input.isTouched() || Gdx.input.justTouched()) {
             float raio = 0.5f;
             while ((this.sprite.getX() <= (x - raio)) || (this.sprite.getX() >= (x + raio))) {
@@ -117,17 +129,18 @@ public class Fish extends Sprite implements Collidable {
                 }
             }
         }
-    }
+    }*/
 
-    /*public void updateAccordingToTheMouse(float x , float y){
+    public void updateAccordingToTheMouse(float x , float y){
         Rectangle c1 = new Rectangle(x, y, 1,1);
         Collision cc = new Collision();
-        if (Gdx.input.isTouched()||Gdx.input.justTouched())      
-            movimentacao.Calculate(new Vector2(x, y));
-        else
-            movimentacao.Calculate();
-        update(movimentacao.getPos().getPosicao().x,movimentacao.getPos().getPosicao().y);
-    }*/
+        if (Gdx.input.isTouched()||Gdx.input.justTouched())
+            alvo= new Vector2(x, y);
+            //movimentacao.Calculate(new Vector2(x, y),dt);
+        //else
+            //movimentacao.Calculate(dt);
+        //update(movimentacao.getPos().getPosicao().x,movimentacao.getPos().getPosicao().y);
+    }
     public void render_area_collision() {
 
         // metodo para mostrar o retangulo e circulo de colisão

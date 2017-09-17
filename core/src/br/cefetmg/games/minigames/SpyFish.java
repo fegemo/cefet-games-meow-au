@@ -83,12 +83,14 @@ public class SpyFish extends MiniGame {
     public void onHandlePlayingInput() {
         // move o peixe
         this.fish.updateAccordingToTheMouse(getMousePosInGameWorld().x, getMousePosInGameWorld().y);
+        
         /*Vector3 mause = getMousePosInGameWorld();
         this.fish.updateAccordingToTheMouse(mause.x, mause.y);*/
     }
 
     @Override
     public void onUpdate(float dt) {
+        fish.update(dt);
         for (Iterator<MemoryChip> iterator = chip.iterator(); iterator.hasNext();) {
             MemoryChip mc = iterator.next();
 

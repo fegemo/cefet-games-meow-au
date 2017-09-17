@@ -26,34 +26,46 @@ public class SeekDynamic {
     private Vector2 aceleracao;
 
     public SeekDynamic(Vector2 posicao) {
-        this.maxAcceleration = 10;
-        this.constantVelocidade = 10;
+        this.maxAcceleration = 500;
+        this.constantVelocidade = 50;
         this.velocidade=new Vector2(0, 0);
         this.aceleracao=new Vector2(0, 0);
         pos = new Posicao(posicao);
     }
     
-    public Posicao Calculate(Vector2 alvo){//mause clicado
-        Vector2 auxAce = alvo;
+    public Posicao Calculate(Vector2 alvo, float dt){//mause clicado
+        Vector2 auxAce = new Vector2(alvo.x,alvo.y);
         alvo.sub(pos.posicao);
         if(auxAce.len2()>maxAcceleration*maxAcceleration){
             auxAce.nor();
             auxAce.scl(maxAcceleration);
         }
         aceleracao = auxAce;
-        Vector2 auxVel = velocidade; 
+        Vector2 auxVel = new Vector2(velocidade.x,velocidade.y); 
         aceleracao.sub(auxVel.scl(constantVelocidade));//aceleracao = forca/m - kv
-        //velocidade+=aceleracao*dt
-        //pos+=velocidade*dt
-        //rotacao=sentido da velocidade
+        Vector2 auxVel2 = new Vector2(velocidade.x,velocidade.y); 
+        Vector2 auxAce2 = new Vector2(aceleracao.x, aceleracao.y);
+        auxVel2.add(auxAce2.scl(dt));//velocidade+=aceleracao*dt;
+        velocidade=auxVel2;
+        Vector2 auxPos = new Vector2(pos.posicao.x, pos.posicao.x);
+        auxPos.add(auxVel2.scl(dt));//pos+=velocidade*dt
+        pos.setPosicao(auxPos);
+        pos.rotacao=velocidade.angleRad();//rotacao=sentido da velocidade
         return pos;
     }
-    public Posicao Calculate(){//nao ha forca externa (mause nao clicado)
+    public Posicao Calculate(float  dt){//nao ha forca externa (mause nao clicado)
         Vector2 auxVel = velocidade; 
         aceleracao = auxVel.scl(constantVelocidade);//aceleracao =  - kv
-        //velocidade+=aceleracao*dt
-        //pos+=velocidade*dt
-        //rotacao=sentido da velocidade
+        
+        
+        Vector2 auxVel2 = new Vector2(velocidade.x,velocidade.y); 
+        Vector2 auxAce2 = new Vector2(aceleracao.x, aceleracao.y);
+        auxVel2.add(auxAce2.scl(dt));//velocidade+=aceleracao*dt;
+        velocidade=auxVel2;
+        Vector2 auxPos = new Vector2(pos.posicao.x, pos.posicao.x);
+        auxPos.add(auxVel2.scl(dt));//pos+=velocidade*dt
+        pos.setPosicao(auxPos);
+        pos.rotacao=velocidade.angleRad();//rotacao=sentido da velocidade
         return pos;
     }
     
@@ -68,7 +80,7 @@ public class SeekDynamic {
     
     class Posicao{
         private Vector2 posicao;
-        private int rotacao;
+        private float rotacao;
         public Posicao(Vector2 posicao) {
             this.posicao = posicao;
             this.rotacao = 0;
