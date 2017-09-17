@@ -32,11 +32,33 @@ O nível de dificuldade do jogo foi traduzido como o primeiro a realizar o movim
 
 #### Emissão de sons
 
-Ao fim da partida, se o jogador for ganhador será emitido um latido de cachorro, porém se o gato ganhar será emitido um gato miando.  
+Ao fim da partida se o ganhador for o jogador, será emitido um latido de cachorro, porém se o gato for o ganhador será emitido um gato miando.  
 
 #### Independência de resolução
 
 A imagem de _background_ foi desenhada na origem (0,0) com comprimento "viewport.getWorldWidth()" e altura "viewport.getWorldHeight()". Os quadrados do jogo da velha também foram desenhados em função destas variáveis: o comprimento e a altura de cada quadrado foram definidos como sendo "viewport.getWorldWidth()/5" e "viewport.getWorldHeight()/5", respectivamente.
+
+#### Referências
+
+##### Sons
+
+* [Cachorro latindo](https://www.youtube.com/watch?v=iuy-oOJCOoM)
+
+* [Gato miando](https://www.youtube.com/watch?v=o8aTnc8qVY0&t=2s)
+
+##### Imagens
+
+* [Imagem do cachorro que compôs o background](http://scromy.com/black-and-white-dog-wallpapers-wide/black-and-white-dog-wallpapers-wide-with-high-definition-wallpaper/)
+
+* [Imagem do gato que compôs o background](https://w-dog.net/wallpaper/cat-silhouette-cat-black-background-background-black-fon/id/259288/)
+
+* [Imagem do cachorro de óculos utilizada para identificar um movimento](http://www.airpets.com/export-your-pet-from-uk)
+
+* [Imagem do gato rasgando folha utilizada para identificar um movimento](https://www.petful.com/pet-health/common-toxins-cat/)
+
+##### Algoritmo
+
+* [Algoritmo Minimax](http://neverstopbuilding.com/minimax)
 
 ### Jump The Obstacles
 
@@ -58,10 +80,6 @@ A velocidade dos obstáculos aumenta linearmente à medida que a dificuldade tam
 #### Emissão de sons
 
 Quando surge um obstáculo, é emitido um som e quando ocorre um pulo do personagem outro som também é reproduzido.
-
-#### Independência de resolução
-
-A imagem de _background_ foi desenhada na origem (0,0) com comprimento "viewport.getWorldWidth()" e altura "viewport.getWorldHeight()". Os quadrados do jogo da velha também foram desenhados em função destas variáveis: o comprimento e a altura de cada quadrado foram definidos como sendo "viewport.getWorldWidth()/5" e "viewport.getWorldHeight()/5", respectivamente.
 
 #### Referências
 
