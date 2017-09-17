@@ -42,7 +42,6 @@ public class Fish extends Sprite implements Collidable {
     private TextureRegion[][] region;
     private Circle circle;
     private ShapeRenderer shapeRenderer;
-    private SeekDynamic movimentacao;
     
     private float x_tempo = 0.0f;
     private boolean aux = true;
@@ -106,7 +105,7 @@ public class Fish extends Sprite implements Collidable {
         }
         }}
 
-    public void updateAccordingToTheMouse(float x , float y){
+/*    public void updateAccordingToTheMouse(float x , float y){
         if (Gdx.input.isTouched()||Gdx.input.justTouched()) {     
         //se clicar com o mouse sobre o objeto Fish
             if ( (x >= (this.circle.x-this.circle.radius) && x <= (this.circle.x+this.circle.radius))
@@ -124,23 +123,13 @@ public class Fish extends Sprite implements Collidable {
                 }
             }     
         }
+*/
 
-
- /*public void updateAccordingToTheMouse(float x , float y){
->>>>>>> a4d9ac8a60af557eba18f89a2b645b663cceb73e
-        Rectangle c1 = new Rectangle(x, y, 1,1);
-        Collision cc = new Collision();
+    public void updateAccordingToTheMouse(float x , float y){
         if (Gdx.input.isTouched()||Gdx.input.justTouched())
             alvo= new Vector2(x, y);
-<<<<<<< HEAD
     }
     
-=======
-            //movimentacao.Calculate(new Vector2(x, y),dt);
-        //else
-            //movimentacao.Calculate(dt);
-        //update(movimentacao.getPos().getPosicao().x,movimentacao.getPos().getPosicao().y);
-    }*/
     public void render_area_collision() {
 
         // metodo para mostrar circulo de colisão

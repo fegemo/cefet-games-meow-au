@@ -86,9 +86,6 @@ public class SpyFish extends MiniGame {
     public void onHandlePlayingInput() {
         // move o peixe
         this.fish.updateAccordingToTheMouse(getMousePosInGameWorld().x, getMousePosInGameWorld().y);
-        
-        /*Vector3 mause = getMousePosInGameWorld();
-        this.fish.updateAccordingToTheMouse(mause.x, mause.y);*/
     }
 
     @Override
@@ -96,8 +93,6 @@ public class SpyFish extends MiniGame {
         fish.update(dt);
         for (Iterator<MemoryChip> iterator = chip.iterator(); iterator.hasNext();) {
             MemoryChip mc = iterator.next();
-
-            
             if (mc.collidesWith(this.fish)) {
                 //se o peixe pegar um cartão de memoria
                 iterator.remove();
@@ -114,9 +109,7 @@ public class SpyFish extends MiniGame {
                     super.challengeFailed();
                     break;
                 }
-                
             }
-
         }
     }
 
@@ -135,19 +128,15 @@ public class SpyFish extends MiniGame {
         batch.draw(texturaFundo, 0f, 0f, 1280f, 720f);
 
         this.fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
-        //this.fish.render(batch);
-        //this.fish.flip(true, false);
         for (MemoryChip chip : chip) {
             chip.render(batch);
         }
-        //batch.draw(pointerTexture, mause.x, mause.y);
         batch.end();
-
-        this.fish.render_area_collision();
-        for (MemoryChip chip : this.chip) {
-            //mostra os circulos de colisão
-            chip.render_area_collision();
-        }
+        //this.fish.render_area_collision();
+//        for (MemoryChip chip : this.chip) {
+//            //mostra os circulos de colisão
+//            chip.render_area_collision();
+//        }
     }
 
     @Override
