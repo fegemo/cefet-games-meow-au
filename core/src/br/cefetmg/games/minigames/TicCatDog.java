@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,6 +48,8 @@ public class TicCatDog extends MiniGame
     
     private final int CAT_TURN = 1, DOG_TURN = 2;
     private int turn;
+    
+    private Random generator = new Random();
 
     public TicCatDog(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty)
@@ -160,6 +163,9 @@ public class TicCatDog extends MiniGame
         
         Move bestMove = moves.get(0);
         
+        //Armazena-se o melhor movimento:
+        //Se for o gato, tende-se a maximizar seus pontos
+        //Se for o cachorro, tende-se a minimizar seus pontos
         if(player == CAT_TURN) {
             for(int i = 1; i < moves.size(); i++)
                 if(moves.get(i).getScore() > bestMove.getScore())
@@ -169,8 +175,13 @@ public class TicCatDog extends MiniGame
                 if(moves.get(i).getScore() < bestMove.getScore())
                     bestMove = moves.get(i);
         }
-                
-        return bestMove;
+        
+        //Sorteia-se um movimento que possui melhor score
+        while(true) {
+            int randomMovePosition = generator.nextInt(moves.size());
+            if(moves.get(randomMovePosition).getScore() == bestMove.getScore())
+                return moves.get(randomMovePosition);
+        }
     }
 
     @Override
