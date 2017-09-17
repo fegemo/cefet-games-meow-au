@@ -89,13 +89,15 @@ public class Fish extends Sprite implements Collidable {
         //se clicar com o mouse sobre o objeto Fish
             if ( (x >= (this.circle.x-this.circle.radius) && x <= (this.circle.x+this.circle.radius))
                     && (y >= (this.circle.y-this.circle.radius) && y <= (this.circle.y+this.circle.radius)) ){
-                float delta_x = x - this.sprite.getX();
-                float delta_y = y - this.sprite.getY();
-                update(x - delta_x, y - delta_y );
-            } 
+                float delta_x = (x - this.circle.x);
+                float delta_y = (y - this.circle.y);
                 
+                update( this.sprite.getX() + delta_x , this.sprite.getY() + delta_y );
+                
+                }
+            }     
         }
-    }
+    
     /*
     public void updateAccordingToTheMouse(float x, float y) {
             if (Gdx.input.isTouched() || Gdx.input.isTouched()) {

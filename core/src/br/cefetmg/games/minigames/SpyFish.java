@@ -142,7 +142,7 @@ public class SpyFish extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Pegue o cartão de memória";
+        return "Pegue pelo menos 2 cartões de memória";
 
     }
 
