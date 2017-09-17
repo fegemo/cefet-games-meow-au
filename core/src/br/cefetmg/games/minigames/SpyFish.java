@@ -90,7 +90,6 @@ public class SpyFish extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
-        fish.update(dt);
         for (Iterator<MemoryChip> iterator = chip.iterator(); iterator.hasNext();) {
             MemoryChip mc = iterator.next();
 
@@ -126,12 +125,12 @@ public class SpyFish extends MiniGame {
         batch.draw(texturaFundo, 0f, 0f, 1280f, 720f);
 
         this.fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
-        this.fish.render(batch);
-        this.fish.flip(true, false);
+        //this.fish.render(batch);
+        //this.fish.flip(true, false);
         for (MemoryChip chip : chip) {
             chip.render(batch);
         }
-        batch.draw(pointerTexture, mause.x, mause.y);
+        //batch.draw(pointerTexture, mause.x, mause.y);
         batch.end();
 
         this.fish.render_area_collision();

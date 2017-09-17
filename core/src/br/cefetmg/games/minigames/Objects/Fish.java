@@ -10,6 +10,7 @@ import br.cefetmg.games.collision.Collidable;
 import br.cefetmg.games.collision.Collision;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -29,55 +30,36 @@ import java.util.Random;
  * @author Thepe
  */
 public class Fish extends Sprite implements Collidable {
-    
+
     private Vector2 alvo;
-    
+
     private int lado;
-    
+
     private Sprite sprite;
     private TextureRegion[][] region;
     private Rectangle rectangle;
-    private Circle circle;
     private ShapeRenderer shapeRenderer;
     private SeekDynamic movimentacao;
 
-    private Animation normal;
-
     public Fish(Texture texture) {
         this.sprite = new Sprite(texture);
-        /*this.region = TextureRegion.split(texture , 188 , 240);
-        this.normal = new Animation(0.01f,this.region[1][0],this.region[1][1],this.region[1][2],
-        this.region[1][3],this.region[1][4],this.region[1][5],this.region[1][6],this.region[1][7],
-        this.region[1][8]);*/
-
-        this.circle = new Circle();
         this.shapeRenderer = new ShapeRenderer();
         this.sprite.setPosition(20.0f, 220.0f);
         this.rectangle = new Rectangle(sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
-        alvo=null;
-        System.out.println(sprite.getX() + "  " +  sprite.getY());
-        System.out.println(sprite.getWidth() + "  " + sprite.getHeight() );
-        System.out.println(sprite.getWidth() / 2 + "  " + sprite.getHeight() / 2 );
-        System.out.println(sprite.getX() + sprite.getWidth()/2 + "  " + sprite.getY() + sprite.getHeight()/2 );
-        
-        this.circle = new Circle();
-        // por algum motivo this.sprite.getX() + this.sprite.getWidth()/2 não estava dando certo
-        this.circle.x = sprite.getX();
-        this.circle.y = sprite.getY() + sprite.getHeight()/2;
-        this.circle.radius = (float) Math.sqrt( (Math.pow(this.sprite.getHeight()/2 ,2)) + (Math.pow(this.sprite.getWidth()/2,2)) );
-        
+
         this.movimentacao = new SeekDynamic(new Vector2(sprite.getX(), sprite.getY()));
     }
 
     public void update(float x, float y) {
+        //atualiza a posição do peixe
         this.sprite.setPosition(x, y);
+        //atualiza a posicao do retangulo de colisao
         this.rectangle.x = x;
         this.rectangle.y = y;
-        this.circle.x = x;
-        this.circle.y = y;
 
     }
-    public void update(float dt) {
+
+    /*public void update(float dt) {
         if(alvo==null)
             movimentacao.Calculate(dt);
         else{
@@ -86,37 +68,47 @@ public class Fish extends Sprite implements Collidable {
         System.out.println(movimentacao.getPos().getPosicao().x+"   possicao  "+movimentacao.getPos().getPosicao().y);
         update(movimentacao.getPos().getPosicao().x,movimentacao.getPos().getPosicao().y);
 
-    }
-
+    }*/
     public void render(SpriteBatch sb, float x, float y) {
 
-        this.sprite.draw(sb);
-        //sb.draw((TextureRegion) this.normal.getKeyFrame(0.1f), this.position.x, this.position.y);;
-    }
+        float x_sprite = this.sprite.getX();
+        float y_sprite = this.sprite.getY();
 
-    public void render(SpriteBatch sb) {
-        this.sprite.draw(sb);
+        if ((1280 >= x_sprite && 0 <= x_sprite) && (720 >= y_sprite && 0 <= y_sprite)) {
+            //se estiver dentro da tela
+            this.sprite.draw(sb);
+        }
     }
 
     // vo modificar a movimentacao toda se der certo a gente apaga isso
     /*public void updateAccordingToTheMouse(float x , float y){
-        Rectangle c1 = new Rectangle(x, y, 1,1);
-        Collision cc = new Collision();
+        Circle c_mouse = this.circle;
         if (Gdx.input.isTouched()||Gdx.input.justTouched()) {     
         //se clicar com o mouse sobre o objeto Fish
-            if (cc.rectsOverlap(rectangle,c1)) {
-            // se o ponteiro do mouse estiver dentro da area de colisão
-                update(x-sprite.getWidth()/2,y-sprite.getHeight()/2);
-                float ultimo_x = this.sprite.getX();
-                if( ultimo_x > x){
-                    // da um mirror 
-                    //this.sprite.flip(true,false);
-                }else if( ultimo_x < x){
-                    //this.sprite.flip(true,false);
-                }
-            }
+            if ( (x >= (this.circle.x-this.circle.radius) && x <= (this.circle.x+this.circle.radius))
+                    && (y >= (this.circle.y-this.circle.radius) && y <= (this.circle.y+this.circle.radius)) ){
+                float delta_x = x - this.sprite.getX();
+                float delta_y = y - this.sprite.getY();
+                update(x , y );
+            } 
+                
         }
     }*/
+    public void updateAccordingToTheMouse(float x, float y) {
+        if ((x >= (this.rectangle.x) && x <= (this.rectangle.x + this.rectangle.width))
+                && (y >= (this.rectangle.y) && y <= (this.rectangle.y + this.rectangle.height))) {
+            if (Gdx.input.isTouched() || Gdx.input.isTouched()) {
+                float delta_x = x - this.sprite.getX();
+                float delta_y = y - this.sprite.getY();
+                
+                update((x - (x - this.sprite.getX())), (y - (y - this.sprite.getY())));
+
+                System.out.println("here");
+            }
+
+        }
+    }
+
 
     /*public void updateAccordingToTheMouse(float x, float y) {
         if (Gdx.input.isTouched() || Gdx.input.justTouched()) {
@@ -131,7 +123,7 @@ public class Fish extends Sprite implements Collidable {
         }
     }*/
 
-    public void updateAccordingToTheMouse(float x , float y){
+ /*public void updateAccordingToTheMouse(float x , float y){
         Rectangle c1 = new Rectangle(x, y, 1,1);
         Collision cc = new Collision();
         if (Gdx.input.isTouched()||Gdx.input.justTouched())
@@ -140,7 +132,7 @@ public class Fish extends Sprite implements Collidable {
         //else
             //movimentacao.Calculate(dt);
         //update(movimentacao.getPos().getPosicao().x,movimentacao.getPos().getPosicao().y);
-    }
+    }*/
     public void render_area_collision() {
 
         // metodo para mostrar o retangulo e circulo de colisão
@@ -148,14 +140,13 @@ public class Fish extends Sprite implements Collidable {
         this.shapeRenderer.identity();
         this.shapeRenderer.setColor(Color.RED);
         this.shapeRenderer.rect(this.rectangle.x, this.rectangle.y, this.rectangle.width, this.rectangle.height);
-        this.shapeRenderer.circle(this.circle.x + this.sprite.getWidth() / 2, this.circle.y + this.getHeight() / 2, this.circle.radius);
         this.shapeRenderer.end();
 
     }
 
     @Override
     public boolean collidesWith(Collidable other) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -170,6 +161,6 @@ public class Fish extends Sprite implements Collidable {
 
     @Override
     public Circle getMinimumEnclosingBall() {
-        return this.circle;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

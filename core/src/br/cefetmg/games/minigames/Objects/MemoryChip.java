@@ -36,11 +36,11 @@ public class MemoryChip implements Collidable {
 
         this.position.x = (float) new Random().nextInt(1271);
         this.position.y = 600.0f + (float) new Random().nextInt(120) ;
-
+        
         this.circle.x = this.position.x + 12.5f;
         this.circle.y = this.position.y + 17f;
         
-        this.Velocidade_Queda = 1 + (float) new Random().nextInt(5);
+        this.Velocidade_Queda = 1 + (float) new Random().nextInt(1);
         this.Rotation = (-30) + (float) new Random().nextInt(20);
 
         this.circle.radius = 21.1f;
@@ -90,11 +90,16 @@ public class MemoryChip implements Collidable {
     public boolean collidesWith(Collidable other) {
         if (other instanceof Fish) {
             // se ocorrer colisão com objeto Fish
-            return Collision.circlesOverlap(other.getMinimumEnclosingBall(),circle);
+            return Collision.circleRectCollision(other.getMinimumBoundingRectangle(),this.circle);
             
         } else {
             return false;
         }
+    }
+    
+    @Override
+    public Circle getMinimumEnclosingBall() {
+        return this.circle;
     }
 
     @Override
@@ -106,10 +111,4 @@ public class MemoryChip implements Collidable {
     public Rectangle getMinimumBoundingRectangle() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    public Circle getMinimumEnclosingBall() {
-        return this.circle;
-    }
-
 }
