@@ -56,11 +56,6 @@ public class TicCatDog extends MiniGame
     {
         super(screen, observer, difficulty, 10f,
                 TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
-        
-        if(difficulty < 1)
-            turn = DOG_TURN;
-        else
-            turn = CAT_TURN;
     }
 
     @Override
@@ -111,7 +106,12 @@ public class TicCatDog extends MiniGame
     @Override
     protected void configureDifficultyParameters(float difficulty)
     {
-
+        if(difficulty < 1)
+            turn = DOG_TURN;
+        else {
+            turn = CAT_TURN;
+            super.maxDuration /= 2;
+        }
     }
     
     private boolean isThereAvailableSquare(int[][] matrix) {

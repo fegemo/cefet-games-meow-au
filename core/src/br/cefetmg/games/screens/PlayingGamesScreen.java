@@ -39,8 +39,8 @@ public class PlayingGamesScreen extends BaseScreen
         lives = Config.MAX_LIVES;
         sequencer = new GameSequencer(5, new HashSet<MiniGameFactory>(
                 Arrays.asList(
-//                        new ShootTheCariesFactory(),
-//                        new ShooTheTartarusFactory(),
+                        new ShootTheCariesFactory(),
+                        new ShooTheTartarusFactory(),
                         new TicCatDogFactory(),
                         new JumpTheObstaclesFactory()
                 )
