@@ -46,9 +46,12 @@ public class SpyFish extends MiniGame {
     private Fish fish;
 
     private int MAX_CHIPS;
+    private int NUM_CHIPS_TO_TAKE;
+    private float VELOCIDADE_MAX_CHIP;
+    private static int NUM_DE_CHIPS_PERDIDO = 0;
 
     public SpyFish(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 10000f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
+        super(screen, observer, difficulty, 20000f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
 
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
@@ -67,7 +70,7 @@ public class SpyFish extends MiniGame {
         chip = new ArrayList<MemoryChip>();
 
         for (int i = 0; i < this.MAX_CHIPS; i++) {
-            chip.add(new MemoryChip(texturaMemoCard));
+            chip.add(new MemoryChip(texturaMemoCard,this.VELOCIDADE_MAX_CHIP));
         }
 
         this.fish = new Fish(this.texturaFish);
@@ -76,9 +79,10 @@ public class SpyFish extends MiniGame {
     @Override
     protected void configureDifficultyParameters(float difficulty) {
 
-        this.MAX_CHIPS = (int) DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 2, 8);
+        //this.MAX_CHIPS = (int) DifficultyCurve.LINEAR_NEGATIVE.getCurveValueBetween(difficulty, 5, 10);
+        //this.NUM_CHIPS_TO_TAKE = (int) DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 1, 5);
+       // this.VELOCIDADE_MAX_CHIP = (float) DifficultyCurve.S.getCurveValueBetween(difficulty, 1, 9);
     }
-
     @Override
     public void onHandlePlayingInput() {
         // move o peixe
@@ -97,14 +101,20 @@ public class SpyFish extends MiniGame {
             if (mc.collidesWith(this.fish)) {
                 //se o peixe pegar um cartão de memoria
                 iterator.remove();
-
-                super.challengeSolved();
+                if(chip.size() == (this.MAX_CHIPS - this.NUM_CHIPS_TO_TAKE)){
+                    super.challengeSolved();
+                }
             }
 
-            if (mc.getPositionMemoryCard().y < 0) {
-                //se um chip não for pego perde
-                //super.challengeFailed();
-                break;
+            if (mc.getPositionMemoryCard().y < -1) {
+                NUM_DE_CHIPS_PERDIDO++;
+                if( NUM_DE_CHIPS_PERDIDO > ( this.MAX_CHIPS  + this.NUM_CHIPS_TO_TAKE) ){
+                    // se chegar nessa parte do codigo, é pq não tem como mais pegar o numero minimo
+                    //de chips
+                    super.challengeFailed();
+                    break;
+                }
+                
             }
 
         }
@@ -142,8 +152,19 @@ public class SpyFish extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Pegue pelo menos 2 cartões de memória";
-
+        if ( this.NUM_CHIPS_TO_TAKE == 1){
+            return "Pegue pelo menos um cartão de memória";
+        }else if ( this.NUM_CHIPS_TO_TAKE == 2){
+            return "Pegue pelo menos dois cartões de memória";
+        }else if( this.NUM_CHIPS_TO_TAKE == 3){
+            return "Pegue pelo menos três cartões de memória";
+        }else if( this.NUM_CHIPS_TO_TAKE == 4){
+            return "Pegue pelo menos quatro cartões de memória";
+        }else if( this.NUM_CHIPS_TO_TAKE == 5){
+            return "Pegue pelo menos cinco cartões de memória";
+        }else{
+            return "";
+        }
     }
 
     @Override
