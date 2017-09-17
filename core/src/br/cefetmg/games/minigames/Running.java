@@ -130,7 +130,7 @@ public class Running extends MiniGame{
                 .getCurveValueBetween(difficulty, 0, 8) + 1;
         this.totalWool = (int) DifficultyCurve.LINEAR_NEGATIVE
                 .getCurveValueBetween(difficulty, 3, 6) + 1;
-        if(difficulty >= 0.6){
+        if(difficulty >= 0.5){
             if(rand.nextFloat() >= 0.5)
                 blnNextLevel = true;
         }
