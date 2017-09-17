@@ -57,6 +57,7 @@ public class CatAvoider extends MiniGame {
         protected Vector2 direction;//vetor to get the cat direction on the screen
         protected Texture texture;
         protected Sprite sprite;
+        protected int life = 1;
         
         public void getPosition() {
             position.x = Gdx.input.getX()*WORLD_WIDTH/viewport.getScreenWidth();
@@ -70,7 +71,7 @@ public class CatAvoider extends MiniGame {
         protected Rectangle rect;//rectangle to enclose the cat and treat the collision
         protected Texture texture;//texture for the non playable character ninja cat
         protected Sprite sprite;//sprite of the non non playable character ninja cat
-        protected float speed = 10;//variable used to set the cat ninja speed
+        protected float speed = 15;//variable used to set the cat ninja speed
         protected float delta = 5;//variable used to set the delta of displacemento of the cat ninja in the screen per period of time
         protected char moveType; //variable to set the type of moviment of the cat (jump or random)
         protected int state;//variable to indicate the type of moviment of the cat (jump or random)
@@ -174,14 +175,20 @@ public class CatAvoider extends MiniGame {
         }
     }
     
+    Cat cat = new Cat();
+    
     public void verifyCollision() {
         cat.rect = cat.sprite.getBoundingRectangle();
+        
+        wool.circle = new Circle();
+        wool.circle.set(wool.sprite.getX(), wool.sprite.getY(), 0.25f);
+        
         /*
-        //collision cat mouse
-        if (Colision.rectCircleOverlap(catRect, ball.circle) != null) {
-
+        /**collision cat wool*/
+        if (Colision.rectCircleOverlap(cat.rect, wool.circle)!=null) {
+            wool.life = 0;
+            super.challengeFailed();
         }
-         */
 
         /**collision cat floor*/
         if (Colision.rectsOverlap(down.getRec(), cat.rect)) {
@@ -211,8 +218,6 @@ public class CatAvoider extends MiniGame {
             cat.state = cat.randomState;
         }
     }
-    
-    Cat cat = new Cat();
 
     @Override
     protected void onStart() {
@@ -276,7 +281,8 @@ public class CatAvoider extends MiniGame {
         
         cat.sprite.draw(batch);
         
-        wool.sprite.draw(batch);
+        if(wool.life==1)
+            wool.sprite.draw(batch);
     }
 
     @Override
@@ -286,6 +292,6 @@ public class CatAvoider extends MiniGame {
 
     @Override
     public boolean shouldHideMousePointer() {
-        return false;
+        return true;
     }
 }
