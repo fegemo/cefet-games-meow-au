@@ -24,6 +24,7 @@ import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import java.util.Random;
 
@@ -50,10 +51,12 @@ public class CatAvoider extends MiniGame {
     protected int signal = randomGenerator.nextInt(2);//set the direction of cat moviment in random mode
     
     class Wool {
+        protected Circle circle;//circle to enclose the cat and treat the colision
         protected Sprite mouse;//sprite for the mouse(playable character)
         protected Vector2 position;//vector to get the mouse positon on the screen
         protected Vector2 direction;//vetor to get the cat direction on the screen
-        protected Texture woolTexture;
+        protected Texture texture;
+        protected Sprite sprite;
         
         public void getPosition() {
             position.x = Gdx.input.getX()*WORLD_WIDTH/viewport.getScreenWidth();
@@ -169,43 +172,43 @@ public class CatAvoider extends MiniGame {
             wool.direction.y = wool.position.y - (sprite.getY() + sprite.getHeight()/2);
             lookAhead();
         }
+    }
+    
+    public void verifyCollision() {
+        cat.rect = cat.sprite.getBoundingRectangle();
+        /*
+        //collision cat mouse
+        if (Colision.rectCircleOverlap(catRect, ball.circle) != null) {
 
-        public void verifyCollision() {
-            cat.rect = cat.sprite.getBoundingRectangle();
-            /*
-            //collision cat mouse
-            if (Colision.rectCircleOverlap(catRect, ball.circle) != null) {
+        }
+         */
 
-            }
-             */
-            
-            /**collision cat floor*/
-            if (Colision.rectsOverlap(down.getRec(), rect)) {
-                reflect();
-                moveType = 'D';
-                state = randomState;
-            }
-            
-            /**collision cat roof*/
-            else if (Colision.rectsOverlap(up.getRec(), rect)) {
-                reflect();
-                moveType = 'U';
-                state = randomState;
-            }
+        /**collision cat floor*/
+        if (Colision.rectsOverlap(down.getRec(), cat.rect)) {
+            cat.reflect();
+            cat.moveType = 'D';
+            cat.state = cat.randomState;
+        }
 
-            /**collision cat left wall*/
-            if (Colision.rectsOverlap(left.getRec(), rect)) {
-                reflect();
-                moveType = 'L';
-                state = randomState;
-            }
-            
-            /**collision cat right wall*/
-            else if (Colision.rectsOverlap(right.getRec(), rect)) {
-                reflect();
-                moveType = 'R';
-                state = randomState;
-            }
+        /**collision cat roof*/
+        else if (Colision.rectsOverlap(up.getRec(), cat.rect)) {
+            cat.reflect();
+            cat.moveType = 'U';
+            cat.state = cat.randomState;
+        }
+
+        /**collision cat left wall*/
+        if (Colision.rectsOverlap(left.getRec(), cat.rect)) {
+            cat.reflect();
+            cat.moveType = 'L';
+            cat.state = cat.randomState;
+        }
+
+        /**collision cat right wall*/
+        else if (Colision.rectsOverlap(right.getRec(), cat.rect)) {
+            cat.reflect();
+            cat.moveType = 'R';
+            cat.state = cat.randomState;
         }
     }
     
@@ -226,7 +229,6 @@ public class CatAvoider extends MiniGame {
         right = new Obstacle(batch, new Vector2(WORLD_WIDTH - limitsWidth, limitsWidth), limitsWidth, WORLD_HEIGHT);
         
         cat.texture = assets.get("avoider/cat.png", Texture.class);
-        wool.direction = new Vector2(0, 0);
         cat.sprite = new Sprite(cat.texture);
         cat.sprite.setSize(100, 100);
         cat.sprite.setOrigin(cat.sprite.getWidth()/2, cat.sprite.getHeight()/2);
@@ -234,8 +236,11 @@ public class CatAvoider extends MiniGame {
         cat.moveType = 'D';
         cat.state = cat.randomState;
         
-        wool.woolTexture = assets.get("avoider/wool.png", Texture.class);
+        wool.direction = new Vector2(0, 0);
+        wool.texture = assets.get("avoider/wool.png", Texture.class);
         wool.position = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        wool.sprite = new Sprite(wool.texture);
+        wool.sprite.setSize(50, 50);
     }
     
     
@@ -255,8 +260,9 @@ public class CatAvoider extends MiniGame {
        int changeState = randomGenerator.nextInt(30);
        if(changeState==29)
            cat.state = cat.jumpState;
-           wool.getPosition();
-        cat.move();
+       cat.move();
+       wool.getPosition();
+       wool.sprite.setPosition(wool.position.x, wool.position.y);
     }
 
     @Override
@@ -269,6 +275,8 @@ public class CatAvoider extends MiniGame {
         right.draw();
         
         cat.sprite.draw(batch);
+        
+        wool.sprite.draw(batch);
     }
 
     @Override
