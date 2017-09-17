@@ -58,6 +58,7 @@ public class NinjaCat extends MiniGame{
     private Sound intro;
     private Sound ken1,ken2;
     private Sound gosound;
+    private Sound dzsound,dzsound1;
     
     public NinjaCat(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -91,6 +92,8 @@ public class NinjaCat extends MiniGame{
         ken1 = assets.get("ninja-cat/ken1.mp3",Sound.class);
         ken2 = assets.get("ninja-cat/ken2.mp3",Sound.class);
         gosound = assets.get("ninja-cat/GameOver.mp3",Sound.class);
+        dzsound = assets.get("ninja-cat/zombie.mp3",Sound.class);
+        dzsound1 = assets.get("ninja-cat/zombie1.mp3",Sound.class);
 
         arrow = new Sprite(arrowTexture);
         arrow.setScale(0.08f);
@@ -398,6 +401,10 @@ public class NinjaCat extends MiniGame{
                 for(int i = 0; i < zombies.size; i++){
                     Zombie zomb = zombies.get(i);
                     if(zomb.getBoundingRectangle().overlaps(cat.getBoundingRectangle())){
+                        if(rand.nextInt()%2==0)
+                            dzsound.play(.1f);
+                        else
+                            dzsound1.play(.1f);
                         rampage = false;
                         if(rand.nextInt()%2==0)
                             ken1.play(.1f);
