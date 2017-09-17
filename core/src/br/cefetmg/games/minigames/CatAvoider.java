@@ -23,6 +23,7 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
@@ -246,12 +247,20 @@ public class CatAvoider extends MiniGame {
         wool.position = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         wool.sprite = new Sprite(wool.texture);
         wool.sprite.setSize(50, 50);
+        
+        Music music_background = Gdx.audio.newMusic(Gdx.files.internal("avoider/ninja_theme.mp3"));
+        music_background.setLooping(true);
+        music_background.play();
     }
     
-    
+    public float getCurveValue(float value) {
+            return (float) (1f / (1f + Math.pow(Math.E, -6 * (value - 0.5f))));
+    }
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
+        
+        cat.speed = cat.speed + getCurveValue(cat.speed);
     }
 
     @Override
