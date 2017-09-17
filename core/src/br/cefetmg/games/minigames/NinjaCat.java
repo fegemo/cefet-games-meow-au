@@ -23,6 +23,7 @@ public class NinjaCat extends MiniGame{
     
     private float spawnInterval;
     private float speed;
+    private final float catSpeed = 21f;
     
     private Sprite backGround;
     private Sprite arrow;
@@ -37,8 +38,7 @@ public class NinjaCat extends MiniGame{
     private boolean hit;
     private boolean gameover;
     private boolean pose;
-    
-    
+   
     private killingZombie god;
     
     private Texture playerTexture;
@@ -224,7 +224,7 @@ public class NinjaCat extends MiniGame{
         static final int FRAME_HEIGHT = 79;
 
         Zombie(final Texture zombieTexture) {
-            super(new Animation(.18f, new Array<TextureRegion>() {
+            super(new Animation(.18f/(speed/3), new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             zombieTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -344,7 +344,6 @@ public class NinjaCat extends MiniGame{
          pose=false;
          
          cat = new Cat(tex);
-         
          cat.setOrigin(0, 0);
          cat.setScale(1.5f);
          cat.setPosition(x,y);
@@ -390,9 +389,9 @@ public class NinjaCat extends MiniGame{
 
                 setCat(rampageTex);
                 if(right)
-                    cat.setX(cat.getX()+18f);
+                    cat.setX(cat.getX()+catSpeed);
                 else
-                    cat.setX(cat.getX()-18f);
+                    cat.setX(cat.getX()-catSpeed);
 
                 for(int i = 0; i < zombies.size; i++){
                     Zombie zomb = zombies.get(i);
