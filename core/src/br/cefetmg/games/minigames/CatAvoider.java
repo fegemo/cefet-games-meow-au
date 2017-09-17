@@ -47,10 +47,13 @@ public class CatAvoider extends MiniGame {
     private Obstacle right;//screen limit right
     
     protected Random randomGenerator = new Random();//objetct to generate random numbers
+    protected int signal = randomGenerator.nextInt(2);//set the direction of cat moviment in random mode
     
-    class Mouse {
+    class Wool {
         protected Sprite mouse;//sprite for the mouse(playable character)
         protected Vector2 position;//vector to get the mouse positon on the screen
+        protected Vector2 direction;//vetor to get the cat direction on the screen
+        protected Texture woolTexture;
         
         public void getPosition() {
             position.x = Gdx.input.getX()*WORLD_WIDTH/viewport.getScreenWidth();
@@ -58,30 +61,30 @@ public class CatAvoider extends MiniGame {
         }
     }
     
+    protected Wool wool = new Wool();
+    
     class Cat {
         protected Rectangle rect;//rectangle to enclose the cat and treat the collision
         protected Texture texture;//texture for the non playable character ninja cat
         protected Sprite sprite;//sprite of the non non playable character ninja cat
-        protected Vector2 direction;//vetor to get the cat direction on the screen
         protected float speed = 10;//variable used to set the cat ninja speed
-        protected float delta = 10;//variable used to set the delta of displacemento of the cat ninja in the screen per period of time
+        protected float delta = 5;//variable used to set the delta of displacemento of the cat ninja in the screen per period of time
         protected char moveType; //variable to set the type of moviment of the cat (jump or random)
         protected int state;//variable to indicate the type of moviment of the cat (jump or random)
-        protected final int randomState = 0;
-        protected final int jumpState = 1;
-        protected Mouse mouse = new Mouse();
+        protected final int randomState = 0;//constant to indicate that the cat is moving randomly
+        protected final int jumpState = 1;//constante to indicate that the cat will jump towars the mouse
         
         public void lookAhead() {
-        double angle = Math.atan(direction.y / direction.x);
+        double angle = Math.atan(wool.direction.y/wool.direction.x);
 
-            angle += (direction.x > 0) ? -Math.PI / 2 : Math.PI / 2;
+            angle += (wool.direction.x > 0) ? -Math.PI/2 : Math.PI/2;
             angle *= 180 / Math.PI;
             sprite.setRotation((float) angle);
         }
         
         public void setDirection() {
-            direction.x = mouse.position.x - (sprite.getX() + sprite.getWidth()/2);
-            direction.y = mouse.position.y - (sprite.getY() + sprite.getHeight()/2);
+            wool.direction.x = wool.position.x - (sprite.getX() + sprite.getWidth()/2);
+            wool.direction.y = wool.position.y - (sprite.getY() + sprite.getHeight()/2);
             lookAhead();
         }
   
@@ -122,8 +125,7 @@ public class CatAvoider extends MiniGame {
                 decrementY(delta);
             }
         }
-    
-        //tratar a colisão em Random moviment
+        
         public void moveRandom(int signal) {
             final int move = 1;
             int movement = move;
@@ -139,8 +141,6 @@ public class CatAvoider extends MiniGame {
         }
     
         public void move(){
-            int changeState = randomGenerator.nextInt(30);
-            int signal = 0;
             if (state==jumpState) {
                 jump();
                 verifyCollision();
@@ -152,7 +152,7 @@ public class CatAvoider extends MiniGame {
         }
 
         public void jump() {
-            Vector2 normalized = new Vector2(direction);
+            Vector2 normalized = new Vector2(wool.direction);
             normalized.nor();
             normalized.scl(speed);
 
@@ -160,13 +160,13 @@ public class CatAvoider extends MiniGame {
             normalized.y += sprite.getY();
 
             sprite.setPosition(normalized.x, normalized.y);
-            System.out.println("Mouse: "+mouse.position.x +" "+ mouse.position.y);
+            System.out.println("Wool: "+wool.position.x +" "+ wool.position.y);
             System.out.println("Cat: "+sprite.getX() +" "+ sprite.getY());
         }
 
         public void reflect() {
-            direction.x = mouse.position.x - (sprite.getX() + sprite.getWidth()/2);
-            direction.y = mouse.position.y - (sprite.getY() + sprite.getHeight()/2);
+            wool.direction.x = wool.position.x - (sprite.getX() + sprite.getWidth()/2);
+            wool.direction.y = wool.position.y - (sprite.getY() + sprite.getHeight()/2);
             lookAhead();
         }
 
@@ -226,15 +226,16 @@ public class CatAvoider extends MiniGame {
         right = new Obstacle(batch, new Vector2(WORLD_WIDTH - limitsWidth, limitsWidth), limitsWidth, WORLD_HEIGHT);
         
         cat.texture = assets.get("avoider/cat.png", Texture.class);
-        cat.direction = new Vector2(0, 0);
+        wool.direction = new Vector2(0, 0);
         cat.sprite = new Sprite(cat.texture);
         cat.sprite.setSize(100, 100);
         cat.sprite.setOrigin(cat.sprite.getWidth()/2, cat.sprite.getHeight()/2);
-        cat.sprite.setPosition(WORLD_WIDTH / 2, limitsWidth);
+        cat.sprite.setPosition(WORLD_WIDTH/2, limitsWidth);
         cat.moveType = 'D';
         cat.state = cat.randomState;
         
-        cat.mouse.position = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        wool.woolTexture = assets.get("avoider/wool.png", Texture.class);
+        wool.position = new Vector2(Gdx.input.getX(), Gdx.input.getY());
     }
     
     
@@ -254,7 +255,7 @@ public class CatAvoider extends MiniGame {
        int changeState = randomGenerator.nextInt(30);
        if(changeState==29)
            cat.state = cat.jumpState;
-        cat.mouse.getPosition();
+           wool.getPosition();
         cat.move();
     }
 
@@ -272,7 +273,7 @@ public class CatAvoider extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Não deixe o gato pegar o novelo!!!";
+        return "Não deixo o gato pegar o novelo!!!";
     }
 
     @Override
