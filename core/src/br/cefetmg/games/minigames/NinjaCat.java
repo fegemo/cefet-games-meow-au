@@ -37,6 +37,8 @@ public class NinjaCat extends MiniGame{
     private boolean flip;
     private boolean hit;
     private boolean gameover;
+    private boolean gameclear;
+    private boolean end;
     private boolean pose;
     
     
@@ -119,7 +121,9 @@ public class NinjaCat extends MiniGame{
         flip = false;
         hit = true;
         gameover = false;
+        gameclear=false;
         pose=true;
+        end = false;
         gcount = 0;
 
     }
@@ -262,7 +266,7 @@ public class NinjaCat extends MiniGame{
         static final int FRAME_HEIGHT = 70;
 
         DeadZombie(final Texture deadzombieTexture) {
-            super(new Animation(.1f, new Array<TextureRegion>() {
+            super(new Animation(.14f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             deadzombieTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -280,7 +284,7 @@ public class NinjaCat extends MiniGame{
                 }
             }));
             super.getAnimation().setPlayMode(Animation.PlayMode.NORMAL);
-            super.setAutoUpdate(false);
+            super.setAutoUpdate(true);
 
             }
         }   
@@ -330,11 +334,15 @@ public class NinjaCat extends MiniGame{
                     });
                 }
             }));
-            super.getAnimation().setPlayMode(Animation.PlayMode.NORMAL);
+            if(pose && !end)
+                super.getAnimation().setPlayMode(Animation.PlayMode.NORMAL);
+            if(gameclear)
+                super.getAnimation().setPlayMode(Animation.PlayMode.REVERSED);
             super.setAutoUpdate(true);
 
             }
      }
+     
      
      void setCat(Texture tex){
          float x,y;
@@ -359,7 +367,22 @@ public class NinjaCat extends MiniGame{
     
     @Override
     public void onUpdate(float dt) {
-        if(pose){
+        if(gameclear&&!end){
+            ci = new catIntro(catPose);
+            ci.setOrigin(0, 0);
+            ci.setScale(1.75f);
+            ci.setPosition(cat.getX(), cat.getY());
+            if(!right)
+                ci.flipFrames(true, false);
+            end = true;
+        }
+        else if(end){
+            if(ci.isAnimationFinished()){
+                end = false;
+                super.challengeSolved();
+            }
+        }
+        else if(pose){
             if(ci.isAnimationFinished()){
                 
                 scheduleZombiesSpawn();
@@ -388,7 +411,6 @@ public class NinjaCat extends MiniGame{
             for(int i = 0; i< deadzomb.size; i++){
                 if(deadzomb.get(i).isAnimationFinished())
                     this.deadzomb.removeValue(deadzomb.get(i), true);
-                else deadzomb.get(i).update();
             }
             if(rampage){
 
@@ -425,7 +447,8 @@ public class NinjaCat extends MiniGame{
                         this.zombies.removeValue(zomb, true);
                         this.enemiesKilled++;
                         if (this.enemiesKilled >= this.totalZombies) {
-                            super.challengeSolved();
+                            gameclear = true;
+                            //super.challengeSolved();
                         }
                     }
                 }
@@ -465,7 +488,7 @@ public class NinjaCat extends MiniGame{
             DeadZombie zomb = deadzomb.get(i);
             zomb.draw(batch);
         } 
-        if(pose)
+        if(gameclear || pose)
             ci.draw(batch);
         else
             cat.draw(batch);
