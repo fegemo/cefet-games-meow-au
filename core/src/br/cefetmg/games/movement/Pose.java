@@ -8,7 +8,7 @@ package br.cefetmg.games.movement;
 
 /**
  *
- * @author Alberto
+ * @author Luiza-Pedro
  */
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -29,6 +29,7 @@ public class Pose {
 
     public Pose(Vector2 position) {
         this.posicao=position;
+        this.velocidade=new Vector2(0, 0);
     }
 
     public Pose(Vector2 posicao, float orientacao) {

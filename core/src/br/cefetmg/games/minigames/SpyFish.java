@@ -90,6 +90,7 @@ public class SpyFish extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
+        fish.update(dt);
         for (Iterator<MemoryChip> iterator = chip.iterator(); iterator.hasNext();) {
             MemoryChip mc = iterator.next();
 
