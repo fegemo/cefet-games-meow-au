@@ -27,19 +27,22 @@ public class basCATballFactory implements MiniGameFactory {
         return new HashMap<String, Class>() {
             {
                 put("bascatball/ball.png", Texture.class);
-                put("bascatball/ball2.png", Texture.class);
                 put("bascatball/player.png", Texture.class);
                 put("bascatball/bar.png", Texture.class);
                 put("bascatball/target.png", Texture.class);
                 put("bascatball/selector.png", Texture.class);
                 put("bascatball/court.png", Texture.class);
                 put("bascatball/dorami.png", Texture.class);
-                put("bascatball/back.png", Texture.class);
-                put("bascatball/ahead.png", Texture.class);
                 put("bascatball/pointer.png", Texture.class);
-                
-                
-                
+                put("bascatball/darkarrowL.png", Texture.class);
+                put("bascatball/darkarrowR.png", Texture.class);
+                put("bascatball/lightarrowL.png", Texture.class);
+                put("bascatball/lightarrowR.png", Texture.class);
+                put("bascatball/doraemon.png", Texture.class);
+                put("bascatball/beats.mp3", Sound.class);
+                put("bascatball/fail.mp3", Sound.class);
+                put("bascatball/flyingdown.mp3", Sound.class);
+                put("bascatball/doh.mp3", Sound.class);
                 
                 
                 
