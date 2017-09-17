@@ -13,9 +13,6 @@ import com.badlogic.gdx.utils.Array;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.math.Rectangle;
-
-
 /**
  *
  * @author gustavo
@@ -27,7 +24,7 @@ public class Running extends MiniGame{
     private Texture catTexture;
     private Cat cat;
     private Texture dogTexture;
-    private Dog dog;
+    private Array<Dog> dogs;
     //objetos
     private Texture ballTexture;
     private Texture woolTexture;
@@ -54,14 +51,20 @@ public class Running extends MiniGame{
     private int totalBone;
     private int totalKit;
     
+    private boolean blnNextLevel = false;
+    private int totalEnemy;
+    private int increase = 3;
+    private float fltScale = 1;
+    
     public Running(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 20f,
+        super(screen, observer, difficulty, 80f,
                 TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
     }
     
     @Override
     protected void onStart() {
+        totalEnemy = 1;
         fundoTexture = assets.get(
                 "running/fundo.png", Texture.class);
         catTexture = assets.get(
@@ -69,8 +72,6 @@ public class Running extends MiniGame{
         cat = new Cat(catTexture);
         dogTexture = assets.get(
                 "running/dog-run-spritesheet.png", Texture.class);
-        dog = new Dog(dogTexture);
-        
         ballTexture = assets.get(
                 "running/ball.png", Texture.class);
         woolTexture = assets.get(
@@ -88,38 +89,35 @@ public class Running extends MiniGame{
                 "running/final.wav", Sound.class);
         loseSound = assets.get(
                 "running/lose.wav", Sound.class);
-        
-        //cat.setOrigin(0,0);
-        cat.setPosition(0,viewport.getWorldHeight()*0.1f);
+        setPositions(false);
+    }
+    
+    protected void setPositions(boolean blnChange){
+        cat.setPosition(0,viewport.getWorldHeight()*rand.nextFloat());
         catSpeed = (float) 0.5;
-        dog.setOrigin(0,0);
-        dog.setPosition(0,viewport.getWorldHeight()*0.6f);
-        
         ball = new Sprite(ballTexture);
-        ball.setPosition(1240, viewport.getWorldHeight()*rand.nextFloat());
-        Vector2 dogGoal = new Vector2(ball.getX() - dog.getX(), ball.getY() - dog.getY());
+        float fltBall = rand.nextFloat();
+        if(fltBall > 0.9)
+            fltBall = (float) 0.9;
+        ball.setPosition(1240, viewport.getWorldHeight()*fltBall);
         dogSpeed = (float)0.005;
-        dogGoal = dogGoal.nor().scl(minimumdogSpeed);
-        dog.setSpeed(dogGoal);
+        if(blnChange){
+            changeLevel();
+            cat.setScale(0.5f);
+        }
+            
+        dogs = new Array<Dog>();
+        for(int i = 0; i < totalEnemy; i++)
+            createDogs(blnChange);
         woolArray = new Array<Sprite>();
-        
-        for (int i = 0; i < totalWool; i++) {
+        for (int i = 0; i < totalWool; i++)
             createWool();
-        }
-        
         boneArray = new Array<Sprite>();
-
-        for (int i = 0; i < totalBone; i++) {
+        for (int i = 0; i < totalBone; i++)
             createBone();
-        }
-        
         kitArray = new Array<Sprite>();
-
-        for (int i = 0; i < totalKit; i++) {
+        for (int i = 0; i < totalKit; i++)
             createKit();
-        }
-        
-        
     }
 
     @Override
@@ -132,11 +130,16 @@ public class Running extends MiniGame{
                 .getCurveValueBetween(difficulty, 0, 8) + 1;
         this.totalWool = (int) DifficultyCurve.LINEAR_NEGATIVE
                 .getCurveValueBetween(difficulty, 3, 6) + 1;
+        if(difficulty >= 0.6){
+            if(rand.nextFloat() >= 0.5)
+                blnNextLevel = true;
+        }
+        
     }
 
     @Override
     public void onHandlePlayingInput() {
-        if(Gdx.input.getY() > 0 && Gdx.input.getY() < (viewport.getWorldHeight() - cat.getHeight()))
+        if(Gdx.input.getY() > 0 && Gdx.input.getY() < (viewport.getWorldHeight() - cat.getHeight() * fltScale))
             cat.setY(Gdx.input.getY());  
     }
 
@@ -144,16 +147,16 @@ public class Running extends MiniGame{
     public void onUpdate(float dt) {
         // atualiza a escova (quadro da animação)
         cat.update(dt);
-        dog.update(dt);
-        
-        //colisao com a bola
-        if(dog.getBoundingRectangle().overlaps(ball.getBoundingRectangle())){
-            challengeFailed();
-            loseSound.play();
-        }
-            
+        //colisao do gato com a bola    
         if(cat.getBoundingRectangle().overlaps(ball.getBoundingRectangle())){
-            challengeSolved();
+            if(blnNextLevel){
+                showMessage("Vença o desafio");
+                setPositions(true);
+                blnNextLevel = false;
+            }
+            else
+                challengeSolved();      
+            
             finalSound.play();
         }
             
@@ -173,25 +176,32 @@ public class Running extends MiniGame{
                     catSpeed -= CAT_SPEED_CONSTANT;
                 kitArray.removeIndex(i);
                 pickupKitSound.play();
-            }
-                
+            }      
         }
-        //se o cachorro encostar no osso, ele aumenta a velocidade
-        for (int i = 0; i < this.boneArray.size; i++) {
-            if(dog.getBoundingRectangle().overlaps(boneArray.get(i).getBoundingRectangle())){
-                dogSpeed += DOG_SPEED_CONSTANT;
-                boneArray.removeIndex(i);
+        
+        for (int aux = 0; aux < this.dogs.size; aux++) {
+            Dog dog = dogs.get(aux);
+            dog.update(dt);
+            //colisao com a bola = fim de jogo
+            if(dog.getBoundingRectangle().overlaps(ball.getBoundingRectangle())){
+                challengeFailed();
+                loseSound.play();
             }
-                
-        }
-        //se o cachorro encostar no kit de banho, ele perde velocidade
-        for (int i = 0; i < this.kitArray.size; i++) {
-            if(dog.getBoundingRectangle().overlaps(kitArray.get(i).getBoundingRectangle())){
-                if(dogSpeed > 0.005)
-                    dogSpeed -= DOG_SPEED_CONSTANT;
-                kitArray.removeIndex(i);
+            //se o cachorro encostar no osso, ele aumenta a velocidade
+            for (int i = 0; i < this.boneArray.size; i++) {
+                if(dog.getBoundingRectangle().overlaps(boneArray.get(i).getBoundingRectangle())){
+                    dogSpeed += DOG_SPEED_CONSTANT;
+                    boneArray.removeIndex(i);
+                }
             }
-                
+            //se o cachorro encostar no kit de banho, ele perde velocidade
+            for (int i = 0; i < this.kitArray.size; i++) {
+                if(dog.getBoundingRectangle().overlaps(kitArray.get(i).getBoundingRectangle())){
+                    if(dogSpeed > 0.005)
+                        dogSpeed -= DOG_SPEED_CONSTANT;
+                    kitArray.removeIndex(i);
+                }
+            }
         }
     }
 
@@ -200,7 +210,10 @@ public class Running extends MiniGame{
         batch.draw(fundoTexture, 0, 0);
         ball.draw(batch);
         cat.draw(batch);
-        dog.draw(batch);
+        for (int i = 0; i < dogs.size; i++) {
+            Dog dog = dogs.get(i);
+            dog.draw(batch);
+        }
         for (int i = 0; i < woolArray.size; i++) {
             Sprite sprite = woolArray.get(i);
             sprite.draw(batch);
@@ -235,6 +248,27 @@ public class Running extends MiniGame{
                 viewport.getWorldHeight() - woolTexture.getHeight());
         
         return position;
+    }
+    
+    public void changeLevel(){
+        totalEnemy *= increase;
+        totalBone *= increase;
+        totalWool *= increase;
+        totalKit *= increase;
+        fltScale = (float) 0.5;
+    }
+    
+    public void createDogs(boolean blnScale){
+        Dog newDog = new Dog(dogTexture);
+        if(blnScale)
+            newDog.setScale(0.5f);
+        newDog.setOrigin(0,0);
+        newDog.setPosition(0,viewport.getWorldHeight()*rand.nextFloat());
+        Vector2 dogGoal = new Vector2(ball.getX() - newDog.getX(), ball.getY() - newDog.getY());
+        dogGoal = dogGoal.nor().scl(minimumdogSpeed);
+        newDog.setSpeed(dogGoal);
+        dogs.add(newDog);
+        
     }
     
     public void createWool(){
@@ -287,7 +321,7 @@ public class Running extends MiniGame{
         @Override
         public void update(float dt) {
             super.update(dt);
-            if(super.getX() < viewport.getWorldWidth() - cat.getWidth())
+            if(super.getX() < viewport.getWorldWidth() - cat.getWidth() * fltScale)
                 super.setPosition(super.getX() + catSpeed,
                         super.getY());
         }
@@ -330,7 +364,7 @@ public class Running extends MiniGame{
         @Override
         public void update(float dt) {
             super.update(dt);
-            if(super.getX() < viewport.getWorldWidth() - dog.getWidth())
+            if(super.getX() < viewport.getWorldWidth() - dogs.get(0).getWidth() * fltScale)
                 super.setPosition(super.getX() + this.speed.x * dogSpeed,
                     super.getY() + this.speed.y * dogSpeed);
         }

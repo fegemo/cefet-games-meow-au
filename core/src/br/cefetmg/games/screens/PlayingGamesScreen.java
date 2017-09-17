@@ -241,6 +241,11 @@ public class PlayingGamesScreen extends BaseScreen
             inputMultiplexer.addProcessor(currentGame.getInputProcessor());
         }
     }
+    
+    @Override
+    public void showMessage(String strMessage){
+        hud.showMessage(strMessage);
+    }
     // </editor-fold>
 
     enum PlayScreenState {
