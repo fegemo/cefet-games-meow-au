@@ -3,6 +3,43 @@
 Um jogo simples, descomprometido e maroto descobrir sobre a secreta vida
 animal.
 
+## Jogos implementados
+
+### Tic Cat Dog
+
+#### Inspiração
+
+Com inspiração em jogo da velha (tic-tac-toe), criou-se o tic-cat-dog, um minigame em que cachorros e gatos podem se divertir e competir entre si. 
+
+![Minigame 'Tic Cat Dog'](docs/ticcatdog-gameplay.png)
+
+#### Qualidade SuperPremium
+
+O jogador, representado pelo cachorro, disputa contra um _bot_, representado pelo gato. Nos movimentos do gato, fez-se uso de **inteligência artificial** através do uso do algoritmo minimax, ou seja, o gato opta pelo movimento em que minimiza as chances do cachorro de obter pontos ao passo que maximiza as suas.
+
+#### Condições de vitória e derrota
+
+Neste jogo, o jogador irá perder se:
+
+1. O tempo acabar e o jogo da velha não tiver sido concluído;
+2. O gato ganhar o jogo. 
+
+Caso contrário, o jogador será considerado ganhador.
+
+#### Nível de dificuldade
+
+O nível de dificuldade do jogo foi traduzido como o primeiro a realizar o movimento. No nível fácil, quem dá o primeiro movimento é o jogador, ao passo que, no nível difícil, é o gato. 
+
+#### Emissão de sons
+
+Ao fim da partida, se o jogador for ganhador será emitido um latido de cachorro, porém se o gato ganhar será emitido um gato miando.  
+
+#### Independência de resolução
+
+A imagem de _background_ foi desenhada na origem (0,0) com comprimento "viewport.getWorldWidth()" e altura "viewport.getWorldHeight()". Os quadrados do jogo da velha também foram desenhados em função destas variáveis: o comprimento e a altura de cada quadrado foram definidos como sendo "viewport.getWorldWidth()/5" e "viewport.getWorldHeight()/5", respectivamente.
+
+### Jump The Obstacles
+
 ## Instruções para Começar
 
 O projeto deve ser entregue como um _Pull Request_ (veja
