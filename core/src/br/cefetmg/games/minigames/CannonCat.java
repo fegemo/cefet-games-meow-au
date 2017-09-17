@@ -74,7 +74,7 @@ public class CannonCat extends MiniGame {
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         //velocidade = 1+3*difficulty;
-        this.velocidade = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty,2,3);
+        this.velocidade = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty,0,1);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class CannonCat extends MiniGame {
     public void onUpdate(float dt) {
         //TECLADO
         tempo2 =   System.currentTimeMillis();
-        if(tempo2-tempo1>100){
+        if(tempo2-tempo1>(100 - velocidade*50)){
             tempo1 =  System.currentTimeMillis();
             k++;
             k = k%8;
