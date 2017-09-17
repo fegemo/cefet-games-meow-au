@@ -40,7 +40,7 @@ public class PlayingGamesScreen extends BaseScreen
         sequencer = new GameSequencer(5, new HashSet<MiniGameFactory>(
                 Arrays.asList(
                         // flávio
-                        new CucumberMadnessFactory(),
+                        new DodgeTheVeggiesFactory(),
                         new CatchThatHomeworkFactory()
 //                        new ShootTheCariesFactory(),
 //                        new ShooTheTartarusFactory()

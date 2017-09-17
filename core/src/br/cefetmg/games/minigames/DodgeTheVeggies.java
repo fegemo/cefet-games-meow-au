@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
-public class CucumberMadness extends MiniGame {
+public class DodgeTheVeggies extends MiniGame {
 
     private Texture catTexture;
     private Cat cat;
@@ -27,7 +27,7 @@ public class CucumberMadness extends MiniGame {
     private float spawnInterval = 1;
     private Texture backgroundImage;
 
-    public CucumberMadness(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
+    public DodgeTheVeggies(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
     }
 

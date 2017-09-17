@@ -1,6 +1,6 @@
 package br.cefetmg.games.minigames.factories;
 
-import br.cefetmg.games.minigames.CucumberMadness;
+import br.cefetmg.games.minigames.DodgeTheVeggies;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.audio.Sound;
@@ -10,12 +10,12 @@ import java.util.Map;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
 
-public class CucumberMadnessFactory implements MiniGameFactory {
+public class DodgeTheVeggiesFactory implements MiniGameFactory {
 
     @Override
     public MiniGame createMiniGame(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
-        return new CucumberMadness(screen, observer, difficulty);
+        return new DodgeTheVeggies(screen, observer, difficulty);
     }
 
     @Override
