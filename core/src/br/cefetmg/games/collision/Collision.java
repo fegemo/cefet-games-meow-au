@@ -79,6 +79,8 @@ public class Collision {
     }
     
     public static final boolean circleRectCollision( Rectangle r2,Circle c1){
+        
+        
         Vector2 ponto = new Vector2();
         Vector2 centroRet = new Vector2(r2.x+r2.width/2,r2.y+r2.height/2);
         //distancia entre centro do circulo e o centro do quadrado
