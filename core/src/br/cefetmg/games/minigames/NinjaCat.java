@@ -383,10 +383,10 @@ public class NinjaCat extends MiniGame{
             }
         }
         else if(pose){
-            if(ci.isAnimationFinished()){
-                
+            if(ci.isAnimationFinished()){                
                 scheduleZombiesSpawn();
                 setCat(texhit1);
+                ci.setX(viewport.getWorldWidth());
             }
         }
         else if(gameover){
@@ -424,7 +424,7 @@ public class NinjaCat extends MiniGame{
                     Zombie zomb = zombies.get(i);
                     if(zomb.getBoundingRectangle().overlaps(cat.getBoundingRectangle())){
                         if(rand.nextInt()%2==0)
-                            dzsound.play(.1f);
+                            dzsound.play(.075f);
                         else
                             dzsound1.play(.1f);
                         rampage = false;
@@ -446,10 +446,8 @@ public class NinjaCat extends MiniGame{
                         deadzomb.add(dz);
                         this.zombies.removeValue(zomb, true);
                         this.enemiesKilled++;
-                        if (this.enemiesKilled >= this.totalZombies) {
+                        if (this.enemiesKilled >= this.totalZombies) 
                             gameclear = true;
-                            //super.challengeSolved();
-                        }
                     }
                 }
             }
