@@ -86,6 +86,7 @@ public class MouseAttack extends MiniGame {
         target.setOriginCenter();
         
         cat = new Cat2(catTexture);
+        cat.setScale(2);
         //monster = new Monster(monsterTexture);
         
         enemiesKilled = 0;
@@ -141,6 +142,7 @@ public class MouseAttack extends MiniGame {
         //monster = new Monster(monsterTexture);
         //enemy.setPosition(position.x, position.y);
         //enemy.setScale(initialEnemyScale);
+        monster.setScale(2);
         monster.setPosition(position.x, position.y);
         //monster.setScale(initialEnemyScale);
         enemies.add(monster);
@@ -174,10 +176,10 @@ public class MouseAttack extends MiniGame {
             
             Projetil projetil = new Projetil(projectileTexture);
             projetil.setPosition(viewport.getWorldWidth() / 2f, viewport.getWorldHeight()/ 2f);
-            if(Gdx.input.getX()<viewport.getWorldWidth() / 2f)
+          //  if(Gdx.input.getX()<viewport.getWorldWidth() / 2f)
                 projetil.shoot(Gdx.input.getX(), Gdx.graphics.getHeight()- Gdx.input.getY());
-            else
-                projetil.shoot2(Gdx.input.getX(), Gdx.graphics.getHeight()- Gdx.input.getY());
+          //  else
+           //     projetil.shoot2(Gdx.input.getX(), Gdx.graphics.getHeight()- Gdx.input.getY());
             projectiles.add(projetil);
             
             drawProj=true;

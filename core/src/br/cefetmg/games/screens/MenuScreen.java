@@ -17,8 +17,6 @@ public class MenuScreen extends BaseScreen {
 
     private static final int NUMBER_OF_TILED_BACKGROUND_TEXTURE = 7;
     private TextureRegion background;
-    private Texture easyButtom;
-    private Sprite easy;
     /**
      * Cria uma nova tela de menu.
      *
@@ -37,9 +35,6 @@ public class MenuScreen extends BaseScreen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         // instancia a textura e a região de textura (usada para repetir)
         background = new TextureRegion(new Texture("menu-background.png"));
-        easyButtom = new Texture("easy-buttom.png");
-        easy=new Sprite(easyButtom);
-        easy.setPosition(50, 50);
         // configura a textura para repetir caso ela ocupe menos espaço que o
         // espaço disponível
         background.getTexture().setWrap(
@@ -94,8 +89,7 @@ public class MenuScreen extends BaseScreen {
                 viewport.getWorldWidth(),
                 viewport.getWorldHeight());
         drawCenterAlignedText("Pressione qualquer tecla para jogar",
-                viewport.getWorldHeight() * 0.35f);
-        easy.draw(batch);
+                viewport.getWorldHeight() * 0.35f);        
         batch.end();
     }
 

@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Projetil {
     
-    public float maxVelocity = 200;
+    public float maxVelocity = 3;
     public Vector2 position = new Vector2();
     public Vector2 velocity = new Vector2();
     float targetX;
@@ -26,18 +26,22 @@ public class Projetil {
     public Projetil(Texture texture){
         this.texture=texture;
         projeSprite = new Sprite(texture);
+        position.set(0,0);
     }
     
     public void shoot(float targerX, float targetY){
-        velocity.set(targetX - position.x, targetY - position.y).nor().scl(Math.min(position.dst(targetX, targetY), maxVelocity));
+            //velocity.set(targerX - position.x, targetY - position.y).nor().scl(Math.min(position.dst(targerX, targetY), maxVelocity));
+            velocity.set(targerX - position.x, targetY - position.y);
+            System.out.printf ("Ponto %.2f %.2f, velo %.2f, %.2f\n",
+                    targerX,targetY,velocity.x,velocity.y);
     }
-    
-    public void shoot2(float targerX, float targetY){
-        velocity.set(position.x+10, targetY - position.y).nor().scl(Math.min(position.dst(targetX, targetY), maxVelocity));
-    }
+
+   // public void shoot2(float targerX, float targetY){
+    //    velocity.set(position.x+10, targetY - position.y).nor().scl(Math.min(position.dst(targerX, targetY), maxVelocity));
+   // }
     
     public void update(float deltaTime){
-        position.add(velocity.x*deltaTime, velocity.y*deltaTime);
+        position.add(velocity.x, velocity.y);
         //velocity.scl(1 - (0.98f * deltaTime));
         projeSprite.setPosition(position.x,position.y);
     }
