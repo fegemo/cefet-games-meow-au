@@ -237,9 +237,9 @@ public class CatAvoider extends MiniGame {
         left = new Obstacle(batch, new Vector2(0, limitsWidth), limitsWidth, WORLD_HEIGHT);
         right = new Obstacle(batch, new Vector2(WORLD_WIDTH - limitsWidth, limitsWidth), limitsWidth, WORLD_HEIGHT);
         
-        cat.texture = assets.get("avoider/cat.png", Texture.class);
+        cat.texture = assets.get("avoider/catNinja.png", Texture.class);
         cat.sprite = new Sprite(cat.texture);
-        cat.sprite.setSize(100, 100);
+        cat.sprite.setSize(100, 150);
         cat.sprite.setOrigin(cat.sprite.getWidth()/2, cat.sprite.getHeight()/2);
         cat.sprite.setPosition(WORLD_WIDTH/2, limitsWidth);
         cat.moveType = 'D';
