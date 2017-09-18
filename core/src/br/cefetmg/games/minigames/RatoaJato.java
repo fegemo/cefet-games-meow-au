@@ -22,11 +22,14 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import java.util.HashMap;
 import java.util.Random;
 
+import static br.cefetmg.games.Config.WORLD_HEIGHT;
+import static br.cefetmg.games.Config.WORLD_WIDTH;
+
 /**
  *
  * @author fegemo <coutinho@decom.cefetmg.br>
  */
-public class FlappySita extends MiniGame {
+public class RatoaJato extends MiniGame {
 
     private Calopsita calopsita;
     private Tube cattube;
@@ -47,8 +50,8 @@ public class FlappySita extends MiniGame {
     private int totalEnemies;
     int  srcX,troca;
     float interval;
-    public FlappySita(BaseScreen screen,
-                      MiniGameStateObserver observer, float difficulty) {
+    public RatoaJato(BaseScreen screen,
+                     MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f,
                 TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
     }
@@ -56,12 +59,13 @@ public class FlappySita extends MiniGame {
     @Override
     protected void onStart() {
         troca=0;
-        calopsitaTextura = assets.get("FlappySita/jatmouse.png",Texture.class);
-        cattubeTexture = assets.get("FlappySita/tubecat.png",Texture.class);
-        bg1= assets.get("FlappySita/background.png",Texture.class);
+        calopsitaTextura = assets.get("RatoaJato/jatmouse.png",Texture.class);
+        cattubeTexture = assets.get("RatoaJato/tubecat.png",Texture.class);
+        bg1= assets.get("RatoaJato/background.png",Texture.class);
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        tubeTexture = assets.get("FlappySita/tube.png",Texture.class);
+        tubeTexture = assets.get("RatoaJato/tube.png",Texture.class);
         calopsita= new Calopsita(calopsitaTextura);
+        calopsita.setScale(0.5f);
       //  calopsita.setPosition(viewport.getScreenWidth()*0.4f,viewport.getScreenHeight()*0.5f);
         ScreenHeight = Gdx.graphics.getHeight();
         ScreenWidth = Gdx.graphics.getWidth();
@@ -100,7 +104,7 @@ public class FlappySita extends MiniGame {
        // enemy.setScale(0.4f);
         enemy.setsize(new Random().nextInt(4));
 
-        enemy.setPosition(Gdx.graphics.getWidth()+viewport.getScreenWidth()*0.41f,60*enemy.getsize());//, Ddwown);
+        enemy.setPosition(WORLD_WIDTH,60*enemy.getsize());//, Ddwown);
         enemy.setSpeed(tartarusSpeed);
         enemies.add(enemy);
 
@@ -137,15 +141,7 @@ public class FlappySita extends MiniGame {
         viewport.unproject(Posi);
         //  toothBrush.setCenter(click.x, click.y);
         calopsita.setCenter(Posi.x, Posi.y);
-
         for (Tube tubes : this.enemies) {
-          /*  float distance = calopsita.getHeadDistanceTo(
-                    tubes.getX(), tubes.getY()+tubes.getHeight());
-            System.out.printf("D%.2f\n", distance);
-            if (distance <= 110) {
-               // tubes.startFleeing(calopsita.getHeadPosition());
-                super.challengeFailed();
-            }*/
             if(calopsita.getY()+70<=tubes.getHeight()+tubes.getsize()*60&&
                     (calopsita.getX()>tubes.getX()-80&&calopsita.getX()<tubes.getX()+80)){
                 super.challengeFailed();
@@ -154,6 +150,7 @@ public class FlappySita extends MiniGame {
             System.out.printf("c %.2f %.2f Tube %.2f %.2f\n",calopsita.getX(),
                     calopsita.getY(),tubes.getX(),tubes.getHeight());
         }
+
     }
 
     @Override
@@ -162,12 +159,12 @@ public class FlappySita extends MiniGame {
      //   System.out.printf("x=%.2f,Y=%.2f,Speed=%.2f\n",posX,posY,0.0);
         srcX+=5;
         if(posY<ScreenHeight+2)
-            posY+=1;//2.5; 1;
+            posY+=WORLD_HEIGHT*0.002;//2.5; 1;
         if(posX>ScreenWidth/2-16)
             posX-=0.5;
         if(Gdx.input.justTouched()) {
           //  System.out.printf("Heeee\n");
-            posY-=70;
+            posY-=WORLD_HEIGHT*0.09;
             posX+=2;
         }
         // atualiza a escova (quadro da animação)
@@ -178,15 +175,8 @@ public class FlappySita extends MiniGame {
             Tube tube = this.enemies.get(i);
             tube.setPosition(tube.getX()-5,tube.getY());
         }
-        //tube.update(dt);
-            // verifica se este inimigo está colidindo com algum dente
-             /*for (Tooth tooth : this.teeth) {
-                if (tart.getBoundingRectangle()
-                        .overlaps(tooth.getBoundingRectangle())) {
-                    toothWasHurt(tooth, tart);
-                }
-            }*/
-       // }
+        if(calopsita.getY()+calopsita.getHeight()/2>WORLD_HEIGHT)
+            super.challengeFailed();
     }
 
     @Override
@@ -194,16 +184,17 @@ public class FlappySita extends MiniGame {
       /* // for (Tooth tooth : this.teeth) {
             tooth.draw(batch);
         */
-        batch.draw(bg1,0, 0, srcX, 0, (int)(viewport.getScreenWidth()+viewport.getScreenWidth()*0.41f),
-                (int)(viewport.getScreenHeight()*viewport.getScreenHeight()*0.35));
+        batch.draw(bg1,0, 0, srcX, 0,WORLD_WIDTH,WORLD_HEIGHT);/* (int)(viewport.getScreenWidth()+viewport.getScreenWidth()*0.41f),
+                (int)(viewport.getScreenHeight()*viewport.getScreenHeight()*0.35));*/
 
-        for (Tube tubes : this.enemies) {
+        for (Tube tubes : this.enemies){
           tubes.draw(batch);
             for (int i=0;i<tubes.getsize();i++){
                 batch.draw(tubeTexture,tubes.getX(),60*i);
             }
 
         }
+
 
         //toothBrush.draw(batch);
         calopsita.draw(batch);
