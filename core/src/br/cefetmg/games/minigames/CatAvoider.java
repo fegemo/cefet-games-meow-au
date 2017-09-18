@@ -38,7 +38,7 @@ public class CatAvoider extends MiniGame {
     }
     
     private Texture backgroundTexture; //backgroud texture of the world
-    private Sprite background;//sprite created for the background
+    private Sprite backgroundSprite;//sprite created for the background
     
     private Texture limits;//texture created for the screen limits
     private float limitsWidth;//width of the screen limits
@@ -50,6 +50,8 @@ public class CatAvoider extends MiniGame {
     
     protected Random randomGenerator = new Random();//objetct to generate random numbers
     protected int signal = randomGenerator.nextInt(2);//set the direction of cat moviment in random mode
+    
+    Music backgroundMusic, impact;
     
     class Wool {
         protected Circle circle;//circle to enclose the cat and treat the colision
@@ -72,7 +74,7 @@ public class CatAvoider extends MiniGame {
         protected Rectangle rect;//rectangle to enclose the cat and treat the collision
         protected Texture texture;//texture for the non playable character ninja cat
         protected Sprite sprite;//sprite of the non non playable character ninja cat
-        protected float speed = 15;//variable used to set the cat ninja speed
+        protected float speed = 40;//variable used to set the cat ninja speed
         protected float delta = 5;//variable used to set the delta of displacemento of the cat ninja in the screen per period of time
         protected char moveType; //variable to set the type of moviment of the cat (jump or random)
         protected int state;//variable to indicate the type of moviment of the cat (jump or random)
@@ -188,6 +190,7 @@ public class CatAvoider extends MiniGame {
         /**collision cat wool*/
         if (Colision.rectCircleOverlap(cat.rect, wool.circle)!=null) {
             wool.life = 0;
+            impact.play();
             super.challengeFailed();
         }
 
@@ -223,8 +226,8 @@ public class CatAvoider extends MiniGame {
     @Override
     protected void onStart() {
         backgroundTexture = assets.get("avoider/backgroundTexture.png", Texture.class);
-        background = new Sprite(backgroundTexture);
-        background.setSize(WORLD_WIDTH, WORLD_HEIGHT);
+        backgroundSprite = new Sprite(backgroundTexture);
+        backgroundSprite.setSize(WORLD_WIDTH, WORLD_HEIGHT);
         
         limitsWidth = 20;
         limitsHeight = 20;
@@ -248,9 +251,11 @@ public class CatAvoider extends MiniGame {
         wool.sprite = new Sprite(wool.texture);
         wool.sprite.setSize(50, 50);
         
-        Music music_background = Gdx.audio.newMusic(Gdx.files.internal("avoider/ninja_theme.mp3"));
-        music_background.setLooping(true);
-        music_background.play();
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("avoider/ninja_theme.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
+        
+        impact = Gdx.audio.newMusic(Gdx.files.internal("avoider/impact.mp3"));
     }
     
     public float getCurveValue(float value) {
@@ -281,7 +286,7 @@ public class CatAvoider extends MiniGame {
 
     @Override
     public void onDrawGame() {
-        background.draw(batch);
+        backgroundSprite.draw(batch);
         
         down.draw();
         up.draw();
