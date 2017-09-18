@@ -29,7 +29,7 @@ public abstract class MiniGame {
     protected float maxDuration;
     private float timeSpentOnInstructions;
     private float timeSpentPlaying;
-    private MiniGameState state;
+    MiniGameState state;
     protected Random rand;
     protected final Timer timer;
     private boolean isPaused;
@@ -272,6 +272,5 @@ public abstract class MiniGame {
      * ou não.
      */
     public abstract boolean shouldHideMousePointer();
-
 
 }
