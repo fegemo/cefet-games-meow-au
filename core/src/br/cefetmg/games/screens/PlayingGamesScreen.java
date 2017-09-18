@@ -41,11 +41,8 @@ public class PlayingGamesScreen extends BaseScreen
         sequencer = new GameSequencer(5, new HashSet<MiniGameFactory>(
                 Arrays.asList(
                         // flávio
-<<<<<<< HEAD
                         new HeadSoccerFactory(),
-=======
-                        //new HeadSoccerFactory()
->>>>>>> 0302bcf790437c9c117cef58e6e18ede3375f409
+
                         new AvoiderFactory()
                 )
         ), 0, 1, this, this);

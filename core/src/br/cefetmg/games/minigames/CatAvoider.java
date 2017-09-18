@@ -1,5 +1,8 @@
 package br.cefetmg.games.minigames;
 
+import br.cefetmg.games.AnimatedSprite;
+import br.cefetmg.games.AnimatedSprite.direction;
+import br.cefetmg.games.AnimatedSprite.sense;
 import br.cefetmg.games.Colision;
 import static br.cefetmg.games.Config.*;
 import br.cefetmg.games.Obstacle;
@@ -19,12 +22,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
 import java.util.HashMap;
-import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import java.util.Random;
@@ -51,6 +54,11 @@ public class CatAvoider extends MiniGame {
     protected Random randomGenerator = new Random();//objetct to generate random numbers
     protected int signal = randomGenerator.nextInt(2);//set the direction of cat moviment in random mode
     
+    protected AnimatedSprite catMovingUp;
+    protected AnimatedSprite catMovingDown;
+    protected AnimatedSprite catMovingLeft;
+    protected AnimatedSprite catMovingRight;
+    
     Music backgroundMusic, impact;
     
     class Wool {
@@ -75,7 +83,7 @@ public class CatAvoider extends MiniGame {
         protected Texture texture;//texture for the non playable character ninja cat
         protected Sprite sprite;//sprite of the non non playable character ninja cat
         protected float speed = 40;//variable used to set the cat ninja speed
-        protected float delta = 5;//variable used to set the delta of displacemento of the cat ninja in the screen per period of time
+        protected float delta = 5;//variable used to set the delta of displacement of the cat ninja in the screen per period of time
         protected char moveType; //variable to set the type of moviment of the cat (jump or random)
         protected int state;//variable to indicate the type of moviment of the cat (jump or random)
         protected final int randomState = 0;//constant to indicate that the cat is moving randomly
@@ -237,6 +245,7 @@ public class CatAvoider extends MiniGame {
         left = new Obstacle(batch, new Vector2(0, limitsWidth), limitsWidth, WORLD_HEIGHT);
         right = new Obstacle(batch, new Vector2(WORLD_WIDTH - limitsWidth, limitsWidth), limitsWidth, WORLD_HEIGHT);
         
+        
         cat.texture = assets.get("avoider/catNinja.png", Texture.class);
         cat.sprite = new Sprite(cat.texture);
         cat.sprite.setSize(100, 150);
@@ -244,6 +253,18 @@ public class CatAvoider extends MiniGame {
         cat.sprite.setPosition(WORLD_WIDTH/2, limitsWidth);
         cat.moveType = 'D';
         cat.state = cat.randomState;
+        
+        catMovingUp = new AnimatedSprite("avoider/cat-moving-up-spritesheet.png", 144, 150);
+        catMovingUp.createMoviment(direction.EAST, sense.HORIZONTAL, 5, 0.1f, 0, 0);
+        
+        catMovingDown = new AnimatedSprite("avoider/cat-moving-down-spritesheet.png", 144, 150);
+        catMovingDown.createMoviment(direction.WEST, sense.HORIZONTAL, 5, 0.1f, 0, 0);
+        
+        catMovingLeft = new AnimatedSprite("avoider/cat-moving-left-spritesheet.png", 144, 150);
+        catMovingLeft.createMoviment(direction.NORTH, sense.HORIZONTAL, 5, 0.1f, 0, 0);
+        
+        catMovingRight = new AnimatedSprite("avoider/cat-moving-right-spritesheet.png", 144, 150);
+        catMovingRight.createMoviment(direction.SOUTH, sense.HORIZONTAL, 5, 0.1f, 0, 0);
         
         wool.direction = new Vector2(0, 0);
         wool.texture = assets.get("avoider/wool.png", Texture.class);
@@ -272,8 +293,6 @@ public class CatAvoider extends MiniGame {
     public void onHandlePlayingInput() {
     }
 
-    
-
     @Override
     public void onUpdate(float dt) {
        int changeState = randomGenerator.nextInt(30);
@@ -282,6 +301,11 @@ public class CatAvoider extends MiniGame {
        cat.move();
        wool.getPosition();
        wool.sprite.setPosition(wool.position.x, wool.position.y);
+       
+       catMovingUp.timeAnimation +=  Gdx.graphics.getDeltaTime();
+       catMovingDown.timeAnimation +=  Gdx.graphics.getDeltaTime();
+       catMovingLeft.timeAnimation +=  Gdx.graphics.getDeltaTime();
+       catMovingRight.timeAnimation +=  Gdx.graphics.getDeltaTime();
     }
 
     @Override
@@ -293,7 +317,16 @@ public class CatAvoider extends MiniGame {
         left.draw();
         right.draw();
         
-        cat.sprite.draw(batch);
+        switch(cat.moveType) {
+            case 'U': batch.draw((TextureRegion)catMovingUp.moviments[direction.EAST.ordinal()].getKeyFrame(catMovingUp.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+                      break;
+            case 'D': batch.draw((TextureRegion)catMovingDown.moviments[direction.WEST.ordinal()].getKeyFrame(catMovingDown.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+                      break;
+            case 'L': batch.draw((TextureRegion)catMovingLeft.moviments[direction.NORTH.ordinal()].getKeyFrame(catMovingLeft.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+                      break;
+            case 'R': batch.draw((TextureRegion)catMovingRight.moviments[direction.SOUTH.ordinal()].getKeyFrame(catMovingRight.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+                      break;
+        }
         
         if(wool.life==1)
             wool.sprite.draw(batch);
