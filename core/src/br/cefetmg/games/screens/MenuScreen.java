@@ -4,7 +4,9 @@ import br.cefetmg.games.Config;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
 /**
  * Uma tela de Menu Principal do jogo.
@@ -15,7 +17,8 @@ public class MenuScreen extends BaseScreen {
 
     private static final int NUMBER_OF_TILED_BACKGROUND_TEXTURE = 7;
     private TextureRegion background;
-
+    private Texture easyButtom;
+    private Sprite easy;
     /**
      * Cria uma nova tela de menu.
      *
@@ -32,9 +35,11 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
-
         // instancia a textura e a região de textura (usada para repetir)
         background = new TextureRegion(new Texture("menu-background.png"));
+        easyButtom = new Texture("easy-buttom.png");
+        easy=new Sprite(easyButtom);
+        easy.setPosition(50, 50);
         // configura a textura para repetir caso ela ocupe menos espaço que o
         // espaço disponível
         background.getTexture().setWrap(
@@ -60,9 +65,12 @@ public class MenuScreen extends BaseScreen {
     public void handleInput() {
         // se qualquer interação é feita (teclado, mouse pressionado, tecla
         // tocada), navega para a próxima tela (de jogo)
-        if (Gdx.input.justTouched()) {
+        float x,y;
+        if (Gdx.input.isTouched()) {
             navigateToMicroGameScreen();
         }
+        
+        
     }
 
     /**
@@ -87,6 +95,7 @@ public class MenuScreen extends BaseScreen {
                 viewport.getWorldHeight());
         drawCenterAlignedText("Pressione qualquer tecla para jogar",
                 viewport.getWorldHeight() * 0.35f);
+        easy.draw(batch);
         batch.end();
     }
 
