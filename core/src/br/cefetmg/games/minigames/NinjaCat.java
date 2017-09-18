@@ -153,7 +153,7 @@ public class NinjaCat extends MiniGame{
         else
             zomb.setPosition(viewport.getWorldWidth(),viewport.getWorldHeight()*.1f+35);
             
-        if(zomb.getX() > cat.getX())
+        if(zomb.getX() >= viewport.getWorldWidth())
             zomb.flipFrames(true, false);
         
         zombies.add(zomb);
