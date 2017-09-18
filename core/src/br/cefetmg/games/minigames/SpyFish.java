@@ -78,26 +78,21 @@ public class SpyFish extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-
-        //this.MAX_CHIPS = (int) DifficultyCurve.LINEAR_NEGATIVE.getCurveValueBetween(difficulty, 5, 10);
-        //this.NUM_CHIPS_TO_TAKE = (int) DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 1, 5);
-       // this.VELOCIDADE_MAX_CHIP = (float) DifficultyCurve.S.getCurveValueBetween(difficulty, 1, 9);
+        this.MAX_CHIPS = (int) DifficultyCurve.LINEAR_NEGATIVE.getCurveValueBetween(difficulty, 7, 15);
+        this.NUM_CHIPS_TO_TAKE = (int) DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 1, 5);
+        this.VELOCIDADE_MAX_CHIP = (float) DifficultyCurve.S.getCurveValueBetween(difficulty, 1, 9);
     }
     @Override
     public void onHandlePlayingInput() {
         // move o peixe
         this.fish.updateAccordingToTheMouse(getMousePosInGameWorld().x, getMousePosInGameWorld().y);
-        
-        /*Vector3 mause = getMousePosInGameWorld();
-        this.fish.updateAccordingToTheMouse(mause.x, mause.y);*/
     }
 
     @Override
     public void onUpdate(float dt) {
+        fish.update(dt);
         for (Iterator<MemoryChip> iterator = chip.iterator(); iterator.hasNext();) {
             MemoryChip mc = iterator.next();
-
-            
             if (mc.collidesWith(this.fish)) {
                 //se o peixe pegar um cartão de memoria
                 iterator.remove();
@@ -114,9 +109,7 @@ public class SpyFish extends MiniGame {
                     super.challengeFailed();
                     break;
                 }
-                
             }
-
         }
     }
 
@@ -135,19 +128,24 @@ public class SpyFish extends MiniGame {
         batch.draw(texturaFundo, 0f, 0f, 1280f, 720f);
 
         this.fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
-        //this.fish.render(batch);
-        //this.fish.flip(true, false);
         for (MemoryChip chip : chip) {
             chip.render(batch);
         }
-        //batch.draw(pointerTexture, mause.x, mause.y);
         batch.end();
+<<<<<<< HEAD
 
         /*this.fish.render_area_collision();
         for (MemoryChip chip : this.chip) {
             //mostra os circulos de colisão
             chip.render_area_collision();
         }*/
+=======
+        //this.fish.render_area_collision();
+//        for (MemoryChip chip : this.chip) {
+//            //mostra os circulos de colisão
+//            chip.render_area_collision();
+//        }
+>>>>>>> 93cb0d7457fd1b914796784db102ca406e5a9318
     }
 
     @Override

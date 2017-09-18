@@ -26,7 +26,7 @@ import java.util.function.ToLongFunction;
 
 /**
  *
- * @author Alberto
+ * @author Luiza-Pedro
  */
 public class GatoFantasma extends MiniGame {
 

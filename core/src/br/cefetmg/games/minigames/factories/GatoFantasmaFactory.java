@@ -16,7 +16,7 @@ import java.util.Map;
 
 /**
  *
- * @author Alberto
+ * @author Luiza-Pedro
  */
 public class GatoFantasmaFactory implements MiniGameFactory{
 

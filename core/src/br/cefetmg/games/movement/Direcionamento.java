@@ -9,9 +9,9 @@ import com.badlogic.gdx.math.Vector2;
 
 /**
  *
- * @author 
+ *@inspirado no tp de cinematica
  */
-class Direcionamento {
+public class Direcionamento {
     public Vector2 aceleracao;  // velocidade linear
     public double rotacao;      // velocidade angular
     
