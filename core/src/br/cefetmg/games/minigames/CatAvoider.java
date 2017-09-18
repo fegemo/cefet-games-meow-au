@@ -59,7 +59,7 @@ public class CatAvoider extends MiniGame {
     protected AnimatedSprite catMovingLeft;
     protected AnimatedSprite catMovingRight;
     
-    Music backgroundMusic, impact;
+    protected static Music backgroundMusic, impact;
     
     class Wool {
         protected Circle circle;//circle to enclose the cat and treat the colision
@@ -200,6 +200,7 @@ public class CatAvoider extends MiniGame {
             wool.life = 0;
             impact.play();
             super.challengeFailed();
+            backgroundMusic.stop();
         }
 
         /**collision cat floor*/
@@ -334,7 +335,7 @@ public class CatAvoider extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Não deixo o gato pegar o novelo!!!";
+        return "Não deixe o gato pegar o novelo!!!";
     }
 
     @Override

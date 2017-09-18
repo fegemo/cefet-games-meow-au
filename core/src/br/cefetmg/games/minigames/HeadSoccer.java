@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
@@ -65,6 +66,8 @@ public class HeadSoccer extends MiniGame {
     private ArrayList objects;
     private Rectangle bot_Rect;
 
+    protected static Music backgroundMusic;
+    
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         cheatBot = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 8f, 25f);
@@ -282,6 +285,9 @@ public class HeadSoccer extends MiniGame {
         rightGoal = new Obstacle(batch, new Vector2(1184, floorBall), width, 190);
         goalCrossRight = new Obstacle(batch, new Vector2(1141, 284), 150, height);
 
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("head-soccer/soccer.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
     }
 
     private void finilizeGame() {
@@ -297,9 +303,11 @@ public class HeadSoccer extends MiniGame {
     public void finishGame() {
         if (goalB) {
             super.challengeFailed();
+            backgroundMusic.stop();
         }
         if (goalP) {
             super.challengeSolved();
+            backgroundMusic.stop();
         }
     }
 
