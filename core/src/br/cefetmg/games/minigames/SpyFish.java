@@ -143,11 +143,11 @@ public class SpyFish extends MiniGame {
         //batch.draw(pointerTexture, mause.x, mause.y);
         batch.end();
 
-        this.fish.render_area_collision();
+        /*this.fish.render_area_collision();
         for (MemoryChip chip : this.chip) {
             //mostra os circulos de colisão
             chip.render_area_collision();
-        }
+        }*/
     }
 
     @Override

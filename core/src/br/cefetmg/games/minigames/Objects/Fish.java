@@ -52,7 +52,6 @@ public class Fish extends Sprite implements Collidable {
         this.circle = new Circle( this.sprite.getX() + (this.sprite.getWidth()/2), this.sprite.getY() + (this.sprite.getHeight()/2),
                 (float) Math.sqrt( (Math.pow(this.sprite.getHeight()/2,2)) + Math.pow(this.sprite.getWidth()/2,2)));
         
-
         this.movimentacao = new SeekDynamic(new Vector2(sprite.getX(), sprite.getY()));
     }
 
@@ -111,10 +110,6 @@ public class Fish extends Sprite implements Collidable {
                 float delta_y = (y - this.circle.y);
                 
                 update( this.sprite.getX() + delta_x , this.sprite.getY() + delta_y );
-                
-                //this.sprite.flip(true, false);
-                System.out.println( this.sprite.getX() + " _ " + this.sprite.getY() + " " +
-                        this.sprite.getOriginX() + " " + this.sprite.isFlipX());
                 
                 }
             }     
