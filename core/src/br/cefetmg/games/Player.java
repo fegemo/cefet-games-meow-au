@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Player {
 
-    public boolean walking, up, down, left, right, orientation, footUp, footDown, movingFoot;
+    public boolean walking, orientation, footUp, footDown, movingFoot, left, right, jump ,kick;
     private float playerStep, playerWidth, playerHeight;
     public Sprite sprite_Player, sprite_Shoes;
     public Vector2 position, positionMin, positionMax, speed, footPosition;
@@ -184,11 +184,8 @@ public class Player {
         float x = sprite_Player.getX(), y = sprite_Player.getY();
         rotation_angle = sprite_Shoes.getRotation();
         walking = false;
-        up = false;
-        down = false;
-        left = false;
-        right = false;
-        if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
+
+        if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A) || left) {
             if (speed.x > -1 * maxSpeed) {
                 speed.x -= 1;
             }
@@ -200,7 +197,8 @@ public class Player {
             
                 orientation = false;
             }
-        } else if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
+            left = false;
+        } else if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D) || right) {
             if (speed.x < maxSpeed) {
                 speed.x += 1;
             }
@@ -211,19 +209,22 @@ public class Player {
                 this.sprite_Shoes.setRotation(-27);
                 orientation = true;
             }
+            right = false;
         } else {
             speed.x = 0;
         }
 
-        if ((Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) && y == FLOOR) {
+        if ((Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) && y == FLOOR || jump) {
             if(sprite_Player.getY() == FLOOR)
                 speed.y = JUMP;
+            jump = false;
         }
 
-        if (Gdx.input.isKeyPressed(Keys.SPACE)) {
+        if (Gdx.input.isKeyPressed(Keys.SPACE) || kick) {
             if (movingFoot == false) {
                 movingFoot = true;
             }
+            kick = false;
         }
 
         float playerStepx = playerStep * (speed.x / maxSpeed);
@@ -234,31 +235,26 @@ public class Player {
                 x += playerStepx;
             }
             walking = true;
-            left = true;
         } else if (speed.x > 0) {
             if (x + playerStepx < positionMax.x - playerWidth) {
                 x += playerStepx;
             }
             walking = true;
-            right = true;
         }
 
         if (y > FLOOR) {
             if (speed.y > 0) {
                 y += playerStepy;
                 walking = true;
-                up = true;
             } else if (speed.y < 0) {
                 y += playerStepy;
                 walking = true;
-                down = true;
 
             }
         } else if (y == FLOOR) {
             if (speed.y > 0) {
                 y += playerStepy;
                 walking = true;
-                up = true;
             }
         }
 

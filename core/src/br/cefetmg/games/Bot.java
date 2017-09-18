@@ -202,16 +202,16 @@ public class Bot {
             if(ball.x > x + playerWidth && ball.y >y){
                 moveAlone = 1;
             }
-            else if(ball.x > x + playerWidth && ball.y <= y){
+            else if(ball.x > x  && ball.y <= y){
                 moveAlone = 2;
             }
-            else if(ball.x < x - playerWidth && ball.y > y){
+            else if(ball.x < x && ball.y > y){
                 moveAlone = 3;
             }
             else{
-                moveAlone =4;
+                moveAlone = 4;
             }
-            if(Math.abs(ball.x-x) < playerWidth/1.5f && movingFoot == false && ball.x < x ){
+            if(Math.abs(ball.x-x) < playerWidth && movingFoot == false && ball.x < x ){
                 movingFoot = true;
             }
             if(Math.abs(ball.x-x) < playerWidth/4 && ball.x > x)

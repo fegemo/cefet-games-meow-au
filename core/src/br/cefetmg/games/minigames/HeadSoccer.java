@@ -58,8 +58,11 @@ public class HeadSoccer extends MiniGame {
     private Sprite goalRight;
     private Sprite TraveD;
     private Sprite TraveE;
+    private Sprite bottomE;
+    private Sprite bottomD;
+    private Sprite bottomJ;
+    private Sprite bottomK;
     private ArrayList objects;
-    private ArrayList obstacles;
     private Rectangle bot_Rect;
 
     @Override
@@ -217,6 +220,21 @@ public class HeadSoccer extends MiniGame {
         goalLeftTexture = assets.get("head-soccer/goalLeft.png", Texture.class);
         goalRightTexture = assets.get("head-soccer/goalRight.png", Texture.class);
 
+        bottomE = new Sprite(assets.get("head-soccer/bottomL.png", Texture.class));
+        bottomD = new Sprite(assets.get("head-soccer/bottomD.png", Texture.class));
+        bottomJ = new Sprite(assets.get("head-soccer/bottomJ.png", Texture.class));
+        bottomK = new Sprite(assets.get("head-soccer/bottomK.png", Texture.class));
+
+        bottomE.setSize(100, 55);
+        bottomE.setPosition(100, 0);
+        bottomD.setSize(100, 55);
+        bottomD.setPosition(270, 0);
+
+        bottomJ.setSize(100, 55);
+        bottomJ.setPosition(870, 0);
+        bottomK.setSize(100, 55);
+        bottomK.setPosition(1040, 0);
+
         botTexture = assets.get("head-soccer/cat2.png", Texture.class);
         catTexture = assets.get("head-soccer/cat1.png", Texture.class);
 
@@ -260,9 +278,9 @@ public class HeadSoccer extends MiniGame {
         backgroundDown = new Obstacle(batch, new Vector2(0, floorBall), widthscreen, height);
 
         leftGoal = new Obstacle(batch, new Vector2(99, floorBall), width, 190);
-        goalCrossLeft = new Obstacle(batch, new Vector2(0, 264), 130, height);
+        goalCrossLeft = new Obstacle(batch, new Vector2(0, 284), 150, height);
         rightGoal = new Obstacle(batch, new Vector2(1184, floorBall), width, 190);
-        goalCrossRight = new Obstacle(batch, new Vector2(1161, 264), 130, height);
+        goalCrossRight = new Obstacle(batch, new Vector2(1141, 284), 150, height);
 
     }
 
@@ -273,7 +291,7 @@ public class HeadSoccer extends MiniGame {
                 finishGame();
             }
         };
-        timer.scheduleTask(t, 1);
+        timer.scheduleTask(t, 0.5f);
     }
 
     public void finishGame() {
@@ -387,11 +405,11 @@ public class HeadSoccer extends MiniGame {
             //Colisão lateral esquerda e bola
             if (Colision.rectCircleOverlap(backgroundLeft.getRec(), ball.circle) != null) {
                 lastCollisonTime += dt;
-                ball.setSpeed((ball.getSpeed().x + 5) * -reflected, ball.getSpeed().y * reflected);
+                ball.setSpeed(ball.getSpeed().x * -1, ball.getSpeed().y * reflected);
             }//Colisão lateral direita e bola
             else if (Colision.rectCircleOverlap(backgroundRight.getRec(), ball.circle) != null) {
                 lastCollisonTime += dt;
-                ball.setSpeed((ball.getSpeed().x + 5) * -reflected, ball.getSpeed().y * reflected);
+                ball.setSpeed(ball.getSpeed().x * -1, ball.getSpeed().y * reflected);
             }
             //Colisão travessão esquerdo e bola
             if (Colision.rectCircleOverlap(goalCrossLeft.getRec(), ball.circle) != null) {
@@ -407,7 +425,7 @@ public class HeadSoccer extends MiniGame {
                     ball.setSpeed(ball.getSpeed().x * -1, ball.getSpeed().y);
                 }
             }//Colisão gol esquerdo e bola 
-            else if (Colision.rectCircleOverlap(leftGoal.getRec(), ball.circle) != null) {
+            if (Colision.rectCircleOverlap(leftGoal.getRec(), ball.circle) != null) {
                 lastCollisonTime += dt;
                 goalB = true;
                 finilizeGame();
@@ -426,7 +444,7 @@ public class HeadSoccer extends MiniGame {
                     ball.setSpeed(ball.getSpeed().x * -1, ball.getSpeed().y * 1);
                 }
             }//Colisão gol esquerdo e bola 
-            else if (Colision.rectCircleOverlap(rightGoal.getRec(), ball.circle) != null) {
+            if (Colision.rectCircleOverlap(rightGoal.getRec(), ball.circle) != null) {
                 lastCollisonTime += dt;
                 goalP = true;
                 finilizeGame();
@@ -446,40 +464,33 @@ public class HeadSoccer extends MiniGame {
 
     @Override
     public void onHandlePlayingInput() {
-        /*
+
         // atualiza a posição do alvo de acordo com o mouse
         Vector3 click = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         viewport.unproject(click);
-        this.target.setPosition(click.x - this.target.getWidth() / 2,
-                click.y - this.target.getHeight() / 2);
+        if (Gdx.input.isTouched()) {
+            if (click.x > bottomD.getX() && click.x < bottomD.getX() + bottomD.getWidth()) {
+                if (click.y > bottomD.getY() && click.y < bottomD.getY() + bottomD.getHeight()) {
+                    cat.right = true;
+                }
+            } else if (click.x > bottomE.getX() && click.x < bottomE.getX() + bottomE.getWidth()) {
+                if (click.y > bottomE.getY() && click.y < bottomE.getY() + bottomE.getHeight()) {
+                    cat.left = true;
+                }
+            }
 
-        // verifica se matou um inimigo
-        if (Gdx.input.justTouched()) {
-            // itera no array de inimigos
-            for (int i = 0; i < enemies.size; i++) {
-                Sprite sprite = enemies.get(i);
-                // se há interseção entre o retângulo da sprite e do alvo,
-                // o tiro acertou
-                if (sprite.getBoundingRectangle().overlaps(
-                        target.getBoundingRectangle())) {
-                    // contabiliza um inimigo morto
-                    this.enemiesKilled++;
-                    // remove o inimigo do array
-                    this.enemies.removeValue(sprite, true);
-                    cariesDyingSound.play();
-                    // se tiver matado todos os inimigos, o desafio
-                    // está resolvido
-                    if (this.enemiesKilled >= this.totalEnemies) {
-                        super.challengeSolved();
-                    }
-
-                    // pára de iterar, porque senão o tiro pode pegar em mais
-                    // de um inimigo
-                    break;
+            if (click.x > bottomJ.getX() && click.x < bottomJ.getX() + bottomJ.getWidth()) {
+                if (click.y > bottomJ.getY() && click.y < bottomJ.getY() + bottomJ.getHeight()) {
+                    cat.jump = true;
+                }
+            }
+            if (click.x > bottomK.getX() && click.x < bottomK.getX() + bottomK.getWidth()) {
+                if (click.y > bottomK.getY() && click.y < bottomK.getY() + bottomK.getHeight()) {
+                    cat.kick = true;
                 }
             }
         }
-         */
+
     }
 
     @Override
@@ -521,19 +532,14 @@ public class HeadSoccer extends MiniGame {
         ball.draw();
         TraveD.draw(batch);
         TraveE.draw(batch);
-
-        leftGoal.draw();
-        goalCrossLeft.draw();
-        rightGoal.draw();      
-        goalCrossRight.draw();
-        backgroundLeft.draw();
-        backgroundRight.draw();
-        backgroundTop.draw();
-
+        bottomE.draw(batch);
+        bottomD.draw(batch);
+        bottomJ.draw(batch);
+        bottomK.draw(batch);
     }
 
     @Override
     public boolean shouldHideMousePointer() {
-        return true;
+        return false;
     }
 }
