@@ -40,16 +40,16 @@ public class RatoaJato extends MiniGame {
     private Array<Tube> enemies;
 
     // variáveis do desafio - variam com a dificuldade do minigame
-    private int spawnedEnemies;
+    private float speed;
     private float minimumEnemySpeed;
-    private float maximumEnemySpeed;
-    private float spawnInterval;
     private float ScreenWidth;
     private float ScreenHeight;
     private float posX,posY;
     private int totalEnemies;
     int  srcX,troca;
-    float interval;
+    float aceleracao,velocidade;
+    private Sound meon;
+
     public RatoaJato(BaseScreen screen,
                      MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f,
@@ -64,16 +64,15 @@ public class RatoaJato extends MiniGame {
         bg1= assets.get("RatoaJato/background.png",Texture.class);
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         tubeTexture = assets.get("RatoaJato/tube.png",Texture.class);
+        meon=assets.get("RatoaJato/meon.mp3", Sound.class);
         calopsita= new Calopsita(calopsitaTextura);
         calopsita.setScale(0.5f);
-      //  calopsita.setPosition(viewport.getScreenWidth()*0.4f,viewport.getScreenHeight()*0.5f);
         ScreenHeight = Gdx.graphics.getHeight();
         ScreenWidth = Gdx.graphics.getWidth();
 
 
         enemies = new Array<Tube>();
 
-        spawnedEnemies = 0;
         posX=viewport.getScreenWidth()*0.4f;posY= viewport.getScreenHeight()*0.5f;
         timer.scheduleTask(new Task() {
             @Override
@@ -81,9 +80,18 @@ public class RatoaJato extends MiniGame {
                 spawnEnemy();
             }
 
-        }, 0,  (float)Math.random()+0.8f);//this.spawnInterval);*/
-      //  spawnEnemy();
-         srcX=0; 
+        }, 0,  (float)Math.random()+0.7f);//this.spawnInterval);*/
+         srcX=0;
+         velocidade=-1*WORLD_HEIGHT*0.0005f;;
+         long id = meon.play(0.2f);
+        timer.scheduleTask(new Task() {
+            @Override
+            public void run() {
+                meon.stop();
+            }
+
+        },9.5f,10f);
+
     }
     private void spawnEnemy() {
 
@@ -101,34 +109,26 @@ public class RatoaJato extends MiniGame {
 
                 .scl(this.minimumEnemySpeed);
         Tube enemy = new Tube(cattubeTexture);
-       // enemy.setScale(0.4f);
         enemy.setsize(new Random().nextInt(4));
 
         enemy.setPosition(WORLD_WIDTH,60*enemy.getsize());//, Ddwown);
         enemy.setSpeed(tartarusSpeed);
         enemies.add(enemy);
 
-        // toca um efeito sonoro
-       /* Sound sound = tartarusAppearingSound.random();
-        long id = sound.play(0.5f);
-        sound.setPan(id, tartarusPosition.x < viewport.getWorldWidth()
-                ? -1 : 1, 1);*/
+
+
+
     }
 
   
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        this.minimumEnemySpeed = DifficultyCurve.LINEAR
+        this.speed= DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 120, 220);
-        this.maximumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 240, 340);
-        this.spawnInterval = DifficultyCurve.LINEAR_NEGATIVE
-                .getCurveValueBetween(difficulty, 0.25f, 1.5f);
 
-        this.totalEnemies = (int)  Math.ceil(DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 0, 2)) + 1;
-
+        this.minimumEnemySpeed = DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty,120, 220);
     }
 
     @Override
@@ -144,26 +144,33 @@ public class RatoaJato extends MiniGame {
         for (Tube tubes : this.enemies) {
             if(calopsita.getY()+70<=tubes.getHeight()+tubes.getsize()*60&&
                     (calopsita.getX()>tubes.getX()-80&&calopsita.getX()<tubes.getX()+80)){
-                super.challengeFailed();
 
+                super.challengeFailed();
+                meon.stop();
+                tubes.changePicture();
             }
-            System.out.printf("c %.2f %.2f Tube %.2f %.2f\n",calopsita.getX(),
-                    calopsita.getY(),tubes.getX(),tubes.getHeight());
+            //System.out.printf("c %.2f %.2f Tube %.2f %.2f\n",calopsita.getX(),
+              //      calopsita.getY(),tubes.getX(),tubes.getHeight());
         }
 
     }
 
     @Override
     public void onUpdate(float dt) {
+
         calopsita.update(dt);
      //   System.out.printf("x=%.2f,Y=%.2f,Speed=%.2f\n",posX,posY,0.0);
         srcX+=5;
+        if(aceleracao>-1*WORLD_HEIGHT*0.0001f);
+        aceleracao-=WORLD_HEIGHT*0.00005f; //gravidade
+
         if(posY<ScreenHeight+2)
-            posY+=WORLD_HEIGHT*0.002;//2.5; 1;
+            posY-=velocidade+aceleracao;//2.5; 1;
         if(posX>ScreenWidth/2-16)
             posX-=0.5;
         if(Gdx.input.justTouched()) {
-          //  System.out.printf("Heeee\n");
+            //  System.out.printf("Heeee\n");
+            aceleracao+=WORLD_HEIGHT*0.002f;
             posY-=WORLD_HEIGHT*0.09;
             posX+=2;
         }
@@ -174,9 +181,15 @@ public class RatoaJato extends MiniGame {
         for (int i = 0; i < this.enemies.size; i++){
             Tube tube = this.enemies.get(i);
             tube.setPosition(tube.getX()-5,tube.getY());
+            tube.changePicture();
         }
-        if(calopsita.getY()+calopsita.getHeight()/2>WORLD_HEIGHT)
+        if(calopsita.getY()+calopsita.getHeight()/2>WORLD_HEIGHT) {
+            //tubes.changePicture();
             super.challengeFailed();
+            meon.stop();
+
+
+        }
     }
 
     @Override
@@ -254,24 +267,32 @@ public class RatoaJato extends MiniGame {
       static final int FRAME_WIDTH = 220;
       static final int FRAME_HEIGHT = 390;
       int size;
-
+      Texture temp;
+      Animation a;
       public Tube(final Texture tubesSpritesheet) {
+
           super(new HashMap<String, Animation>() {
               {
                   TextureRegion[][] frames = TextureRegion
                           .split(tubesSpritesheet,
                                   FRAME_WIDTH, FRAME_HEIGHT);
-                  Animation walking = new Animation(0.2f,
+                  Animation sleep= new Animation(0.1f,
                           frames[0][0]);
-                  walking.setPlayMode(Animation.PlayMode.LOOP);
-                  put("walking", walking);
+                  Animation acordado= new Animation(0.1f,
+                          frames[0][1]);
+                  sleep.setPlayMode(Animation.PlayMode.NORMAL);
+                  put("walking", sleep);
+                  put("acordado", acordado);
+
               }
           }, "walking");
-      }
 
+      }
+        public void changePicture(){
+            this.startAnimation("acordado");
+        }
       @Override
       public void update(float dt) {
-          System.out.printf ("X%.2f Sx %.2f Y%.2f SY%.2f dy%.2f",super.getX() + this.speed.x,super.getY() , this.speed.y,dt );
 
           super.update(dt);
           super.setPosition(super.getX() + this.speed.x * dt,
@@ -291,15 +312,7 @@ public class RatoaJato extends MiniGame {
           this.speed = speed;
       }
 
-      public void startFleeing(Vector2 from) {
-          if (this.isFleeing) {
-              return;
-          }
-          this.isFleeing = true;
-          Vector2 position = new Vector2(super.getX(), super.getY());
-          this.speed = position.sub(from).nor().scl(maximumEnemySpeed);
-          this.setColor(Color.YELLOW);
-      }
+
   }
 
 
