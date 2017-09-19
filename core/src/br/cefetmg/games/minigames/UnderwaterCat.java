@@ -28,16 +28,14 @@ import com.badlogic.gdx.utils.Timer;
  * @author Adriel
  */
 public class UnderwaterCat extends MiniGame {
-    
     private float minimumEnemySpeed;
     private float maximumEnemySpeed;
-    private float maxFishSpeed = 40f;
-    private float maxAngularFishSpeed = 30f;
     private float spawnInterval;
     private int totalFish;
     private Texture background;
     private Music music_underwaterCat;
     private Music sound_swim;
+    private Sound gotFishSound;
     
     
     Animation<TextureRegion> swimmingAnimation;
@@ -62,9 +60,10 @@ public class UnderwaterCat extends MiniGame {
     }
     
     @Override
-    protected void onStart() {
+    protected void onStart() {  
         music_underwaterCat = assets.get("underwater-cat/water.mp3", Music.class);
         sound_swim = assets.get("underwater-cat/swim.wav", Music.class);
+        gotFishSound = assets.get("underwater-cat/eat.wav",Sound.class);
         swimCatTexture = assets.get(
                 "underwater-cat/swimcatspritesheet.png", Texture.class);   
         fish1Texture = assets.get(
@@ -76,6 +75,7 @@ public class UnderwaterCat extends MiniGame {
         
         spikyTexture = assets.get(
                 "underwater-cat/fish5.png", Texture.class);
+        
         mainCharacter  = new TheCat(swimCatTexture);
         toCapture = new Array<Fish>();
         enemies = new Array<Spiky>();
@@ -163,7 +163,8 @@ public class UnderwaterCat extends MiniGame {
             Spiky s = this.enemies.get(i);
             s.update(dt);
                 if (s.getBoundingRectangle()
-                        .overlaps(mainCharacter.getBoundingRectangle())) {
+                    .overlaps(mainCharacter.getBoundingRectangle())) 
+                {
                      super.challengeFailed();
                 }
             }
@@ -171,6 +172,7 @@ public class UnderwaterCat extends MiniGame {
     
     private void eatFish(){
       numberEaten++;
+      gotFishSound.play();
             if(numberEaten == fishToEat){
                 super.challengeSolved();
             } 
@@ -258,7 +260,9 @@ public class UnderwaterCat extends MiniGame {
    
      private void spawnEnemy() {
         Vector2 goalCenter = new Vector2();
-        Vector2 spikyGoal = this.mainCharacter.getPosition();
+        Vector2 spikyGoal = this.mainCharacter
+                .getBoundingRectangle()
+                .getCenter(goalCenter);
         Vector2 spikyPosition = new Vector2();
         boolean appearFromSides = MathUtils.randomBoolean();
         if (appearFromSides) {
@@ -299,13 +303,9 @@ public class UnderwaterCat extends MiniGame {
 
         Vector2 getPosition() {
             return new Vector2(
-                    this.getX() + this.getWidth() * 0.5f,
-                    this.getY() + this.getHeight() * 0.8f);
+                    this.getX() + this.getWidth(),
+                    this.getY() + this.getHeight());
         }
-
-            float getDistanceTo(float enemyX, float enemyY) {
-                return getPosition().dst(enemyX, enemyY);
-            }
         }
     
    
@@ -344,16 +344,13 @@ class Fish extends AnimatedSprite {
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
             super.setAutoUpdate(false);
         }
-
-        Vector2 getPosition() {
-            return new Vector2(
-                    this.getX() + this.getWidth() * 0.5f,
-                    this.getY() + this.getHeight() * 0.8f);
+        
+        @Override
+        public void update(float dt) {
+            super.update(dt);
+            super.setPosition(super.getX() + this.speed.x * dt,
+                    super.getY() + this.speed.y * dt);
         }
-      
-            float getDistanceTo(float otherbodyX, float otherbodyY) {
-                return getPosition().dst(otherbodyX, otherbodyY);
-            }
             
         public Vector2 getSpeed() {
             return speed;
