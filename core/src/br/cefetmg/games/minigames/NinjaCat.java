@@ -46,7 +46,6 @@ public class NinjaCat extends MiniGame {
     private Texture playerTexture;
     private Texture arrowTexture;
     private Texture bgTexture;
-    private Texture catTexture;
     private Texture zombieTex;
     private Texture rampageTex;
     private Texture deadZombie;
@@ -72,7 +71,6 @@ public class NinjaCat extends MiniGame {
 
         bgTexture = assets.get("ninja-cat/bg1.jpg", Texture.class);
         arrowTexture = assets.get("ninja-cat/arrow.png", Texture.class);
-        catTexture = assets.get("ninja-cat/cat.png", Texture.class);
         zombieTex = assets.get("ninja-cat/zombie.png", Texture.class);
         rampageTex = assets.get("ninja-cat/cat1.png", Texture.class);
         atk1 = assets.get("ninja-cat/atk1.png", Texture.class);
