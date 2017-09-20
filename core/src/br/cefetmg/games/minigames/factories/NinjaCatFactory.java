@@ -28,7 +28,6 @@ public class NinjaCatFactory implements MiniGameFactory {
                 put("ninja-cat/zombie1.png", Texture.class);
                 put("ninja-cat/zombie.png", Texture.class);
                 put("ninja-cat/zombie2.png", Texture.class);
-                put("ninja-cat/cat.png", Texture.class);
                 put("ninja-cat/cat1.png", Texture.class);
                 put("ninja-cat/bg1.jpg", Texture.class);
                 put("ninja-cat/d1.png", Texture.class);
