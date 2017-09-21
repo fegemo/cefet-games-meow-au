@@ -177,7 +177,7 @@ public class NinjaCat extends MiniGame {
         viewport.unproject(click);
         arrow.setPosition(click.x - arrow.getWidth() / 2 * arrow.getScaleX(), click.y - arrow.getHeight() / 2 * arrow.getScaleY());
         if (!pose) {
-            if (arrow.getX() > cat.getX() && !right && !rampage && !gameover) {
+            if (arrow.getX() > cat.getX() && !right && !rampage && !gameover && !gameclear) {
                 if (hit) {
                     setCat(texhit1);
                 } else {
@@ -185,7 +185,7 @@ public class NinjaCat extends MiniGame {
                 }
                 cat.flipFrames(true, false);
                 right = true;
-            } else if (arrow.getX() < cat.getX() && right && !rampage && !gameover) {
+            } else if (arrow.getX() < cat.getX() && right && !rampage && !gameover && !gameclear) {
                 if (hit) {
                     setCat(texhit1);
                 } else {
@@ -388,7 +388,7 @@ public class NinjaCat extends MiniGame {
                 end = true;
             } else {
                 gcount++;
-                if (gcount >= 20) {
+                if (gcount >= 15) {
                     victory = true;
                 }
             }
