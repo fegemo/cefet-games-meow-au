@@ -473,7 +473,7 @@ protected class Buscar  {
 
     public Buscar() {
         this.maxAceleracao = 5000;
-        this.constanteVelocidade=500;
+        this.constanteVelocidade=0;
     }
 
     public Direcionamento guiar(Pose agente, Vector2 alvo) {
@@ -497,21 +497,23 @@ protected class Buscar  {
     
     public Direcionamento guiar(Pose agente, Vector2 alvo, float raioAgente, float raioAlvoDesacelerar,float raioAlvoChegar){
         Direcionamento output = new Direcionamento();
-        Vector2 aux = new Vector2(alvo);
+        Vector2 posicaoDoAlvo = new Vector2(alvo);
         //acho q é algo assim
-        aux.sub(agente.posicao);
-        if(aux.len2()>maxAceleracao*maxAceleracao){//verifica o tamanho do vetor se for mto grande normaliza e multiplica pela maxAceleracao
-            aux.nor();
-            aux.scl(maxAceleracao);
-        }Vector2 auxx = new Vector2(agente.posicao);
-        if(auxx.dst2(alvo)<((raioAgente+raioAlvoDesacelerar)*(raioAgente+raioAlvoDesacelerar))){
-            if(auxx.dst2(alvo)<((raioAgente+raioAlvoChegar)*(raioAgente+raioAlvoChegar))){
-                aux=new Vector2(0, 0);
+        posicaoDoAlvo.sub(agente.posicao);
+        if(posicaoDoAlvo.len2()>maxAceleracao*maxAceleracao){
+            //verifica o tamanho do vetor se for mto grande normaliza e multiplica pela maxAceleracao
+            posicaoDoAlvo.nor();
+            posicaoDoAlvo.scl(maxAceleracao);
+        }
+        Vector2 posicaoAgente = new Vector2(agente.posicao);
+        if(posicaoAgente.dst2(alvo)<(Math.pow(raioAgente+raioAlvoDesacelerar, 2))){
+            if(posicaoAgente.dst2(alvo)<((raioAgente+raioAlvoChegar)*(raioAgente+raioAlvoChegar))){
+                posicaoDoAlvo=new Vector2(0, 0);
             }else{
-                aux.scl(1/10);
+                posicaoDoAlvo.scl(1/10);
             }
         }
-        output.aceleracao = aux;
+        output.aceleracao = posicaoDoAlvo;
         Vector2 auxV = new Vector2(agente.velocidade); 
         output.aceleracao.sub(auxV.scl(constanteVelocidade));//aceleracao = forca/m - kv
         
