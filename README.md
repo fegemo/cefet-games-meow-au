@@ -7,8 +7,8 @@ animal.
 
 O projeto deve ser entregue como um _Pull Request_ (veja
 [[1]][using-pull-requests] e [[2]][creating-pull-requests]) neste repositório.
-Ou seja, você deve fazer um _fork_ e, no **_branch_ `master`**, você deve
-criar os dois microjogos.
+Ou seja, você deve fazer um _fork_ e, no **_branch_ cujo nome equivale ao
+ano e semestre atual**, você deve criar os dois microjogos.
 
 Siga os passos:
 
@@ -18,10 +18,10 @@ Siga os passos:
 1. Clonem o (seu) repositório _forked_ para seu computador.
 1. Criem um _branch_ cujo nome é o primeiro nome do(s) integrante(s) do grupo,
    sem letras maiúsculas e com hífen separando o(s) nome(s).
-   - Por exemplo, `git branch -b sandy-junior`.
+  - Por exemplo, `git branch -b sandy-junior`.
 1. Trabalhem fazendo _commits_ nesse _branch_.
 1. Quando estiver pronto, faça um _Pull Request_ do seu branch (_e.g._,
-   `leandro-leonardo`) para o _branch_ `master` do professor.
+   `leandro-leonardo`) para o branch `master` do professor.
 
 
 ### Descrição da Implementação
@@ -48,7 +48,7 @@ As classes do projeto estão modularizadas nos seguintes pacotes:
 1. `br.cefetmg.games.logic.chooser`: classes de utilidade para a lógica de jogo.
 1. `br.cefetmg.games.minigames`: classes referentes aos _microgames_.
 1. `br.cefetmg.games.minigames.factories`: classes referentes às fábricas
-   abstratas que são responsáveis por instanciar os _microgames_.
+  abstratas que são responsáveis por instanciar os _microgames_.
 1. `br.cefetmg.games.minigames.util`: classes utilitárias aos _microgames_.
 1. `br.cefetmg.games.screens`: classes referentes às telas do jogo.
 
@@ -59,8 +59,8 @@ Os _assets_ (recursos gráficos e de áudio) do jogo ficam na pasta `core/assets
 ![Pasta assets dentro da pasta core](docs/folder-assets.png)
 
 Os _assets_ de cada _microgame_ devem estar dentro de uma pasta cujo nome é
-o nome dele, **sem maiúsculas e acentuação, com hífen separando as palavras,**
-caso haja mais de uma (_e.g._, `assets/shoot-the-caries`).
+o nome dele, sem maiúsculas e acentuação, com hífen separando as palavras, caso
+haja mais de uma (_e.g._, `assets/shoot-the-caries`).
 
 Para os _microgames_, estamos usando um **gerenciador de _assets_** para
 pré-carregá-los de forma que, quando da execução da sequência de _microgames_,
@@ -112,9 +112,7 @@ cada _microgame_ deve ser implementado em 2 passos:
    }
    ```
 
-Após criar classes que herdam de `MiniGame` e `MiniGameFactory`, você
-deve ir até `PlayingGamesScreen` e alterar o construtor de `GameSequencer`
-para receber as _factories_ dos seus _microgames_.
+Após criar classes que herdam de `MiniGame` e `MiniGameFactory`, você deve ir até `PlayingGamesScreen` e alterar o construtor de `GameSequencer` para receber as _factories_ dos seus _microgames_.
 
 _Nota: para ver como o pré-carregamento está sendo feito, procure na classe
 `GameSequencer`._
@@ -132,14 +130,14 @@ Em jogos digitais, qual deve ser o comportamento quando um usuário redimensiona
 a janela? Há pelo menos 3 possibilidades:
 
 1. A imagem que estamos renderizando fica espichada ou achatada (não
-   queremos isso)
+  queremos isso)
 1. Mantemos a razão de aspecto (a imagem não distorce) e fazemos com que toda
-   a imagem renderizada caiba dentro do espaço disponível
-   - Isso faz com que surjam barras laterais ou superioes-inferiores "em branco"
-     quando a nova dimensão da janela tem uma razão de aspecto diferente
-     daquela para a qual o jogo foi programado (veja a imagem a seguir)
+  a imagem renderizada caiba dentro do espaço disponível
+  - Isso faz com que surjam barras laterais ou superioes-inferiores "em branco"
+    quando a nova dimensão da janela tem uma razão de aspecto diferente
+    daquela para a qual o jogo foi programado (veja a imagem a seguir)
 1. Mantemos a razão de aspecto e aumentamos o espaço do mundo que é visível ao
-   jogador
+  jogador
 
 ![](docs/fit-viewport-1.png)
 ![](docs/arrow.png)
@@ -176,29 +174,25 @@ public class Config {
 }
 ```
 
-Repare na figura a seguir. Podendo considerar que o sistema de coordenadas
-do mundo é sempre x E [0,1280] e y E [0,720], fica fácil posicionar os
-elementos de forma que eles estarão aonde queremos independente da
-resolução atual da janela do jogo.
+Repare na figura a seguir. Podendo considerar que o sistema de coordenadas do mundo é sempre x E [0,1280] e y E [0,720], fica fácil posicionar os elementos de forma que eles estarão aonde queremos independente da resolução atual da janela do jogo.
 
 ![](docs/coordinate-systems.png)
 
 ## FAQ
 
 1. **Pergunta**: Por que o código está em inglês?
-   - **Resposta**: ~~mania do professor~~ as linguagens de programação e
-     seus compiladores costumam ter problemas para identificar caracteres com
-     acentuação nos códigos-fonte. Poderíamos escrever em Português sem usar a
-     acentuação, porém se escrevermos em inglês, além de descartar essa
-     possibilidade de problemas, tornamos o código-fonte acessível a leitores
-     estrangeiros que saibam ler em Inglês.
+  - **Resposta**: ~~mania do professor~~ as linguagens de programação e
+    seus compiladores costumam ter problemas para identificar caracteres com
+    acentuação nos códigos-fonte. Poderíamos escrever em Português sem usar a
+    acentuação, porém se escrevermos em inglês, além de descartar essa
+    possibilidade de problemas, tornamos o código-fonte acessível a leitores
+    estrangeiros que saibam ler em Inglês.
 1. **Pergunta**: Fiz meu _fork_, mas o professor foi lá e fez mais _commits_...
-   agora meu  _fork_ está desatualizado. Como faço para ressincronizá-lo do
-   o do professor?
-   - **Resposta**: basta [atualizar o _branch_ master a partir do _fork_][syncing-fork]
+    agora meu  _fork_ está desatualizado. Como faço para ressincronizá-lo do
+    o do professor?
+  - **Resposta**: basta [atualizar o _branch_ master a partir do _fork_][syncing-fork]
 
 [enunciado]: https://github.com/fegemo/cefet-games/blob/master/assignments/tp1-brushmyteethplz/README.md
 [using-pull-requests]: https://help.github.com/articles/using-pull-requests/
 [creating-pull-requests]: https://help.github.com/articles/creating-a-pull-request/
 [syncing-fork]: https://help.github.com/articles/syncing-a-fork/
-
