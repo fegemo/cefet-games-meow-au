@@ -10,10 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
-/**
- *
- * @author fegemo <coutinho@decom.cefetmg.br>
- */
 public class JumpTheObstaclesFactory implements MiniGameFactory {
 
     @Override

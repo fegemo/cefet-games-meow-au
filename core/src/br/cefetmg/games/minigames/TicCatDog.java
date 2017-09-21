@@ -1,6 +1,5 @@
 package br.cefetmg.games.minigames;
 
-import br.cefetmg.games.minigames.ticCatDog.Move;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -29,6 +28,53 @@ import java.util.logging.Logger;
  */
 public class TicCatDog extends MiniGame
 {
+    public class Move
+    {
+        private int x, y; //Index da matrix
+        private int score; //Utilizado no algoritmo minmax
+
+        public Move(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+
+        public Move(int score)
+        {
+            this.score = score;
+        }
+
+        public int getX()
+        {
+            return x;
+        }
+
+        public void setX(int x)
+        {
+            this.x = x;
+        }
+
+        public int getY()
+        {
+            return y;
+        }
+
+        public void setY(int y)
+        {
+            this.y = y;
+        }
+
+        public int getScore()
+        {
+            return score;
+        }
+
+        public void setScore(int score)
+        {
+            this.score = score;
+        }
+    }
+    
     private Texture backgroundTexture; //Imagem de fundo ilustrativa
     private Texture whiteSquareTexture; //Quadrado em branco para composição do jogo da velha
     private Texture catSquareTexture; //Quadrado com um gato no centro 
