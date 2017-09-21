@@ -40,6 +40,7 @@ public class NinjaCat extends MiniGame {
     private boolean gameclear;
     private boolean end;
     private boolean pose;
+    private boolean victory;
 
     private killingZombie god;
 
@@ -112,16 +113,17 @@ public class NinjaCat extends MiniGame {
         ci.setScale(1.75f);
         ci.setPosition(viewport.getWorldWidth() * 0.45f, viewport.getWorldHeight() * .1f);
 
-        intro.play(.3f);
-        rampage = false;
-        right = true;
-        flip = false;
         hit = true;
-        gameover = false;
-        gameclear = false;
+        gcount = 0;
         pose = true;
         end = false;
-        gcount = 0;
+        right = true;
+        flip = false;
+        intro.play(.3f);
+        rampage = false;
+        victory = false;
+        gameover = false;
+        gameclear = false;
 
     }
 
@@ -375,14 +377,21 @@ public class NinjaCat extends MiniGame {
     @Override
     public void onUpdate(float dt) {
         if (gameclear && !end) {
-            ci = new catIntro(catPose);
-            ci.setOrigin(0, 0);
-            ci.setScale(1.75f);
-            ci.setPosition(cat.getX(), cat.getY());
-            if (!right) {
-                ci.flipFrames(true, false);
+            if (victory) {
+                ci = new catIntro(catPose);
+                ci.setOrigin(0, 0);
+                ci.setScale(1.75f);
+                ci.setPosition(cat.getX(), cat.getY());
+                if (!right) {
+                    ci.flipFrames(true, false);
+                }
+                end = true;
+            } else {
+                gcount++;
+                if (gcount >= 20) {
+                    victory = true;
+                }
             }
-            end = true;
         } else if (end) {
             if (ci.isAnimationFinished()) {
                 end = false;
@@ -508,7 +517,7 @@ public class NinjaCat extends MiniGame {
             DeadZombie zomb = deadzomb.get(i);
             zomb.draw(batch);
         }
-        if (gameclear || pose) {
+        if (victory || pose) {
             ci.draw(batch);
         } else {
             cat.draw(batch);
