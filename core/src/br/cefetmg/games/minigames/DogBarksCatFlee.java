@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Pedro e Arthur
  * ouçam https://www.youtube.com/watch?v=Gfw4yxn_kPQ
  */
+
 public class DogBarksCatFlee extends MiniGame {
     private final int TILES_COUNT = 18;
     private Dog player;
@@ -58,7 +59,7 @@ public class DogBarksCatFlee extends MiniGame {
     private void tilesDraw(){
         for (Tiles tile : tilesVector) {
             batch.draw(tileTexture[tile.tile_Type ], tile.tileVector.x, tile.tileVector.y);
-         
+
         }
     }
     
@@ -154,7 +155,7 @@ public class DogBarksCatFlee extends MiniGame {
         
     }
     
-    }
+    
     private void inicializeDog(){
         TextureRegion[][] TextureDog = TextureRegion.split(DogTextureStandBy, DogTextureStandBy.getWidth(), DogTextureStandBy.getHeight());
         PosicaoInicial = new Vector2 (300,41);
@@ -190,6 +191,7 @@ public class DogBarksCatFlee extends MiniGame {
         }     
     }
 
+    @Override
     public void onUpdate(float dt) {
         if (super.getState() == MiniGameState.PLAYER_FAILED ) {
             WhiningSound.play();
