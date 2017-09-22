@@ -30,16 +30,18 @@ public class CannonCat extends MiniGame {
     public int k = 0;
     public int c = 0;
     public int tiro = 0;
-    public int[] cat_x = new int[8];
-    public int[] cat_y = new int[8];
-    public int[] cookie_x = new int[10];
-    public int[] cookie_y = new int[10];
+    public int[] cat_x = new int[N_GATOS];
+    public int[] cat_y = new int[N_GATOS];
+    public int[] cookie_x = new int[MUNICAO];
+    public int[] cookie_y = new int[MUNICAO];
     public int center_x = 1200/2;
     public int center_y = 700/2;
     public double velocidade = 1;
     public double dificuldade = 1;
     public double tempo1 =   System.currentTimeMillis();
     public double tempo2 =   System.currentTimeMillis(); 
+    public final static int MUNICAO = 10;
+    public final static int N_GATOS = 8;
 
     public CannonCat(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
@@ -60,15 +62,15 @@ public class CannonCat extends MiniGame {
         cannon_up = assets.get("cannon-cat/cannon_up.png", Texture.class);
         cannon_upleft = assets.get("cannon-cat/cannon_up+left.png", Texture.class);
         
-        for(i=0;i<8;i++){
+        for(i=0;i<N_GATOS;i++){
             cat_x[i] = (int) (200*Math.cos((i*Math.PI)/4)) + 1280/2;
             cat_y[i] = (int) ((-1)*200*Math.sin((i*Math.PI)/4)) + 720/2;
         }
-        for(i=0;i<10;i++){
+        for(i=0;i<MUNICAO;i++){
             cookie_x[i] = 300;
             cookie_y[i] = 200 + (-1)*i*20;
         }
-        tiro = 10;
+        tiro = MUNICAO;
     }
 
     @Override
@@ -89,21 +91,21 @@ public class CannonCat extends MiniGame {
         if(tempo2-tempo1>(100 - velocidade*50)){
             tempo1 =  System.currentTimeMillis();
             k++;
-            k = k%8;
+            k = k%N_GATOS;
         }
         
-        for(i=0;i<8;i++){
+        for(i=0;i<N_GATOS;i++){
             if(cat_x[i] == 0){
                 c++;
             }
         }
-        if(c==8){
+        if(c==N_GATOS){
                 super.challengeSolved();
         }
         else{
             c=0;
         }
-        if(tiro<=0 && c<8){
+        if(tiro<=0 && c<N_GATOS){
             super.challengeFailed();
         }
 
@@ -123,20 +125,17 @@ public class CannonCat extends MiniGame {
             cookie_x[tiro] = -500;
         }
     }
-    
-      
-    
 
     @Override
     public void onDrawGame() {
         batch.draw(background, 0, 0);
-        for(i=0;i<8;i++){
+        for(i=0;i<N_GATOS;i++){
            batch.draw(cat, cat_x[i], cat_y[i]);
         }
-        for(i=0;i<10;i++){
+        for(i=0;i<MUNICAO;i++){
            batch.draw(cookie, cookie_x[i], cookie_y[i]);
         }
-        
+        //Desenham as posições do canhão de maneira a girar no sentido horário
         switch(k){
             case 0:
                 batch.draw(cannon_right, center_x, center_y);
@@ -169,19 +168,13 @@ public class CannonCat extends MiniGame {
             case 7:
                 batch.draw(cannon_upright, center_x, center_y);
                 break;
-            
-                
-    
             default:
-
-        }   
-        
-        
+        }      
     }
     
     @Override
     public String getInstructions() {
-        return null;
+        return "Alimente todos os gatinhos!";
 
     }
 
