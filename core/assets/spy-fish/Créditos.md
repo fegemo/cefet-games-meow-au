@@ -1,9 +1,9 @@
 # Spy-Fish - Créditos
 
 ### Oceano
-![.\oceano.jpeg]
+![oceano](./ocean.jpeg)
 [Link]()
 
 ### Cartão de memória
-![.\card.png]
+![Cartão de Memória](card.png)
 [Link]()
