@@ -4,8 +4,6 @@ import br.cefetmg.games.Config;
 import br.cefetmg.games.graphics.hud.Hud;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
-import br.cefetmg.games.minigames.util.Monster;
-import br.cefetmg.games.minigames.util.Projetil;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
@@ -425,5 +423,126 @@ public class MouseAttack extends MiniGame {
            }
         }
     }
+    
+    public class Projetil {
+    
+        public float maxVelocity = 450;
+        public Vector2 position = new Vector2();
+        public Vector2 velocity = new Vector2();
+        float targetX;
+        float targetY;
+        Texture texture;
+        public Sprite projeSprite;
+
+        public Projetil(Texture texture){
+            this.texture=texture;
+            projeSprite = new Sprite(texture);
+        }
+
+        public void shoot(float targetX, float targetY){
+            //velocity.set(targetX - position.x, targetY - position.y).nor().scl(maxVelocity);
+
+            velocity.set(targetX - position.x, targetY - position.y).nor().scl(maxVelocity);
+        }
+
+
+        public void update(float deltaTime){
+            position.add(velocity.x*deltaTime, velocity.y*deltaTime);
+            //velocity.scl(1 - (0.98f * deltaTime));
+            projeSprite.setPosition(position.x,position.y);
+        }
+
+        public void setPosition(float x, float y){
+            projeSprite.setPosition(x, y);
+        }
+    
+    }
+    
+    public class Monster extends AnimatedSprite{
+
+        static final int FRAME_WIDTH = 64;
+        static final int FRAME_HEIGHT = 64;
+        TextureRegion[][] quadrosDaAnimacao;
+        Texture spriteSheet;
+        float sx;
+        float sy;
+        
+        float tempoDaAnimacao;
+        
+        Animation morrendo;        
+        Animation parado;
+        boolean morto=false;
+        
+        int x = 0;
+        
+        public Monster(final Texture monster) {
+            
+             super(new Animation(0.1f, new Array<TextureRegion>() {
+                {
+                    TextureRegion[][] frames = TextureRegion.split(
+                            monster, 64, 64);
+                    super.addAll(new TextureRegion[]{
+                        frames[1][0],
+                        frames[1][1],
+                        frames[1][2],
+                        frames[1][3],
+                        frames[1][4]
+                        
+                    });
+                }
+            }));
+            
+            quadrosDaAnimacao = TextureRegion.split(monster, 64, 64);
+            
+            parado = new Animation(0.1f,
+            quadrosDaAnimacao[1][0], 
+            quadrosDaAnimacao[1][1], 
+            quadrosDaAnimacao[1][2],
+            quadrosDaAnimacao[1][3],
+            quadrosDaAnimacao[1][4]);
+            
+            morrendo = new Animation(0.1f,
+            quadrosDaAnimacao[3][0], 
+            quadrosDaAnimacao[3][1], 
+            quadrosDaAnimacao[3][2],
+            quadrosDaAnimacao[3][3],
+            quadrosDaAnimacao[3][4],
+            quadrosDaAnimacao[3][5],
+            quadrosDaAnimacao[3][6]);
+            
+            super.setAnimation(parado);
+            super.getAnimation().setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+            
+        }
+
+       
+        Vector2 getHeadPosition() {
+            return new Vector2(
+                    this.getX() + this.getWidth() * 0.5f,
+                    this.getY() + this.getHeight() * 0.8f);
+        }
+
+        float getHeadDistanceTo(float enemyX, float enemyY) {
+            return getHeadPosition().dst(enemyX, enemyY);
+        }
+        
+        public void changeAnimation(){
+            super.setAnimation(morrendo);
+            super.getAnimation().setPlayMode(Animation.PlayMode.LOOP_PINGPONG);            
+        }
+        
+        public void setMorto(boolean morto){
+            this.morto=morto;
+        }
+        
+        public boolean getMorto(){
+            return this.morto;
+        }
+        
+        public void update(){
+            tempoDaAnimacao += Gdx.graphics.getDeltaTime();
+        
+        }
+    }    
 
 }
