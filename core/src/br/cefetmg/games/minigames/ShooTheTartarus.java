@@ -57,7 +57,7 @@ public class ShooTheTartarus extends MiniGame {
         tartarusTexture = assets.get(
                 "shoo-the-tartarus/tartarus-spritesheet.png", Texture.class);
         toothTexture = assets.get(
-                "shoo-the-tartarus/dog1.png", Texture.class);
+                "shoo-the-tartarus/tooth.png", Texture.class);
         tartarusAppearingSound = new Array<Sound>(3);
         tartarusAppearingSound.addAll(assets.get(
                 "shoo-the-tartarus/appearing1.wav", Sound.class),

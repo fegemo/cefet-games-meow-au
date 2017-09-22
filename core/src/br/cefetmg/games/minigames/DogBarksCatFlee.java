@@ -39,9 +39,8 @@ public class DogBarksCatFlee extends MiniGame {
     private Sound MeawSound;
     private Sound WhiningSound;
     private Texture CatTexture;
-    //private Array<Cat> enemies;
     private Cat enemy;
-    private Array<Tiles> tilesVector; // Tem que criar 1 tipo tile que tem Vector2 e um int para representar qual é o 
+    private Array<Tiles> tilesVector; 
     private Vector2 PosicaoInicial;
     private Texture tileTexture[] = new Texture[5];
     private float spawnInterval;
@@ -56,14 +55,14 @@ public class DogBarksCatFlee extends MiniGame {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
     }
     
-    private void TilesDraw(){
+    private void tilesDraw(){
         for (Tiles tile : tilesVector) {
             batch.draw(tileTexture[tile.tile_Type ], tile.tileVector.x, tile.tileVector.y);
          
         }
     }
     
-    private void UpdateDraw(){
+    private void updateDraw(){
         if( enemy.getPos().x - player.getPos().x >= 2*(player.getFrameWidth() + enemy.GetWidth() ) ){
             consegueOuver=true;
             enemy.moviment(new Vector2( enemy.getPos().x += -telaAnda , enemy.getPos().y ));
@@ -71,8 +70,8 @@ public class DogBarksCatFlee extends MiniGame {
                 tile.tileVector.x += -telaAnda; 
                 if(tile.tileVector.x <= 0- tileTexture[0].getWidth()){
                     tile.tileChange();
-                    tile.tileVector.x = 1400; // ainda não definido o num;
-                } // ainda não definido o num;   
+                    tile.tileVector.x = 1400;
+                }
             }
         }
         else{
@@ -80,7 +79,8 @@ public class DogBarksCatFlee extends MiniGame {
         }
     }
     
-    private void PlayerDraw(float dt) {
+    
+    private void playerDraw(float dt) {
         if( enemy.getPos().x - player.getPos().x >= 2*(player.getFrameWidth() + enemy.GetWidth() )){
             batch.draw (player.Anima2(dt), player.getPos().x, player.getPos().y);
         }
@@ -91,7 +91,7 @@ public class DogBarksCatFlee extends MiniGame {
         }    
     }
     
-    private void CatDraw(){
+    private void catDraw(){
         if( ! enemy.vivoMorto() )
             batch.draw(enemy.getTexture(),enemy.getPos().x,enemy.getPos().y);
         if(enemy.vivoMorto() && morreu <10)
@@ -142,7 +142,7 @@ public class DogBarksCatFlee extends MiniGame {
         inicializeCat();
     }
     
-    private void UpdateEnemy(){
+    private void updateEnemy(){
         if( enemy.FleeAction( player.getBarkCounter())){
             MeawSound.play();
             enemy.morreu();
@@ -154,6 +154,7 @@ public class DogBarksCatFlee extends MiniGame {
         
     }
     
+    }
     private void inicializeDog(){
         TextureRegion[][] TextureDog = TextureRegion.split(DogTextureStandBy, DogTextureStandBy.getWidth(), DogTextureStandBy.getHeight());
         PosicaoInicial = new Vector2 (300,41);
@@ -206,15 +207,15 @@ public class DogBarksCatFlee extends MiniGame {
             enemy.mostrarGatoMorto=!enemy.mostrarGatoMorto;
         
         TempoDeAnimacao += Gdx.graphics.getDeltaTime();
-        UpdateDraw();
-        UpdateEnemy();
+        updateDraw();
+        updateEnemy();
     }
 
     @Override
     public void onDrawGame() {
-        TilesDraw();
-        PlayerDraw(TempoDeAnimacao);
-        CatDraw();
+        tilesDraw();
+        playerDraw(TempoDeAnimacao);
+        catDraw();
     }
 
     @Override
