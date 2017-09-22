@@ -5,8 +5,6 @@
  */
 package br.cefetmg.games.minigames;
 
-import br.cefetmg.games.Animals.Cat;
-import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
@@ -17,9 +15,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
+
 
 /**
  *
@@ -105,9 +101,7 @@ public class ClickFindCat extends MiniGame {
         if (super.getState() == MiniGameState.PLAYER_FAILED || super.getState() == MiniGameState.PLAYER_SUCCEEDED ) {
             CatSprite.draw(batch); 
         }
-        
-        //Desenha o gatoInvisivel
-        //CatSprite.draw(batch);
+     
         //Desenha a Mira
         MiraSprite.draw(batch);
 
