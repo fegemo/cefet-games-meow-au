@@ -509,35 +509,13 @@ class Collision {
      * @param r2 retângulo 2
      * @return true se há colisão ou false, do contrário.
      */
-    public static final boolean lineOverlap(float aMin, float aMax, float bMin, float bMax) {
-        //vector2 x=max y=min
-        if (aMin < bMin && bMin <= aMax) {
-            return true;
-        }
-        return bMin < aMin && aMin <= bMax;
-    }
 
     public static final boolean rectsOverlap(Rectangle r1, Rectangle r2) {
-        if (lineOverlap(r1.x, r1.width + r1.x, r2.x, r2.width + r2.x)) {
-            return lineOverlap(r1.y, r1.height + r1.y, r2.y, r2.height + r2.y);
-        }
-        return false;
+        return r1.contains(r2);
     }
 
     public static final boolean circleRectCollision(Rectangle r2, Circle c1) {
-        Vector2 ponto = new Vector2();
-        Vector2 centroRet = new Vector2(r2.x + r2.width / 2, r2.y + r2.height / 2);
-        //distancia entre centro do circulo e o centro do quadrado
-        Vector2 dist = centroRet.sub(c1.x, c1.y);
-        Vector2 eixoX = new Vector2(dist.x, 0);
-        Vector2 eixoY = new Vector2(0, dist.y);
-        //"clamped " acha um ponto na superficie do quadrado q é menor q a distancia
-        eixoX.clamp(0, r2.width / 2);
-        eixoY.clamp(0, r2.height / 2);
-        ponto.x = eixoX.x;
-        ponto.y = eixoY.y;
-        //usa a funcao do circulo com o circulo e o ponto
-        return circlesOverlap(c1, new Circle(ponto, 0));
+        return r2.contains(c1);
     }
 }
 
