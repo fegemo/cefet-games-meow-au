@@ -30,8 +30,7 @@ public class SpyFish extends MiniGame {
     private Texture texturaFundo;
     private final Texture texturaMemoCard;
     private final Texture textureFishSheet;
-    private final Texture pointerTexture;
-
+   
     private ArrayList<MemoryChip> chip;
 
     private static SpriteBatch batch;
@@ -54,8 +53,7 @@ public class SpyFish extends MiniGame {
         this.textureFishSheet = assets.get("spy-fish/fishsheet.png", Texture.class);
 
         this.texturaFundo = assets.get("spy-fish/ocean.jpeg", Texture.class);
-        this.pointerTexture = assets.get("spy-fish/pointer.png", Texture.class);
-
+   
         batch = new SpriteBatch();
 
     }
