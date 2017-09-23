@@ -80,10 +80,6 @@ public class GatoFantasma extends MiniGame {
     }
 
     private void spawnEnemy() {
-        // pega x e y entre 0 e 1
-        //Vector2 position = new Vector2(rand.nextInt() % (720 - 565) + 565f, 360);
-
-        //Sprite enemy = new Sprite(catsTexture);
         Vector2 position = new Vector2(rand.nextInt()%(720-535)+535f,rand.nextInt()%(370-230)+230f);
         TextureRegion tr = new TextureRegion(catsTexture);
         TextureRegion t2 = new TextureRegion(catsTexture, tr.getRegionWidth()/2, tr.getRegionHeight());
@@ -112,10 +108,6 @@ public class GatoFantasma extends MiniGame {
 
         // verifica se matou um inimigo
         if (Gdx.input.justTouched()) {
-            // itera no array de inimigos
-            System.out.println("X:" + click.x + "   Y:" + click.y);
-             //       System.out.println("X:"+click.x+"   Y:"+click.y);
-
             for (int i = 0; i < enemies.size; i++) {
                 Sprite sprite = enemies.get(i);
                 // se há interseção entre o retângulo da sprite e do alvo,
@@ -144,13 +136,9 @@ public class GatoFantasma extends MiniGame {
     public void onUpdate(float dt) {
         for (int i = 0; i < enemies.size; i++) {
             Sprite sprite = enemies.get(i);
-            // diminui só até x% do tamanho da imagem
-            //if (sprite.getScaleY() < 2.0f) {
-              //  System.out.println(sprite.getScaleY() + "enemies" + enemies.size);
             if (sprite.getScaleY()<2.0f ) {
                 sprite.setScale(sprite.getScaleX() + 0.3f * dt);
             } else {
-                //perdeu playboy
                 challengeFailed();
             }
         }
