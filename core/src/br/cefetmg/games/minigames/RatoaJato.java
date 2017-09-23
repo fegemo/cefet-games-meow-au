@@ -2,6 +2,7 @@ package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.graphics.MultiAnimatedSprite;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
+import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -84,13 +85,7 @@ public class RatoaJato extends MiniGame {
          srcX=0;
          velocidade=-1*WORLD_HEIGHT*0.0005f;;
          long id = meon.play(0.2f);
-        timer.scheduleTask(new Task() {
-            @Override
-            public void run() {
-                meon.stop();
-            }
 
-        },9.5f,10f);
 
     }
     private void spawnEnemy() {
@@ -157,7 +152,9 @@ public class RatoaJato extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
-
+        if(this.getState().equals(MiniGameState.PLAYER_SUCCEEDED)){
+            meon.stop();
+        }
         calopsita.update(dt);
      //   System.out.printf("x=%.2f,Y=%.2f,Speed=%.2f\n",posX,posY,0.0);
         srcX+=5;
