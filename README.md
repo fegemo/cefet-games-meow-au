@@ -1,4 +1,4 @@
-﻿# cefet-games-meow-au
+# cefet-games-meow-au
 
 Um jogo simples, descomprometido e maroto descobrir sobre a secreta vida
 animal.
