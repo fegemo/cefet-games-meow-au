@@ -446,9 +446,9 @@ public class NinjaCat extends MiniGame {
                     Zombie zomb = zombies.get(i);
                     if (zomb.getBoundingRectangle().overlaps(cat.getBoundingRectangle())) {
                         if (rand.nextInt() % 2 == 0) {
-                            dzsound.play(.055f);
+                            dzsound.play(.035f);
                         } else {
-                            dzsound1.play(.1f);
+                            dzsound1.play(.035f);
                         }
                         rampage = false;
                         if (rand.nextInt() % 2 == 0) {
