@@ -214,6 +214,10 @@ public abstract class MiniGame {
         this.challengeSolved = true;
         transitionTo(MiniGameState.PLAYER_SUCCEEDED);
     }
+    
+    protected void showMessage(String strMessage){
+        this.stateObserver.showMessage(strMessage);
+    }
 
     /**
      * Inicializa o jogo - jogador, inimigos, timers etc.

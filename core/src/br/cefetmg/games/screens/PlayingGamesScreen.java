@@ -40,10 +40,16 @@ public class PlayingGamesScreen extends BaseScreen
         sequencer = new GameSequencer(5, new HashSet<MiniGameFactory>(
                 Arrays.asList(
                         // flávio
-                       // new ShootTheCariesFactory(),
-                     //   new ShooTheTartarusFactory()
-                        new RatoaJatoFactory(),
-                        new MouseAttackFactory()
+                        //new ShootTheCariesFactory(),
+                        //new ShooTheTartarusFactory(),
+                        // gustavo henrique e rogenes
+//			new basCATballFactory(),
+//                        new RunningFactory(),
+                        // rafael e luis carlos
+//                        new DodgeTheVeggiesFactory(),
+//                        new CatchThatHomeworkFactory(),
+                        // adriel
+                        new UnderwaterCatFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);
@@ -240,6 +246,11 @@ public class PlayingGamesScreen extends BaseScreen
         if (currentGame.getInputProcessor() != null) {
             inputMultiplexer.addProcessor(currentGame.getInputProcessor());
         }
+    }
+    
+    @Override
+    public void showMessage(String strMessage){
+        hud.showMessage(strMessage);
     }
     // </editor-fold>
 
