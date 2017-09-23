@@ -4,9 +4,7 @@ import br.cefetmg.games.Config;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
 /**
  * Uma tela de Menu Principal do jogo.
@@ -17,6 +15,7 @@ public class MenuScreen extends BaseScreen {
 
     private static final int NUMBER_OF_TILED_BACKGROUND_TEXTURE = 7;
     private TextureRegion background;
+
     /**
      * Cria uma nova tela de menu.
      *
@@ -33,6 +32,7 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
+
         // instancia a textura e a região de textura (usada para repetir)
         background = new TextureRegion(new Texture("menu-background.png"));
         // configura a textura para repetir caso ela ocupe menos espaço que o
@@ -41,16 +41,16 @@ public class MenuScreen extends BaseScreen {
                 Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         // define a largura da região de desenho de forma que ela seja repetida
-        // um número de vezes igual a NUMBER_OF_TILED_BACKGROUND_TEXTURE 
+        // um número de vezes igual a NUMBER_OF_TILED_BACKGROUND_TEXTURE
         background.setRegionWidth(
                 background.getTexture().getWidth()
-                * NUMBER_OF_TILED_BACKGROUND_TEXTURE);
-        // idem para altura, porém será repetida um número de vezes igual a 
+                        * NUMBER_OF_TILED_BACKGROUND_TEXTURE);
+        // idem para altura, porém será repetida um número de vezes igual a
         // NUMBER_OF_TILED_BACKGROUND_TEXTURE * razãoDeAspecto
         background.setRegionHeight(
                 (int) (background.getTexture().getHeight()
-                * NUMBER_OF_TILED_BACKGROUND_TEXTURE
-                / Config.DESIRED_ASPECT_RATIO));
+                        * NUMBER_OF_TILED_BACKGROUND_TEXTURE
+                        / Config.DESIRED_ASPECT_RATIO));
     }
 
     /**
@@ -60,12 +60,9 @@ public class MenuScreen extends BaseScreen {
     public void handleInput() {
         // se qualquer interação é feita (teclado, mouse pressionado, tecla
         // tocada), navega para a próxima tela (de jogo)
-        float x,y;
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.justTouched()) {
             navigateToMicroGameScreen();
         }
-        
-        
     }
 
     /**
@@ -89,7 +86,7 @@ public class MenuScreen extends BaseScreen {
                 viewport.getWorldWidth(),
                 viewport.getWorldHeight());
         drawCenterAlignedText("Pressione qualquer tecla para jogar",
-                viewport.getWorldHeight() * 0.35f);        
+                viewport.getWorldHeight() * 0.35f);
         batch.end();
     }
 
@@ -100,7 +97,7 @@ public class MenuScreen extends BaseScreen {
         game.setScreen(new PlayingGamesScreen(game, this));
     }
 
-    
+
     /**
      * Libera os recursos necessários para esta tela.
      */
