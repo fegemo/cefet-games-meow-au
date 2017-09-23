@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
  *
- * @author Alberto
+ * @author Luiza Pedro
  */
 public class SpyFishFactory implements MiniGameFactory{
 
