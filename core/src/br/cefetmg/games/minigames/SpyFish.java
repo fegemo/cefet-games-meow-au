@@ -46,26 +46,20 @@ public class SpyFish extends MiniGame {
 
     public SpyFish(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 20000f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
-
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
         this.texturaFundo = assets.get("spy-fish/ocean.jpeg", Texture.class);
         this.textureFishSheet = assets.get("spy-fish/fishsheet.png", Texture.class);
-
         this.texturaFundo = assets.get("spy-fish/ocean.jpeg", Texture.class);
-   
         batch = new SpriteBatch();
-
     }
 
     @Override
     protected void onStart() {
         chip = new ArrayList<MemoryChip>();
-
         for (int i = 0; i < this.MAX_CHIPS; i++) {
             chip.add(new MemoryChip(texturaMemoCard, this.VELOCIDADE_MAX_CHIP));
         }
-
         this.fish = new Fish(this.texturaFish);
     }
 
@@ -94,7 +88,6 @@ public class SpyFish extends MiniGame {
                     super.challengeSolved();
                 }
             }
-
             if (mc.getPositionMemoryCard().y < -1) {
                 NUM_DE_CHIPS_PERDIDO++;
                 if (NUM_DE_CHIPS_PERDIDO > (this.MAX_CHIPS + this.NUM_CHIPS_TO_TAKE)) {
@@ -116,18 +109,14 @@ public class SpyFish extends MiniGame {
     @Override
     public void onDrawGame() {
         Vector3 mause = getMousePosInGameWorld();
-
         update(Gdx.graphics.getDeltaTime());
         batch.begin();
         batch.draw(texturaFundo, 0f, 0f, 1280f, 720f);
-
         this.fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
         for (MemoryChip chip : chip) {
             chip.render(batch);
         }
         batch.end();
-
-
         /*this.fish.render_area_collision();
         for (MemoryChip chip : this.chip) {
             //mostra os circulos de colisão
@@ -165,21 +154,17 @@ public class SpyFish extends MiniGame {
 }
 
 class Fish extends Sprite implements Collidable {
-
     private Vector2 alvo;
     private Pose pose;
-
     private int lado;
     private Sprite sprite;
     private TextureRegion[][] region;
     private Circle circle;
     private ShapeRenderer shapeRenderer;
-
     private float x_tempo = 0.0f;
     private boolean aux = true;
 
     public Fish(Texture texture) {
-
         this.sprite = new Sprite(texture);
         this.sprite = new Sprite(texture);
         this.shapeRenderer = new ShapeRenderer();
@@ -199,7 +184,6 @@ class Fish extends Sprite implements Collidable {
             this.x_tempo = x;
             aux = !aux;
         }
-
         if (this.x_tempo > x) {
             if (!this.sprite.isFlipX()) {
                 this.sprite.flip(true, false);
@@ -207,7 +191,6 @@ class Fish extends Sprite implements Collidable {
         } else if (this.sprite.isFlipX()) {
             this.sprite.flip(true, false);
         }
-
     }
 
     public void update(float dt) {
@@ -235,21 +218,6 @@ class Fish extends Sprite implements Collidable {
         }
     }
 
-    /*    public void updateAccordingToTheMouse(float x , float y){
-        if (Gdx.input.isTouched()||Gdx.input.justTouched()) {     
-        //se clicar com o mouse sobre o objeto Fish
-            if ( (x >= (this.circle.x-this.circle.radius) && x <= (this.circle.x+this.circle.radius))
-                    && (y >= (this.circle.y-this.circle.radius) && y <= (this.circle.y+this.circle.radius)) ){
-                // coloca o ponteiro do mouse no centro da sprite
-                float delta_x = (x - this.circle.x);
-                float delta_y = (y - this.circle.y);
-                
-                update( this.sprite.getX() + delta_x , this.sprite.getY() + delta_y );
-                
-                }
-            }     
-        }
-     */
     public void updateAccordingToTheMouse(float x, float y) {
         if (Gdx.input.isTouched() || Gdx.input.justTouched()) {
             alvo = new Vector2(x, y);
@@ -257,14 +225,12 @@ class Fish extends Sprite implements Collidable {
     }
 
     public void render_area_collision() {
-
         // metodo para mostrar circulo de colisão
         this.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         this.shapeRenderer.identity();
         this.shapeRenderer.setColor(Color.RED);
         this.shapeRenderer.circle(this.circle.x, this.circle.y, this.circle.radius);
         this.shapeRenderer.end();
-
     }
 
     @Override
@@ -289,66 +255,49 @@ class Fish extends Sprite implements Collidable {
 }
 
 class MemoryChip implements Collidable {
-
     private float radius;
     private final Vector2 position = new Vector2();
-
     private final Circle circle;
     private final Sprite sprite;
-
     private final Float Velocidade_Queda;
     private final Float Rotation;
-
     private ShapeRenderer shapeRenderer;
 
     public MemoryChip(Texture texture, float velocidade) {
         Random r = new Random();
-
         this.sprite = new Sprite(texture);
         this.circle = new Circle();
         this.shapeRenderer = new ShapeRenderer();
-
         this.position.x = (float) new Random().nextInt(1271);
         this.position.y = 600.0f + (float) new Random().nextInt(120);
-
         this.circle.x = this.position.x + 12.5f;
         this.circle.y = this.position.y + 17f;
-
         this.Velocidade_Queda = 1 + (float) new Random().nextFloat() * (velocidade - 1);
         this.Rotation = (-30) + (float) new Random().nextInt(20);
-
         this.circle.radius = 21.1f;
-
         this.sprite.setPosition(this.position.x, this.position.y);
-
     }
 
     public void update() {
-
         //atualiza posição do memo card
         this.position.y -= this.Velocidade_Queda;
         this.sprite.rotate((float) 10);
         this.sprite.setPosition(this.position.x, this.position.y);
-
         // atualiza a area de colisão
         this.circle.y = this.position.y + 17f;
         this.circle.x = this.position.x + 12.5f;
-
     }
 
     public void render_area_collision() {
-
         // metodo para mostrar o circulo de colisão
         this.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         this.shapeRenderer.identity();
         this.shapeRenderer.setColor(Color.RED);
         this.shapeRenderer.circle(this.circle.x, this.circle.y, this.circle.radius);
         this.shapeRenderer.end();
-
     }
 
     public void render(SpriteBatch sb) {
-
         // se dentro da tela e sem colisão com other - desenha
         if (this.position.y >= -35) {
             this.sprite.draw(sb);
@@ -365,7 +314,6 @@ class MemoryChip implements Collidable {
         if (other instanceof Fish) {
             // se ocorrer colisão com objeto Fish
             return Collision.circlesOverlap(other.getMinimumEnclosingBall(), this.circle);
-
         } else {
             return false;
         }
@@ -388,7 +336,6 @@ class MemoryChip implements Collidable {
 }
 
 class Pose {
-
     public Vector2 posicao;
     public Vector2 velocidade;
     public float orientacao;
@@ -459,7 +406,7 @@ class Direcionamento {
 /**
  * Guia o agente na direção do alvo.
  *
- * @inspirado no tp de cinematica
+ * inspirado no tp de cinematica
  */
 class Buscar {
 
@@ -539,7 +486,6 @@ class Collision {
      * @return true se há colisão ou false, do contrário.
      */
     public static final boolean circlesOverlap(Circle c1, Circle c2) {
-
         vector_c1 = new Vector2(c1.x, c1.y);
         vector_c2 = new Vector2(c2.x, c2.y);
 
@@ -580,13 +526,6 @@ class Collision {
         return bMin < aMin && aMin <= bMax;
     }
 
-    /*
-    public static final boolean lineOverlap(float aMin, float aMax, float bMin, float bMax){
-        return aMax >= bMin && aMin <= bMax;
-    }
-    public static final boolean rectsOverlap(Rectangle r1, Rectangle r2) {
-        return lineOverlap(, 0, 0, 0)
-    }*/
     public static final boolean rectsOverlap(Rectangle r1, Rectangle r2) {
         if (lineOverlap(r1.x, r1.width + r1.x, r2.x, r2.width + r2.x)) {
             return lineOverlap(r1.y, r1.height + r1.y, r2.y, r2.height + r2.y);
@@ -595,7 +534,6 @@ class Collision {
     }
 
     public static final boolean circleRectCollision(Rectangle r2, Circle c1) {
-
         Vector2 ponto = new Vector2();
         Vector2 centroRet = new Vector2(r2.x + r2.width / 2, r2.y + r2.height / 2);
         //distancia entre centro do circulo e o centro do quadrado
@@ -607,7 +545,6 @@ class Collision {
         eixoY.clamp(0, r2.height / 2);
         ponto.x = eixoX.x;
         ponto.y = eixoY.y;
-
         //usa a funcao do circulo com o circulo e o ponto
         return circlesOverlap(c1, new Circle(ponto, 0));
     }
