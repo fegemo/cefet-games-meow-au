@@ -158,7 +158,7 @@ public class RatoaJato extends MiniGame {
         calopsita.update(dt);
      //   System.out.printf("x=%.2f,Y=%.2f,Speed=%.2f\n",posX,posY,0.0);
         srcX+=5;
-        if(aceleracao>-1*WORLD_HEIGHT*0.0001f);
+        if(aceleracao>-1*WORLD_HEIGHT*0.00009f);
         aceleracao-=WORLD_HEIGHT*0.00005f; //gravidade
 
         if(posY<ScreenHeight+2)
@@ -168,7 +168,7 @@ public class RatoaJato extends MiniGame {
         if(Gdx.input.justTouched()) {
             //  System.out.printf("Heeee\n");
             aceleracao+=WORLD_HEIGHT*0.002f;
-            posY-=WORLD_HEIGHT*0.09;
+            posY-=WORLD_HEIGHT*0.07;
             posX+=2;
         }
         // atualiza a escova (quadro da animação)
