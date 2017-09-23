@@ -34,6 +34,8 @@ public class AvoiderFactory implements MiniGameFactory {
                 put("avoider/cat-moving-down-spritesheet.png", Texture.class);
                 put("avoider/cat-moving-left-spritesheet.png", Texture.class);
                 put("avoider/cat-moving-right-spritesheet.png", Texture.class);
+                put("avoider/cat-moving-dLeft-spritesheet.png", Texture.class);
+                put("avoider/cat-moving-dRight-spritesheet.png", Texture.class);
             }
         };
     }
