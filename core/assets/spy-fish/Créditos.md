@@ -6,4 +6,4 @@
 
 ### Cartão de memória
 ![Cartão de Memória](card.png)
-[Link]()
+[Link](https://pixabay.com/p-1718591/?no_redirect)
