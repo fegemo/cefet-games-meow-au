@@ -60,7 +60,7 @@ public abstract class BaseScreen extends ScreenAdapter {
         this.game = game;
         this.previous = previous;
         this.batch = new SpriteBatch();
-        camera = new OrthographicCamera();
+        this.camera = new OrthographicCamera();
         this.viewport = chooseBestViewport();
         this.assets = new AssetManager();
 
