@@ -196,8 +196,7 @@ public class NinjaCat extends MiniGame {
             }
 
             if (Gdx.input.justTouched() && !rampage && !gameover) {
-                for (int i = 0; i < zombies.size; i++) {
-                    Zombie zomb = zombies.get(i);
+                for (Zombie zomb : zombies) {
                     if (zomb.getBoundingRectangle().overlaps(arrow.getBoundingRectangle())) {
                         rampage = true;
                         if (arrow.getX() > cat.getX() && !right) {
@@ -428,9 +427,9 @@ public class NinjaCat extends MiniGame {
             gcount++;
             cat.update();
         } else {
-            for (int i = 0; i < deadzomb.size; i++) {
-                if (deadzomb.get(i).isAnimationFinished()) {
-                    this.deadzomb.removeValue(deadzomb.get(i), true);
+            for (DeadZombie dz : deadzomb) {
+                if (dz.isAnimationFinished()) {
+                    deadzomb.removeValue(dz, true);
                 }
             }
             if (rampage) {
@@ -442,8 +441,7 @@ public class NinjaCat extends MiniGame {
                     cat.setX(cat.getX() - catSpeed);
                 }
 
-                for (int i = 0; i < zombies.size; i++) {
-                    Zombie zomb = zombies.get(i);
+                for (Zombie zomb : zombies) {
                     if (zomb.getBoundingRectangle().overlaps(cat.getBoundingRectangle())) {
                         if (rand.nextInt() % 2 == 0) {
                             dzsound.play(.035f);
@@ -481,8 +479,7 @@ public class NinjaCat extends MiniGame {
             }
             cat.update();
 
-            for (int i = 0; i < zombies.size; i++) {
-                Zombie zomb = zombies.get(i);
+            for (Zombie zomb : zombies) {
                 if (zomb.getX() < cat.getX()) {
                     zomb.setPosition(zomb.getX() + speed, zomb.getY());
                 } else {
@@ -513,8 +510,7 @@ public class NinjaCat extends MiniGame {
     public void onDrawGame() {
         backGround.draw(batch);
 
-        for (int i = 0; i < deadzomb.size; i++) {
-            DeadZombie zomb = deadzomb.get(i);
+        for (DeadZombie  zomb : deadzomb) {
             zomb.draw(batch);
         }
         if (victory || pose) {
@@ -526,8 +522,7 @@ public class NinjaCat extends MiniGame {
         if (gameover) {
             god.draw(batch);
         }
-        for (int i = 0; i < zombies.size; i++) {
-            Zombie zomb = zombies.get(i);
+        for (Zombie zomb : zombies) {
             zomb.draw(batch);
         }
         arrow.draw(batch);
