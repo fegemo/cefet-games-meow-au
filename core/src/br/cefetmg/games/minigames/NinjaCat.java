@@ -31,6 +31,7 @@ public class NinjaCat extends MiniGame {
     private catIntro ci;
     private Array<Zombie> zombies;
     private Array<DeadZombie> deadzomb;
+    private killingZombie god;
 
     private boolean rampage;
     private boolean right;
@@ -41,8 +42,6 @@ public class NinjaCat extends MiniGame {
     private boolean end;
     private boolean pose;
     private boolean victory;
-
-    private killingZombie god;
 
     private Texture playerTexture;
     private Texture arrowTexture;
@@ -510,7 +509,7 @@ public class NinjaCat extends MiniGame {
     public void onDrawGame() {
         backGround.draw(batch);
 
-        for (DeadZombie  zomb : deadzomb) {
+        for (DeadZombie zomb : deadzomb) {
             zomb.draw(batch);
         }
         if (victory || pose) {
