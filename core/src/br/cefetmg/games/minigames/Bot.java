@@ -1,6 +1,8 @@
-package br.cefetmg.games;
+package br.cefetmg.games.minigames;
 
 import static br.cefetmg.games.Config.*;
+import static br.cefetmg.games.minigames.HeadSoccer.Player.FLOOR;
+import static br.cefetmg.games.minigames.HeadSoccer.Player.JUMP;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;

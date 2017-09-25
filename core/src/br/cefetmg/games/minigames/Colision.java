@@ -1,6 +1,6 @@
-package br.cefetmg.games;
+package br.cefetmg.games.minigames;
 
-import static br.cefetmg.games.Config.convertToRad;
+import static br.cefetmg.games.minigames.HeadSoccer.Player.convertToRad;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;

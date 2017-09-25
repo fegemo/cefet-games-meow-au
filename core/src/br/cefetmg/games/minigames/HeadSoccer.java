@@ -1,10 +1,12 @@
 package br.cefetmg.games.minigames;
 
-import br.cefetmg.games.Colision;
-import br.cefetmg.games.Bot;
 import static br.cefetmg.games.Config.*;
-import br.cefetmg.games.Obstacle;
-import br.cefetmg.games.Player;
+import static br.cefetmg.games.minigames.HeadSoccer.Player.FLOOR;
+import static br.cefetmg.games.minigames.HeadSoccer.Player.GRAVITY;
+import static br.cefetmg.games.minigames.HeadSoccer.Player.INITIALXLEFTGOAL;
+import static br.cefetmg.games.minigames.HeadSoccer.Player.INITIALXRIGHTGOAL;
+import static br.cefetmg.games.minigames.HeadSoccer.Player.INITIALYGOAL;
+import static br.cefetmg.games.minigames.HeadSoccer.Player.convertToRad;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -32,6 +34,293 @@ import javax.print.attribute.standard.PrinterStateReason;
  */
 public class HeadSoccer extends MiniGame {
 
+        class Player {
+        public static final int WORLD_WIDTH = 1280;
+    public static final int WORLD_HEIGHT = 720;
+    public static final int FLOOR = 81;
+    public static final int JUMP = 7;
+    public static final int GRAVITY = 10;
+    public static final float convertToRad = 3.14159265359f/180;
+    
+    public static final int INITIALXLEFTGOAL = -45;
+    public static final int INITIALXRIGHTGOAL = 1135;
+    public static final int INITIALYGOAL = 75;
+            
+        public boolean walking, orientation, footUp, footDown, movingFoot, left, right, jump ,kick;
+        private float playerStep, playerWidth, playerHeight;
+        public Sprite sprite_Player, sprite_Shoes;
+        public Vector2 position, positionMin, positionMax, speed, footPosition;
+        private Texture playerTexture;
+        private SpriteBatch batch;
+        public float maxSpeed;
+        private float mass, aTime;
+        private float rotation_angle,initial_angle, final_angle, correctionX, correctionY, aCorrectionX, aCorrectionY;
+        public float kick_power;
+        private int oldOrientation;
+
+        public Player(Vector2 positionInicial, Vector2 positionMin, Vector2 positionMax, Texture playerTexture, SpriteBatch batch, float playerStep, float maxSpeed, float sizeX, float sizeY, float mass) {
+            this.speed = new Vector2(0, 0);
+            this.walking = false;
+            this.positionMin = positionMin;
+            this.positionMax = positionMax;
+            this.batch = batch;
+            this.playerStep = playerStep;
+            this.playerTexture = playerTexture;
+            this.maxSpeed = maxSpeed;
+            this.mass = mass;
+            aTime = 0.3f;
+            footUp = false;
+            footDown = false;
+            movingFoot = false;
+            kick_power = 20;
+            this.sprite_Player = new Sprite(playerTexture);
+            this.sprite_Player.setSize(sizeX, sizeY);
+            this.sprite_Player.setFlip(true, false);
+            this.sprite_Shoes = new Sprite(new Texture("head-soccer/shoes.png"));
+            this.sprite_Shoes.setSize(0.7f * sizeX, 0.3f * sizeY);
+            this.sprite_Shoes.setOriginCenter();
+            this.sprite_Shoes.setRotation(-27);
+            this.initial_angle = -27;
+            final_angle = 45;
+
+            correctionY = -sprite_Shoes.getHeight()/2;
+
+            aCorrectionX = 0;
+            aCorrectionY = 0;
+
+            oldOrientation = 0;
+            this.playerWidth = sprite_Player.getWidth();
+            this.playerHeight = sprite_Player.getHeight();
+
+            this.position = positionInicial;
+            footPosition = new Vector2(positionInicial.x, positionInicial.y - sprite_Shoes.getHeight() / 2) ;
+
+            orientation = true;//true= Direita false = left
+            correctionX = 0;
+
+            sprite_Player.setPosition(positionInicial.x, positionInicial.y);
+            sprite_Shoes.setPosition(footPosition.x,footPosition.y);
+        }
+
+        public Sprite getSprite_Player() {
+            return sprite_Player;
+        }
+
+        public float getRotation_angle() {
+            return rotation_angle;
+        }
+
+
+        public void moveFoot(float dt) {
+            if (oldOrientation == 0 || (oldOrientation == 1 && orientation)
+                    || (oldOrientation == 2 && orientation == false)) {
+                if (movingFoot == true) {
+
+                    if (oldOrientation == 0) {
+                        if (orientation == true) {
+                            oldOrientation = 1;
+                        } else {
+                            oldOrientation = 2;
+                        }
+                    }
+
+                    float prop = dt / aTime;
+                    float limitX = playerWidth/1.5f;
+                    float limitY = 20;
+                    float speedUp = 2.5f;
+                    rotation_angle = sprite_Shoes.getRotation();
+                    if (orientation == true) {
+                        if (footDown == false) {
+                            if (rotation_angle - prop * speedUp * initial_angle < final_angle) {
+                                sprite_Shoes.setRotation(rotation_angle - prop * speedUp * initial_angle );
+                                 if(aCorrectionX + prop * limitX < limitX)
+                                    aCorrectionX += prop * limitX;
+                                 if(aCorrectionY + prop * limitY < limitY)
+                                      aCorrectionY += prop * limitY;    
+                            } else {
+                                aCorrectionX = limitX;
+                                aCorrectionY = limitY;
+                                sprite_Shoes.setRotation(final_angle);
+                                footDown = true;
+                            }
+                        } else {
+                            if (rotation_angle + prop * speedUp * initial_angle > initial_angle) {
+                                sprite_Shoes.setRotation(rotation_angle + prop * speedUp * initial_angle);
+                                if(aCorrectionX - prop * limitX > 0)
+                                    aCorrectionX -= prop * limitX;
+                                 if(aCorrectionY - prop * limitY > 0)
+                                      aCorrectionY -= prop * limitY;  
+                            } else {
+                                aCorrectionX = 0;
+                                aCorrectionY = 0;
+                                sprite_Shoes.setRotation(initial_angle);
+                                footUp = true;
+                            }
+                        }
+                    } 
+
+                    else {
+                        if (footDown == false) {
+                            if (rotation_angle +  prop * speedUp * initial_angle > -final_angle) {
+                                sprite_Shoes.setRotation(rotation_angle + prop * speedUp * initial_angle);
+                                if(aCorrectionX - prop * limitX > -limitX)
+                                    aCorrectionX -= prop * limitX;
+                                 if(aCorrectionY + prop * limitY < limitY)
+                                      aCorrectionY += prop * limitY;  
+                            } else {
+                                aCorrectionX = -limitX;
+                                aCorrectionY = limitY;
+                                sprite_Shoes.setRotation(-final_angle);
+                                footDown = true;
+                            }
+                        } else {
+                            if (rotation_angle - prop * speedUp * initial_angle < -initial_angle) {
+                                sprite_Shoes.setRotation(rotation_angle - prop * speedUp * initial_angle);  
+                                if(aCorrectionX + prop * limitX < 0)
+                                    aCorrectionX += prop * limitX;
+                                 if(aCorrectionY - prop * limitY > 0)
+                                      aCorrectionY -= prop * limitY;  
+                            } else {
+                                aCorrectionX = 0;
+                                aCorrectionY = 0;
+                                sprite_Shoes.setRotation(-initial_angle);
+                                footUp = true;
+                            }
+                        }
+
+                    }
+                    if (footUp) {
+                        footUp = false;
+                        footDown = false;
+                        movingFoot = false;
+                        oldOrientation = 0;
+                    }
+
+                }
+            } else {
+                footUp = false;
+                footDown = false;
+                movingFoot = false;
+                oldOrientation = 0;
+                aCorrectionX = 0;
+                aCorrectionY = 0;
+                if (orientation) {
+                    sprite_Shoes.setRotation(initial_angle);
+                } else {
+                    sprite_Shoes.setRotation(-initial_angle);
+                }
+            }
+        }
+
+        public Sprite getSprite_Shoes() {
+            return sprite_Shoes;
+        }
+
+        public void updateMoviment() {
+            float x = sprite_Player.getX(), y = sprite_Player.getY();
+            rotation_angle = sprite_Shoes.getRotation();
+            walking = false;
+
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A) || left) {
+                if (speed.x > -1 * maxSpeed) {
+                    speed.x -= 1;
+                }
+                if (orientation == true) {
+                    this.sprite_Player.setFlip(false, false);
+                    this.sprite_Shoes.setFlip(true, false);
+                    this.sprite_Shoes.setRotation(27);
+                    correctionX = sprite_Player.getWidth() / 3;
+
+                    orientation = false;
+                }
+                left = false;
+            } else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D) || right) {
+                if (speed.x < maxSpeed) {
+                    speed.x += 1;
+                }
+                if (orientation == false) {
+                    correctionX = 0;
+                    this.sprite_Player.setFlip(true, false);
+                    this.sprite_Shoes.setFlip(false, false);
+                    this.sprite_Shoes.setRotation(-27);
+                    orientation = true;
+                }
+                right = false;
+            } else {
+                speed.x = 0;
+            }
+
+            if ((Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W)) && y == FLOOR || jump) {
+                if(sprite_Player.getY() == FLOOR)
+                    speed.y = JUMP;
+                jump = false;
+            }
+
+            if (Gdx.input.isKeyPressed(Input.Keys.SPACE) || kick) {
+                if (movingFoot == false) {
+                    movingFoot = true;
+                }
+                kick = false;
+            }
+
+            float playerStepx = playerStep * (speed.x / maxSpeed);
+            float playerStepy = playerStep * (speed.y / maxSpeed);
+
+            if (speed.x < 0) {
+                if (x + playerStepx > positionMin.x) {
+                    x += playerStepx;
+                }
+                walking = true;
+            } else if (speed.x > 0) {
+                if (x + playerStepx < positionMax.x - playerWidth) {
+                    x += playerStepx;
+                }
+                walking = true;
+            }
+
+            if (y > FLOOR) {
+                if (speed.y > 0) {
+                    y += playerStepy;
+                    walking = true;
+                } else if (speed.y < 0) {
+                    y += playerStepy;
+                    walking = true;
+
+                }
+            } else if (y == FLOOR) {
+                if (speed.y > 0) {
+                    y += playerStepy;
+                    walking = true;
+                }
+            }
+
+            if (y < FLOOR) {
+                y = FLOOR;
+            }
+
+            sprite_Player.setPosition(x, y);
+            sprite_Shoes.setPosition(x + correctionX + aCorrectionX, y - sprite_Shoes.getHeight() / 2 + correctionY + aCorrectionY);
+        }
+
+        public void actionGravity(float value) {
+            speed.set(speed.x, speed.y - value);
+        }
+
+        public void draw() {
+            sprite_Player.draw(batch);
+            sprite_Shoes.draw(batch);
+        }
+
+        public Vector2 getSpeed() {
+            return speed;
+        }
+
+        public float getMass() {
+            return mass;
+        }
+
+    }
+    
     private boolean goalP, goalB;
     private float floorBall, reflected, limit, lastCollisonTime, cheatBot;
     private Texture backgroundTexture;

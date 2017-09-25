@@ -9,20 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
-/**
- *
- * @author fegemo <coutinho@decom.cefetmg.br>
- */
 public class HeadSoccerFactory implements MiniGameFactory {
-
-    /**
-     * Veja {@link MiniGameFactory}.
-     *
-     * @param screen
-     * @param observer
-     * @param difficulty
-     * @return
-     */
+    
     @Override
     public MiniGame createMiniGame(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {

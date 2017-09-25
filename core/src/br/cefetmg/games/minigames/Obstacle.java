@@ -1,4 +1,4 @@
-package br.cefetmg.games;
+package br.cefetmg.games.minigames;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
