@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.cefetmg.games.minigames.factories;
 
 import br.cefetmg.games.minigames.MiniGame;
@@ -19,15 +14,15 @@ import java.util.Map;
  *
  * @author Adriel
  */
-public class UnderwaterCatFactory implements MiniGameFactory{
-    
-        @Override
+public class UnderwaterCatFactory implements MiniGameFactory {
+
+    @Override
     public MiniGame createMiniGame(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
         return new UnderwaterCat(screen, observer, difficulty);
     }
-    
-        @Override
+
+    @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
             {
@@ -37,12 +32,12 @@ public class UnderwaterCatFactory implements MiniGameFactory{
                 put("underwater-cat/fish3.png", Texture.class);
                 put("underwater-cat/fish5.png", Texture.class);
                 put("underwater-cat/background.bmp", Texture.class);
-                put("underwater-cat/water.mp3",Music.class);
+                put("underwater-cat/water.mp3", Music.class);
                 put("underwater-cat/swim.wav", Music.class);
-                put("underwater-cat/eat.wav",Sound.class);
+                put("underwater-cat/eat.wav", Sound.class);
 
             }
         };
     }
-    
+
 }
