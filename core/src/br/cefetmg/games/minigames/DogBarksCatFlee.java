@@ -21,30 +21,28 @@ import com.badlogic.gdx.utils.Array;
  */
 public class DogBarksCatFlee extends MiniGame {
 
-    private final int TILES_COUNT = 18;
+    private static final int TILES_COUNT = 18;
     private Dog player;
-    private Texture DogTextureStandBy;
-    private Texture DogTexture;
+    private Texture dogTextureStandBy;
+    private Texture dogTexture;
     private Texture deadTexture;
-    private Texture DogTextureWalking;
-    private Animation<TextureRegion> DogWalking;
-    private Animation<TextureRegion> DogBarking;
-    private Sound BarkSound;
-    private Sound MeawSound;
-    private Sound WhiningSound;
-    private Texture CatTexture;
+    private Texture dogTextureWalking;
+    private Animation<TextureRegion> dogWalking;
+    private Animation<TextureRegion> dogBarking;
+    private Sound barkSound;
+    private Sound meawSound;
+    private Sound whiningSound;
+    private Texture catTexture;
     private Cat enemy;
     private Array<Tiles> tilesVector;
-    private Vector2 PosicaoInicial;
+    private Vector2 posicaoInicial;
     private Texture tileTexture[] = new Texture[5];
     private float spawnInterval;
-    private float minimumEnemySpeed;
-    private float maximumEnemySpeed;
-    private float TempoDeAnimacao;
+    private float tempoDeAnimacao;
     private int morreu = 0;
     public float telaAnda = 3.5f;
-    public int latindo_Counter = 0;
-    public boolean consegueOuver = false;
+    public int contadorLatidos = 0;
+    public boolean consegueOuvir = false;
 
     public DogBarksCatFlee(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
@@ -52,73 +50,72 @@ public class DogBarksCatFlee extends MiniGame {
 
     private void tilesDraw() {
         for (Tiles tile : tilesVector) {
-            batch.draw(tileTexture[tile.tile_Type], tile.tileVector.x, tile.tileVector.y);
-
+            batch.draw(tileTexture[tile.tileType], tile.position.x, tile.position.y);
         }
     }
 
     private void updateDraw() {
-        if (enemy.getPos().x - player.getPos().x >= 2 * (player.getFrameWidth() + enemy.GetWidth())) {
-            consegueOuver = true;
-            enemy.moviment(new Vector2(enemy.getPos().x += -telaAnda, enemy.getPos().y));
+        if (enemy.getPosition().x - player.getPosition().x >= 2 * (player.getFrameWidth() + enemy.getWidth())) {
+            consegueOuvir = true;
+            enemy.setPosition(new Vector2(enemy.getPosition().x += -telaAnda, enemy.getPosition().y));
             for (Tiles tile : tilesVector) {
-                tile.tileVector.x += -telaAnda;
-                if (tile.tileVector.x <= 0 - tileTexture[0].getWidth()) {
+                tile.position.x += -telaAnda;
+                if (tile.position.x <= 0 - tileTexture[0].getWidth()) {
                     tile.tileChange();
-                    tile.tileVector.x = 1400;
+                    tile.position.x = 1400;
                 }
             }
         } else {
-            consegueOuver = false;
+            consegueOuvir = false;
         }
     }
 
     private void playerDraw(float dt) {
-        if (enemy.getPos().x - player.getPos().x >= 2 * (player.getFrameWidth() + enemy.GetWidth())) {
-            batch.draw(player.Anima2(dt), player.getPos().x, player.getPos().y);
+        if (enemy.getPosition().x - player.getPosition().x >= 2 * (player.getFrameWidth() + enemy.getWidth())) {
+            batch.draw(player.getWalkingAnimationFrame(dt), player.getPosition().x, player.getPosition().y);
         } else if (player.isLatindo()) {
-            batch.draw(player.Anima(dt), player.getPos().x, player.getPos().y);
+            batch.draw(player.getBarkingAnimationFrame(dt), player.getPosition().x, player.getPosition().y);
         } else {
-            batch.draw(player.getTexture(), player.getPos().x, player.getPos().y);
+            batch.draw(player.getTexture(), player.getPosition().x, player.getPosition().y);
         }
     }
 
     private void catDraw() {
-        if (!enemy.vivoMorto()) {
-            batch.draw(enemy.getTexture(), enemy.getPos().x, enemy.getPos().y);
+        if (!enemy.isVivo()) {
+            batch.draw(enemy.getTexture(), enemy.getPosition().x, enemy.getPosition().y);
         }
-        if (enemy.vivoMorto() && morreu < 10) {
+        if (enemy.isVivo() && morreu < 10) {
             batch.draw(deadTexture, enemy.oldPos.x, enemy.oldPos.y);
         }
     }
 
     @Override
     protected void onStart() {
-        TempoDeAnimacao = 0;
-        WhiningSound = assets.get("DogBarksCatFlee/dog-whining-sound.mp3", Sound.class);
+        tempoDeAnimacao = 0;
+        whiningSound = assets.get("DogBarksCatFlee/dog-whining-sound.mp3", Sound.class);
         deadTexture = assets.get("DogBarksCatFlee/kitten1-alt_3.png", Texture.class);
-        BarkSound = assets.get("DogBarksCatFlee/BarkSound.wav", Sound.class);
-        DogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
-        DogTexture = assets.get("DogBarksCatFlee/dog_spritesheet.png", Texture.class);
-        DogTextureWalking = assets.get("DogBarksCatFlee/spritesheet2.png", Texture.class);
-        TextureRegion[][] quadrosDeAnimacao = TextureRegion.split(DogTexture, 128, 128);
-        TextureRegion[][] quadrosDeAnimacao2 = TextureRegion.split(DogTextureWalking, 128, 128);
+        barkSound = assets.get("DogBarksCatFlee/BarkSound.wav", Sound.class);
+        dogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
+        dogTexture = assets.get("DogBarksCatFlee/dog_spritesheet.png", Texture.class);
+        dogTextureWalking = assets.get("DogBarksCatFlee/spritesheet2.png", Texture.class);
+        TextureRegion[][] quadrosDeAnimacao = TextureRegion.split(dogTexture, 128, 128);
+        TextureRegion[][] quadrosDeAnimacao2 = TextureRegion.split(dogTextureWalking, 128, 128);
         System.out.println(+quadrosDeAnimacao.length);
-        DogBarking = new Animation<TextureRegion>(0.3f,
+        dogBarking = new Animation<TextureRegion>(0.3f,
                 quadrosDeAnimacao[0][3],
                 quadrosDeAnimacao[0][2],
                 quadrosDeAnimacao[0][1],
                 quadrosDeAnimacao[0][0]);
-        DogWalking = new Animation<TextureRegion>(0.3f,
+        dogWalking = new Animation<TextureRegion>(0.3f,
                 quadrosDeAnimacao2[0][0],
                 quadrosDeAnimacao2[0][1],
                 quadrosDeAnimacao2[0][2],
                 quadrosDeAnimacao2[0][3],
                 quadrosDeAnimacao2[0][4]);
-        DogBarking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
-        DogWalking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
-        CatTexture = assets.get("DogBarksCatFlee/kitten1-alt.png", Texture.class);
-        MeawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
+        dogBarking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        dogWalking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        catTexture = assets.get("DogBarksCatFlee/kitten1-alt.png", Texture.class);
+        meawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
 
         tileTexture[0] = assets.get("DogBarksCatFlee/tile0.png", Texture.class);
         tileTexture[1] = assets.get("DogBarksCatFlee/tile1.png", Texture.class);
@@ -131,38 +128,38 @@ public class DogBarksCatFlee extends MiniGame {
         for (int i = 0; i < TILES_COUNT; i++) {
             tilesVector.add(new Tiles(new Vector2(1 + i * tileTexture[0].getWidth(), 41)));
         }
-        inicializeDog();
-        inicializeCat();
+        initializeDog();
+        initializeCat();
     }
 
     private void updateEnemy() {
-        if (enemy.FleeAction(player.getBarkCounter())) {
-            MeawSound.play();
+        if (enemy.shouldTriggerFleeAction(player.getBarkCounter())) {
+            meawSound.play();
             enemy.morreu();
-            player.BarkZero();
+            player.resetBarkCounter();
             super.challengeSolved();
         }
-        if (enemy.vivoMorto() && (enemy.get_quantidade_vidas() > 0)) {
+        if (enemy.isVivo() && (enemy.getQuantidadeVidas() > 0)) {
             enemy.spawn();
         }
 
     }
 
-    private void inicializeDog() {
-        TextureRegion[][] TextureDog = TextureRegion.split(DogTextureStandBy, DogTextureStandBy.getWidth(), DogTextureStandBy.getHeight());
-        PosicaoInicial = new Vector2(300, 41);
-        player = new Dog(3, PosicaoInicial, TextureDog[0][0], DogBarking, DogWalking);
+    private void initializeDog() {
+        TextureRegion[][] textureDog = TextureRegion.split(dogTextureStandBy, dogTextureStandBy.getWidth(), dogTextureStandBy.getHeight());
+        posicaoInicial = new Vector2(300, 41);
+        player = new Dog(3, posicaoInicial, textureDog[0][0], dogBarking, dogWalking);
     }
 
-    private void inicializeCat() {
-        TextureRegion[][] Cat = TextureRegion.split(CatTexture, CatTexture.getWidth(), CatTexture.getHeight());
-        enemy = new Cat((int) ((float) ScareThereshold() * DifficultyCurve.S.getCurveValueBetween(spawnInterval, 5f, 1f)), PosicaoInicial, Cat[0][0]);
-        enemy.settarQuantidade_vidas(spawnInterval);
-        enemy.moviment(enemy.PosIniCat());
+    private void initializeCat() {
+        TextureRegion[][] textureCat = TextureRegion.split(catTexture, catTexture.getWidth(), catTexture.getHeight());
+        enemy = new Cat((int) ((float) scareThreshold() * DifficultyCurve.S.getCurveValueBetween(spawnInterval, 5f, 1f)), posicaoInicial, textureCat[0][0]);
+        enemy.setQuantidadeVidas(spawnInterval);
+        enemy.setPosition(enemy.getInitialPosition());
         enemy.spawn();
     }
 
-    private int ScareThereshold() {
+    private int scareThreshold() {
         return MathUtils.random(1, 5);
     }
 
@@ -176,11 +173,11 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     public void onHandlePlayingInput() {
         if (Gdx.input.justTouched()) {
-            player.Bark(consegueOuver);
-            if (!consegueOuver) {
-                BarkSound.play();
+            player.bark(consegueOuvir);
+            if (!consegueOuvir) {
+                barkSound.play();
             }
-            System.out.println(player.getBarkCounter() + " " + enemy.GetScareTheresold());
+            System.out.println(player.getBarkCounter() + " " + enemy.getScareThreshold());
 
         }
     }
@@ -188,13 +185,13 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     public void onUpdate(float dt) {
         if (super.getState() == MiniGameState.PLAYER_FAILED) {
-            WhiningSound.play();
+            whiningSound.play();
         }
         if (player.isLatindo()) {
-            latindo_Counter++;
-            if (latindo_Counter == 25) {
-                latindo_Counter = 0;
-                player.InvertLatindo();
+            contadorLatidos++;
+            if (contadorLatidos == 25) {
+                contadorLatidos = 0;
+                player.invertLatindo();
             }
         }
         if (enemy.mostrarGatoMorto && morreu < 10) {
@@ -203,7 +200,7 @@ public class DogBarksCatFlee extends MiniGame {
             enemy.mostrarGatoMorto = !enemy.mostrarGatoMorto;
         }
 
-        TempoDeAnimacao += Gdx.graphics.getDeltaTime();
+        tempoDeAnimacao += Gdx.graphics.getDeltaTime();
         updateDraw();
         updateEnemy();
     }
@@ -211,7 +208,7 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     public void onDrawGame() {
         tilesDraw();
-        playerDraw(TempoDeAnimacao);
+        playerDraw(tempoDeAnimacao);
         catDraw();
     }
 
@@ -231,71 +228,63 @@ public class DogBarksCatFlee extends MiniGame {
         private final int POSICAO_INICIAL_GATO_Y = 51;
         // Precisa de armazenar a sprite para animacao
 
-        private final int BeScaredThereshold;
-        private int quantidade_vidas;
+        private final int scaredThreshold;
+        private int quantidadeVidas;
         private boolean morto;
         public boolean mostrarGatoMorto = false;
         public Vector2 oldPos;
         public boolean visivel = true;
 
         // Construtor do Jogo DogBarksCatFlee
-        public Cat(int BeScaredThereshold, Vector2 Pos, TextureRegion CatTexture) {
-            super(Pos, CatTexture);
+        public Cat(int scaredThreshold, Vector2 position, TextureRegion textureCat) {
+            super(position, textureCat);
             this.morto = true;
-            this.BeScaredThereshold = BeScaredThereshold;
-            this.quantidade_vidas = 1;
+            this.scaredThreshold = scaredThreshold;
+            this.quantidadeVidas = 1;
         }
 
-        public void SetInvisivel() {
+        public void setInvisivel() {
             visivel = false;
         }
 
-        public Vector2 PosIniCat() {
+        public Vector2 getInitialPosition() {
             return new Vector2(POSICAO_INICIAL_GATO_X, POSICAO_INICIAL_GATO_Y);
         }
 
-        public int GetWidth() {
-            return FRAME_WIDTH;
+        public int getScareThreshold() {
+            return this.scaredThreshold;
         }
 
-        public int GetScareTheresold() {
-            return this.BeScaredThereshold;
-        }
-
-        public int GetHeight() {
-            return FRAME_HEIGHT;
-        }
-
-        public int get_quantidade_vidas() {
-            return this.quantidade_vidas;
+        public int getQuantidadeVidas() {
+            return this.quantidadeVidas;
         }
 
         public void morreu() {
-            this.quantidade_vidas--;
-            this.morto = true;
+            this.quantidadeVidas--;
+            this.morto = true;  
             System.out.println("MORREUU");
-            oldPos = this.getPos();
+            oldPos = this.getPosition();
             mostrarGatoMorto = !mostrarGatoMorto;
-            moviment(new Vector2(POSICAO_INICIAL_GATO_X, POSICAO_INICIAL_GATO_Y));
+            setPosition(new Vector2(POSICAO_INICIAL_GATO_X, POSICAO_INICIAL_GATO_Y));
         }
 
-        public boolean vivoMorto() {
+        public boolean isVivo() {
             return this.morto;
         }
 
         public void spawn() {
-            System.out.println("spawn" + this.quantidade_vidas);
+            System.out.println("spawn" + this.quantidadeVidas);
             this.morto = false;
         }
 
-        public void settarQuantidade_vidas(float variavelControleDificuldade) {
-            this.quantidade_vidas = (int) (MathUtils.ceil(variavelControleDificuldade * 8));
+        public void setQuantidadeVidas(float variavelControleDificuldade) {
+            this.quantidadeVidas = (int) (MathUtils.ceil(variavelControleDificuldade * 8));
         }
 
-        public boolean FleeAction(int BarkCounter) {
+        public boolean shouldTriggerFleeAction(int barkCounter) {
             // Caso positivo ativa a funcao de sair da dela
             // Presente na classe do jogo
-            return BarkCounter >= BeScaredThereshold;
+            return barkCounter >= scaredThreshold;
         }
 
     }
@@ -304,27 +293,26 @@ public class DogBarksCatFlee extends MiniGame {
 
         private int barkCounter;
         private boolean latindo;
-        private final Animation<TextureRegion> animacao;
-        private final Animation<TextureRegion> animacao2;
-        private int lives;
+        private final Animation<TextureRegion> animacaoLatindo;
+        private final Animation<TextureRegion> animacaoAndando;
 
-        public Dog(int lives, Vector2 Pos, TextureRegion DogTexture, Animation<TextureRegion> animacao, Animation<TextureRegion> animacao2) {
+        public Dog(int lives, Vector2 position, TextureRegion dogTexture,
+                Animation<TextureRegion> animacaoLatindo,
+                Animation<TextureRegion> animacaoAndando) {
 
-            super(Pos, DogTexture);
-            this.animacao = animacao;
-            this.animacao2 = animacao2;
-            this.lives = lives;
+            super(position, dogTexture);
+            this.animacaoLatindo = animacaoLatindo;
+            this.animacaoAndando = animacaoAndando;
             barkCounter = 0;
-            this.lives = lives;
             latindo = false;
         }
 
-        public TextureRegion Anima(float dt) {
-            return ((TextureRegion) animacao.getKeyFrame(dt));
+        public TextureRegion getBarkingAnimationFrame(float dt) {
+            return ((TextureRegion) animacaoLatindo.getKeyFrame(dt));
         }
 
-        public TextureRegion Anima2(float dt) {
-            return ((TextureRegion) animacao2.getKeyFrame(dt));
+        public TextureRegion getWalkingAnimationFrame(float dt) {
+            return ((TextureRegion) animacaoAndando.getKeyFrame(dt));
         }
 
         public int getFrameWidth() {
@@ -343,11 +331,11 @@ public class DogBarksCatFlee extends MiniGame {
             return latindo;
         }
 
-        public void InvertLatindo() {
+        public void invertLatindo() {
             latindo = !latindo;
         }
 
-        public void Bark(boolean gatoOuve) {
+        public void bark(boolean gatoOuve) {
             if (!gatoOuve) {
                 this.barkCounter++;
             } else {
@@ -356,51 +344,47 @@ public class DogBarksCatFlee extends MiniGame {
             latindo = true;
         }
 
-        public void BarkZero() {
+        public void resetBarkCounter() {
             barkCounter = 0;
-        }
-
-        public void wasHurt() {
-            lives--;
         }
     }
 
     static class Animal extends Sprite {
 
-        private Vector2 Pos;
+        private Vector2 position;
         static final int FRAME_WIDTH = 131;
         static final int FRAME_HEIGHT = 32;
 
-        public Animal(Vector2 Pos, TextureRegion AnimalSpriteSheet) {
-            super(AnimalSpriteSheet);
-            this.Pos = Pos;
+        public Animal(Vector2 position, TextureRegion spritesheet) {
+            super(spritesheet);
+            this.position = position;
         }
 
-        public Animal(Sprite AnimalSprite) {
-            super(AnimalSprite);
+        public Animal(Sprite animalSprite) {
+            super(animalSprite);
         }
 
-        public Vector2 getPos() {
-            return Pos;
+        public Vector2 getPosition() {
+            return position;
         }
 
-        public void moviment(Vector2 NovaPosicao) {
-            this.Pos = NovaPosicao;
+        public void setPosition(Vector2 newPosition) {
+            this.position = newPosition;
         }
     }
 
     static class Tiles {
 
-        public Vector2 tileVector;
-        public int tile_Type;
+        public Vector2 position;
+        public int tileType;
 
-        public Tiles(Vector2 tileVector) {
-            this.tileVector = tileVector;
-            this.tile_Type = MathUtils.random(4);
+        public Tiles(Vector2 position) {
+            this.position = position;
+            this.tileType = MathUtils.random(4);
         }
 
         public void tileChange() {
-            this.tile_Type = MathUtils.random(4);
+            this.tileType = MathUtils.random(4);
         }
     }
 
