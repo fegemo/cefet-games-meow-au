@@ -1,0 +1,17 @@
+Som de surgimento de obstáculo
+*Projeto Shoot the Tartarus
+
+Som de pulo 
+https://downloads.khinsider.com/game-soundtracks/album/donkey-kong-country-snes-/29-extra-life-balloon.mp3
+
+Sprite Obstáculo - inimigo
+https://retrospriteresources.deviantart.com/art/Green-Spiny-Battler-RPG-Maker-MV-603103401
+
+Sprite Dog - personagem
+http://carbon-fighters.wikia.com/wiki/User_blog:Ladsworld/Doge_Sprite_Sheet?file=Doge_Sprite_Sheet.png
+
+Casa de cachorro - cenário
+http://clubpenguin.wikia.com/wiki/File:Gray_Puffle_House_sprite_001.png
+
+Grama - cenário
+https://www.packtpub.com/mapt/book/game_development/9781783559046/6/ch06lvl1sec58/adding-a-background
