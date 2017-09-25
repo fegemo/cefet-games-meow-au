@@ -13,7 +13,7 @@ import java.util.Random;
 
 public class TicCatDog extends MiniGame {
 
-    public class Move {
+    static class Move {
 
         private int x, y; //Index da matrix
         private int score; //Utilizado no algoritmo minmax
@@ -66,7 +66,6 @@ public class TicCatDog extends MiniGame {
 
     private final float squareHeight = viewport.getWorldHeight() / 5;
     private final float squareWidth = viewport.getWorldWidth() / 5;
-    private final double hypotenuse = Math.sqrt(Math.pow(squareHeight, 2) + Math.pow(squareWidth, 2));
     private final float initialScaleMouse = (float) 0.05;
 
     private final int CAT_TURN = 1, DOG_TURN = 2;
@@ -117,14 +116,6 @@ public class TicCatDog extends MiniGame {
         }
     }
 
-    private void scheduleEnemySpawn() {
-
-    }
-
-    private void spawnEnemy() {
-
-    }
-
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         if (difficulty < 1) {
@@ -147,9 +138,9 @@ public class TicCatDog extends MiniGame {
     }
 
     private Move minimax(int[][] matrix, int player) {
-        if (winning(matrix, DOG_SQUARE)) {
+        if (isPlayerWinning(matrix, DOG_SQUARE)) {
             return new Move(-10);
-        } else if (winning(matrix, CAT_SQUARE)) {
+        } else if (isPlayerWinning(matrix, CAT_SQUARE)) {
             return new Move(10);
         } else if (!isThereAvailableSquare(matrix)) {
             return new Move(0);
@@ -238,7 +229,7 @@ public class TicCatDog extends MiniGame {
                         turn = CAT_TURN;
 
                         //Condições de fim de partida
-                        if (winning(ticCatDogMatrix, DOG_TURN)) {
+                        if (isPlayerWinning(ticCatDogMatrix, DOG_TURN)) {
                             //Som de cachorro latindo
                             dogBarkingSound.play();
                             super.challengeSolved();
@@ -260,7 +251,7 @@ public class TicCatDog extends MiniGame {
             ticTacToeSprites[move.getX()][move.getY()].setTexture(catSquareTexture);
 
             //Condições de fim de partida
-            if (winning(ticCatDogMatrix, CAT_TURN)) {
+            if (isPlayerWinning(ticCatDogMatrix, CAT_TURN)) {
                 //Som de gato miando
                 catMeowingSound.play();
                 super.challengeFailed();
@@ -305,8 +296,8 @@ public class TicCatDog extends MiniGame {
         return true;
     }
 
-    public boolean winning(int[][] matrix, int player) {
-        if ( //Horizontal
+    public boolean isPlayerWinning(int[][] matrix, int player) {
+        return //Horizontal
                 (matrix[0][0] == player && matrix[0][1] == player && matrix[0][2] == player)
                 || (matrix[1][0] == player && matrix[1][1] == player && matrix[1][2] == player)
                 || (matrix[2][0] == player && matrix[2][1] == player && matrix[2][2] == player)
@@ -316,9 +307,6 @@ public class TicCatDog extends MiniGame {
                 || (matrix[0][2] == player && matrix[1][2] == player && matrix[2][2] == player)
                 || //Diagonal
                 (matrix[0][0] == player && matrix[1][1] == player && matrix[2][2] == player)
-                || (matrix[0][2] == player && matrix[1][1] == player && matrix[2][0] == player)) {
-            return true;
-        }
-        return false;
+                || (matrix[0][2] == player && matrix[1][1] == player && matrix[2][0] == player);
     }
 }
