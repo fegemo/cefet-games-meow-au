@@ -49,6 +49,7 @@ public class ShooTheTartarus extends MiniGame {
     }
 
     @Override
+    
     protected void onStart() {
         toothbrushTexture = assets.get(
                 "shoo-the-tartarus/toothbrush-spritesheet.png", Texture.class);
@@ -345,8 +346,8 @@ public class ShooTheTartarus extends MiniGame {
         private final TextureRegion broken;
         private int lives = 2;
 
-        static final int FRAME_WIDTH = 64;
-        static final int FRAME_HEIGHT = 64;
+        static final int FRAME_WIDTH = 32;
+        static final int FRAME_HEIGHT = 24;
 
         public Tooth(TextureRegion textureOk, TextureRegion textureHurt,
                 TextureRegion textureBroken, int lives) {
