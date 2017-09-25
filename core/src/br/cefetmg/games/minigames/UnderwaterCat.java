@@ -24,15 +24,12 @@ import com.badlogic.gdx.utils.Timer;
 public class UnderwaterCat extends MiniGame {
 
     private float minimumEnemySpeed;
-    private float maximumEnemySpeed;
     private float spawnInterval;
-    private int totalFish;
     private Texture background;
-    private Music music_underwaterCat;
-    private Music sound_swim;
+    private Music underwaterBackgroundMusic;
+    private Music swimmingAmbientSound;
     private Sound gotFishSound;
 
-    Animation<TextureRegion> swimmingAnimation;
     private Array<Fish> toCapture;
     private Array<Spiky> enemies;
     private Texture swimCatTexture;
@@ -40,7 +37,7 @@ public class UnderwaterCat extends MiniGame {
     private Texture fish2Texture;
     private Texture fish3Texture;
     private Texture spikyTexture;
-    TheCat mainCharacter;
+    private TheCat mainCharacter;
 
     private int numberEaten = 0;
     private int fishToEat;
@@ -53,8 +50,8 @@ public class UnderwaterCat extends MiniGame {
 
     @Override
     protected void onStart() {
-        music_underwaterCat = assets.get("underwater-cat/water.mp3", Music.class);
-        sound_swim = assets.get("underwater-cat/swim.wav", Music.class);
+        underwaterBackgroundMusic = assets.get("underwater-cat/water.mp3", Music.class);
+        swimmingAmbientSound = assets.get("underwater-cat/swim.wav", Music.class);
         gotFishSound = assets.get("underwater-cat/eat.wav", Sound.class);
         swimCatTexture = assets.get(
                 "underwater-cat/swimcatspritesheet.png", Texture.class);
@@ -87,8 +84,6 @@ public class UnderwaterCat extends MiniGame {
     protected void configureDifficultyParameters(float difficulty) {
         this.minimumEnemySpeed = DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 120, 220);
-        this.maximumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 240, 340);
         this.spawnInterval = DifficultyCurve.LINEAR_NEGATIVE
                 .getCurveValueBetween(difficulty, 0.25f, 1.5f);
         this.fishToEat = (int) Math.ceil(DifficultyCurve.LINEAR
@@ -107,8 +102,8 @@ public class UnderwaterCat extends MiniGame {
 
     @Override
     public void onDrawGame() {
-        music_underwaterCat.setLooping(true);
-        music_underwaterCat.play();
+        underwaterBackgroundMusic.setLooping(true);
+        underwaterBackgroundMusic.play();
 
         batch.draw(background, 0, 0,
                 viewport.getWorldWidth(),
@@ -120,10 +115,8 @@ public class UnderwaterCat extends MiniGame {
             s.draw(batch);
         }
         mainCharacter.draw(batch);
-        sound_swim.setLooping(true);
-        sound_swim.play();
-
-        //  sound_swim.setPitch(id, 0.2f);
+        swimmingAmbientSound.setLooping(true);
+        swimmingAmbientSound.play();
     }
 
     @Override
@@ -194,7 +187,6 @@ public class UnderwaterCat extends MiniGame {
 
     private void initializeFish(int qtdePeixes) {
         int tipoPeixe = 1;
-        Vector3 posicao = new Vector3();
         for (int i = 0; i <= qtdePeixes; i++) {
             switch (tipoPeixe) {
                 case 1:
@@ -215,12 +207,7 @@ public class UnderwaterCat extends MiniGame {
         }
     }
 
-    private void initializeSpiky() {
-
-    }
-
     private void createFish(Texture spritesFish, int tipo) {
-
         Fish fish;
         if (tipo == 1) {
             fish = new Fish(spritesFish, 6, 8);
@@ -238,7 +225,6 @@ public class UnderwaterCat extends MiniGame {
     }
 
     private void createFishAux(Fish fish) {
-        Vector3 posicao = new Vector3();
         float randomWidth = MathUtils.random(viewport.getWorldWidth(), 0);
         float randomHeight = MathUtils.random(viewport.getWorldHeight(), 0);
 
