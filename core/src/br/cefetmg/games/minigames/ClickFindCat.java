@@ -69,7 +69,6 @@ public class ClickFindCat extends MiniGame {
         viewport.unproject(click);
         this.miraSprite.setPosition(click.x - this.miraSprite.getWidth() / 2, click.y - this.miraSprite.getHeight() / 2);
         if (Gdx.input.justTouched()) {
-            System.out.println(catSprite.getBoundingRectangle());
             if (catSprite.getBoundingRectangle().overlaps(miraSprite.getBoundingRectangle())) {
                 super.challengeSolved();
             } else {
