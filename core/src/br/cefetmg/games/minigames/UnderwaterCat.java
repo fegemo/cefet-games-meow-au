@@ -97,7 +97,7 @@ public class UnderwaterCat extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Invasao no reino dos peixes! Coma todos os peixes e sem ser atingido pelos espinhos";
+        return "Mate a fome, mas sem espinhos!";
     }
 
     @Override
