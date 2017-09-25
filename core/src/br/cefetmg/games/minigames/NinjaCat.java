@@ -47,6 +47,7 @@ public class NinjaCat extends MiniGame {
     private Texture arrowTexture;
     private Texture bgTexture;
     private Texture zombieTex;
+    private Texture zombieflipTex;
     private Texture rampageTex;
     private Texture deadZombie;
     private Texture atk1, atk;
@@ -72,6 +73,7 @@ public class NinjaCat extends MiniGame {
         bgTexture = assets.get("ninja-cat/bg1.jpg", Texture.class);
         arrowTexture = assets.get("ninja-cat/arrow.png", Texture.class);
         zombieTex = assets.get("ninja-cat/zombie.png", Texture.class);
+        zombieflipTex = assets.get("ninja-cat/zombieflip.png", Texture.class);
         rampageTex = assets.get("ninja-cat/cat1.png", Texture.class);
         atk1 = assets.get("ninja-cat/atk1.png", Texture.class);
         atk = assets.get("ninja-cat/atk.png", Texture.class);
@@ -143,20 +145,18 @@ public class NinjaCat extends MiniGame {
     }
 
     private void spawnZombies() {
-        Zombie zomb = new Zombie(zombieTex);
-        zomb.setCenter(0, 0);
-        zomb.setScale(2.25f);
-
+        Zombie zomb;
         if (rand.nextInt() % 2 == 0) {
+            zomb = new Zombie(zombieTex);
+            zomb.setCenter(0, 0);
+            zomb.setScale(2.25f);
             zomb.setPosition(0, viewport.getWorldHeight() * .1f + 35);
         } else {
+            zomb = new Zombie(zombieflipTex);
+            zomb.setCenter(0, 0);
+            zomb.setScale(2.25f);
             zomb.setPosition(viewport.getWorldWidth(), viewport.getWorldHeight() * .1f + 35);
         }
-
-        if (zomb.getX() >= viewport.getWorldWidth()) {
-            zomb.flipFrames(true, false);
-        }
-
         zombies.add(zomb);
     }
 
@@ -432,7 +432,6 @@ public class NinjaCat extends MiniGame {
                 }
             }
             if (rampage) {
-
                 setCat(rampageTex);
                 if (right) {
                     cat.setX(cat.getX() + catSpeed);
