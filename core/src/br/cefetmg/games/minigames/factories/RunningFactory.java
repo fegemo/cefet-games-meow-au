@@ -8,11 +8,13 @@ import java.util.HashMap;
 import java.util.Map;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import com.badlogic.gdx.audio.Sound;
+
 /**
  *
  * @author gustavo
  */
-public class RunningFactory implements MiniGameFactory{
+public class RunningFactory implements MiniGameFactory {
+
     @Override
     public MiniGame createMiniGame(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
