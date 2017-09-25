@@ -272,7 +272,7 @@ public class TicCatDog extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "SOBREVIVA ao jogo da velha!";
+        return "Não perca para o gato!";
     }
 
     @Override
