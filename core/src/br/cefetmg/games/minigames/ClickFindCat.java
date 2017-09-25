@@ -17,15 +17,15 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class ClickFindCat extends MiniGame {
 
-    private Texture CatTexture;
-    private Texture MiraTexture;
-    private Sprite MiraSprite;
-    private Sprite CatSprite;
-    private Sound MeawSound;
-    private Sound ScaredMeawSound;
-    private Sound HappyMeawSound;
+    private Texture catTexture;
+    private Texture miraTexture;
+    private Sprite miraSprite;
+    private Sprite catSprite;
+    private Sound meawSound;
+    private Sound scaredMeawSound;
+    private Sound happyMeawSound;
     private float initialCatScale;
-    private float HipotenuzaDaTela;
+    private float hipotenuzaDaTela;
 
     public ClickFindCat(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
@@ -33,18 +33,18 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     protected void onStart() {
-        HipotenuzaDaTela = viewport.getScreenWidth() * viewport.getScreenWidth()
+        hipotenuzaDaTela = viewport.getScreenWidth() * viewport.getScreenWidth()
                 + viewport.getScreenHeight() * viewport.getScreenHeight();
         initialCatScale = .2f;
-        CatTexture = assets.get("ClickFindCat/gatinho-grande.png", Texture.class);
+        catTexture = assets.get("ClickFindCat/gatinho-grande.png", Texture.class);
 
-        MiraTexture = assets.get("ClickFindCat/target.png", Texture.class);
-        MiraSprite = new Sprite(MiraTexture);
-        MiraSprite.setScale(1.0f);
-        MiraSprite.setOriginCenter();
-        MeawSound = assets.get("ClickFindCat/cat-meow.wav", Sound.class);
-        ScaredMeawSound = assets.get("ClickFindCat/ScaredCat.wav", Sound.class);
-        HappyMeawSound = assets.get("ClickFindCat/YAY.mp3", Sound.class);
+        miraTexture = assets.get("ClickFindCat/target.png", Texture.class);
+        miraSprite = new Sprite(miraTexture);
+        miraSprite.setScale(1.0f);
+        miraSprite.setOriginCenter();
+        meawSound = assets.get("ClickFindCat/cat-meow.wav", Sound.class);
+        scaredMeawSound = assets.get("ClickFindCat/ScaredCat.wav", Sound.class);
+        happyMeawSound = assets.get("ClickFindCat/YAY.mp3", Sound.class);
         initializeCat();
     }
 
@@ -54,12 +54,12 @@ public class ClickFindCat extends MiniGame {
     }
 
     public void initializeCat() {
-        Vector2 PosicaoInicial = new Vector2(MathUtils.random(0, viewport.getWorldWidth() - CatTexture.getWidth() / 2),
-                MathUtils.random(0, viewport.getWorldHeight() - CatTexture.getHeight() / 2));
+        Vector2 posicaoInicial = new Vector2(MathUtils.random(0, viewport.getWorldWidth() - catTexture.getWidth() / 2),
+                MathUtils.random(0, viewport.getWorldHeight() - catTexture.getHeight() / 2));
 
-        CatSprite = new Sprite(CatTexture);
-        CatSprite.setPosition(PosicaoInicial.x, PosicaoInicial.y);
-        CatSprite.setScale(initialCatScale);
+        catSprite = new Sprite(catTexture);
+        catSprite.setPosition(posicaoInicial.x, posicaoInicial.y);
+        catSprite.setScale(initialCatScale);
 
     }
 
@@ -67,15 +67,15 @@ public class ClickFindCat extends MiniGame {
     public void onHandlePlayingInput() {
         Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);
-        this.MiraSprite.setPosition(click.x - this.MiraSprite.getWidth() / 2, click.y - this.MiraSprite.getHeight() / 2);
+        this.miraSprite.setPosition(click.x - this.miraSprite.getWidth() / 2, click.y - this.miraSprite.getHeight() / 2);
         if (Gdx.input.justTouched()) {
-            System.out.println(CatSprite.getBoundingRectangle());
-            if (CatSprite.getBoundingRectangle().overlaps(MiraSprite.getBoundingRectangle())) {
+            System.out.println(catSprite.getBoundingRectangle());
+            if (catSprite.getBoundingRectangle().overlaps(miraSprite.getBoundingRectangle())) {
                 super.challengeSolved();
             } else {
-                float distancia = click.dst2(CatSprite.getX(), CatSprite.getY());
-                float intensidade = (float) Math.pow((1 - distancia / HipotenuzaDaTela), 4);
-                MeawSound.play(intensidade);
+                float distancia = click.dst2(catSprite.getX(), catSprite.getY());
+                float intensidade = (float) Math.pow((1 - distancia / hipotenuzaDaTela), 4);
+                meawSound.play(intensidade);
 
             }
 
@@ -85,20 +85,20 @@ public class ClickFindCat extends MiniGame {
     @Override
     public void onUpdate(float dt) {
         if (super.getState() == MiniGameState.PLAYER_FAILED) {
-            ScaredMeawSound.play();
+            scaredMeawSound.play();
         } else if (rand.nextInt() % 4 == 1 && super.getState() == MiniGameState.PLAYER_SUCCEEDED) {
-            HappyMeawSound.play();
+            happyMeawSound.play();
         }
     }
 
     @Override
     public void onDrawGame() {
         if (super.getState() == MiniGameState.PLAYER_FAILED || super.getState() == MiniGameState.PLAYER_SUCCEEDED) {
-            CatSprite.draw(batch);
+            catSprite.draw(batch);
         }
 
         //Desenha a Mira
-        MiraSprite.draw(batch);
+        miraSprite.draw(batch);
 
     }
 
