@@ -49,7 +49,7 @@ public class NinjaCat extends MiniGame {
     private Texture zombieTex;
     private Texture zombieflipTex;
     private Texture rampageTex;
-    private Texture deadZombie;
+    private Texture deadZombie, deadZombieFlip;
     private Texture atk1, atk;
     private Texture d1, d2, d3, d4, d5, d6;
     private Texture texhit, texhit1;
@@ -78,6 +78,7 @@ public class NinjaCat extends MiniGame {
         atk1 = assets.get("ninja-cat/atk1.png", Texture.class);
         atk = assets.get("ninja-cat/atk.png", Texture.class);
         deadZombie = assets.get("ninja-cat/zombie1.png", Texture.class);
+        deadZombieFlip = assets.get("ninja-cat/zombie1flip.png", Texture.class);
         killZombie = assets.get("ninja-cat/zombie2.png", Texture.class);
         d1 = assets.get("ninja-cat/d1.png", Texture.class);
         d2 = assets.get("ninja-cat/d2.png", Texture.class);
@@ -459,13 +460,15 @@ public class NinjaCat extends MiniGame {
                             setCat(atk);
                         }
                         hit = !hit;
-                        DeadZombie dz = new DeadZombie(deadZombie);
+                        DeadZombie dz;
+                        if (!right) {
+                            dz = new DeadZombie(deadZombie);
+                        } else {
+                            dz = new DeadZombie(deadZombieFlip);
+                        }
                         dz.setCenter(0, 0);
                         dz.setScale(2.25f);
                         dz.setPosition(zomb.getX(), zomb.getY());
-                        if (right) {
-                            dz.flipFrames(true, false);
-                        }
                         deadzomb.add(dz);
                         this.zombies.removeValue(zomb, true);
                         this.enemiesKilled++;
