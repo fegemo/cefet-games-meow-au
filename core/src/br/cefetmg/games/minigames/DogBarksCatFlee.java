@@ -100,7 +100,6 @@ public class DogBarksCatFlee extends MiniGame {
         dogTextureWalking = assets.get("DogBarksCatFlee/spritesheet2.png", Texture.class);
         TextureRegion[][] quadrosDeAnimacao = TextureRegion.split(dogTexture, 128, 128);
         TextureRegion[][] quadrosDeAnimacao2 = TextureRegion.split(dogTextureWalking, 128, 128);
-        System.out.println(+quadrosDeAnimacao.length);
         dogBarking = new Animation<TextureRegion>(0.3f,
                 quadrosDeAnimacao[0][3],
                 quadrosDeAnimacao[0][2],
@@ -165,9 +164,7 @@ public class DogBarksCatFlee extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-
         spawnInterval = DifficultyCurve.S.getCurveValue(difficulty);
-        System.out.println("spawnInterval" + spawnInterval);
     }
 
     @Override
@@ -177,8 +174,6 @@ public class DogBarksCatFlee extends MiniGame {
             if (!consegueOuvir) {
                 barkSound.play();
             }
-            System.out.println(player.getBarkCounter() + " " + enemy.getScareThreshold());
-
         }
     }
 
@@ -262,7 +257,6 @@ public class DogBarksCatFlee extends MiniGame {
         public void morreu() {
             this.quantidadeVidas--;
             this.morto = true;  
-            System.out.println("MORREUU");
             oldPos = this.getPosition();
             mostrarGatoMorto = !mostrarGatoMorto;
             setPosition(new Vector2(POSICAO_INICIAL_GATO_X, POSICAO_INICIAL_GATO_Y));
@@ -273,7 +267,6 @@ public class DogBarksCatFlee extends MiniGame {
         }
 
         public void spawn() {
-            System.out.println("spawn" + this.quantidadeVidas);
             this.morto = false;
         }
 
