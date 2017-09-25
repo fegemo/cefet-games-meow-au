@@ -281,7 +281,7 @@ public class UnderwaterCat extends MiniGame {
 
         TheCat(final Texture swimCatTexture) {
 
-            super(new Animation(0.2f, workFrames(swimCatTexture, 8, 6)));
+            super(new Animation<TextureRegion>(0.2f, workFrames(swimCatTexture, 8, 6)));
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
             super.setAutoUpdate(false);
         }
@@ -297,7 +297,7 @@ public class UnderwaterCat extends MiniGame {
 
         Fish(final Texture fishTexture, int rows, int columns) {
 
-            super(new Animation(0.2f, workFrames(fishTexture, rows, columns)));
+            super(new Animation<TextureRegion>(0.2f, workFrames(fishTexture, rows, columns)));
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
             super.setAutoUpdate(false);
         }
@@ -321,7 +321,7 @@ public class UnderwaterCat extends MiniGame {
         static final int FRAME_HEIGHT = 87;
 
         Spiky(final Texture spikyTexture) {
-            super(new Animation(0.2f, workFrames(spikyTexture, 4, 12)));
+            super(new Animation<TextureRegion>(0.2f, workFrames(spikyTexture, 4, 12)));
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
             super.setAutoUpdate(false);
         }
