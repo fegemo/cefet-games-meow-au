@@ -368,7 +368,11 @@ public class NinjaCat extends MiniGame {
         cat.setScale(1.5f);
         cat.setPosition(x, y);
 
-        if (!right) {
+        if (gameover) {
+            if (god.getX() < cat.getX()) {
+                cat.flipFrames(true, false);
+            }
+        } else if (!right) {
             cat.flipFrames(true, false);
         }
     }
