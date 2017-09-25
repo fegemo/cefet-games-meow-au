@@ -1,7 +1,7 @@
 package br.cefetmg.games.minigames.factories;
 
 import br.cefetmg.games.minigames.MiniGame;
-import br.cefetmg.games.minigames.basCATball;
+import br.cefetmg.games.minigames.BasCATball;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,12 +13,12 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
  *
  * @author Rógenes
  */
-public class basCATballFactory implements MiniGameFactory {
+public class BasCATballFactory implements MiniGameFactory {
 
     @Override
     public MiniGame createMiniGame(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
-        return new basCATball(screen, observer, difficulty);
+        return new BasCATball(screen, observer, difficulty);
     }
 
     @Override
