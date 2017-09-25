@@ -18,13 +18,12 @@ public class DodgeTheVeggies extends MiniGame {
 
     private Texture catTexture;
     private Cat cat;
-    private Texture veggieTexture;
     private Array<Veggie> veggies;
     private Array<Texture> veggieTextures;
     private Sound backgroundMusic;
     private float speedMultiplier;
     private float spawnIntervalMultiplier;
-    private float spawnInterval = 1;
+    private final float spawnInterval = 1;
     private Texture backgroundImage;
 
     public DodgeTheVeggies(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
@@ -38,16 +37,16 @@ public class DodgeTheVeggies extends MiniGame {
         veggieTextures = new Array<Texture>();
         veggies = new Array<Veggie>();
         veggieTextures.addAll(
-            assets.get("cucumber-madness/carrot.png", Texture.class),
-            assets.get("cucumber-madness/onion.png", Texture.class),
-            assets.get("cucumber-madness/tomato.png", Texture.class),
-            assets.get("cucumber-madness/potato.png", Texture.class));
+                assets.get("cucumber-madness/carrot.png", Texture.class),
+                assets.get("cucumber-madness/onion.png", Texture.class),
+                assets.get("cucumber-madness/tomato.png", Texture.class),
+                assets.get("cucumber-madness/potato.png", Texture.class));
         backgroundMusic = assets.get("cucumber-madness/bensound-jazzcomedy.mp3", Sound.class);
 
         cat = new Cat(catTexture, 0 + 200);
         cat.setCenter(
-            viewport.getWorldWidth() / 2f,
-            cat.height);
+                viewport.getWorldWidth() / 2f,
+                cat.height);
         cat.setScale(3);
 
         timer.scheduleTask(new Task() {
@@ -57,7 +56,7 @@ public class DodgeTheVeggies extends MiniGame {
             }
 
         }, 0, this.spawnIntervalMultiplier * this.spawnInterval);
-        
+
         backgroundMusic.play();
     }
 
@@ -72,7 +71,7 @@ public class DodgeTheVeggies extends MiniGame {
 
         Vector2 direction;
         Vector2 position = new Vector2();
-        
+
         direction = new Vector2(MathUtils.random(-1, 1) * 300, MathUtils.random(-1, 1) * 300);
         if (direction.x != 0f || direction.y != 0f) {
             Veggie veggie = new Veggie(veggieTextures.get(index), direction.scl(this.speedMultiplier));
@@ -96,7 +95,7 @@ public class DodgeTheVeggies extends MiniGame {
 
             veggie.setPosition(position.x, position.y);
             veggies.add(veggie);
-        }  
+        }
     }
 
     @Override
@@ -113,7 +112,7 @@ public class DodgeTheVeggies extends MiniGame {
         }
 
         for (Veggie veggie : veggies) {
-//            Colisão veggie x cat
+            // Colisão veggie x cat
             if (veggie.getBoundingRectangle()
                     .overlaps(cat.getBoundingRectangle())) {
                 super.challengeFailed();
@@ -140,12 +139,12 @@ public class DodgeTheVeggies extends MiniGame {
         for (Veggie veggie : veggies) {
             veggie.draw(batch);
         }
-  
+
     }
 
     @Override
     public String getInstructions() {
-        return "dodge the veggies";
+        return "Desvie dos vegetais";
     }
 
     @Override
@@ -154,7 +153,7 @@ public class DodgeTheVeggies extends MiniGame {
     }
 
     class Cat extends Sprite {
-        private final int lives = 9;
+
         private final float height;
 
         static final int FRAME_WIDTH = 50;
@@ -165,8 +164,9 @@ public class DodgeTheVeggies extends MiniGame {
             this.height = height;
         }
     }
-    
+
     class Veggie extends Sprite {
+
         private int FRAME_WIDTH;
         private int FRAME_HEIGHT;
         private Vector2 speed;
@@ -174,7 +174,7 @@ public class DodgeTheVeggies extends MiniGame {
         public Veggie(Texture texture, Vector2 speed) {
             super(texture);
             this.speed = speed;
-            
+
 //            carrot
             if (texture == veggieTextures.get(0)) {
                 FRAME_WIDTH = 34;
