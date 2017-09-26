@@ -123,13 +123,32 @@ public class RainingCats extends MiniGame {
         Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);
         arrow.setPosition(click.x - arrow.getWidth() / 2 * arrow.getScaleX(), click.y - arrow.getHeight() / 2 * arrow.getScaleY());
+        if (arrow.getX() < 0) {
+            arrow.setX(0);
+        }
+        if (arrow.getY() < 0) {
+            arrow.setY(0);
+        }
+        if (arrow.getX() + arrow.getWidth() * arrow.getScaleX() > viewport.getWorldWidth()) {
+            arrow.setX(viewport.getWorldWidth() - arrow.getWidth() * arrow.getScaleX());
+        }
+        if (arrow.getY() + arrow.getHeight() * arrow.getScaleY() > viewport.getWorldHeight()) {
+            arrow.setY(viewport.getWorldHeight() - arrow.getHeight() * arrow.getScaleY());
+        }
 
-        if ((player.getX() * player.getScaleX() - player.getWidth() / 2 * player.getScaleX())
+        if ((player.getX()- player.getWidth() / 2 * player.getScaleX())
                 < click.x - arrow.getWidth() / 2 * arrow.getScaleX()) {
-            player.setX(player.getX() + (click.x - arrow.getWidth() / 2 * arrow.getScaleX() - player.getX()) / 5);
-        } else if (player.getX() * player.getScaleX() + player.getWidth() / 2 * player.getScaleX()
+            player.setX(player.getX() + (click.x - arrow.getWidth() / 2 * arrow.getScaleX() - player.getX()) / 6);
+            if (player.getX() + player.getWidth() * player.getScaleX() >= viewport.getWorldWidth()) {
+                player.setX(viewport.getWorldWidth() - player.getWidth() * player.getScaleX());
+            }
+        } else if (player.getX()+ player.getWidth() / 2 * player.getScaleX()
                 > click.x - arrow.getWidth() / 2 * arrow.getScaleX()) {
-            player.setX(player.getX() - (player.getX() - click.x - arrow.getWidth() / 2 * arrow.getScaleX()) / 5);
+            player.setX(player.getX() - (player.getX() - click.x - arrow.getWidth() / 2 * arrow.getScaleX()) / 6);
+
+            if (player.getX() <= 0) {
+                player.setX(0);
+            }
         }
 
         if (Gdx.input.justTouched()) {

@@ -23,7 +23,7 @@ public class NinjaCat extends MiniGame {
 
     private float spawnInterval;
     private float speed;
-    private final float catSpeed = 21f;
+    private final float catSpeed = 24f;
 
     private Sprite backGround;
     private Sprite arrow;
@@ -176,6 +176,19 @@ public class NinjaCat extends MiniGame {
         Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);
         arrow.setPosition(click.x - arrow.getWidth() / 2 * arrow.getScaleX(), click.y - arrow.getHeight() / 2 * arrow.getScaleY());
+        if (arrow.getX() < 0) {
+            arrow.setX(0);
+        }
+        if (arrow.getY() < 0) {
+            arrow.setY(0);
+        }
+        if (arrow.getX() + arrow.getWidth() * arrow.getScaleX() > viewport.getWorldWidth()) {
+            arrow.setX(viewport.getWorldWidth() - arrow.getWidth() * arrow.getScaleX());
+        }
+        if (arrow.getY() + arrow.getHeight() * arrow.getScaleY() > viewport.getWorldHeight()) {
+            arrow.setY(viewport.getWorldHeight() - arrow.getHeight() * arrow.getScaleY());
+        }
+
         if (!pose) {
             if (arrow.getX() > cat.getX() && !right && !rampage && !gameover && !gameclear) {
                 if (hit) {
