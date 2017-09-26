@@ -52,7 +52,10 @@ public class PlayingGamesScreen extends BaseScreen
                         new UnderwaterCatFactory(),
                         // arthur e pedro
                         new DogBarksCatFleeFactory(),
-                        new ClickFindCatFactory()
+                        new ClickFindCatFactory(),
+                        // cassiano e gustavo jordão
+                        new TicCatDogFactory(),
+                        new JumpTheObstaclesFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);
