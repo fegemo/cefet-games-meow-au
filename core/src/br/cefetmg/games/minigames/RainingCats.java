@@ -136,13 +136,13 @@ public class RainingCats extends MiniGame {
             arrow.setY(viewport.getWorldHeight() - arrow.getHeight() * arrow.getScaleY());
         }
 
-        if ((player.getX()- player.getWidth() / 2 * player.getScaleX())
+        if ((player.getX() - player.getWidth() / 2 * player.getScaleX())
                 < click.x - arrow.getWidth() / 2 * arrow.getScaleX()) {
             player.setX(player.getX() + (click.x - arrow.getWidth() / 2 * arrow.getScaleX() - player.getX()) / 6);
             if (player.getX() + player.getWidth() * player.getScaleX() >= viewport.getWorldWidth()) {
                 player.setX(viewport.getWorldWidth() - player.getWidth() * player.getScaleX());
             }
-        } else if (player.getX()+ player.getWidth() / 2 * player.getScaleX()
+        } else if (player.getX() + player.getWidth() / 2 * player.getScaleX()
                 > click.x - arrow.getWidth() / 2 * arrow.getScaleX()) {
             player.setX(player.getX() - (player.getX() - click.x - arrow.getWidth() / 2 * arrow.getScaleX()) / 6);
 
