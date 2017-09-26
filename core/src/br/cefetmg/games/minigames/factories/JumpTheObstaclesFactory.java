@@ -2,7 +2,6 @@ package br.cefetmg.games.minigames.factories;
 
 import br.cefetmg.games.minigames.JumpTheObstacles;
 import br.cefetmg.games.minigames.MiniGame;
-import br.cefetmg.games.minigames.TicCatDog;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
