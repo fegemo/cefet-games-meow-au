@@ -157,25 +157,25 @@ public class CatAvoider extends MiniGame {
         }
 
         public void incrementX(float delta) {
-            if ((sprite.getX() + limitsWidth + sprite.getWidth() + delta) < WORLD_WIDTH && (moveType.equals(catMoveType.upR) || moveType.equals(catMoveType.upL) || moveType.equals(catMoveType.downR) || moveType.equals(catMoveType.downL))) {
+            if ((sprite.getX() + sprite.getWidth() + delta) < WORLD_WIDTH && (moveType.equals(catMoveType.upR) || moveType.equals(catMoveType.upL) || moveType.equals(catMoveType.downR) || moveType.equals(catMoveType.downL))) {
                 sprite.setX(sprite.getX() + delta);
             }
         }
 
         public void decrementX(float delta) {
-            if ((sprite.getX() + limitsWidth + sprite.getWidth() + delta) < WORLD_WIDTH && (moveType.equals(catMoveType.upR) || moveType.equals(catMoveType.upL) || moveType.equals(catMoveType.downR) || moveType.equals(catMoveType.downL))) {
+            if ((sprite.getX() - delta) > limitsWidth && (moveType.equals(catMoveType.upR) || moveType.equals(catMoveType.upL) || moveType.equals(catMoveType.downR) || moveType.equals(catMoveType.downL))) {
                 sprite.setX(sprite.getX() - delta);
             }
         }
 
         public void incrementY(float delta) {
-            if ((sprite.getY() + limitsHeight + sprite.getHeight() + delta) < WORLD_HEIGHT && (moveType.equals(catMoveType.left) || moveType.equals(catMoveType.right))) {
+            if ((sprite.getY() + sprite.getHeight() + delta) < WORLD_HEIGHT - limitsHeight && (moveType.equals(catMoveType.left) || moveType.equals(catMoveType.right))) {
                 sprite.setY(sprite.getY() + delta);
             }
         }
 
         public void decrementY(float delta) {
-            if ((sprite.getY() + limitsHeight + sprite.getHeight() + delta) < WORLD_HEIGHT && (moveType.equals(catMoveType.left) || moveType.equals(catMoveType.right))) {
+            if ((sprite.getY() - delta) > limitsHeight && (moveType.equals(catMoveType.left) || moveType.equals(catMoveType.right))) {
                 sprite.setY(sprite.getY() - delta);
             }
         }
@@ -261,6 +261,7 @@ public class CatAvoider extends MiniGame {
          * collision cat floor
          */
         if (Colision.rectsOverlap(down.getRec(), cat.rect)) {
+            cat.sprite.setPosition(cat.sprite.getX(), down.getRec().y+down.getRec().height);
             cat.reflect();
             if(wool.position.x > cat.sprite.getX())
                 cat.moveType = catMoveType.downR;
@@ -271,6 +272,7 @@ public class CatAvoider extends MiniGame {
          * collision cat roof
          */
         else if (Colision.rectsOverlap(up.getRec(), cat.rect)) {
+            cat.sprite.setPosition(cat.sprite.getX(), up.getRec().y - up.getRec().height - cat.sprite.getHeight());
             cat.reflect();
             if(wool.position.x > cat.sprite.getX())
                 cat.moveType = catMoveType.upR;
@@ -283,6 +285,7 @@ public class CatAvoider extends MiniGame {
          * collision cat left wall
          */
         if (Colision.rectsOverlap(left.getRec(), cat.rect)) {
+            cat.sprite.setPosition(left.getRec().x + left.getRec().width , cat.sprite.getY());
             cat.reflect();
             cat.moveType = catMoveType.left;
             cat.state = cat.randomState;
@@ -290,6 +293,7 @@ public class CatAvoider extends MiniGame {
          * collision cat right wall
          */
         else if (Colision.rectsOverlap(right.getRec(), cat.rect)) {
+            cat.sprite.setPosition(right.getRec().x - right.getRec().width - cat.sprite.getWidth(), cat.sprite.getY());
             cat.reflect();
             cat.moveType = catMoveType.right;
             cat.state = cat.randomState;
@@ -316,16 +320,14 @@ public class CatAvoider extends MiniGame {
         cat.sprite.setOrigin(cat.sprite.getWidth() / 2, cat.sprite.getHeight() / 2);
         cat.sprite.setPosition(WORLD_WIDTH / 2, limitsWidth);
         int random = randomGenerator.nextInt();
-            cat.moveType = catMoveType.downL;
-        
-            
+        cat.moveType = catMoveType.downL;
         cat.state = cat.randomState;
 
-        catMovingUpL = new AnimatedSprite("avoider/cat-moving-upL.png", 0.1f, 142, 150, 12 , RIGHT, 0);
-        catMovingUpR = new AnimatedSprite("avoider/cat-moving-upR.png", 0.1f, 142, 150, 12 , RIGHT, 0);
+        catMovingUpL = new AnimatedSprite("avoider/cat-moving-upL.png", 0.1f, 144, 150, 12 , RIGHT, 0);
+        catMovingUpR = new AnimatedSprite("avoider/cat-moving-upR.png", 0.1f, 144, 150, 12 , RIGHT, 0);
         
-        catMovingDownL = new AnimatedSprite("avoider/cat-moving-downL.png", 0.1f, 142, 150, 12 , RIGHT, 0);
-        catMovingDownR = new AnimatedSprite("avoider/cat-moving-downR.png", 0.1f, 142, 150, 12 , RIGHT, 0);
+        catMovingDownL = new AnimatedSprite("avoider/cat-moving-downL.png", 0.1f, 144, 150, 12 , RIGHT, 0);
+        catMovingDownR = new AnimatedSprite("avoider/cat-moving-downR.png", 0.1f, 144, 150, 12 , RIGHT, 0);
         
         catMovingLeft =  new AnimatedSprite("avoider/cat-moving-left.png", 0.1f, 142, 150, 12 , RIGHT, 0);
         catMovingRight = new AnimatedSprite("avoider/cat-moving-right.png", 0.1f, 142, 150, 12 , RIGHT, 0);
