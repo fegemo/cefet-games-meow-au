@@ -337,11 +337,13 @@ public class MouseAttack extends MiniGame {
 
         }
 
+        @Override
         public void update() {
 
             tempoDaAnimacao += Gdx.graphics.getDeltaTime();
             if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
                 Gdx.input.setInputProcessor(new InputAdapter() {
+                    @Override
                     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                         if (button == Buttons.LEFT) {
                             changeAnimation();
@@ -464,6 +466,7 @@ public class MouseAttack extends MiniGame {
             return this.morto;
         }
 
+        @Override
         public void update() {
             tempoDaAnimacao += Gdx.graphics.getDeltaTime();
 
