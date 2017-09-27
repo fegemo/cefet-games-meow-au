@@ -242,8 +242,10 @@ public class MouseAttack extends MiniGame {
     public boolean shouldHideMousePointer() {
         return true;
     }
+    
+    // <editor-fold desc="Classes internas da MouseAttack" defaultstate="collapsed">
 
-    class Cat2 extends AnimatedSprite {
+    static class Cat2 extends AnimatedSprite {
 
         static final int FRAME_WIDTH = 50;
         static final int FRAME_HEIGHT = 50;
@@ -356,7 +358,7 @@ public class MouseAttack extends MiniGame {
         }
     }
 
-    public class Projetil {
+    static class Projetil {
 
         public float maxVelocity = 450;
         public Vector2 position = new Vector2();
@@ -386,7 +388,7 @@ public class MouseAttack extends MiniGame {
 
     }
 
-    public class Monster extends AnimatedSprite {
+    static class Monster extends AnimatedSprite {
 
         static final int FRAME_WIDTH = 64;
         static final int FRAME_HEIGHT = 64;
@@ -472,5 +474,7 @@ public class MouseAttack extends MiniGame {
 
         }
     }
+    
+    // </editor-fold>
 
 }
