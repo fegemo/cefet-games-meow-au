@@ -20,7 +20,7 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
 /**
  *
- * @author Flávio Coutinho - fegemo <coutinho@decom.cefetmg.br>
+ * @inspirado no tp de cinematica
  */
 public class PlayingGamesScreen extends BaseScreen
         implements MiniGameStateObserver {
@@ -55,7 +55,10 @@ public class PlayingGamesScreen extends BaseScreen
                         new ClickFindCatFactory(),
                         // cassiano e gustavo jordão
                         new TicCatDogFactory(),
-                        new JumpTheObstaclesFactory()
+                        new JumpTheObstaclesFactory(),
+                        // luiza e pedro cordeiro
+                        new SpyFishFactory(),
+                        new GatoFantasmaFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);

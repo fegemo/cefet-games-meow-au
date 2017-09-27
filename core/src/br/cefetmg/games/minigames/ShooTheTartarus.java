@@ -35,7 +35,7 @@ public class ShooTheTartarus extends MiniGame {
     private Array<Tartarus> enemies;
     private Array<Tooth> teeth;
     private int numberOfBrokenTeeth;
-
+  
     // variáveis do desafio - variam com a dificuldade do minigame
     private float minimumEnemySpeed;
     private float maximumEnemySpeed;
@@ -71,6 +71,7 @@ public class ShooTheTartarus extends MiniGame {
         teeth = new Array<Tooth>();
         numberOfBrokenTeeth = 0;
 
+        
         initializeTeeth();
         timer.scheduleTask(new Task() {
             @Override
@@ -80,6 +81,8 @@ public class ShooTheTartarus extends MiniGame {
 
         }, 0, this.spawnInterval);
     }
+    
+    
 
     private void initializeTeeth() {
         TextureRegion[][] frames = TextureRegion.split(toothTexture,

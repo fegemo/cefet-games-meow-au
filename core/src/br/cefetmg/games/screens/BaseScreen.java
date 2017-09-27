@@ -41,7 +41,7 @@ public abstract class BaseScreen extends ScreenAdapter {
     public final Game game;
     private final BaseScreen previous;
     public final SpriteBatch batch;
-    public final OrthographicCamera camera;
+    public static OrthographicCamera camera;
     public Viewport viewport;
     public Rectangle visibleWorldBounds;
     public final AssetManager assets;
