@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
@@ -35,10 +34,10 @@ public class SpyFish extends MiniGame {
     //elementos de logica
     private Fish fish;
 
-    private int MAX_CHIPS;
-    private int NUM_CHIPS_TO_TAKE;
-    private float VELOCIDADE_MAX_CHIP;
-    private static int NUM_DE_CHIPS_PERDIDO = 0;
+    private int maxChips;
+    private int numberOfChipsToTake;
+    private float chipMaxSpeed;
+    private int numberOfLostChips = 0;
 
     public SpyFish(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 20000f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -50,19 +49,19 @@ public class SpyFish extends MiniGame {
     @Override
     protected void onStart() {
         chip = new ArrayList<MemoryChip>();
-        for (int i = 0; i < this.MAX_CHIPS; i++) {
-            chip.add(new MemoryChip(texturaMemoCard, this.VELOCIDADE_MAX_CHIP));
+        for (int i = 0; i < this.maxChips; i++) {
+            chip.add(new MemoryChip(texturaMemoCard, this.chipMaxSpeed));
         }
         this.fish = new Fish(this.texturaFish);
     }
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        this.MAX_CHIPS = (int) DifficultyCurve.LINEAR_NEGATIVE
+        this.maxChips = (int) DifficultyCurve.LINEAR_NEGATIVE
                 .getCurveValueBetween(difficulty, 7, 15);
-        this.NUM_CHIPS_TO_TAKE = (int) DifficultyCurve.LINEAR
+        this.numberOfChipsToTake = (int) DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 1, 5);
-        this.VELOCIDADE_MAX_CHIP = (float) DifficultyCurve.S
+        this.chipMaxSpeed = (float) DifficultyCurve.S
                 .getCurveValueBetween(difficulty, 1, 9);
     }
 
@@ -81,13 +80,13 @@ public class SpyFish extends MiniGame {
             if (mc.collidesWith(this.fish)) {
                 //se o peixe pegar um cartão de memoria
                 iterator.remove();
-                if (chip.size() == (this.MAX_CHIPS - this.NUM_CHIPS_TO_TAKE)) {
+                if (chip.size() == (this.maxChips - this.numberOfChipsToTake)) {
                     super.challengeSolved();
                 }
             }
             if (mc.getPositionMemoryCard().y < -1) {
-                NUM_DE_CHIPS_PERDIDO++;
-                if (NUM_DE_CHIPS_PERDIDO > (this.MAX_CHIPS + this.NUM_CHIPS_TO_TAKE)) {
+                numberOfLostChips++;
+                if (numberOfLostChips > (this.maxChips + this.numberOfChipsToTake)) {
                     // se chegar nessa parte do codigo, é pq não tem como 
                     // mais pegar o numero minimo de chips
                     super.challengeFailed();
@@ -105,36 +104,25 @@ public class SpyFish extends MiniGame {
 
     @Override
     public void onDrawGame() {
-        Vector3 mause = getMousePosInGameWorld();
         update(Gdx.graphics.getDeltaTime());
         batch.draw(texturaFundo, 0f, 0f, 1280f, 720f);
         this.fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
         for (MemoryChip chip : chip) {
             chip.render(batch);
         }
-        /*this.fish.render_area_collision();
-        for (MemoryChip chip : this.chip) {
-            //mostra os circulos de colisão
-            chip.render_area_collision();
-        }*/
-        //this.fish.render_area_collision();
-//        for (MemoryChip chip : this.chip) {
-//            //mostra os circulos de colisão
-//            chip.render_area_collision();
-//        }
     }
 
     @Override
     public String getInstructions() {
-        if (this.NUM_CHIPS_TO_TAKE == 1) {
+        if (this.numberOfChipsToTake == 1) {
             return "Pegue pelo menos um cartão de memória";
-        } else if (this.NUM_CHIPS_TO_TAKE == 2) {
+        } else if (this.numberOfChipsToTake == 2) {
             return "Pegue pelo menos dois cartões de memória";
-        } else if (this.NUM_CHIPS_TO_TAKE == 3) {
+        } else if (this.numberOfChipsToTake == 3) {
             return "Pegue pelo menos três cartões de memória";
-        } else if (this.NUM_CHIPS_TO_TAKE == 4) {
+        } else if (this.numberOfChipsToTake == 4) {
             return "Pegue pelo menos quatro cartões de memória";
-        } else if (this.NUM_CHIPS_TO_TAKE == 5) {
+        } else if (this.numberOfChipsToTake == 5) {
             return "Pegue pelo menos cinco cartões de memória";
         } else {
             return "";
@@ -155,7 +143,7 @@ class Fish extends Sprite implements Collidable {
     private Sprite sprite;
     private Circle circle;
     private ShapeRenderer shapeRenderer;
-    private float x_tempo = 0.0f;
+    private float tempoX = 0.0f;
     private boolean aux = true;
 
     public Fish(Texture texture) {
@@ -175,10 +163,10 @@ class Fish extends Sprite implements Collidable {
         //atualiza a posicao do retangulo de colisao
         this.circle.setPosition(x + (this.sprite.getWidth() / 2), y + (this.sprite.getHeight() / 2));
         if (aux) {
-            this.x_tempo = x;
+            this.tempoX = x;
             aux = !aux;
         }
-        if (this.x_tempo > x) {
+        if (this.tempoX > x) {
             if (!this.sprite.isFlipX()) {
                 this.sprite.flip(true, false);
             }
@@ -200,9 +188,9 @@ class Fish extends Sprite implements Collidable {
     }
 
     public void render(SpriteBatch sb, float x, float y) {
-        float x_sprite = this.sprite.getX();
-        float y_sprite = this.sprite.getY();
-        if ((1280 >= x_sprite && 0 <= x_sprite) && (720 >= y_sprite && 0 <= y_sprite)) {
+        float spriteX = this.sprite.getX();
+        float spriteY = this.sprite.getY();
+        if ((1280 >= spriteX && 0 <= spriteX) && (720 >= spriteY && 0 <= spriteY)) {
             //se estiver dentro da tela
             //update(x,y);
             if ((1280 >= this.sprite.getX() && 0 <= this.sprite.getX()) && (720 >= this.sprite.getY() && 0 <= this.sprite.getY())) {
@@ -218,7 +206,7 @@ class Fish extends Sprite implements Collidable {
         }
     }
 
-    public void render_area_collision() {
+    public void renderCollisionArea() {
         // metodo para mostrar circulo de colisão
         this.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         this.shapeRenderer.identity();
@@ -243,11 +231,10 @@ class MemoryChip implements Collidable {
     private final Vector2 position = new Vector2();
     private final Circle circle;
     private final Sprite sprite;
-    private final Float Velocidade_Queda;
+    private final Float velocidadeQueda;
     private ShapeRenderer shapeRenderer;
 
     public MemoryChip(Texture texture, float velocidade) {
-        Random r = new Random();
         this.sprite = new Sprite(texture);
         this.circle = new Circle();
         this.shapeRenderer = new ShapeRenderer();
@@ -255,14 +242,14 @@ class MemoryChip implements Collidable {
         this.position.y = 600.0f + (float) new Random().nextInt(120);
         this.circle.x = this.position.x + 12.5f;
         this.circle.y = this.position.y + 17f;
-        this.Velocidade_Queda = 1 + (float) new Random().nextFloat() * (velocidade - 1);
+        this.velocidadeQueda = 1 + (float) new Random().nextFloat() * (velocidade - 1);
         this.circle.radius = 21.1f;
         this.sprite.setPosition(this.position.x, this.position.y);
     }
 
     public void update() {
         //atualiza posição do memo card
-        this.position.y -= this.Velocidade_Queda;
+        this.position.y -= this.velocidadeQueda;
         this.sprite.rotate((float) 10);
         this.sprite.setPosition(this.position.x, this.position.y);
         // atualiza a area de colisão
@@ -270,7 +257,7 @@ class MemoryChip implements Collidable {
         this.circle.x = this.position.x + 12.5f;
     }
 
-    public void render_area_collision() {
+    public void renderCollisionArea() {
         // metodo para mostrar o circulo de colisão
         this.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         this.shapeRenderer.identity();
@@ -353,13 +340,8 @@ class Pose {
     }
 
     public void atualiza(Direcionamento guia, float delta) {
-        // em vez de usar as componentes (ficar "sujando as mãos"), sempre
-        // prefira programar de forma encapsulada ;)
         velocidade.add(guia.aceleracao.scl(delta));
         posicao.add(velocidade.scl(delta));
-//        posicao.x += guia.velocidade.x * delta;
-//        posicao.y += guia.velocidade.y * delta;
-//        posicao.z += guia.velocidade.z * delta;
         orientacao += guia.rotacao * delta;
         orientacao = orientacao % ((float) Math.PI * 2);
     }
@@ -408,9 +390,6 @@ class Buscar {
         output.aceleracao = aux;
         Vector2 auxV = new Vector2(agente.velocidade);
         output.aceleracao.sub(auxV.scl(constanteVelocidade));//aceleracao = forca/m - kv
-        //a rotacao ou direcao do bichinho nos podemos considerar q esta na direcao da velocidade
-        //mas por meio da duvida acho q seria algo assim
-//        output.rotacao=output.aceleracao.angleRad();
         output.rotacao = 0;
         return output;
     }
@@ -439,7 +418,6 @@ class Buscar {
 
         //a rotacao ou direcao do bichinho nos podemos considerar q esta na direcao da velocidade
         //mas por meio da duvida acho q seria algo assim
-//        output.rotacao=output.aceleracao.angleRad();
         output.rotacao = 0;
         return output;
     }
