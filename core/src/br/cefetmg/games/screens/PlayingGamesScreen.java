@@ -58,7 +58,7 @@ public class PlayingGamesScreen extends BaseScreen
                         new JumpTheObstaclesFactory(),
                         // luiza e pedro cordeiro
                         new SpyFishFactory(),
-                        new GatoFantasmaFactory()
+                        new PhantomCatFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);
