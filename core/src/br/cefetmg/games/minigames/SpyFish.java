@@ -29,12 +29,10 @@ public class SpyFish extends MiniGame {
     private final Texture texturaFish;
     private Texture texturaFundo;
     private final Texture texturaMemoCard;
-    private final Texture textureFishSheet;
 
     private ArrayList<MemoryChip> chip;
 
     private static SpriteBatch batch;
-    private ShapeRenderer shapeRenderer;
 
     //elementos de logica
     private Fish fish;
@@ -48,8 +46,6 @@ public class SpyFish extends MiniGame {
         super(screen, observer, difficulty, 20000f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
-        this.texturaFundo = assets.get("spy-fish/ocean.jpeg", Texture.class);
-        this.textureFishSheet = assets.get("spy-fish/fishsheet.png", Texture.class);
         this.texturaFundo = assets.get("spy-fish/ocean.jpeg", Texture.class);
         batch = new SpriteBatch();
     }
@@ -244,16 +240,6 @@ class Fish extends Sprite implements Collidable {
     }
 
     @Override
-    public boolean isOutOfBounds(Rectangle area) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Rectangle getMinimumBoundingRectangle() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public Circle getMinimumEnclosingBall() {
         return this.circle;
     }
@@ -261,12 +247,10 @@ class Fish extends Sprite implements Collidable {
 
 class MemoryChip implements Collidable {
 
-    private float radius;
     private final Vector2 position = new Vector2();
     private final Circle circle;
     private final Sprite sprite;
     private final Float Velocidade_Queda;
-    private final Float Rotation;
     private ShapeRenderer shapeRenderer;
 
     public MemoryChip(Texture texture, float velocidade) {
@@ -279,7 +263,6 @@ class MemoryChip implements Collidable {
         this.circle.x = this.position.x + 12.5f;
         this.circle.y = this.position.y + 17f;
         this.Velocidade_Queda = 1 + (float) new Random().nextFloat() * (velocidade - 1);
-        this.Rotation = (-30) + (float) new Random().nextInt(20);
         this.circle.radius = 21.1f;
         this.sprite.setPosition(this.position.x, this.position.y);
     }
@@ -328,16 +311,6 @@ class MemoryChip implements Collidable {
     @Override
     public Circle getMinimumEnclosingBall() {
         return this.circle;
-    }
-
-    @Override
-    public boolean isOutOfBounds(Rectangle area) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Rectangle getMinimumBoundingRectangle() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
 
@@ -482,9 +455,6 @@ class Buscar {
 
 class Collision {
 
-    private static Vector2 vector_c1;
-    private static Vector2 vector_c2;
-
     /**
      * Verifica se dois círculos em 2D estão colidindo.
      *
@@ -535,21 +505,6 @@ interface Collidable {
      * @return true/false se está colidindo ou não.
      */
     boolean collidesWith(Collidable other);
-
-    /**
-     * Verifica se este objeto está fora de uma região retangular.
-     *
-     * @param area área retangular.
-     * @return true/false se está pelo menos parcialmente fora da região.
-     */
-    boolean isOutOfBounds(Rectangle area);
-
-    /**
-     * Retorna um retângulo mínimo que contenha a entidade.
-     *
-     * @return um retângulo.
-     */
-    Rectangle getMinimumBoundingRectangle();
 
     /**
      * Retorna um círculo mínimo que contenha a entidade.

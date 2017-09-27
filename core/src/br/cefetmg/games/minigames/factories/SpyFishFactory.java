@@ -27,8 +27,6 @@ public class SpyFishFactory implements MiniGameFactory {
                 put("spy-fish/fish.png", Texture.class);
                 put("spy-fish/card.png", Texture.class);
                 put("spy-fish/ocean.jpeg", Texture.class);
-                put("spy-fish/fishsheet.png", Texture.class);
-
             }
         };
     }
