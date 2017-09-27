@@ -111,22 +111,25 @@ public class SpyFish extends MiniGame {
             chip.render(batch);
         }
     }
+    
+    private String getNumberSpelled(int number) {
+        switch (number) {
+            case 1: return "um";
+            case 2: return "dois";
+            case 3: return "três";
+            case 4: return "quatro";
+            case 5: return "cinco";
+            default: return String.valueOf(number);
+        }
+    }
 
     @Override
     public String getInstructions() {
-        if (this.numberOfChipsToTake == 1) {
-            return "Pegue pelo menos um cartão de memória";
-        } else if (this.numberOfChipsToTake == 2) {
-            return "Pegue pelo menos dois cartões de memória";
-        } else if (this.numberOfChipsToTake == 3) {
-            return "Pegue pelo menos três cartões de memória";
-        } else if (this.numberOfChipsToTake == 4) {
-            return "Pegue pelo menos quatro cartões de memória";
-        } else if (this.numberOfChipsToTake == 5) {
-            return "Pegue pelo menos cinco cartões de memória";
-        } else {
-            return "";
-        }
+        String instruction = String.format(
+                "Pegue pelo menos %1$s %2$s de memória",
+                getNumberSpelled(numberOfChipsToTake),
+                numberOfChipsToTake > 1 ? "cartões" : "cartão");
+        return instruction;
     }
 
     @Override
