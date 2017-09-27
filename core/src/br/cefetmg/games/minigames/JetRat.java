@@ -30,7 +30,7 @@ import static br.cefetmg.games.Config.WORLD_WIDTH;
  *
  * @author fegemo <coutinho@decom.cefetmg.br>
  */
-public class RatoaJato extends MiniGame {
+public class JetRat extends MiniGame {
 
     private Calopsita calopsita;
     private Tube cattube;
@@ -51,7 +51,7 @@ public class RatoaJato extends MiniGame {
     float aceleracao,velocidade;
     private Sound meon;
 
-    public RatoaJato(BaseScreen screen,
+    public JetRat(BaseScreen screen,
                      MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f,
                 TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -60,12 +60,12 @@ public class RatoaJato extends MiniGame {
     @Override
     protected void onStart() {
         troca=0;
-        calopsitaTextura = assets.get("RatoaJato/jatmouse.png",Texture.class);
-        cattubeTexture = assets.get("RatoaJato/tubecat.png",Texture.class);
-        bg1= assets.get("RatoaJato/background.png",Texture.class);
+        calopsitaTextura = assets.get("jet-rat/jatmouse.png",Texture.class);
+        cattubeTexture = assets.get("jet-rat/tubecat.png",Texture.class);
+        bg1= assets.get("jet-rat/background.png",Texture.class);
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        tubeTexture = assets.get("RatoaJato/tube.png",Texture.class);
-        meon=assets.get("RatoaJato/meon.mp3", Sound.class);
+        tubeTexture = assets.get("jet-rat/tube.png",Texture.class);
+        meon=assets.get("jet-rat/meon.mp3", Sound.class);
         calopsita= new Calopsita(calopsitaTextura);
         calopsita.setScale(0.5f);
         ScreenHeight = Gdx.graphics.getHeight();
