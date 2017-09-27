@@ -179,6 +179,7 @@ public class ShooTheTartarus extends MiniGame {
                 ? -1 : 1, 1);
     }
 
+
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         this.minimumEnemySpeed = DifficultyCurve.LINEAR
