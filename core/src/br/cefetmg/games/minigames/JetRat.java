@@ -23,14 +23,10 @@ import java.util.Random;
 import static br.cefetmg.games.Config.WORLD_HEIGHT;
 import static br.cefetmg.games.Config.WORLD_WIDTH;
 
-/**
- *
- * @author fegemo <coutinho@decom.cefetmg.br>
- */
 public class JetRat extends MiniGame {
 
-    private Calopsita calopsita;
-    private Texture calopsitaTextura;
+    private Calopsita mouse;
+    private Texture mouseTexture;
     private Texture tubeTexture;
     private Texture cattubeTexture;
     private Texture bg1;
@@ -38,8 +34,8 @@ public class JetRat extends MiniGame {
 
     // variáveis do desafio - variam com a dificuldade do minigame
     private float minimumEnemySpeed;
-    private float ScreenWidth;
-    private float ScreenHeight;
+    private float screenWidth;
+    private float screenHeight;
     private float posX, posY;
     int srcX, troca;
     float aceleracao, velocidade;
@@ -54,16 +50,16 @@ public class JetRat extends MiniGame {
     @Override
     protected void onStart() {
         troca = 0;
-        calopsitaTextura = assets.get("jet-rat/jatmouse.png", Texture.class);
+        mouseTexture = assets.get("jet-rat/jatmouse.png", Texture.class);
         cattubeTexture = assets.get("jet-rat/tubecat.png", Texture.class);
         bg1 = assets.get("jet-rat/background.png", Texture.class);
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         tubeTexture = assets.get("jet-rat/tube.png", Texture.class);
         meon = assets.get("jet-rat/meon.mp3", Sound.class);
-        calopsita = new Calopsita(calopsitaTextura);
-        calopsita.setScale(0.5f);
-        ScreenHeight = Gdx.graphics.getHeight();
-        ScreenWidth = Gdx.graphics.getWidth();
+        mouse = new Calopsita(mouseTexture);
+        mouse.setScale(0.5f);
+        screenHeight = Gdx.graphics.getHeight();
+        screenWidth = Gdx.graphics.getWidth();
 
         enemies = new Array<Tube>();
 
@@ -85,7 +81,7 @@ public class JetRat extends MiniGame {
 
         float Ddwown = (float) Math.random() * viewport.getScreenHeight() * 0.3f;
 
-        Vector2 tubeGoal = new Vector2(-ScreenWidth, Ddwown);
+        Vector2 tubeGoal = new Vector2(-screenWidth, Ddwown);
         Vector2 tubePosition = new Vector2();
 
         Vector2 tubeSpeed = tubeGoal
@@ -93,9 +89,9 @@ public class JetRat extends MiniGame {
                 .nor()
                 .scl(this.minimumEnemySpeed);
         Tube enemy = new Tube(cattubeTexture);
-        enemy.setsize(new Random().nextInt(4));
+        enemy.setSize(new Random().nextInt(4));
 
-        enemy.setPosition(WORLD_WIDTH, 60 * enemy.getsize());
+        enemy.setPosition(WORLD_WIDTH, 60 * enemy.getSize());
         enemy.setSpeed(tubeSpeed);
         enemies.add(enemy);
     }
@@ -110,13 +106,13 @@ public class JetRat extends MiniGame {
     public void onHandlePlayingInput() {
 
         // atualiza a posição do alvo de acordo com o mouse
-        Vector3 Posi;
-        Posi = new Vector3(posX, posY, 0);
-        viewport.unproject(Posi);
-        calopsita.setCenter(Posi.x, Posi.y);
+        Vector3 position;
+        position = new Vector3(posX, posY, 0);
+        viewport.unproject(position);
+        mouse.setCenter(position.x, position.y);
         for (Tube tubes : this.enemies) {
-            if (calopsita.getY() + 70 <= tubes.getHeight() + tubes.getsize() * 60
-                    && (calopsita.getX() > tubes.getX() - 80 && calopsita.getX() < tubes.getX() + 80)) {
+            if (mouse.getY() + 70 <= tubes.getHeight() + tubes.getSize() * 60
+                    && (mouse.getX() > tubes.getX() - 80 && mouse.getX() < tubes.getX() + 80)) {
 
                 super.challengeFailed();
                 meon.stop();
@@ -131,15 +127,15 @@ public class JetRat extends MiniGame {
         if (this.getState().equals(MiniGameState.PLAYER_SUCCEEDED)) {
             meon.stop();
         }
-        calopsita.update(dt);
+        mouse.update(dt);
         srcX += 5;
         if (aceleracao > -1 * WORLD_HEIGHT * 0.00009f);
         aceleracao -= WORLD_HEIGHT * 0.00005f; //gravidade
 
-        if (posY < ScreenHeight + 2) {
+        if (posY < screenHeight + 2) {
             posY -= velocidade + aceleracao;//2.5; 1;
         }
-        if (posX > ScreenWidth / 2 - 16) {
+        if (posX > screenWidth / 2 - 16) {
             posX -= 0.5;
         }
         if (Gdx.input.justTouched()) {
@@ -148,13 +144,13 @@ public class JetRat extends MiniGame {
             posX += 2;
         }
 
-        // atualizbea os inimigos (quadro de animação + colisão com dentes)
+        // atualiza os inimigos (quadro de animação + colisão com dentes)
         for (int i = 0; i < this.enemies.size; i++) {
             Tube tube = this.enemies.get(i);
             tube.setPosition(tube.getX() - 5, tube.getY());
             tube.changePicture();
         }
-        if (calopsita.getY() + calopsita.getHeight() / 2 > WORLD_HEIGHT) {
+        if (mouse.getY() + mouse.getHeight() / 2 > WORLD_HEIGHT) {
             super.challengeFailed();
             meon.stop();
         }
@@ -166,13 +162,13 @@ public class JetRat extends MiniGame {
 
         for (Tube tubes : this.enemies) {
             tubes.draw(batch);
-            for (int i = 0; i < tubes.getsize(); i++) {
+            for (int i = 0; i < tubes.getSize(); i++) {
                 batch.draw(tubeTexture, tubes.getX(), 60 * i);
             }
 
         }
 
-        calopsita.draw(batch);
+        mouse.draw(batch);
     }
 
     @Override
@@ -221,11 +217,9 @@ public class JetRat extends MiniGame {
 
         private Vector2 speed;
 
-        static final int FRAME_WIDTH = 220;
-        static final int FRAME_HEIGHT = 390;
-        int size;
-        Texture temp;
-        Animation a;
+        private static final int FRAME_WIDTH = 220;
+        private static final int FRAME_HEIGHT = 390;
+        private int size;
 
         public Tube(final Texture tubesSpritesheet) {
 
@@ -259,11 +253,11 @@ public class JetRat extends MiniGame {
                     super.getY() + this.speed.y * dt);
         }
 
-        public void setsize(int siz) {
-            this.size = siz;
+        public void setSize(int size) {
+            this.size = size;
         }
 
-        public int getsize() {
+        public int getSize() {
             return size;
         }
 
