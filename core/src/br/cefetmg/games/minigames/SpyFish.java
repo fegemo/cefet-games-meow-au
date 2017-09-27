@@ -29,7 +29,7 @@ public class SpyFish extends MiniGame {
     private Texture texturaFundo;
     private final Texture texturaMemoCard;
 
-    private ArrayList<MemoryChip> chip;
+    private ArrayList<MemoryChip> chips;
 
     //elementos de logica
     private Fish fish;
@@ -48,9 +48,9 @@ public class SpyFish extends MiniGame {
 
     @Override
     protected void onStart() {
-        chip = new ArrayList<MemoryChip>();
+        chips = new ArrayList<MemoryChip>();
         for (int i = 0; i < this.maxChips; i++) {
-            chip.add(new MemoryChip(texturaMemoCard, this.chipMaxSpeed));
+            chips.add(new MemoryChip(texturaMemoCard, this.chipMaxSpeed));
         }
         this.fish = new Fish(this.texturaFish);
     }
@@ -75,12 +75,12 @@ public class SpyFish extends MiniGame {
     @Override
     public void onUpdate(float dt) {
         fish.update(dt);
-        for (Iterator<MemoryChip> iterator = chip.iterator(); iterator.hasNext();) {
+        for (Iterator<MemoryChip> iterator = chips.iterator(); iterator.hasNext();) {
             MemoryChip mc = iterator.next();
             if (mc.collidesWith(this.fish)) {
                 //se o peixe pegar um cartão de memoria
                 iterator.remove();
-                if (chip.size() == (this.maxChips - this.numberOfChipsToTake)) {
+                if (chips.size() == (this.maxChips - this.numberOfChipsToTake)) {
                     super.challengeSolved();
                 }
             }
@@ -107,7 +107,7 @@ public class SpyFish extends MiniGame {
         update(Gdx.graphics.getDeltaTime());
         batch.draw(texturaFundo, 0f, 0f, 1280f, 720f);
         this.fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
-        for (MemoryChip chip : chip) {
+        for (MemoryChip chip : chips) {
             chip.render(batch);
         }
     }
