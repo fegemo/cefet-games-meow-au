@@ -32,8 +32,6 @@ public class SpyFish extends MiniGame {
 
     private ArrayList<MemoryChip> chip;
 
-    private static SpriteBatch batch;
-
     //elementos de logica
     private Fish fish;
 
@@ -47,7 +45,6 @@ public class SpyFish extends MiniGame {
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
         this.texturaFundo = assets.get("spy-fish/ocean.jpeg", Texture.class);
-        batch = new SpriteBatch();
     }
 
     @Override
@@ -110,13 +107,11 @@ public class SpyFish extends MiniGame {
     public void onDrawGame() {
         Vector3 mause = getMousePosInGameWorld();
         update(Gdx.graphics.getDeltaTime());
-        batch.begin();
         batch.draw(texturaFundo, 0f, 0f, 1280f, 720f);
         this.fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
         for (MemoryChip chip : chip) {
             chip.render(batch);
         }
-        batch.end();
         /*this.fish.render_area_collision();
         for (MemoryChip chip : this.chip) {
             //mostra os circulos de colisão
@@ -157,9 +152,7 @@ class Fish extends Sprite implements Collidable {
 
     private Vector2 alvo;
     private Pose pose;
-    private int lado;
     private Sprite sprite;
-    private TextureRegion[][] region;
     private Circle circle;
     private ShapeRenderer shapeRenderer;
     private float x_tempo = 0.0f;
