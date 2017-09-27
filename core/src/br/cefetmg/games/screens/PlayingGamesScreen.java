@@ -248,11 +248,4 @@ public class PlayingGamesScreen extends BaseScreen
         FINISHED_GAME_OVER,
         FINISHED_WON
     }
-    
-    @Override
-    public void resize(int width, int height) {
-        this.viewport.update(width, height, true);
-    }
-
-
 }
