@@ -30,7 +30,7 @@ public class SpyFish extends MiniGame {
     private Texture texturaFundo;
     private final Texture texturaMemoCard;
     private final Texture textureFishSheet;
-   
+
     private ArrayList<MemoryChip> chip;
 
     private static SpriteBatch batch;
@@ -65,15 +65,19 @@ public class SpyFish extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        this.MAX_CHIPS = (int) DifficultyCurve.LINEAR_NEGATIVE.getCurveValueBetween(difficulty, 7, 15);
-        this.NUM_CHIPS_TO_TAKE = (int) DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 1, 5);
-        this.VELOCIDADE_MAX_CHIP = (float) DifficultyCurve.S.getCurveValueBetween(difficulty, 1, 9);
+        this.MAX_CHIPS = (int) DifficultyCurve.LINEAR_NEGATIVE
+                .getCurveValueBetween(difficulty, 7, 15);
+        this.NUM_CHIPS_TO_TAKE = (int) DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 1, 5);
+        this.VELOCIDADE_MAX_CHIP = (float) DifficultyCurve.S
+                .getCurveValueBetween(difficulty, 1, 9);
     }
 
     @Override
     public void onHandlePlayingInput() {
         // move o peixe
-        this.fish.updateAccordingToTheMouse(getMousePosInGameWorld().x, getMousePosInGameWorld().y);
+        this.fish.updateAccordingToTheMouse(
+                getMousePosInGameWorld().x, getMousePosInGameWorld().y);
     }
 
     @Override
@@ -91,8 +95,8 @@ public class SpyFish extends MiniGame {
             if (mc.getPositionMemoryCard().y < -1) {
                 NUM_DE_CHIPS_PERDIDO++;
                 if (NUM_DE_CHIPS_PERDIDO > (this.MAX_CHIPS + this.NUM_CHIPS_TO_TAKE)) {
-                    // se chegar nessa parte do codigo, é pq não tem como mais pegar o numero minimo
-                    //de chips
+                    // se chegar nessa parte do codigo, é pq não tem como 
+                    // mais pegar o numero minimo de chips
                     super.challengeFailed();
                     break;
                 }
@@ -154,6 +158,7 @@ public class SpyFish extends MiniGame {
 }
 
 class Fish extends Sprite implements Collidable {
+
     private Vector2 alvo;
     private Pose pose;
     private int lado;
@@ -255,6 +260,7 @@ class Fish extends Sprite implements Collidable {
 }
 
 class MemoryChip implements Collidable {
+
     private float radius;
     private final Vector2 position = new Vector2();
     private final Circle circle;
@@ -336,6 +342,7 @@ class MemoryChip implements Collidable {
 }
 
 class Pose {
+
     public Vector2 posicao;
     public Vector2 velocidade;
     public float orientacao;
@@ -509,7 +516,6 @@ class Collision {
      * @param r2 retângulo 2
      * @return true se há colisão ou false, do contrário.
      */
-
     public static final boolean rectsOverlap(Rectangle r1, Rectangle r2) {
         return r1.contains(r2);
     }
@@ -520,7 +526,6 @@ class Collision {
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------
-
 interface Collidable {
 
     /**
