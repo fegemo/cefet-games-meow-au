@@ -41,16 +41,16 @@ public class MenuScreen extends BaseScreen {
                 Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         // define a largura da região de desenho de forma que ela seja repetida
-        // um número de vezes igual a NUMBER_OF_TILED_BACKGROUND_TEXTURE 
+        // um número de vezes igual a NUMBER_OF_TILED_BACKGROUND_TEXTURE
         background.setRegionWidth(
                 background.getTexture().getWidth()
-                * NUMBER_OF_TILED_BACKGROUND_TEXTURE);
-        // idem para altura, porém será repetida um número de vezes igual a 
+                        * NUMBER_OF_TILED_BACKGROUND_TEXTURE);
+        // idem para altura, porém será repetida um número de vezes igual a
         // NUMBER_OF_TILED_BACKGROUND_TEXTURE * razãoDeAspecto
         background.setRegionHeight(
                 (int) (background.getTexture().getHeight()
-                * NUMBER_OF_TILED_BACKGROUND_TEXTURE
-                / Config.DESIRED_ASPECT_RATIO));
+                        * NUMBER_OF_TILED_BACKGROUND_TEXTURE
+                        / Config.DESIRED_ASPECT_RATIO));
     }
 
     /**
@@ -97,7 +97,7 @@ public class MenuScreen extends BaseScreen {
         game.setScreen(new PlayingGamesScreen(game, this));
     }
 
-    
+
     /**
      * Libera os recursos necessários para esta tela.
      */
