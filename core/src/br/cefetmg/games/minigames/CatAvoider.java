@@ -117,10 +117,12 @@ public class CatAvoider extends MiniGame {
 
         limitsWidth = 20;
         limitsHeight = 20;
-        up = new Obstacle(new Vector2(0, WORLD_HEIGHT - limitsHeight), WORLD_WIDTH, limitsHeight);
-        down = new Obstacle(new Vector2(0, 0), WORLD_WIDTH, limitsHeight);
-        left = new Obstacle(new Vector2(0, limitsWidth), limitsWidth, WORLD_HEIGHT);
-        right = new Obstacle(new Vector2(WORLD_WIDTH - limitsWidth, limitsWidth), limitsWidth, WORLD_HEIGHT);
+        
+        Texture obstacleTexture = assets.get("avoider/grey.png", Texture.class);
+        up = new Obstacle(obstacleTexture, new Vector2(0, WORLD_HEIGHT - limitsHeight), WORLD_WIDTH, limitsHeight);
+        down = new Obstacle(obstacleTexture, new Vector2(0, 0), WORLD_WIDTH, limitsHeight);
+        left = new Obstacle(obstacleTexture, new Vector2(0, limitsWidth), limitsWidth, WORLD_HEIGHT);
+        right = new Obstacle(obstacleTexture, new Vector2(WORLD_WIDTH - limitsWidth, limitsWidth), limitsWidth, WORLD_HEIGHT);
 
         cat.texture = assets.get("avoider/catNinja.png", Texture.class);
         cat.sprite = new Sprite(cat.texture);
@@ -232,15 +234,15 @@ public class CatAvoider extends MiniGame {
     }
 
     // <editor-fold desc="Classes internas de CatAvoider" defaultstate="collapsed">
-    class Obstacle {
+    static class Obstacle {
 
         private final Texture colorTexture;
         private final Sprite sprite;
         private final Vector2 position;
         private final Rectangle bounds;
 
-        public Obstacle(Vector2 position, float width, float height) {
-            colorTexture = assets.get("avoider/grey.png", Texture.class);
+        public Obstacle(Texture texture, Vector2 position, float width, float height) {
+            colorTexture = texture;
             this.position = position;
             bounds = new Rectangle(this.position.x, this.position.y, width, height);
             sprite = new Sprite(colorTexture);
