@@ -1,3 +1,4 @@
+
 package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.minigames.util.DifficultyCurve;
