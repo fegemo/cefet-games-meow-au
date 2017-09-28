@@ -523,15 +523,14 @@ public class CatAvoider extends MiniGame {
     
     class Wool {
 
-        protected Circle circle;//circle to enclose the cat and treat the colision
-        protected Sprite mouse;//sprite for the mouse(playable character)
-        protected Vector2 position;//vector to get the mouse positon on the screen
-        protected Vector2 direction;//vetor to get the cat direction on the screen
-        protected Texture texture;
-        protected Sprite sprite;
-        protected int life = 1;
+        private Circle circle;//circle to enclose the cat and treat the colision
+        private Vector2 position;//vector to get the mouse positon on the screen
+        private Vector2 direction;//vetor to get the cat direction on the screen
+        private Texture texture;
+        private Sprite sprite;
+        private int life = 1;
 
-        public void getPosition() {
+        void getPosition() {
             position.x = Gdx.input.getX() * WORLD_WIDTH / viewport.getScreenWidth();
             position.y = WORLD_HEIGHT - (Gdx.input.getY() * WORLD_HEIGHT / viewport.getScreenHeight());
         }
