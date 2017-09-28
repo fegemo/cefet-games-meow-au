@@ -20,7 +20,218 @@ import static java.lang.Math.abs;
 import java.util.Random;
 
 public class CatAvoider extends MiniGame {
-    class Obstacle {
+    public static final int NORTH = 0;
+    public static final int SOUTH = 1;
+    public static final int WEST = 2;
+    public static final int EAST = 3;
+
+    public static final int LEFT = 0;
+    public static final int RIGHT = 1;
+
+    public CatAvoider(BaseScreen screen,
+            MiniGameStateObserver observer, float difficulty) {
+        super(screen, observer, difficulty, 10f,
+                TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
+    }
+
+    private Texture backgroundTexture; //backgroud texture of the world
+    private Sprite backgroundSprite;//sprite created for the background
+
+    private Texture limits;//texture created for the screen limits
+    private float limitsWidth;//width of the screen limits
+    private float limitsHeight;//height of the screen limits
+    private Obstacle down;//scren limit down
+    private Obstacle up;//screen limit up
+    private Obstacle left;//screen limit left
+    private Obstacle right;//screen limit right
+
+    protected Random randomGenerator = new Random();//objetct to generate random numbers
+    protected int signal = randomGenerator.nextInt(2);//set the direction of cat moviment in random mode
+
+    protected AnimatedSprite catMovingUpR, catMovingUpL, catMovingDownR, catMovingDownL;
+    protected AnimatedSprite catMovingLeft, catMovingRight;
+    protected static Music backgroundMusic, impact;
+    protected enum catMoveType{upR, upL, downL, downR, left, right}
+
+    protected Wool wool = new Wool();
+
+    Cat cat = new Cat();
+
+    public void verifyCollision() {
+        cat.rect = cat.sprite.getBoundingRectangle();
+
+        wool.circle = new Circle();
+        wool.circle.set(wool.sprite.getX(), wool.sprite.getY(), 0.25f);
+
+        /*
+        /**collision cat wool*/
+        if (Colision.rectCircleOverlap(cat.rect, wool.circle) != null) {
+            wool.life = 0;
+            impact.play();
+            super.challengeFailed();
+            backgroundMusic.stop();
+        }
+
+        /**
+         * collision cat floor
+         */
+        if (Colision.rectsOverlap(down.getRec(), cat.rect)) {
+            cat.sprite.setPosition(cat.sprite.getX(), down.getRec().y+down.getRec().height);
+            cat.reflect();
+            if(wool.position.x > cat.sprite.getX())
+                cat.moveType = catMoveType.downR;
+            else if(wool.position.x < cat.sprite.getX())
+                cat.moveType = catMoveType.downL;
+            cat.state = cat.randomState;
+        } /**
+         * collision cat roof
+         */
+        else if (Colision.rectsOverlap(up.getRec(), cat.rect)) {
+            cat.sprite.setPosition(cat.sprite.getX(), up.getRec().y - up.getRec().height - cat.sprite.getHeight());
+            cat.reflect();
+            if(wool.position.x > cat.sprite.getX())
+                cat.moveType = catMoveType.upR;
+            else if(wool.position.x < cat.sprite.getX())
+                cat.moveType = catMoveType.upL;
+            cat.state = cat.randomState;
+        }
+
+        /**
+         * collision cat left wall
+         */
+        if (Colision.rectsOverlap(left.getRec(), cat.rect)) {
+            cat.sprite.setPosition(left.getRec().x + left.getRec().width , cat.sprite.getY());
+            cat.reflect();
+            cat.moveType = catMoveType.left;
+            cat.state = cat.randomState;
+        } /**
+         * collision cat right wall
+         */
+        else if (Colision.rectsOverlap(right.getRec(), cat.rect)) {
+            cat.sprite.setPosition(right.getRec().x - right.getRec().width - cat.sprite.getWidth(), cat.sprite.getY());
+            cat.reflect();
+            cat.moveType = catMoveType.right;
+            cat.state = cat.randomState;
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        backgroundTexture = assets.get("avoider/backgroundTexture.png", Texture.class);
+        backgroundSprite = new Sprite(backgroundTexture);
+        backgroundSprite.setSize(WORLD_WIDTH, WORLD_HEIGHT);
+
+        limitsWidth = 20;
+        limitsHeight = 20;
+        limits = assets.get("avoider/grey.png", Texture.class);
+        up = new Obstacle(batch, new Vector2(0, WORLD_HEIGHT - limitsHeight), WORLD_WIDTH, limitsHeight);
+        down = new Obstacle(batch, new Vector2(0, 0), WORLD_WIDTH, limitsHeight);
+        left = new Obstacle(batch, new Vector2(0, limitsWidth), limitsWidth, WORLD_HEIGHT);
+        right = new Obstacle(batch, new Vector2(WORLD_WIDTH - limitsWidth, limitsWidth), limitsWidth, WORLD_HEIGHT);
+
+        cat.texture = assets.get("avoider/catNinja.png", Texture.class);
+        cat.sprite = new Sprite(cat.texture);
+        cat.sprite.setSize(100, 150);
+        cat.sprite.setOrigin(cat.sprite.getWidth() / 2, cat.sprite.getHeight() / 2);
+        cat.sprite.setPosition(WORLD_WIDTH / 2, limitsWidth);
+        int random = randomGenerator.nextInt();
+        cat.moveType = catMoveType.downL;
+        cat.state = cat.randomState;
+
+        catMovingUpL = new AnimatedSprite("avoider/cat-moving-upL.png", 0.1f, 144, 150, 12 , RIGHT, 0);
+        catMovingUpR = new AnimatedSprite("avoider/cat-moving-upR.png", 0.1f, 144, 150, 12 , RIGHT, 0);
+        
+        catMovingDownL = new AnimatedSprite("avoider/cat-moving-downL.png", 0.1f, 144, 150, 12 , RIGHT, 0);
+        catMovingDownR = new AnimatedSprite("avoider/cat-moving-downR.png", 0.1f, 144, 150, 12 , RIGHT, 0);
+        
+        catMovingLeft =  new AnimatedSprite("avoider/cat-moving-left.png", 0.1f, 142, 150, 12 , RIGHT, 0);
+        catMovingRight = new AnimatedSprite("avoider/cat-moving-right.png", 0.1f, 142, 150, 12 , RIGHT, 0);
+        
+        wool.direction = new Vector2(0, 0);
+        wool.texture = assets.get("avoider/wool.png", Texture.class);
+        wool.position = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        wool.sprite = new Sprite(wool.texture);
+        wool.sprite.setSize(50, 50);
+
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("avoider/ninja_theme.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
+
+        impact = Gdx.audio.newMusic(Gdx.files.internal("avoider/impact.mp3"));
+    }
+
+    public float getCurveValue(float value) {
+        return (float) (1f / (1f + Math.pow(Math.E, -6 * (value - 0.5f))));
+    }
+
+    @Override
+    protected void configureDifficultyParameters(float difficulty) {
+
+        cat.speed = cat.speed + getCurveValue(cat.speed);
+    }
+
+    @Override
+    public void onHandlePlayingInput() {
+    }
+
+    @Override
+    public void onUpdate(float dt) {
+        int changeState = randomGenerator.nextInt(30);
+        if (changeState == 29) {
+            cat.state = cat.jumpState;
+        }
+        cat.move();
+        wool.getPosition();
+        wool.sprite.setPosition(wool.position.x, wool.position.y);
+
+        catMovingUpL.timeAnimation += Gdx.graphics.getDeltaTime();
+        catMovingUpR.timeAnimation += Gdx.graphics.getDeltaTime();
+        catMovingDownL.timeAnimation += Gdx.graphics.getDeltaTime();
+        catMovingDownR.timeAnimation += Gdx.graphics.getDeltaTime();
+        catMovingLeft.timeAnimation += Gdx.graphics.getDeltaTime();
+        catMovingRight.timeAnimation += Gdx.graphics.getDeltaTime();
+    }
+
+    @Override
+    public void onDrawGame() {
+        backgroundSprite.draw(batch);
+
+        down.draw();
+        up.draw();
+        left.draw();
+        right.draw();
+        
+        if(cat.moveType.equals(catMoveType.upL))
+            batch.draw((TextureRegion) catMovingUpL.moviment.getKeyFrame(catMovingUpL.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+        else if(cat.moveType.equals(catMoveType.upR))
+            batch.draw((TextureRegion) catMovingUpR.moviment.getKeyFrame(catMovingUpR.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+        else if(cat.moveType.equals(catMoveType.downL))
+            batch.draw((TextureRegion) catMovingDownL.moviment.getKeyFrame(catMovingDownL.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+        else if(cat.moveType.equals(catMoveType.downR))
+            batch.draw((TextureRegion) catMovingDownR.moviment.getKeyFrame(catMovingDownR.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+        else if(cat.moveType.equals(catMoveType.left))
+            batch.draw((TextureRegion) catMovingLeft.moviment.getKeyFrame(catMovingLeft.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+        else if(cat.moveType.equals(catMoveType.right))
+            batch.draw((TextureRegion) catMovingRight.moviment.getKeyFrame(catMovingRight.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+        
+        if (wool.life == 1) {
+            wool.sprite.draw(batch);
+        }
+    }
+
+    @Override
+    public String getInstructions() {
+        return "Não deixe o gato pegar o novelo!!!";
+    }
+
+    @Override
+    public boolean shouldHideMousePointer() {
+        return true;
+    }
+
+    // <editor-fold desc="Classes internas de CatAvoider" defaultstate="collapsed">
+    
+    static class Obstacle {
         private Texture color;
         private Sprite visible;
         private Vector2 position;
@@ -46,7 +257,7 @@ public class CatAvoider extends MiniGame {
         }
     }
     
-    class AnimatedSprite {
+    static class AnimatedSprite {
         public Animation moviment;
         public float timeAnimation;
         private Texture spriteSheet;
@@ -93,57 +304,6 @@ public class CatAvoider extends MiniGame {
         }
     }
     
-    public static final int NORTH = 0;
-    public static final int SOUTH = 1;
-    public static final int WEST = 2;
-    public static final int EAST = 3;
-
-    public static final int LEFT = 0;
-    public static final int RIGHT = 1;
-
-    public CatAvoider(BaseScreen screen,
-            MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 10f,
-                TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
-    }
-
-    private Texture backgroundTexture; //backgroud texture of the world
-    private Sprite backgroundSprite;//sprite created for the background
-
-    private Texture limits;//texture created for the screen limits
-    private float limitsWidth;//width of the screen limits
-    private float limitsHeight;//height of the screen limits
-    private Obstacle down;//scren limit down
-    private Obstacle up;//screen limit up
-    private Obstacle left;//screen limit left
-    private Obstacle right;//screen limit right
-
-    protected Random randomGenerator = new Random();//objetct to generate random numbers
-    protected int signal = randomGenerator.nextInt(2);//set the direction of cat moviment in random mode
-
-    protected AnimatedSprite catMovingUpR, catMovingUpL, catMovingDownR, catMovingDownL;
-    protected AnimatedSprite catMovingLeft, catMovingRight;
-    protected static Music backgroundMusic, impact;
-    protected enum catMoveType{upR, upL, downL, downR, left, right}
-
-    class Wool {
-
-        protected Circle circle;//circle to enclose the cat and treat the colision
-        protected Sprite mouse;//sprite for the mouse(playable character)
-        protected Vector2 position;//vector to get the mouse positon on the screen
-        protected Vector2 direction;//vetor to get the cat direction on the screen
-        protected Texture texture;
-        protected Sprite sprite;
-        protected int life = 1;
-
-        public void getPosition() {
-            position.x = Gdx.input.getX() * WORLD_WIDTH / viewport.getScreenWidth();
-            position.y = WORLD_HEIGHT - (Gdx.input.getY() * WORLD_HEIGHT / viewport.getScreenHeight());
-        }
-    }
-
-    protected Wool wool = new Wool();
-
     static class Colision {
         /**
          * Verifica se dois círculos em 2D estão colidindo.
@@ -363,178 +523,22 @@ public class CatAvoider extends MiniGame {
             lookAhead();
         }
     }
+    
+    class Wool {
 
-    Cat cat = new Cat();
+        protected Circle circle;//circle to enclose the cat and treat the colision
+        protected Sprite mouse;//sprite for the mouse(playable character)
+        protected Vector2 position;//vector to get the mouse positon on the screen
+        protected Vector2 direction;//vetor to get the cat direction on the screen
+        protected Texture texture;
+        protected Sprite sprite;
+        protected int life = 1;
 
-    public void verifyCollision() {
-        cat.rect = cat.sprite.getBoundingRectangle();
-
-        wool.circle = new Circle();
-        wool.circle.set(wool.sprite.getX(), wool.sprite.getY(), 0.25f);
-
-        /*
-        /**collision cat wool*/
-        if (Colision.rectCircleOverlap(cat.rect, wool.circle) != null) {
-            wool.life = 0;
-            impact.play();
-            super.challengeFailed();
-            backgroundMusic.stop();
-        }
-
-        /**
-         * collision cat floor
-         */
-        if (Colision.rectsOverlap(down.getRec(), cat.rect)) {
-            cat.sprite.setPosition(cat.sprite.getX(), down.getRec().y+down.getRec().height);
-            cat.reflect();
-            if(wool.position.x > cat.sprite.getX())
-                cat.moveType = catMoveType.downR;
-            else if(wool.position.x < cat.sprite.getX())
-                cat.moveType = catMoveType.downL;
-            cat.state = cat.randomState;
-        } /**
-         * collision cat roof
-         */
-        else if (Colision.rectsOverlap(up.getRec(), cat.rect)) {
-            cat.sprite.setPosition(cat.sprite.getX(), up.getRec().y - up.getRec().height - cat.sprite.getHeight());
-            cat.reflect();
-            if(wool.position.x > cat.sprite.getX())
-                cat.moveType = catMoveType.upR;
-            else if(wool.position.x < cat.sprite.getX())
-                cat.moveType = catMoveType.upL;
-            cat.state = cat.randomState;
-        }
-
-        /**
-         * collision cat left wall
-         */
-        if (Colision.rectsOverlap(left.getRec(), cat.rect)) {
-            cat.sprite.setPosition(left.getRec().x + left.getRec().width , cat.sprite.getY());
-            cat.reflect();
-            cat.moveType = catMoveType.left;
-            cat.state = cat.randomState;
-        } /**
-         * collision cat right wall
-         */
-        else if (Colision.rectsOverlap(right.getRec(), cat.rect)) {
-            cat.sprite.setPosition(right.getRec().x - right.getRec().width - cat.sprite.getWidth(), cat.sprite.getY());
-            cat.reflect();
-            cat.moveType = catMoveType.right;
-            cat.state = cat.randomState;
+        public void getPosition() {
+            position.x = Gdx.input.getX() * WORLD_WIDTH / viewport.getScreenWidth();
+            position.y = WORLD_HEIGHT - (Gdx.input.getY() * WORLD_HEIGHT / viewport.getScreenHeight());
         }
     }
 
-    @Override
-    protected void onStart() {
-        backgroundTexture = assets.get("avoider/backgroundTexture.png", Texture.class);
-        backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setSize(WORLD_WIDTH, WORLD_HEIGHT);
-
-        limitsWidth = 20;
-        limitsHeight = 20;
-        limits = assets.get("avoider/grey.png", Texture.class);
-        up = new Obstacle(batch, new Vector2(0, WORLD_HEIGHT - limitsHeight), WORLD_WIDTH, limitsHeight);
-        down = new Obstacle(batch, new Vector2(0, 0), WORLD_WIDTH, limitsHeight);
-        left = new Obstacle(batch, new Vector2(0, limitsWidth), limitsWidth, WORLD_HEIGHT);
-        right = new Obstacle(batch, new Vector2(WORLD_WIDTH - limitsWidth, limitsWidth), limitsWidth, WORLD_HEIGHT);
-
-        cat.texture = assets.get("avoider/catNinja.png", Texture.class);
-        cat.sprite = new Sprite(cat.texture);
-        cat.sprite.setSize(100, 150);
-        cat.sprite.setOrigin(cat.sprite.getWidth() / 2, cat.sprite.getHeight() / 2);
-        cat.sprite.setPosition(WORLD_WIDTH / 2, limitsWidth);
-        int random = randomGenerator.nextInt();
-        cat.moveType = catMoveType.downL;
-        cat.state = cat.randomState;
-
-        catMovingUpL = new AnimatedSprite("avoider/cat-moving-upL.png", 0.1f, 144, 150, 12 , RIGHT, 0);
-        catMovingUpR = new AnimatedSprite("avoider/cat-moving-upR.png", 0.1f, 144, 150, 12 , RIGHT, 0);
-        
-        catMovingDownL = new AnimatedSprite("avoider/cat-moving-downL.png", 0.1f, 144, 150, 12 , RIGHT, 0);
-        catMovingDownR = new AnimatedSprite("avoider/cat-moving-downR.png", 0.1f, 144, 150, 12 , RIGHT, 0);
-        
-        catMovingLeft =  new AnimatedSprite("avoider/cat-moving-left.png", 0.1f, 142, 150, 12 , RIGHT, 0);
-        catMovingRight = new AnimatedSprite("avoider/cat-moving-right.png", 0.1f, 142, 150, 12 , RIGHT, 0);
-        
-        wool.direction = new Vector2(0, 0);
-        wool.texture = assets.get("avoider/wool.png", Texture.class);
-        wool.position = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-        wool.sprite = new Sprite(wool.texture);
-        wool.sprite.setSize(50, 50);
-
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("avoider/ninja_theme.mp3"));
-        backgroundMusic.setLooping(true);
-        backgroundMusic.play();
-
-        impact = Gdx.audio.newMusic(Gdx.files.internal("avoider/impact.mp3"));
-    }
-
-    public float getCurveValue(float value) {
-        return (float) (1f / (1f + Math.pow(Math.E, -6 * (value - 0.5f))));
-    }
-
-    @Override
-    protected void configureDifficultyParameters(float difficulty) {
-
-        cat.speed = cat.speed + getCurveValue(cat.speed);
-    }
-
-    @Override
-    public void onHandlePlayingInput() {
-    }
-
-    @Override
-    public void onUpdate(float dt) {
-        int changeState = randomGenerator.nextInt(30);
-        if (changeState == 29) {
-            cat.state = cat.jumpState;
-        }
-        cat.move();
-        wool.getPosition();
-        wool.sprite.setPosition(wool.position.x, wool.position.y);
-
-        catMovingUpL.timeAnimation += Gdx.graphics.getDeltaTime();
-        catMovingUpR.timeAnimation += Gdx.graphics.getDeltaTime();
-        catMovingDownL.timeAnimation += Gdx.graphics.getDeltaTime();
-        catMovingDownR.timeAnimation += Gdx.graphics.getDeltaTime();
-        catMovingLeft.timeAnimation += Gdx.graphics.getDeltaTime();
-        catMovingRight.timeAnimation += Gdx.graphics.getDeltaTime();
-    }
-
-    @Override
-    public void onDrawGame() {
-        backgroundSprite.draw(batch);
-
-        down.draw();
-        up.draw();
-        left.draw();
-        right.draw();
-        
-        if(cat.moveType.equals(catMoveType.upL))
-            batch.draw((TextureRegion) catMovingUpL.moviment.getKeyFrame(catMovingUpL.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
-        else if(cat.moveType.equals(catMoveType.upR))
-            batch.draw((TextureRegion) catMovingUpR.moviment.getKeyFrame(catMovingUpR.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
-        else if(cat.moveType.equals(catMoveType.downL))
-            batch.draw((TextureRegion) catMovingDownL.moviment.getKeyFrame(catMovingDownL.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
-        else if(cat.moveType.equals(catMoveType.downR))
-            batch.draw((TextureRegion) catMovingDownR.moviment.getKeyFrame(catMovingDownR.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
-        else if(cat.moveType.equals(catMoveType.left))
-            batch.draw((TextureRegion) catMovingLeft.moviment.getKeyFrame(catMovingLeft.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
-        else if(cat.moveType.equals(catMoveType.right))
-            batch.draw((TextureRegion) catMovingRight.moviment.getKeyFrame(catMovingRight.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
-        
-        if (wool.life == 1) {
-            wool.sprite.draw(batch);
-        }
-    }
-
-    @Override
-    public String getInstructions() {
-        return "Não deixe o gato pegar o novelo!!!";
-    }
-
-    @Override
-    public boolean shouldHideMousePointer() {
-        return true;
-    }
+    // </editor-fold>
 }
