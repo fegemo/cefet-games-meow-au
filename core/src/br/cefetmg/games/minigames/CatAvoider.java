@@ -18,8 +18,8 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import java.util.Random;
 
-
 public class CatAvoider extends MiniGame {
+
     private static final int LEFT = 0;
     private static final int RIGHT = 1;
 
@@ -39,7 +39,7 @@ public class CatAvoider extends MiniGame {
     private AnimatedSprite catMovingUpR, catMovingUpL, catMovingDownR, catMovingDownL;
     private AnimatedSprite catMovingLeft, catMovingRight;
     private static Music backgroundMusic, impact;
-    
+
     private final Wool wool = new Wool();
     private final Cat cat = new Cat();
 
@@ -68,12 +68,13 @@ public class CatAvoider extends MiniGame {
          * collision cat floor
          */
         if (Colision.rectsOverlap(down.getBounds(), cat.rect)) {
-            cat.sprite.setPosition(cat.sprite.getX(), down.getBounds().y+down.getBounds().height);
+            cat.sprite.setPosition(cat.sprite.getX(), down.getBounds().y + down.getBounds().height);
             cat.reflect();
-            if(wool.position.x > cat.sprite.getX())
+            if (wool.position.x > cat.sprite.getX()) {
                 cat.moveType = CatMoveType.downR;
-            else if(wool.position.x < cat.sprite.getX())
+            } else if (wool.position.x < cat.sprite.getX()) {
                 cat.moveType = CatMoveType.downL;
+            }
             cat.state = cat.randomState;
         } /**
          * collision cat roof
@@ -81,10 +82,11 @@ public class CatAvoider extends MiniGame {
         else if (Colision.rectsOverlap(up.getBounds(), cat.rect)) {
             cat.sprite.setPosition(cat.sprite.getX(), up.getBounds().y - up.getBounds().height - cat.sprite.getHeight());
             cat.reflect();
-            if(wool.position.x > cat.sprite.getX())
+            if (wool.position.x > cat.sprite.getX()) {
                 cat.moveType = CatMoveType.upR;
-            else if(wool.position.x < cat.sprite.getX())
+            } else if (wool.position.x < cat.sprite.getX()) {
                 cat.moveType = CatMoveType.upL;
+            }
             cat.state = cat.randomState;
         }
 
@@ -92,7 +94,7 @@ public class CatAvoider extends MiniGame {
          * collision cat left wall
          */
         if (Colision.rectsOverlap(left.getBounds(), cat.rect)) {
-            cat.sprite.setPosition(left.getBounds().x + left.getBounds().width , cat.sprite.getY());
+            cat.sprite.setPosition(left.getBounds().x + left.getBounds().width, cat.sprite.getY());
             cat.reflect();
             cat.moveType = CatMoveType.left;
             cat.state = cat.randomState;
@@ -128,15 +130,15 @@ public class CatAvoider extends MiniGame {
         cat.moveType = CatMoveType.downL;
         cat.state = cat.randomState;
 
-        catMovingUpL = new AnimatedSprite("avoider/cat-moving-upL.png", 0.1f, 144, 150, 12 , RIGHT, 0);
-        catMovingUpR = new AnimatedSprite("avoider/cat-moving-upR.png", 0.1f, 144, 150, 12 , RIGHT, 0);
-        
-        catMovingDownL = new AnimatedSprite("avoider/cat-moving-downL.png", 0.1f, 144, 150, 12 , RIGHT, 0);
-        catMovingDownR = new AnimatedSprite("avoider/cat-moving-downR.png", 0.1f, 144, 150, 12 , RIGHT, 0);
-        
-        catMovingLeft =  new AnimatedSprite("avoider/cat-moving-left.png", 0.1f, 142, 150, 12 , RIGHT, 0);
-        catMovingRight = new AnimatedSprite("avoider/cat-moving-right.png", 0.1f, 142, 150, 12 , RIGHT, 0);
-        
+        catMovingUpL = new AnimatedSprite("avoider/cat-moving-upL.png", 0.1f, 144, 150, 12, RIGHT, 0);
+        catMovingUpR = new AnimatedSprite("avoider/cat-moving-upR.png", 0.1f, 144, 150, 12, RIGHT, 0);
+
+        catMovingDownL = new AnimatedSprite("avoider/cat-moving-downL.png", 0.1f, 144, 150, 12, RIGHT, 0);
+        catMovingDownR = new AnimatedSprite("avoider/cat-moving-downR.png", 0.1f, 144, 150, 12, RIGHT, 0);
+
+        catMovingLeft = new AnimatedSprite("avoider/cat-moving-left.png", 0.1f, 142, 150, 12, RIGHT, 0);
+        catMovingRight = new AnimatedSprite("avoider/cat-moving-right.png", 0.1f, 142, 150, 12, RIGHT, 0);
+
         wool.direction = new Vector2(0, 0);
         wool.texture = assets.get("avoider/wool.png", Texture.class);
         wool.position = new Vector2(Gdx.input.getX(), Gdx.input.getY());
@@ -190,7 +192,7 @@ public class CatAvoider extends MiniGame {
         up.draw(batch);
         left.draw(batch);
         right.draw(batch);
-        
+
         switch (cat.moveType) {
             case upL:
                 batch.draw((TextureRegion) catMovingUpL.movement.getKeyFrame(catMovingUpL.animationTime), cat.sprite.getX(), cat.sprite.getY());
@@ -213,7 +215,7 @@ public class CatAvoider extends MiniGame {
             default:
                 break;
         }
-        
+
         if (wool.life == 1) {
             wool.sprite.draw(batch);
         }
@@ -230,8 +232,8 @@ public class CatAvoider extends MiniGame {
     }
 
     // <editor-fold desc="Classes internas de CatAvoider" defaultstate="collapsed">
-    
     class Obstacle {
+
         private final Texture colorTexture;
         private final Sprite sprite;
         private final Vector2 position;
@@ -254,8 +256,9 @@ public class CatAvoider extends MiniGame {
             return bounds;
         }
     }
-    
+
     class AnimatedSprite {
+
         private Animation movement;
         private float animationTime;
         private final Texture spriteSheet;
@@ -282,7 +285,7 @@ public class CatAvoider extends MiniGame {
                     t[k] = animationPictures[0][i];
                     k++;
                 }
-                for (i = frames-1; i > startPositon; i--) {
+                for (i = frames - 1; i > startPositon; i--) {
                     t[k] = animationPictures[0][i];
                     k++;
                 }
@@ -301,8 +304,9 @@ public class CatAvoider extends MiniGame {
             movement.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         }
     }
-    
+
     static class Colision {
+
         /**
          * Verifica se dois círculos em 2D estão colidindo.
          *
@@ -324,8 +328,8 @@ public class CatAvoider extends MiniGame {
 
         /**
          * Verifica se dois retângulos em 2D estão colidindo. Esta função pode
-         * verificar se o eixo X dos dois objetos está colidindo e então se o mesmo
-         * ocorre com o eixo Y.
+         * verificar se o eixo X dos dois objetos está colidindo e então se o
+         * mesmo ocorre com o eixo Y.
          *
          * @param r1 retângulo 1
          * @param r2 retângulo 2
@@ -412,10 +416,13 @@ public class CatAvoider extends MiniGame {
             return unrotatedCircle.dst(closestPoint) < c.radius;
         }
     }
-    
-    static enum CatMoveType { upR, upL, downL, downR, left, right }
+
+    static enum CatMoveType {
+        upR, upL, downL, downR, left, right
+    }
 
     class Cat {
+
         private Rectangle rect;//rectangle to enclose the cat and treat the collision
         private Texture texture;//texture for the non playable character ninja cat
         private Sprite sprite;//sprite of the non non playable character ninja cat
@@ -425,7 +432,7 @@ public class CatAvoider extends MiniGame {
         private int state;//variable to indicate the type of moviment of the cat (jump or random)
         private final int randomState = 0;//constant to indicate that the cat is moving randomly
         private final int jumpState = 1;//constante to indicate that the cat will jump towars the mouse
-        
+
         void lookAhead() {
             double angle = Math.atan(wool.direction.y / wool.direction.x);
 
@@ -433,7 +440,7 @@ public class CatAvoider extends MiniGame {
             angle *= 180 / Math.PI;
             sprite.setRotation((float) angle);
         }
-        
+
         void setDirection() {
             wool.direction.x = wool.position.x - (sprite.getX() + sprite.getWidth() / 2);
             wool.direction.y = wool.position.y - (sprite.getY() + sprite.getHeight() / 2);
@@ -521,7 +528,7 @@ public class CatAvoider extends MiniGame {
             lookAhead();
         }
     }
-    
+
     class Wool {
 
         private Circle circle;//circle to enclose the cat and treat the colision
