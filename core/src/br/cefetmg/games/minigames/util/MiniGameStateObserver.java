@@ -11,4 +11,5 @@ public interface MiniGameStateObserver {
     void onTimeEnding();
     void onGamePaused();
     void onGameResumed();
+    void showMessage(String strMessage);
 }
