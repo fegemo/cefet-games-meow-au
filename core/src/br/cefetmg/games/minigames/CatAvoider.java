@@ -18,6 +18,9 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import static java.lang.Math.abs;
 import java.util.Random;
+import static java.lang.Math.abs;
+import static java.lang.Math.abs;
+import static java.lang.Math.abs;
 
 public class CatAvoider extends MiniGame {
     public static final int NORTH = 0;
@@ -75,8 +78,8 @@ public class CatAvoider extends MiniGame {
         /**
          * collision cat floor
          */
-        if (Colision.rectsOverlap(down.getRec(), cat.rect)) {
-            cat.sprite.setPosition(cat.sprite.getX(), down.getRec().y+down.getRec().height);
+        if (Colision.rectsOverlap(down.getBounds(), cat.rect)) {
+            cat.sprite.setPosition(cat.sprite.getX(), down.getBounds().y+down.getBounds().height);
             cat.reflect();
             if(wool.position.x > cat.sprite.getX())
                 cat.moveType = catMoveType.downR;
@@ -86,8 +89,8 @@ public class CatAvoider extends MiniGame {
         } /**
          * collision cat roof
          */
-        else if (Colision.rectsOverlap(up.getRec(), cat.rect)) {
-            cat.sprite.setPosition(cat.sprite.getX(), up.getRec().y - up.getRec().height - cat.sprite.getHeight());
+        else if (Colision.rectsOverlap(up.getBounds(), cat.rect)) {
+            cat.sprite.setPosition(cat.sprite.getX(), up.getBounds().y - up.getBounds().height - cat.sprite.getHeight());
             cat.reflect();
             if(wool.position.x > cat.sprite.getX())
                 cat.moveType = catMoveType.upR;
@@ -99,16 +102,16 @@ public class CatAvoider extends MiniGame {
         /**
          * collision cat left wall
          */
-        if (Colision.rectsOverlap(left.getRec(), cat.rect)) {
-            cat.sprite.setPosition(left.getRec().x + left.getRec().width , cat.sprite.getY());
+        if (Colision.rectsOverlap(left.getBounds(), cat.rect)) {
+            cat.sprite.setPosition(left.getBounds().x + left.getBounds().width , cat.sprite.getY());
             cat.reflect();
             cat.moveType = catMoveType.left;
             cat.state = cat.randomState;
         } /**
          * collision cat right wall
          */
-        else if (Colision.rectsOverlap(right.getRec(), cat.rect)) {
-            cat.sprite.setPosition(right.getRec().x - right.getRec().width - cat.sprite.getWidth(), cat.sprite.getY());
+        else if (Colision.rectsOverlap(right.getBounds(), cat.rect)) {
+            cat.sprite.setPosition(right.getBounds().x - right.getBounds().width - cat.sprite.getWidth(), cat.sprite.getY());
             cat.reflect();
             cat.moveType = catMoveType.right;
             cat.state = cat.randomState;
@@ -124,10 +127,10 @@ public class CatAvoider extends MiniGame {
         limitsWidth = 20;
         limitsHeight = 20;
         limits = assets.get("avoider/grey.png", Texture.class);
-        up = new Obstacle(batch, new Vector2(0, WORLD_HEIGHT - limitsHeight), WORLD_WIDTH, limitsHeight);
-        down = new Obstacle(batch, new Vector2(0, 0), WORLD_WIDTH, limitsHeight);
-        left = new Obstacle(batch, new Vector2(0, limitsWidth), limitsWidth, WORLD_HEIGHT);
-        right = new Obstacle(batch, new Vector2(WORLD_WIDTH - limitsWidth, limitsWidth), limitsWidth, WORLD_HEIGHT);
+        up = new Obstacle(new Vector2(0, WORLD_HEIGHT - limitsHeight), WORLD_WIDTH, limitsHeight);
+        down = new Obstacle(new Vector2(0, 0), WORLD_WIDTH, limitsHeight);
+        left = new Obstacle(new Vector2(0, limitsWidth), limitsWidth, WORLD_HEIGHT);
+        right = new Obstacle(new Vector2(WORLD_WIDTH - limitsWidth, limitsWidth), limitsWidth, WORLD_HEIGHT);
 
         cat.texture = assets.get("avoider/catNinja.png", Texture.class);
         cat.sprite = new Sprite(cat.texture);
@@ -196,10 +199,10 @@ public class CatAvoider extends MiniGame {
     public void onDrawGame() {
         backgroundSprite.draw(batch);
 
-        down.draw();
-        up.draw();
-        left.draw();
-        right.draw();
+        down.draw(batch);
+        up.draw(batch);
+        left.draw(batch);
+        right.draw(batch);
         
         if(cat.moveType.equals(catMoveType.upL))
             batch.draw((TextureRegion) catMovingUpL.moviment.getKeyFrame(catMovingUpL.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
@@ -231,29 +234,27 @@ public class CatAvoider extends MiniGame {
 
     // <editor-fold desc="Classes internas de CatAvoider" defaultstate="collapsed">
     
-    static class Obstacle {
-        private Texture color;
-        private Sprite visible;
-        private Vector2 position;
-        private Rectangle rec;
-        private SpriteBatch batch;
-        private static final float friction = 2;
-        public Obstacle(SpriteBatch batch, Vector2 position, float width, float height) {
-            this.color = new Texture("avoider/grey.png");
-            this.batch = batch;
+    class Obstacle {
+        private final Texture colorTexture;
+        private final Sprite sprite;
+        private final Vector2 position;
+        private final Rectangle bounds;
+
+        public Obstacle(Vector2 position, float width, float height) {
+            colorTexture = assets.get("avoider/grey.png", Texture.class);
             this.position = position;
-            rec = new Rectangle(this.position.x, this.position.y, width, height);
-            visible = new Sprite(color);
-            visible.setPosition(this.position.x, this.position.y);
-            visible.setSize(width, height);
+            bounds = new Rectangle(this.position.x, this.position.y, width, height);
+            sprite = new Sprite(colorTexture);
+            sprite.setPosition(this.position.x, this.position.y);
+            sprite.setSize(width, height);
         }
 
-        public void draw() {
-            visible.draw(batch);
+        public void draw(SpriteBatch batch) {
+            sprite.draw(batch);
         }
 
-        public Rectangle getRec() {
-            return rec;
+        public Rectangle getBounds() {
+            return bounds;
         }
     }
     
