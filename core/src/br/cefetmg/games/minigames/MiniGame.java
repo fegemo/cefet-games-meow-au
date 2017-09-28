@@ -277,5 +277,4 @@ public abstract class MiniGame {
      */
     public abstract boolean shouldHideMousePointer();
 
-
 }
