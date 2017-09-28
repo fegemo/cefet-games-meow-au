@@ -20,24 +20,12 @@ import java.util.Random;
 
 
 public class CatAvoider extends MiniGame {
-    public static final int NORTH = 0;
-    public static final int SOUTH = 1;
-    public static final int WEST = 2;
-    public static final int EAST = 3;
-
-    public static final int LEFT = 0;
-    public static final int RIGHT = 1;
-
-    public CatAvoider(BaseScreen screen,
-            MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 10f,
-                TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
-    }
+    private static final int LEFT = 0;
+    private static final int RIGHT = 1;
 
     private Texture backgroundTexture; //backgroud texture of the world
     private Sprite backgroundSprite;//sprite created for the background
 
-    private Texture limits;//texture created for the screen limits
     private float limitsWidth;//width of the screen limits
     private float limitsHeight;//height of the screen limits
     private Obstacle down;//scren limit down
@@ -45,16 +33,21 @@ public class CatAvoider extends MiniGame {
     private Obstacle left;//screen limit left
     private Obstacle right;//screen limit right
 
-    protected Random randomGenerator = new Random();//objetct to generate random numbers
-    protected int signal = randomGenerator.nextInt(2);//set the direction of cat moviment in random mode
+    private final Random randomGenerator = new Random();//objetct to generate random numbers
+    private int signal = randomGenerator.nextInt(2);//set the direction of cat moviment in random mode
 
-    protected AnimatedSprite catMovingUpR, catMovingUpL, catMovingDownR, catMovingDownL;
-    protected AnimatedSprite catMovingLeft, catMovingRight;
-    protected static Music backgroundMusic, impact;
+    private AnimatedSprite catMovingUpR, catMovingUpL, catMovingDownR, catMovingDownL;
+    private AnimatedSprite catMovingLeft, catMovingRight;
+    private static Music backgroundMusic, impact;
     
-    protected Wool wool = new Wool();
+    private final Wool wool = new Wool();
+    private final Cat cat = new Cat();
 
-    Cat cat = new Cat();
+    public CatAvoider(BaseScreen screen,
+            MiniGameStateObserver observer, float difficulty) {
+        super(screen, observer, difficulty, 10f,
+                TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
+    }
 
     public void verifyCollision() {
         cat.rect = cat.sprite.getBoundingRectangle();
@@ -122,7 +115,6 @@ public class CatAvoider extends MiniGame {
 
         limitsWidth = 20;
         limitsHeight = 20;
-        limits = assets.get("avoider/grey.png", Texture.class);
         up = new Obstacle(new Vector2(0, WORLD_HEIGHT - limitsHeight), WORLD_WIDTH, limitsHeight);
         down = new Obstacle(new Vector2(0, 0), WORLD_WIDTH, limitsHeight);
         left = new Obstacle(new Vector2(0, limitsWidth), limitsWidth, WORLD_HEIGHT);
@@ -133,7 +125,6 @@ public class CatAvoider extends MiniGame {
         cat.sprite.setSize(100, 150);
         cat.sprite.setOrigin(cat.sprite.getWidth() / 2, cat.sprite.getHeight() / 2);
         cat.sprite.setPosition(WORLD_WIDTH / 2, limitsWidth);
-        int random = randomGenerator.nextInt();
         cat.moveType = CatMoveType.downL;
         cat.state = cat.randomState;
 
@@ -183,12 +174,12 @@ public class CatAvoider extends MiniGame {
         wool.getPosition();
         wool.sprite.setPosition(wool.position.x, wool.position.y);
 
-        catMovingUpL.animationTime += Gdx.graphics.getDeltaTime();
-        catMovingUpR.animationTime += Gdx.graphics.getDeltaTime();
-        catMovingDownL.animationTime += Gdx.graphics.getDeltaTime();
-        catMovingDownR.animationTime += Gdx.graphics.getDeltaTime();
-        catMovingLeft.animationTime += Gdx.graphics.getDeltaTime();
-        catMovingRight.animationTime += Gdx.graphics.getDeltaTime();
+        catMovingUpL.animationTime += dt;
+        catMovingUpR.animationTime += dt;
+        catMovingDownL.animationTime += dt;
+        catMovingDownR.animationTime += dt;
+        catMovingLeft.animationTime += dt;
+        catMovingRight.animationTime += dt;
     }
 
     @Override
@@ -200,18 +191,28 @@ public class CatAvoider extends MiniGame {
         left.draw(batch);
         right.draw(batch);
         
-        if(cat.moveType.equals(CatMoveType.upL))
-            batch.draw((TextureRegion) catMovingUpL.movement.getKeyFrame(catMovingUpL.animationTime), cat.sprite.getX(), cat.sprite.getY());
-        else if(cat.moveType.equals(CatMoveType.upR))
-            batch.draw((TextureRegion) catMovingUpR.movement.getKeyFrame(catMovingUpR.animationTime), cat.sprite.getX(), cat.sprite.getY());
-        else if(cat.moveType.equals(CatMoveType.downL))
-            batch.draw((TextureRegion) catMovingDownL.movement.getKeyFrame(catMovingDownL.animationTime), cat.sprite.getX(), cat.sprite.getY());
-        else if(cat.moveType.equals(CatMoveType.downR))
-            batch.draw((TextureRegion) catMovingDownR.movement.getKeyFrame(catMovingDownR.animationTime), cat.sprite.getX(), cat.sprite.getY());
-        else if(cat.moveType.equals(CatMoveType.left))
-            batch.draw((TextureRegion) catMovingLeft.movement.getKeyFrame(catMovingLeft.animationTime), cat.sprite.getX(), cat.sprite.getY());
-        else if(cat.moveType.equals(CatMoveType.right))
-            batch.draw((TextureRegion) catMovingRight.movement.getKeyFrame(catMovingRight.animationTime), cat.sprite.getX(), cat.sprite.getY());
+        switch (cat.moveType) {
+            case upL:
+                batch.draw((TextureRegion) catMovingUpL.movement.getKeyFrame(catMovingUpL.animationTime), cat.sprite.getX(), cat.sprite.getY());
+                break;
+            case upR:
+                batch.draw((TextureRegion) catMovingUpR.movement.getKeyFrame(catMovingUpR.animationTime), cat.sprite.getX(), cat.sprite.getY());
+                break;
+            case downL:
+                batch.draw((TextureRegion) catMovingDownL.movement.getKeyFrame(catMovingDownL.animationTime), cat.sprite.getX(), cat.sprite.getY());
+                break;
+            case downR:
+                batch.draw((TextureRegion) catMovingDownR.movement.getKeyFrame(catMovingDownR.animationTime), cat.sprite.getX(), cat.sprite.getY());
+                break;
+            case left:
+                batch.draw((TextureRegion) catMovingLeft.movement.getKeyFrame(catMovingLeft.animationTime), cat.sprite.getX(), cat.sprite.getY());
+                break;
+            case right:
+                batch.draw((TextureRegion) catMovingRight.movement.getKeyFrame(catMovingRight.animationTime), cat.sprite.getX(), cat.sprite.getY());
+                break;
+            default:
+                break;
+        }
         
         if (wool.life == 1) {
             wool.sprite.draw(batch);
@@ -432,7 +433,7 @@ public class CatAvoider extends MiniGame {
             angle *= 180 / Math.PI;
             sprite.setRotation((float) angle);
         }
-
+        
         void setDirection() {
             wool.direction.x = wool.position.x - (sprite.getX() + sprite.getWidth() / 2);
             wool.direction.y = wool.position.y - (sprite.getY() + sprite.getHeight() / 2);
