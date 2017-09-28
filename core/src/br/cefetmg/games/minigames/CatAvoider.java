@@ -16,11 +16,8 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
-import static java.lang.Math.abs;
 import java.util.Random;
-import static java.lang.Math.abs;
-import static java.lang.Math.abs;
-import static java.lang.Math.abs;
+
 
 public class CatAvoider extends MiniGame {
     public static final int NORTH = 0;
@@ -187,12 +184,12 @@ public class CatAvoider extends MiniGame {
         wool.getPosition();
         wool.sprite.setPosition(wool.position.x, wool.position.y);
 
-        catMovingUpL.timeAnimation += Gdx.graphics.getDeltaTime();
-        catMovingUpR.timeAnimation += Gdx.graphics.getDeltaTime();
-        catMovingDownL.timeAnimation += Gdx.graphics.getDeltaTime();
-        catMovingDownR.timeAnimation += Gdx.graphics.getDeltaTime();
-        catMovingLeft.timeAnimation += Gdx.graphics.getDeltaTime();
-        catMovingRight.timeAnimation += Gdx.graphics.getDeltaTime();
+        catMovingUpL.animationTime += Gdx.graphics.getDeltaTime();
+        catMovingUpR.animationTime += Gdx.graphics.getDeltaTime();
+        catMovingDownL.animationTime += Gdx.graphics.getDeltaTime();
+        catMovingDownR.animationTime += Gdx.graphics.getDeltaTime();
+        catMovingLeft.animationTime += Gdx.graphics.getDeltaTime();
+        catMovingRight.animationTime += Gdx.graphics.getDeltaTime();
     }
 
     @Override
@@ -205,17 +202,17 @@ public class CatAvoider extends MiniGame {
         right.draw(batch);
         
         if(cat.moveType.equals(catMoveType.upL))
-            batch.draw((TextureRegion) catMovingUpL.moviment.getKeyFrame(catMovingUpL.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+            batch.draw((TextureRegion) catMovingUpL.movement.getKeyFrame(catMovingUpL.animationTime), cat.sprite.getX(), cat.sprite.getY());
         else if(cat.moveType.equals(catMoveType.upR))
-            batch.draw((TextureRegion) catMovingUpR.moviment.getKeyFrame(catMovingUpR.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+            batch.draw((TextureRegion) catMovingUpR.movement.getKeyFrame(catMovingUpR.animationTime), cat.sprite.getX(), cat.sprite.getY());
         else if(cat.moveType.equals(catMoveType.downL))
-            batch.draw((TextureRegion) catMovingDownL.moviment.getKeyFrame(catMovingDownL.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+            batch.draw((TextureRegion) catMovingDownL.movement.getKeyFrame(catMovingDownL.animationTime), cat.sprite.getX(), cat.sprite.getY());
         else if(cat.moveType.equals(catMoveType.downR))
-            batch.draw((TextureRegion) catMovingDownR.moviment.getKeyFrame(catMovingDownR.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+            batch.draw((TextureRegion) catMovingDownR.movement.getKeyFrame(catMovingDownR.animationTime), cat.sprite.getX(), cat.sprite.getY());
         else if(cat.moveType.equals(catMoveType.left))
-            batch.draw((TextureRegion) catMovingLeft.moviment.getKeyFrame(catMovingLeft.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+            batch.draw((TextureRegion) catMovingLeft.movement.getKeyFrame(catMovingLeft.animationTime), cat.sprite.getX(), cat.sprite.getY());
         else if(cat.moveType.equals(catMoveType.right))
-            batch.draw((TextureRegion) catMovingRight.moviment.getKeyFrame(catMovingRight.timeAnimation), cat.sprite.getX(), cat.sprite.getY());
+            batch.draw((TextureRegion) catMovingRight.movement.getKeyFrame(catMovingRight.animationTime), cat.sprite.getX(), cat.sprite.getY());
         
         if (wool.life == 1) {
             wool.sprite.draw(batch);
@@ -258,50 +255,50 @@ public class CatAvoider extends MiniGame {
         }
     }
     
-    static class AnimatedSprite {
-        public Animation moviment;
-        public float timeAnimation;
-        private Texture spriteSheet;
-        private TextureRegion[][] animationPictures;
+    class AnimatedSprite {
+        private Animation movement;
+        private float animationTime;
+        private final Texture spriteSheet;
+        private final TextureRegion[][] animationPictures;
 
-        public AnimatedSprite(String sprite, float time, int frameWidth, int frameHeight, int frames, int sense, int startPosiiton) {
-            spriteSheet = new Texture(sprite);
+        AnimatedSprite(String textureName, float time, int frameWidth, int frameHeight, int frames, int sense, int startPosiiton) {
+            spriteSheet = assets.get(textureName, Texture.class);
             animationPictures = TextureRegion.split(spriteSheet, frameWidth, frameHeight);
 
-            timeAnimation = 0;
-            createMoviment(time, sense, frames, startPosiiton);
+            animationTime = 0;
+            createMovement(time, sense, frames, startPosiiton);
         }
 
-        public void configurePlayMode(Animation.PlayMode p) {
-            moviment.setPlayMode(p);
+        void configurePlayMode(Animation.PlayMode p) {
+            movement.setPlayMode(p);
         }
 
-        public void createMoviment(float time, int sense, int frames, int startPosiiton) {
+        private void createMovement(float time, int sense, int frames, int startPositon) {
             TextureRegion[] t = new TextureRegion[frames];
             int i, k;
             k = 0;
             if (sense == LEFT) {
-                for (i = startPosiiton; i >= 0; i--) {
+                for (i = startPositon; i >= 0; i--) {
                     t[k] = animationPictures[0][i];
                     k++;
                 }
-                for (i = frames-1; i > startPosiiton; i--) {
+                for (i = frames-1; i > startPositon; i--) {
                     t[k] = animationPictures[0][i];
                     k++;
                 }
             } else {
-                for (i = startPosiiton; i < frames; i++) {
+                for (i = startPositon; i < frames; i++) {
                     t[k] = animationPictures[0][i];
                     k++;
                 }
-                for (i = 0; i < startPosiiton; i++) {
+                for (i = 0; i < startPositon; i++) {
                     t[k] = animationPictures[0][i];
                     k++;
                 }
             }
 
-            moviment = new Animation(time, t);
-            moviment.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+            movement = new Animation<TextureRegion>(time, t);
+            movement.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         }
     }
     
@@ -347,8 +344,8 @@ public class CatAvoider extends MiniGame {
 
         public static final Vector2 rectCircleOverlap(Rectangle r1, Circle c1) {
             float r1XCenter = r1.x + (r1.width / 2), r1YCenter = r1.y + (r1.height / 2);
-            float horizontalDistance = abs(c1.x - r1XCenter);
-            float verticalDistance = abs(c1.y - r1YCenter);
+            float horizontalDistance = Math.abs(c1.x - r1XCenter);
+            float verticalDistance = Math.abs(c1.y - r1YCenter);
             float pXCoordinate;
             float pYCoordinate;
 
