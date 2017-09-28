@@ -18,7 +18,7 @@ import java.util.HashMap;
  *
  * @author Rógenes
  */
-public class BasCATball extends MiniGame{
+public class basCATball extends MiniGame{
     
     private Sound beat;
     private Sound fail;
@@ -85,7 +85,7 @@ public class BasCATball extends MiniGame{
     
     private Cat doraemon;
 
-    public BasCATball(BaseScreen screen,
+    public basCATball(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 12f,/*Tempo maximo da fase*/
                 TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
