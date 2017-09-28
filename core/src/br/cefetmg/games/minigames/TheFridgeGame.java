@@ -1,4 +1,4 @@
-
+﻿
 package br.cefetmg.games.minigames;
 
 import com.badlogic.gdx.Gdx;
@@ -556,7 +556,7 @@ public class TheFridgeGame extends MiniGame {
         }
         else if(ending){            
             backgroundSound.stop();
-            clap.play();
+           // clap.play();
             challengeSolved();  
         }
     }
