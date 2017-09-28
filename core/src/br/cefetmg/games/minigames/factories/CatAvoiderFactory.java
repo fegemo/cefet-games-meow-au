@@ -2,19 +2,13 @@ package br.cefetmg.games.minigames.factories;
 
 import br.cefetmg.games.minigames.CatAvoider;
 import br.cefetmg.games.minigames.MiniGame;
-import br.cefetmg.games.minigames.ShooTheTartarus;
 import br.cefetmg.games.screens.BaseScreen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
 import java.util.Map;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
-/**
- *
- * @author fegemo <coutinho@decom.cefetmg.br>
- */
-public class AvoiderFactory implements MiniGameFactory {
+public class CatAvoiderFactory implements MiniGameFactory {
 
     @Override
     public MiniGame createMiniGame(BaseScreen screen,

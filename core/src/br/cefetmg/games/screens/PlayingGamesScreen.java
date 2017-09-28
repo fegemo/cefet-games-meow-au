@@ -65,7 +65,7 @@ public class PlayingGamesScreen extends BaseScreen
                         new JetRatFactory(),
                         // emanoel e vinícius
                         new HeadSoccerFactory(),
-                        new AvoiderFactory()
+                        new CatAvoiderFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);
