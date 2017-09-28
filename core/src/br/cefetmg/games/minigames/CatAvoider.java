@@ -310,7 +310,7 @@ public class CatAvoider extends MiniGame {
          * @param c2 círculo 2
          * @return true se há colisão ou false, do contrário.
          */
-        public static final boolean circlesOverlap(Circle c1, Circle c2) {
+        static final boolean circlesOverlap(Circle c1, Circle c2) {
             Vector2 v1, v2;
             v1 = new Vector2(c1.x, c1.y);
             v2 = new Vector2(c2.x, c2.y);
@@ -331,7 +331,7 @@ public class CatAvoider extends MiniGame {
          * @param r2 retângulo 2
          * @return true se há colisão ou false, do contrário.
          */
-        public static final boolean rectsOverlap(Rectangle r1, Rectangle r2) {
+        static final boolean rectsOverlap(Rectangle r1, Rectangle r2) {
             float r1XMin = r1.x, r1XMax = r1.x + r1.width, r1YMin = r1.y, r1YMax = r1.y + r1.height;
             float r2XMin = r2.x, r2XMax = r2.x + r2.width, r2YMin = r2.y, r2YMax = r2.y + r2.height;
 
@@ -342,7 +342,7 @@ public class CatAvoider extends MiniGame {
             }
         }
 
-        public static final Vector2 rectCircleOverlap(Rectangle r1, Circle c1) {
+        static final Vector2 rectCircleOverlap(Rectangle r1, Circle c1) {
             float r1XCenter = r1.x + (r1.width / 2), r1YCenter = r1.y + (r1.height / 2);
             float horizontalDistance = Math.abs(c1.x - r1XCenter);
             float verticalDistance = Math.abs(c1.y - r1YCenter);
@@ -381,7 +381,7 @@ public class CatAvoider extends MiniGame {
             }
         }
 
-        public static boolean collideCircleWithRotatedRectangle(Circle c, Rectangle r, float rotation) {
+        static boolean collideCircleWithRotatedRectangle(Circle c, Rectangle r, float rotation) {
 
             Vector2 rectCenter = new Vector2();
             r.getCenter(rectCenter);
@@ -511,8 +511,6 @@ public class CatAvoider extends MiniGame {
             normalized.y += sprite.getY();
 
             sprite.setPosition(normalized.x, normalized.y);
-            System.out.println("Wool: " + wool.position.x + " " + wool.position.y);
-            System.out.println("Cat: " + sprite.getX() + " " + sprite.getY());
         }
 
         public void reflect() {
