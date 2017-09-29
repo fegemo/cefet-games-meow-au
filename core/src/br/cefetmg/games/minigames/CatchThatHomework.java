@@ -20,13 +20,10 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
-/**
- *
- * @author fegemo <coutinho@decom.cefetmg.br>
- */
+
 public class CatchThatHomework extends MiniGame {
 
-    private Texture catTexture;
+    private Texture catSpritesheet;
     private Cat cat;
     private Texture homeworkTexture;
     private Array<Homework> homeworks;
@@ -42,12 +39,12 @@ public class CatchThatHomework extends MiniGame {
 
     @Override
     protected void onStart() {
-        catTexture = assets.get("catch-that-homework/cat-sprite.png", Texture.class);
+        catSpritesheet = assets.get("catch-that-homework/cat-spritesheet.png", Texture.class);
         homeworkTexture = assets.get("catch-that-homework/homework.png", Texture.class);
         backgroundMusic = assets.get("catch-that-homework/bensound-sexy.mp3", Sound.class);
         backgroundImage = assets.get("catch-that-homework/valley.png", Texture.class);
 
-        cat = new Cat(catTexture, 0 + 200);
+        cat = new Cat(catSpritesheet, 200);
         cat.setCenter(
             viewport.getWorldWidth() / 2f,
             cat.height);
@@ -93,6 +90,8 @@ public class CatchThatHomework extends MiniGame {
             homework.update(dt);
         }
 
+        cat.update(dt);
+
         for (Homework homework : homeworks) {
 //            Colisão com o gato
             if (homework.getBoundingRectangle()
@@ -131,15 +130,31 @@ public class CatchThatHomework extends MiniGame {
         return true;
     }
 
-    class Cat extends Sprite {
+    class Cat extends MultiAnimatedSprite {
         private final int lives = 1;
         private final float height;
 
         static final int FRAME_WIDTH = 50;
         static final int FRAME_HEIGHT = 50;
-
-        public Cat(Texture texture, float height) {
-            super(texture);
+        
+        public Cat(final Texture catSpritesheet, float height) {
+            super(new HashMap<String, Animation>() {
+                {
+                    TextureRegion[][] frames = TextureRegion
+                            .split(catSpritesheet,
+                                    FRAME_WIDTH, FRAME_HEIGHT);
+                    Animation walking = new Animation(0.2f,
+                            frames[0][0],
+                            frames[0][1],
+                            frames[0][3],
+                            frames[0][4],
+                            frames[0][5],
+                            frames[0][6],
+                            frames[0][7]);
+                    walking.setPlayMode(Animation.PlayMode.LOOP);
+                    put("walking", walking);
+                }
+            }, "walking");
             this.height = height;
         }
     }
