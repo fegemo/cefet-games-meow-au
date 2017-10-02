@@ -20,19 +20,17 @@ public class Meowsic extends MiniGame {
     private Texture sheet;
     private Texture note1, note2, note3, note4, note5;
     private Texture pressed1, pressed2, pressed3, pressed4, pressed5;
-    public float catX;
-    public float catY;
-    public static final int NUMBER_OF_NOTES = 25;
-    public int[] noteX = new int[NUMBER_OF_NOTES];
-    public float[] noteY = new float[NUMBER_OF_NOTES];
-    public int[] noteLane = new int[NUMBER_OF_NOTES];
-    public int[] clicked = new int[NUMBER_OF_NOTES];
-    public int laneSize = 102;
-    public int i = 0;
-    public int k = 0;
-    public double velocidade = 1;
-    public double dificuldade = 1;
-    public int errorCounter = 0;
+    private float catX;
+    private float catY;
+    private static final int NUMBER_OF_NOTES = 25;
+    private final int[] noteX = new int[NUMBER_OF_NOTES];
+    private final float[] noteY = new float[NUMBER_OF_NOTES];
+    private final int[] clicked = new int[NUMBER_OF_NOTES];
+    private final int laneSize = 102;
+    private int i = 0;
+    private int k = 0;
+    private double velocidade = 1;
+    private int errorCounter = 0;
 
     public Meowsic(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -198,7 +196,7 @@ public class Meowsic extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Aperte as notas na hora e ordem certa!";
+        return "Aperte as notas na hora certa!";
 
     }
 
