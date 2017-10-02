@@ -34,8 +34,8 @@ public class UnderwaterCat extends MiniGame {
     private float spawnInterval;
     private int totalFish;
     private Texture background;
-    private Music music_underwaterCat;
-    private Music sound_swim;
+    private Music backgroundMusic;
+    private Music swimmingAmbientSound;
     private Sound gotFishSound;
     
     
@@ -64,8 +64,8 @@ public class UnderwaterCat extends MiniGame {
     
     @Override
     protected void onStart() {  
-        music_underwaterCat = assets.get("underwater-cat/water.mp3", Music.class);
-        sound_swim = assets.get("underwater-cat/swim.wav", Music.class);
+        backgroundMusic = assets.get("underwater-cat/water.mp3", Music.class);
+        swimmingAmbientSound = assets.get("underwater-cat/swim.wav", Music.class);
         gotFishSound = assets.get("underwater-cat/eat.wav",Sound.class);
         swimCatTexture = assets.get(
                 "underwater-cat/swimcatspritesheet.png", Texture.class);   
@@ -122,8 +122,8 @@ public class UnderwaterCat extends MiniGame {
         
             @Override
     public void onDrawGame() {
-        music_underwaterCat.setLooping(true);
-        music_underwaterCat.play();
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
         
         batch.draw(background, 0, 0,
                 viewport.getWorldWidth(),
@@ -135,12 +135,12 @@ public class UnderwaterCat extends MiniGame {
             s.draw(batch);
         }
         mainCharacter.draw(batch);
-        sound_swim.setLooping(true);
-        sound_swim.play();
+        swimmingAmbientSound.setLooping(true);
+        swimmingAmbientSound.play();
         
         if(isOver){
-            music_underwaterCat.stop();
-            sound_swim.stop();
+            backgroundMusic.stop();
+            swimmingAmbientSound.stop();
         }
         
      }
@@ -193,8 +193,8 @@ public class UnderwaterCat extends MiniGame {
      @Override
     protected void onEnd(){
             isOver = true;
-            music_underwaterCat.stop();
-            sound_swim.stop(); 
+            backgroundMusic.stop();
+            swimmingAmbientSound.stop(); 
     }
     
      @Override
@@ -377,4 +377,3 @@ class Fish extends AnimatedSprite {
                  
     }         
 }
-
