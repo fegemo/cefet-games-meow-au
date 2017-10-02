@@ -4,6 +4,7 @@ import br.cefetmg.games.Config;
 import br.cefetmg.games.graphics.hud.Hud;
 import br.cefetmg.games.logic.chooser.BaseGameSequencer;
 import br.cefetmg.games.logic.chooser.GameSequencer;
+import br.cefetmg.games.minigames.HeadSoccer;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.factories.*;
 import br.cefetmg.games.minigames.util.MiniGameState;
@@ -20,7 +21,7 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
 /**
  *
- * @author Flávio Coutinho - fegemo <coutinho@decom.cefetmg.br>
+ * @inspirado no tp de cinematica
  */
 public class PlayingGamesScreen extends BaseScreen
         implements MiniGameStateObserver {
@@ -39,7 +40,32 @@ public class PlayingGamesScreen extends BaseScreen
         lives = Config.MAX_LIVES;
         sequencer = new GameSequencer(5, new HashSet<MiniGameFactory>(
                 Arrays.asList(
-                        new UnderwaterCatFactory()
+                        // flávio
+                        new ShootTheCariesFactory(),
+                        new ShooTheTartarusFactory(),
+                        // gustavo henrique e rogenes
+			                  new BasCATballFactory(),
+                        new RunningFactory(),
+                        // rafael e luis carlos
+                        new DodgeTheVeggiesFactory(),
+                        new CatchThatHomeworkFactory(),
+                        // adriel
+                        new UnderwaterCatFactory(),
+                        // arthur e pedro
+                        new DogBarksCatFleeFactory(),
+                        new ClickFindCatFactory(),
+                        // cassiano e gustavo jordão
+                        new TicCatDogFactory(),
+                        new JumpTheObstaclesFactory(),
+                        // luiza e pedro cordeiro
+                        new SpyFishFactory(),
+                        new PhantomCatFactory(),
+                        // gabriel e natália
+                        new MouseAttackFactory(),
+                        new JetRatFactory(),
+                        // emanoel e vinícius
+                        new HeadSoccerFactory(),
+                        new CatAvoiderFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);
@@ -237,6 +263,11 @@ public class PlayingGamesScreen extends BaseScreen
             inputMultiplexer.addProcessor(currentGame.getInputProcessor());
         }
     }
+    
+    @Override
+    public void showMessage(String strMessage){
+        hud.showMessage(strMessage);
+    }
     // </editor-fold>
 
     enum PlayScreenState {
@@ -244,5 +275,4 @@ public class PlayingGamesScreen extends BaseScreen
         FINISHED_GAME_OVER,
         FINISHED_WON
     }
-
 }

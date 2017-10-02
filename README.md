@@ -201,3 +201,4 @@ resolução atual da janela do jogo.
 [using-pull-requests]: https://help.github.com/articles/using-pull-requests/
 [creating-pull-requests]: https://help.github.com/articles/creating-a-pull-request/
 [syncing-fork]: https://help.github.com/articles/syncing-a-fork/
+
