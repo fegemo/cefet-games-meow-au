@@ -70,7 +70,17 @@ public class CannonCat extends MiniGame {
 
     @Override
     public void onHandlePlayingInput() {
+        if (Gdx.input.justTouched()) {
 
+            if (tiro > 0) {
+                cat_x[k] = 0;
+                tiro--;
+            } else {
+                super.challengeFailed();
+            }
+
+            cookie_x[tiro] = -500;
+        }
     }
 
     @Override
@@ -97,17 +107,6 @@ public class CannonCat extends MiniGame {
             super.challengeFailed();
         }
 
-        if (Gdx.input.justTouched()) {
-
-            if (tiro > 0) {
-                cat_x[k] = 0;
-                tiro--;
-            } else {
-                super.challengeFailed();
-            }
-
-            cookie_x[tiro] = -500;
-        }
     }
 
     @Override
