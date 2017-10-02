@@ -9,8 +9,8 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Meowsic extends MiniGame {
 
@@ -62,13 +62,13 @@ public class Meowsic extends MiniGame {
         fail = assets.get("meowsic/fail.wav", Sound.class);
 
         for (i = 0; i < NUMBER_OF_NOTES - 1; i++) {
-            noteX[i] = 350 + laneSize * ThreadLocalRandom.current().nextInt(0, 5);
+            noteX[i] = 350 + laneSize * MathUtils.random(0, 4);
             noteY[i] = 500 + i * 125;
             clicked[i] = 0;
         }
         //Força que a última nota seja Dó, para soar mais "bonito"
         noteX[NUMBER_OF_NOTES - 1] = 350;
-        noteY[NUMBER_OF_NOTES - 1] = 500 + i * 110 + ThreadLocalRandom.current().nextInt(0, 20);
+        noteY[NUMBER_OF_NOTES - 1] = 500 + i * 110 + MathUtils.random(0, 20);
         music.play(0.8f);
     }
 
