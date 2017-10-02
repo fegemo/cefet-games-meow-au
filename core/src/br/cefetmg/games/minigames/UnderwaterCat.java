@@ -6,7 +6,6 @@
 package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.minigames.util.DifficultyCurve;
-import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -112,7 +111,7 @@ public class UnderwaterCat extends MiniGame {
     
     @Override
     public String getInstructions() {
-        return "Invasao no reino dos peixes! Coma todos os peixes e sem ser atingido pelos espinhos";
+        return "Mate a fome, mas sem espinhos!";
     }
 
     @Override
