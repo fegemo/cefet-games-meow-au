@@ -6,6 +6,7 @@
 package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.minigames.util.DifficultyCurve;
+import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -48,9 +49,11 @@ public class UnderwaterCat extends MiniGame {
     private Texture spikyTexture;
     TheCat mainCharacter;
     
+    private boolean isOver;
     
     private int numberEaten = 0;
     private int fishToEat;
+    private float time = 0;
     
     
     public UnderwaterCat(BaseScreen screen,
@@ -82,6 +85,8 @@ public class UnderwaterCat extends MiniGame {
         background = assets.get(
                 "underwater-cat/background.bmp", Texture.class);
         numberEaten = 0;
+        isOver = false;
+        this.time = 0;
         initializeFish(fishToEat);
                timer.scheduleTask(new Timer.Task() {
             @Override
@@ -133,7 +138,11 @@ public class UnderwaterCat extends MiniGame {
         sound_swim.setLooping(true);
         sound_swim.play();
         
-      //  sound_swim.setPitch(id, 0.2f);
+        if(isOver){
+            music_underwaterCat.stop();
+            sound_swim.stop();
+        }
+        
      }
     
         @Override
@@ -145,7 +154,12 @@ public class UnderwaterCat extends MiniGame {
             fish.update(dt);
         }
        
-       
+       if(super.getState() == MiniGameState.PLAYING){ 
+           time = +dt;
+                   if(time > 10f){       
+                        isOver = true;
+                   }
+       }
        
          // verifica se personagemPrincipalEstáSobreAlgumPeixe        
          for (int i = 0; i < this.toCapture.size; i++) {
@@ -165,6 +179,7 @@ public class UnderwaterCat extends MiniGame {
                 if (s.getBoundingRectangle()
                     .overlaps(mainCharacter.getBoundingRectangle())) 
                 {
+                     isOver = true;
                      super.challengeFailed();
                 }
             }
@@ -174,8 +189,15 @@ public class UnderwaterCat extends MiniGame {
       numberEaten++;
       gotFishSound.play();
             if(numberEaten == fishToEat){
+                isOver = true;
                 super.challengeSolved();
             } 
+    }
+    
+    @Override
+    protected void onEnd(){
+            music_underwaterCat.stop();
+            sound_swim.stop(); 
     }
     
      @Override
