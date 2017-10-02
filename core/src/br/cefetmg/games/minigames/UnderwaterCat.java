@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Vector3;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.math.Rectangle;
 
 
 /**
@@ -104,7 +105,7 @@ public class UnderwaterCat extends MiniGame {
         this.spawnInterval = DifficultyCurve.LINEAR_NEGATIVE
                 .getCurveValueBetween(difficulty, 0.25f, 1.5f);
         this.fishToEat = (int) Math.ceil(DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 5, 2)) + 1;
+                .getCurveValueBetween(difficulty, 2, 5)) + 1;
     }
     
     
@@ -153,20 +154,13 @@ public class UnderwaterCat extends MiniGame {
        for (Fish fish : this.toCapture) {
             fish.update(dt);
         }
-       
-       if(super.getState() == MiniGameState.PLAYING){ 
-           time = +dt;
-                   if(time > 10f){       
-                        isOver = true;
-                   }
-       }
-       
+          
          // verifica se personagemPrincipalEstáSobreAlgumPeixe        
          for (int i = 0; i < this.toCapture.size; i++) {
             Fish f = this.toCapture.get(i);
             f.update(dt);
                 if (f.getBoundingRectangle()
-                        .overlaps(mainCharacter.getBoundingRectangle())) {
+                        .overlaps(mainCharacter.getBoundingRectangle())) { 
                     toCapture.removeValue(toCapture.get(i), true);
                     eatFish();
                 }
@@ -176,8 +170,11 @@ public class UnderwaterCat extends MiniGame {
          for (int i = 0; i < this.enemies.size; i++) {
             Spiky s = this.enemies.get(i);
             s.update(dt);
+            Rectangle bounds = mainCharacter.getBoundingRectangle();
+              bounds.setHeight(bounds.getHeight() - 50);
+              bounds.setWidth(bounds.getWidth() - 70);
                 if (s.getBoundingRectangle()
-                    .overlaps(mainCharacter.getBoundingRectangle())) 
+                    .overlaps(bounds)) 
                 {
                      isOver = true;
                      super.challengeFailed();
@@ -194,8 +191,9 @@ public class UnderwaterCat extends MiniGame {
             } 
     }
     
-    @Override
+     @Override
     protected void onEnd(){
+            isOver = true;
             music_underwaterCat.stop();
             sound_swim.stop(); 
     }
@@ -247,10 +245,6 @@ public class UnderwaterCat extends MiniGame {
        }
     }
     
-    private void initializeSpiky(){
-    
-    
-    }
     
     private void createFish(Texture spritesFish,int tipo){     
         
@@ -273,8 +267,8 @@ public class UnderwaterCat extends MiniGame {
     
     private void createFishAux(Fish fish){
     Vector3 posicao = new Vector3();
-           float randomWidth = MathUtils.random(viewport.getWorldWidth(), 0);
-           float randomHeight = MathUtils.random(viewport.getWorldHeight(), 0);
+           float randomWidth = MathUtils.random(viewport.getWorldWidth() - 200, 200);
+           float randomHeight = MathUtils.random(viewport.getWorldHeight() - 200, 200);
 
            fish.setCenter(randomWidth, randomHeight);
            this.toCapture.add(fish);  
