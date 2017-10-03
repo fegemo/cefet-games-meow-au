@@ -28,10 +28,10 @@ public class NinjaCat extends MiniGame {
     private Sprite backGround;
     private Sprite arrow;
     private Cat cat;
-    private catIntro ci;
+    private CatIntro ci;
     private Array<Zombie> zombies;
     private Array<DeadZombie> deadzomb;
-    private killingZombie god;
+    private KillingZombie god;
 
     private boolean rampage;
     private boolean right;
@@ -110,7 +110,7 @@ public class NinjaCat extends MiniGame {
         zombies = new Array<Zombie>();
         deadzomb = new Array<DeadZombie>();
 
-        ci = new catIntro(catPose);
+        ci = new CatIntro(catPose);
         ci.setOrigin(0, 0);
         ci.setScale(1.75f);
         ci.setPosition(viewport.getWorldWidth() * 0.45f, viewport.getWorldHeight() * .1f);
@@ -296,12 +296,12 @@ public class NinjaCat extends MiniGame {
         }
     }
 
-    class killingZombie extends AnimatedSprite {
+    class KillingZombie extends AnimatedSprite {
 
         static final int FRAME_WIDTH = 60;
         static final int FRAME_HEIGHT = 79;
 
-        killingZombie(final Texture deadzombieTexture) {
+        KillingZombie(final Texture deadzombieTexture) {
             super(new Animation(.18f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
@@ -322,12 +322,12 @@ public class NinjaCat extends MiniGame {
         }
     }
 
-    class catIntro extends AnimatedSprite {
+    class CatIntro extends AnimatedSprite {
 
         static final int FRAME_WIDTH = 70;
         static final int FRAME_HEIGHT = 85;
 
-        catIntro(final Texture catPose) {
+        CatIntro(final Texture catPose) {
             super(new Animation(.18f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
@@ -382,7 +382,7 @@ public class NinjaCat extends MiniGame {
     public void onUpdate(float dt) {
         if (gameclear && !end) {
             if (victory) {
-                ci = new catIntro(catPose);
+                ci = new CatIntro(catPose);
                 ci.setOrigin(0, 0);
                 ci.setScale(1.75f);
                 ci.setPosition(cat.getX(), cat.getY());
@@ -494,7 +494,7 @@ public class NinjaCat extends MiniGame {
                 if (zomb.getBoundingRectangle().overlaps(cat.getBoundingRectangle()) && !rampage) {
                     gosound.play();
                     gameover = true;
-                    this.god = new killingZombie(killZombie);
+                    this.god = new KillingZombie(killZombie);
                     god.setCenter(0, 0);
                     god.setScale(2.25f);
                     god.setPosition(zomb.getX(), zomb.getY());
