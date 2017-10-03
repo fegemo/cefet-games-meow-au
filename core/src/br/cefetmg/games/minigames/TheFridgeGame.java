@@ -106,7 +106,7 @@ public class TheFridgeGame extends MiniGame {
             for(int i=24; i<30; i++){
                 walkingFrames[i] = AnimationFrames[i%24][1];
             }
-            walking = new AnimatedSprite(new Animation(0.1f, walkingFrames)); //create animation//       
+            walking = new AnimatedSprite(new Animation<TextureRegion>(0.1f, walkingFrames)); //create animation//       
             walking.setPosition(viewport.getWorldWidth(), -15);
             TextureRegion[] jumpingFrames = new TextureRegion[10];
             jumpingFrames[0] = AnimationFrames[7][3];
@@ -119,12 +119,12 @@ public class TheFridgeGame extends MiniGame {
             jumpingFrames[7] = AnimationFrames[3][1];
             jumpingFrames[8] = AnimationFrames[4][1];
             jumpingFrames[9] = AnimationFrames[5][1];            
-            jumping = new AnimatedSprite(new Animation(0.1f, jumpingFrames)); 
+            jumping = new AnimatedSprite(new Animation<TextureRegion>(0.1f, jumpingFrames)); 
             TextureRegion[] fallingFrames = new TextureRegion[5];
             for(int i=0; i<5; i++){  
                 fallingFrames[i] = AnimationFrames[i][3];
             }            
-            falling = new AnimatedSprite(new Animation(0.1f, fallingFrames)); 
+            falling = new AnimatedSprite(new Animation<TextureRegion>(0.1f, fallingFrames)); 
             currentAnimation = null;
         }
         
@@ -191,8 +191,7 @@ public class TheFridgeGame extends MiniGame {
     }
     
     private void fallingAnimation(){     
-        boolean done = true;
-        done = shakingAnimation();    
+        boolean done = shakingAnimation();    
         ////////////////////////////////if collided with a food////////////////////////////////
         if(cat.nextPosition<=2 && cat.nextPosition>=0 && food[cat.nextShelf][cat.nextPosition]!=null){
             float shelfY = (fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount;
