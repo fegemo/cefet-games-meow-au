@@ -70,7 +70,10 @@ public class PlayingGamesScreen extends BaseScreen
                         new MeowsicFactory(),
                         // túlio
                         new RainingCatsFactory(),
-                        new NinjaCatFactory()
+                        new NinjaCatFactory(),
+                        //estevao e sarah
+                        new TheFridgeGameFactory(),
+                        new KillTheRatsFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);
