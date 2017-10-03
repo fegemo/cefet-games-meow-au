@@ -1,5 +1,6 @@
 package br.cefetmg.games;
 
+import br.cefetmg.games.screens.PlayingGamesScreen;
 import br.cefetmg.games.screens.SplashScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -14,11 +15,11 @@ import com.badlogic.gdx.Input.Keys;
  * @author Flávio Coutinho - fegemo <coutinho@decom.cefetmg.br>
  */
 public class MeowAuGame extends Game {
-
-
+    
     @Override
     public void create() {
         this.setScreen(new SplashScreen(this, null));
+        //this.setScreen(new PlayingGamesScreen(this, null)); // inicialização direta
     }
     
     private void handleInput() {
@@ -30,7 +31,7 @@ public class MeowAuGame extends Game {
     @Override
     public void render() {
         handleInput();
-        super.render();
+         super.render();
     }
 
     @Override
