@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.graphics.MultiAnimatedSprite;
@@ -17,7 +13,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -264,7 +259,7 @@ public class KillTheRats extends MiniGame {
             init();
         }
         
-        public void init() {
+        public final void init() {
             setScale(0.4f);
             radius = getWidth()/5;
             setPosition(getOriginX(), getOriginY());
@@ -305,13 +300,13 @@ public class KillTheRats extends MiniGame {
     
     private class Background extends AnimatedSprite {
         
-        static final float frameDuration = 1.0f;
+        static final float FRAME_DURATION = 1.0f;
         
         static final int FRAME_WIDTH = 1280;
         static final int FRAME_HEIGHT = 720;
         
         Background(final Texture catTexture) {
-            super(new Animation(frameDuration, new Array<TextureRegion>() {
+            super(new Animation(FRAME_DURATION, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             catTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -326,7 +321,7 @@ public class KillTheRats extends MiniGame {
             init();
         }
         
-        public void init() {
+        public final void init() {
             setAlpha(0.95f);
             setPosition(viewport.getWorldWidth()/2, viewport.getWorldHeight()/2);
         }
@@ -349,7 +344,7 @@ public class KillTheRats extends MiniGame {
     
     private class Cat extends AnimatedSprite {
 
-        static final float frameDuration = 0.1f;
+        static final float FRAME_DURATION = 0.1f;
         
         static final int FRAME_WIDTH = 118;
         static final int FRAME_HEIGHT = 150;
@@ -360,7 +355,7 @@ public class KillTheRats extends MiniGame {
         private float fieldForceInterval;
 
         Cat(final Texture catTexture) {
-            super(new Animation(frameDuration, new Array<TextureRegion>() {
+            super(new Animation(FRAME_DURATION, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             catTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -375,7 +370,7 @@ public class KillTheRats extends MiniGame {
             reset();
         }
         
-        public void reset() {
+        public final void reset() {
             fieldForceInterval = 10f;
             collisionRadius = 50;
             setScale(0.6f);
@@ -437,13 +432,13 @@ public class KillTheRats extends MiniGame {
     
     private class Rat extends MultiAnimatedSprite {
         
-        static final float frameDuration = 0.02f;
-        static final float maxDistExplode = 200.0f;
-        static final float explodeDuration = 1.0f;
+        static final float FRAME_DURATION = 0.02f;
+        static final float MAX_DIST_EXPLODE = 200.0f;
+        static final float EXPLODE_DURATION = 1.0f;
         static final int ROWS = 6;
         static final int COLS = 8;
 
-        private Sound sound;
+        private final Sound sound;
         private Color defaultColor;
         private Vector2 direction;
         private float speed;
@@ -465,7 +460,7 @@ public class KillTheRats extends MiniGame {
                     TextureRegion[][] frames = TextureRegion
                             .split(ratsSpriteSheet,
                                     ratsSpriteSheet.getWidth()/COLS, ratsSpriteSheet.getHeight()/ROWS);
-                    Animation walking = new Animation(frameDuration, frames[0]); // todas as colunas da linha 0
+                    Animation walking = new Animation<TextureRegion>(FRAME_DURATION, frames[0]); // todas as colunas da linha 0
                     walking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
                     put("walking", walking);
                 }
@@ -476,7 +471,7 @@ public class KillTheRats extends MiniGame {
             reset();
         }
         
-        public void init() {
+        public final void init() {
             defaultColor = getColor();
             time = 0;
             flipX = false;
@@ -489,7 +484,7 @@ public class KillTheRats extends MiniGame {
             maximumEnemySpeed = 5f;
         }
         
-        public void reset() {
+        public final void reset() {
             setColor(defaultColor);
             float posY = (float) Math.random() * (viewport.getWorldHeight() - 2*wallDist) + wallDist;
             setPosition(viewport.getWorldWidth() + getWidth(), posY);
@@ -580,7 +575,7 @@ public class KillTheRats extends MiniGame {
         public void explode(Vector2 v) {
             float dist = getPosition().dst2(v);
             
-            if (dist <= maxDistExplode*maxDistExplode) {
+            if (dist <= MAX_DIST_EXPLODE*MAX_DIST_EXPLODE) {
                 explodeMode = true;
                 direction = getPosition().sub(v);
                 direction.nor();
@@ -645,7 +640,7 @@ public class KillTheRats extends MiniGame {
                 sound.stop();
             
             time += dt;
-            if (time >= 2*COLS*frameDuration) {
+            if (time >= 2*COLS*FRAME_DURATION) {
                 flipX = !flipX;
                 time = 0;
             }
@@ -668,7 +663,7 @@ public class KillTheRats extends MiniGame {
                 walk(direction);
                 
                 sumTimer += dt;
-                if (sumTimer > explodeDuration)
+                if (sumTimer > EXPLODE_DURATION)
                     reset();
                 
                 return;
@@ -685,10 +680,10 @@ public class KillTheRats extends MiniGame {
     
     private class Fire extends MultiAnimatedSprite {
 
-        static final float frameDuration = 0.05f;
+        static final float FRAME_DURATION = 0.05f;
         //static final float weaponChangeTimer = 10.0f;
-        static final float explodeDuration = 1.0f;
-        static final float arcHeight = 100.0f;
+        static final float EXPLODE_DURATION = 1.0f;
+        static final float ARC_HEIGHT = 100.0f;
         
         private Sound sound;
         private float fireInterval;
@@ -708,22 +703,22 @@ public class KillTheRats extends MiniGame {
             super(new HashMap<String, Animation>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(fireTexture, 64, 64);
-                    Animation fireball = new Animation(frameDuration, frames[0]); // todas as colunas da linha 0
+                    Animation fireball = new Animation<TextureRegion>(FRAME_DURATION, frames[0]); // todas as colunas da linha 0
                     fireball.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
                     put("fireball", fireball);
                     
                     frames = TextureRegion.split(rocketTexture, 360, 720);
-                    Animation rocket = new Animation(frameDuration, frames[0]); // todas as colunas da linha 0
+                    Animation rocket = new Animation<TextureRegion>(FRAME_DURATION, frames[0]); // todas as colunas da linha 0
                     rocket.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
                     put("rocket", rocket);
                     
                     frames = TextureRegion.split(miniExplosionTexture, 96, 96);
-                    Animation miniExplosion = new Animation(frameDuration, frames[0]); // todas as colunas da linha 0
+                    Animation miniExplosion = new Animation<TextureRegion>(FRAME_DURATION, frames[0]); // todas as colunas da linha 0
                     miniExplosion.setPlayMode(Animation.PlayMode.LOOP);
                     put("miniExplosion", miniExplosion);
                     
                     frames = TextureRegion.split(bigExplosionTexture, 96, 96);
-                    Animation bigExplosion = new Animation(frameDuration, 
+                    Animation bigExplosion = new Animation<TextureRegion>(FRAME_DURATION, 
                             frames[0][0], frames[0][1], frames[0][2], frames[0][3], frames[0][4],
                             frames[1][0], frames[1][1], frames[2][2], frames[1][3], frames[1][4],
                             frames[2][0], frames[2][1], frames[1][2], frames[2][3], frames[2][4]);
@@ -736,7 +731,7 @@ public class KillTheRats extends MiniGame {
             reset();
         }
         
-        public void init() {
+        public final void init() {
             sound = fireSound;
             fireInterval = 2.0f;
             offset = 10;
@@ -746,7 +741,7 @@ public class KillTheRats extends MiniGame {
             arcCircle = new Circle();
         }
         
-        public void reset() {
+        public final void reset() {
             setScale(1.0f);
             sound = fireSound;
             direction = new Vector2(0, 0);
@@ -926,8 +921,8 @@ public class KillTheRats extends MiniGame {
             
             direction = tangentCircle(arcCircle);
             
-            Circle c = new Circle(getX(), getY(), Math.max(getWidth(), getHeight()));
-            if (c.contains(explodePos)) {
+            Circle circle = new Circle(getX(), getY(), Math.max(getWidth(), getHeight()));
+            if (circle.contains(explodePos)) {
                 explode();
             }
         }
@@ -941,7 +936,7 @@ public class KillTheRats extends MiniGame {
                 
                 explodePos = mousePos;
                 //parabole();
-                arc(arcHeight);
+                arc(ARC_HEIGHT);
                 setDirection(mousePos);
                 
                 launched = true;
@@ -982,7 +977,7 @@ public class KillTheRats extends MiniGame {
             if (explodeMode) {
                 sumTimer += dt;
                 
-                if (sumTimer >= explodeDuration) {
+                if (sumTimer >= EXPLODE_DURATION) {
                     if (rocketMode)
                         startAnimation("rocket");
                     else
