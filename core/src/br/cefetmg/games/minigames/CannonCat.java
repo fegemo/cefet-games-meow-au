@@ -6,6 +6,7 @@ import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * @author Kael
@@ -14,9 +15,8 @@ public class CannonCat extends MiniGame {
 
     private Texture background;
     private Texture cat, cookie;
-    private Texture cannon_downleft, cannon_down, cannon_downright, cannon_right, cannon_left, cannon_upright, cannon_up, cannon_upleft;
     public int i = 0;
-    public int k = 0;
+    public int cannonDirectionIndex = 0;
     public int c = 0;
     public int tiro = 0;
     public int[] cat_x = new int[N_GATOS];
@@ -31,6 +31,7 @@ public class CannonCat extends MiniGame {
     public double tempo2 = System.currentTimeMillis();
     public final static int MUNICAO = 10;
     public final static int N_GATOS = 8;
+    private ObjectMap<Direction, Texture> cannonTextures;
 
     public CannonCat(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
@@ -42,15 +43,17 @@ public class CannonCat extends MiniGame {
 
         cat = assets.get("cannon-cat/cat.png", Texture.class);
         cookie = assets.get("cannon-cat/biscoito.png", Texture.class);
-        cannon_down = assets.get("cannon-cat/cannon_down.png", Texture.class);
-        cannon_downleft = assets.get("cannon-cat/cannon_down+left.png", Texture.class);
-        cannon_downright = assets.get("cannon-cat/cannon_down+right.png", Texture.class);
-        cannon_right = assets.get("cannon-cat/cannon_right.png", Texture.class);
-        cannon_left = assets.get("cannon-cat/cannon_left.png", Texture.class);
-        cannon_upright = assets.get("cannon-cat/cannon_up+right.png", Texture.class);
-        cannon_up = assets.get("cannon-cat/cannon_up.png", Texture.class);
-        cannon_upleft = assets.get("cannon-cat/cannon_up+left.png", Texture.class);
-
+        
+        cannonTextures =  new ObjectMap<Direction, Texture>();
+        cannonTextures.put(Direction.EAST, assets.get("cannon-cat/cannon_right.png", Texture.class));
+        cannonTextures.put(Direction.SOUTH_EAST, assets.get("cannon-cat/cannon_down+right.png", Texture.class));
+        cannonTextures.put(Direction.SOUTH, assets.get("cannon-cat/cannon_down.png", Texture.class));
+        cannonTextures.put(Direction.SOUTH_WEST, assets.get("cannon-cat/cannon_down+left.png", Texture.class));
+        cannonTextures.put(Direction.WEST, assets.get("cannon-cat/cannon_left.png", Texture.class));
+        cannonTextures.put(Direction.NORTH_WEST, assets.get("cannon-cat/cannon_up+left.png", Texture.class));
+        cannonTextures.put(Direction.NORTH, assets.get("cannon-cat/cannon_up.png", Texture.class));
+        cannonTextures.put(Direction.NORTH_EAST, assets.get("cannon-cat/cannon_up+right.png", Texture.class));
+                
         for (i = 0; i < N_GATOS; i++) {
             cat_x[i] = (int) (200 * Math.cos((i * Math.PI) / 4)) + 1280 / 2;
             cat_y[i] = (int) ((-1) * 200 * Math.sin((i * Math.PI) / 4)) + 720 / 2;
@@ -73,7 +76,7 @@ public class CannonCat extends MiniGame {
         if (Gdx.input.justTouched()) {
 
             if (tiro > 0) {
-                cat_x[k] = 0;
+                cat_x[cannonDirectionIndex] = 0;
                 tiro--;
             } else {
                 super.challengeFailed();
@@ -85,12 +88,11 @@ public class CannonCat extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
-        //TECLADO
         tempo2 = System.currentTimeMillis();
         if (tempo2 - tempo1 > (100 - velocidade * 50)) {
             tempo1 = System.currentTimeMillis();
-            k++;
-            k = k % N_GATOS;
+            cannonDirectionIndex++;
+            cannonDirectionIndex = cannonDirectionIndex % N_GATOS;
         }
 
         for (i = 0; i < N_GATOS; i++) {
@@ -119,40 +121,8 @@ public class CannonCat extends MiniGame {
             batch.draw(cookie, cookie_x[i], cookie_y[i]);
         }
         //Desenham as posições do canhão de maneira a girar no sentido horário
-        switch (k) {
-            case 0:
-                batch.draw(cannon_right, center_x, center_y);
-                break;
-
-            case 1:
-                batch.draw(cannon_downright, center_x, center_y);
-                break;
-
-            case 2:
-                batch.draw(cannon_down, center_x, center_y);
-                break;
-
-            case 3:
-                batch.draw(cannon_downleft, center_x, center_y);
-                break;
-
-            case 4:
-                batch.draw(cannon_left, center_x, center_y);
-                break;
-
-            case 5:
-                batch.draw(cannon_upleft, center_x, center_y);
-                break;
-
-            case 6:
-                batch.draw(cannon_up, center_x, center_y);
-                break;
-
-            case 7:
-                batch.draw(cannon_upright, center_x, center_y);
-                break;
-            default:
-        }
+        Direction currentDirection = Direction.valueOf(cannonDirectionIndex);
+        batch.draw(cannonTextures.get(currentDirection), center_x, center_y);
     }
 
     @Override
@@ -166,4 +136,34 @@ public class CannonCat extends MiniGame {
         return true;
     }
 
+    private static enum Direction {
+        EAST(0),
+        SOUTH_EAST(1),
+        SOUTH(2),
+        SOUTH_WEST(3),
+        WEST(4),
+        NORTH_WEST(5),
+        NORTH(6),
+        NORTH_EAST(7);
+        
+        private final int index;
+        private Direction(int index) {
+            this.index = index;
+        }
+        
+        public int getIndex() {
+            return index;
+        }
+        
+        public static Direction valueOf(int index) {
+            Direction found = null;
+            for (Direction d : Direction.values()) {
+                if (d.getIndex() == index) {
+                    found = d;
+                    break;
+                }
+            }
+            return found;
+        }
+    }
 }
