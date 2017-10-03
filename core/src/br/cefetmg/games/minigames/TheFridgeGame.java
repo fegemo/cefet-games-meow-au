@@ -465,7 +465,7 @@ public class TheFridgeGame extends MiniGame {
             }                                            //and the amount of food and shelfs//
             x=fridgeLimitsXMin; y+=(fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount;
             shelfs[i] = new Object(new Vector2((fridge.texture.getX() + x)*0.99f,fridge.texture.getY()+y-30),(fridgeLimitsXMax-fridgeLimitsXMin),(fridgeLimitsYMax-fridgeLimitsYMin)/shelfAmount+80,
-                        screen.assets.get("the-fridge-game/shelf.png",Texture.class));
+                        assets.get("the-fridge-game/shelf.png",Texture.class));
         }
         fish.texture.setPosition((fridge.texture.getX() + fridgeLimitsXMin + (fridgeLimitsXMax-fridgeLimitsXMin)/3), shelfs[shelfAmount-1].texture.getY()+30);
         penguin.texture.setPosition((fridge.texture.getX() + fridgeLimitsXMin + (fridgeLimitsXMax-fridgeLimitsXMin)/3) + 20, fridge.texture.getY() + fridge.texture.getHeight()-25);
@@ -484,37 +484,37 @@ public class TheFridgeGame extends MiniGame {
         for(int i=1;i<19;i++){
             String aux = Integer.toString(i);
             if(aux.length()<2) aux = "0" + aux;//it's 01-18//
-            this.foodTexture[i-1] = screen.assets.get("the-fridge-game/food" + aux + ".png",Texture.class);               
+            this.foodTexture[i-1] = assets.get("the-fridge-game/food" + aux + ".png",Texture.class);               
         }
         this.buttonsTexture = new Texture[3]; 
         for(int i=1;i<4;i++){
             String aux = Integer.toString(i); 
             aux = "0" + aux; //it's 01-03//
-            this.buttonsTexture[i-1] =  screen.assets.get("the-fridge-game/button" + aux + ".png",Texture.class); 
+            this.buttonsTexture[i-1] =  assets.get("the-fridge-game/button" + aux + ".png",Texture.class); 
         }        
         //sounds//
-        backgroundSound = screen.assets.get("the-fridge-game/City Shoping - Blues Music.mp3",Sound.class);
-        whistleUp = screen.assets.get("the-fridge-game/Whistle Up - Sound FX.mp3",Sound.class);
-        whistleDown = screen.assets.get("the-fridge-game/Whistle Down - Sound FX.mp3",Sound.class);
-        crash = screen.assets.get("the-fridge-game/Crash.mp3",Sound.class);
-        clap = screen.assets.get("the-fridge-game/Clap.mp3",Sound.class);
+        backgroundSound = assets.get("the-fridge-game/City Shoping - Blues Music.mp3",Sound.class);
+        whistleUp = assets.get("the-fridge-game/Whistle Up - Sound FX.mp3",Sound.class);
+        whistleDown = assets.get("the-fridge-game/Whistle Down - Sound FX.mp3",Sound.class);
+        crash = assets.get("the-fridge-game/Crash.mp3",Sound.class);
+        clap = assets.get("the-fridge-game/Clap.mp3",Sound.class);
         //objects//
         generator = new Random();
         background = new Object(new Vector2(0,0), viewport.getWorldWidth(), viewport.getWorldHeight(), 
-                     screen.assets.get("the-fridge-game/fridge-game-background.png", Texture.class));
+                     assets.get("the-fridge-game/fridge-game-background.png", Texture.class));
         fridge = new Object(initialFridgePosition, initialFridgeWidth, initialFridgeHeight, 
-                 screen.assets.get("the-fridge-game/open-fridge.png", Texture.class));
-        fish = new Object(new Vector2(0,0), 0, 0, screen.assets.get("the-fridge-game/fish.png",Texture.class));
-        penguin = new Object(new Vector2(0,initialFridgeHeight), 70, 100, screen.assets.get("the-fridge-game/penguin.png",Texture.class));        
+                 assets.get("the-fridge-game/open-fridge.png", Texture.class));
+        fish = new Object(new Vector2(0,0), 0, 0, assets.get("the-fridge-game/fish.png",Texture.class));
+        penguin = new Object(new Vector2(0,initialFridgeHeight), 70, 100, assets.get("the-fridge-game/penguin.png",Texture.class));        
         penguin.texture.setOrigin(penguin.texture.getWidth()/2,0);
-        cat = new Cat(screen.assets.get("the-fridge-game/cat.png",Texture.class));       
+        cat = new Cat(assets.get("the-fridge-game/cat.png",Texture.class));       
         buttons = new Button[3];
         buttons[0] = new Button(new Vector2 (820,0), 200, 60, 
-                     screen.assets.get("the-fridge-game/button01.png",Texture.class), CHOICE.JUMP, false);
+                     assets.get("the-fridge-game/button01.png",Texture.class), CHOICE.JUMP, false);
         buttons[1] = new Button(new Vector2 (1000,0), 100, 100, 
-                     screen.assets.get("the-fridge-game/button02.png",Texture.class), CHOICE.RIGHT, false);
+                     assets.get("the-fridge-game/button02.png",Texture.class), CHOICE.RIGHT, false);
         buttons[2] = new Button(new Vector2 (770,0), 100, 100, 
-                     screen.assets.get("the-fridge-game/button03.png",Texture.class), CHOICE.LEFT, false);
+                     assets.get("the-fridge-game/button03.png",Texture.class), CHOICE.LEFT, false);
         shelfs = new Object[shelfAmount];
         food = new Object[shelfAmount][3];
         initialize();

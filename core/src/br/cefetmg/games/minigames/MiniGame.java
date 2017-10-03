@@ -21,7 +21,7 @@ import java.util.Random;
  */
 public abstract class MiniGame {
 
-    protected final BaseScreen screen;
+//    protected final BaseScreen screen;
     protected final AssetManager assets;
     protected final Viewport viewport;
     protected final SpriteBatch batch;
@@ -54,7 +54,7 @@ public abstract class MiniGame {
                     + ".");
         }
 
-        this.screen = screen;
+//        this.screen = screen;
         this.assets = screen.assets;
         this.viewport = screen.viewport;
         this.batch = screen.batch;
@@ -77,9 +77,7 @@ public abstract class MiniGame {
 
     public final void start() {
         this.configureDifficultyParameters(this.difficulty);
-
         transitionTo(MiniGameState.SHOWING_INSTRUCTIONS);
-        //transitionTo(MiniGameState.PLAYING); // inicialização direta
     }
 
     public final void handleInput() {
