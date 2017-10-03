@@ -3,9 +3,6 @@ package br.cefetmg.games.minigames;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.audio.Sound;
-/*import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.BodyDef;*/
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -30,9 +27,6 @@ public class TheFridgeGame extends MiniGame {
     private Button buttons[];
     private Cat cat;
     private CHOICE currentChoice;
-    /*private World world;//variables relative to physics//
-    private BodyDef catBodyDef, foodBodyDef;
-    private Body catBody = null, foodBody = null;*/
     
     private int shakingCounter=0,shelfAmount, fridgeLimitsXMax, fridgeLimitsXMin, fridgeLimitsYMax, fridgeLimitsYMin;
     private final int initialFridgeHeight=550,  initialFridgeWidth=500; 
@@ -133,21 +127,6 @@ public class TheFridgeGame extends MiniGame {
                 currentAnimation.draw(batch);
             }
         }          
-    }
-    
-    private void initPhysics(){//creates physical bodys for the object and the cat//
-       /* world = new World(new Vector2(0, -9.8f), true);//earth gravity//
-        catBodyDef = new BodyDef();
-        catBodyDef.type = BodyDef.BodyType.DynamicBody;
-        catBodyDef.position.set(cat.currentAnimation.getX(), cat.currentAnimation.getY());
-        catBody = world.createBody(catBodyDef);  
-        catBody.setGravityScale(100);
-        if(cat.nextPosition>=0 && cat.nextPosition<=2){//if the cat hit an object, it will fall too//
-            foodBodyDef = new BodyDef();
-            foodBodyDef.type = BodyDef.BodyType.DynamicBody;
-            foodBodyDef.position.set(food[cat.nextShelf][cat.nextPosition].texture.getX(),food[cat.nextShelf][cat.nextPosition].texture.getY());
-            foodBody = world.createBody(foodBodyDef); 
-        }*/
     }
     
     private boolean shakingAnimation(){//shakes the penguin on the top of fridge//
@@ -492,11 +471,11 @@ public class TheFridgeGame extends MiniGame {
             this.buttonsTexture[i-1] =  assets.get("the-fridge-game/button" + aux + ".png",Texture.class); 
         }        
         //sounds//
-        backgroundSound = assets.get("the-fridge-game/City Shoping - Blues Music.mp3",Sound.class);
-        whistleUp = assets.get("the-fridge-game/Whistle Up - Sound FX.mp3",Sound.class);
-        whistleDown = assets.get("the-fridge-game/Whistle Down - Sound FX.mp3",Sound.class);
-        crash = assets.get("the-fridge-game/Crash.mp3",Sound.class);
-        clap = assets.get("the-fridge-game/Clap.mp3",Sound.class);
+        backgroundSound = assets.get("the-fridge-game/city-shopping.mp3",Sound.class);
+        whistleUp = assets.get("the-fridge-game/whistle-up.mp3",Sound.class);
+        whistleDown = assets.get("the-fridge-game/whistle-down.mp3",Sound.class);
+        crash = assets.get("the-fridge-game/crash.mp3",Sound.class);
+        clap = assets.get("the-fridge-game/clap.mp3",Sound.class);
         //objects//
         generator = new Random();
         background = new Object(new Vector2(0,0), viewport.getWorldWidth(), viewport.getWorldHeight(), 
@@ -554,7 +533,6 @@ public class TheFridgeGame extends MiniGame {
         }
         else if(ending){            
             backgroundSound.stop();
-           // clap.play();
             challengeSolved();  
         }
     }
