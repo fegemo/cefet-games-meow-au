@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Timer.Task;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import com.badlogic.gdx.audio.Music;
 
 public class RainingCats extends MiniGame {
 
@@ -26,7 +27,7 @@ public class RainingCats extends MiniGame {
     private boolean jump;
     private float gravity;
 
-    private Sound music;
+    private Music music;
     private Sound pop;
 
     private Texture playerTexture;
@@ -54,7 +55,7 @@ public class RainingCats extends MiniGame {
         sakamoto2 = assets.get("raining-cats/sakamoto1.png", Texture.class);
         arrowTexture = assets.get("raining-cats/arrow.png", Texture.class);
 
-        music = assets.get("raining-cats/music.mp3", Sound.class);
+        music = assets.get("raining-cats/music.mp3", Music.class);
         pop = assets.get("raining-cats/Pop.mp3", Sound.class);
 
         arrow = new Sprite(arrowTexture);
@@ -71,7 +72,8 @@ public class RainingCats extends MiniGame {
         player.setScale(0.4f);
         player.setOrigin(0, 0);
         player.setPosition(viewport.getWorldWidth() * 0.2f, viewport.getWorldHeight() * .1f);
-        music.play(.3f);
+        music.play();
+        music.setVolume(.4f);
         scheduleCatsSpawn();
 
     }
