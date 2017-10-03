@@ -76,9 +76,11 @@ public class CannonCat extends MiniGame {
         if (Gdx.input.justTouched()) {
 
             if (remainingShots > 0) {
-                cat_x[cannonDirectionIndex] = 0;
                 remainingShots--;
-                remainingCats--;
+                if (cat_x[cannonDirectionIndex] != 0) {
+                    cat_x[cannonDirectionIndex] = 0;
+                    remainingCats--;
+                }
                 if (remainingCats == 0) {
                     super.challengeSolved();
                 } else if (remainingShots == 0) {
