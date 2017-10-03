@@ -15,22 +15,21 @@ public class CannonCat extends MiniGame {
 
     private Texture background;
     private Texture cat, cookie;
-    public int i = 0;
     public int cannonDirectionIndex = 0;
-    public int c = 0;
-    public int tiro = 0;
-    public int[] cat_x = new int[N_GATOS];
-    public int[] cat_y = new int[N_GATOS];
-    public int[] cookie_x = new int[MUNICAO];
-    public int[] cookie_y = new int[MUNICAO];
+    public int remainingShots;
+    private int remainingCats;
+    public int[] cat_x = new int[NUMBER_OF_CATS];
+    public int[] cat_y = new int[NUMBER_OF_CATS];
+    public int[] cookie_x = new int[MAX_AMMO];
+    public int[] cookie_y = new int[MAX_AMMO];
     public int center_x = 1200 / 2;
     public int center_y = 700 / 2;
     public double velocidade = 1;
     public double dificuldade = 1;
     public double tempo1 = System.currentTimeMillis();
     public double tempo2 = System.currentTimeMillis();
-    public final static int MUNICAO = 10;
-    public final static int N_GATOS = 8;
+    public final static int MAX_AMMO = 10;
+    public final static int NUMBER_OF_CATS = 8;
     private ObjectMap<Direction, Texture> cannonTextures;
 
     public CannonCat(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
@@ -43,8 +42,8 @@ public class CannonCat extends MiniGame {
 
         cat = assets.get("cannon-cat/cat.png", Texture.class);
         cookie = assets.get("cannon-cat/biscoito.png", Texture.class);
-        
-        cannonTextures =  new ObjectMap<Direction, Texture>();
+
+        cannonTextures = new ObjectMap<Direction, Texture>();
         cannonTextures.put(Direction.EAST, assets.get("cannon-cat/cannon_right.png", Texture.class));
         cannonTextures.put(Direction.SOUTH_EAST, assets.get("cannon-cat/cannon_down+right.png", Texture.class));
         cannonTextures.put(Direction.SOUTH, assets.get("cannon-cat/cannon_down.png", Texture.class));
@@ -53,16 +52,17 @@ public class CannonCat extends MiniGame {
         cannonTextures.put(Direction.NORTH_WEST, assets.get("cannon-cat/cannon_up+left.png", Texture.class));
         cannonTextures.put(Direction.NORTH, assets.get("cannon-cat/cannon_up.png", Texture.class));
         cannonTextures.put(Direction.NORTH_EAST, assets.get("cannon-cat/cannon_up+right.png", Texture.class));
-                
-        for (i = 0; i < N_GATOS; i++) {
+
+        for (int i = 0; i < NUMBER_OF_CATS; i++) {
             cat_x[i] = (int) (200 * Math.cos((i * Math.PI) / 4)) + 1280 / 2;
             cat_y[i] = (int) ((-1) * 200 * Math.sin((i * Math.PI) / 4)) + 720 / 2;
         }
-        for (i = 0; i < MUNICAO; i++) {
+        for (int i = 0; i < MAX_AMMO; i++) {
             cookie_x[i] = 300;
             cookie_y[i] = 200 + (-1) * i * 20;
         }
-        tiro = MUNICAO;
+        remainingShots = MAX_AMMO;
+        remainingCats = NUMBER_OF_CATS;
     }
 
     @Override
@@ -75,14 +75,20 @@ public class CannonCat extends MiniGame {
     public void onHandlePlayingInput() {
         if (Gdx.input.justTouched()) {
 
-            if (tiro > 0) {
+            if (remainingShots > 0) {
                 cat_x[cannonDirectionIndex] = 0;
-                tiro--;
+                remainingShots--;
+                remainingCats--;
+                if (remainingCats == 0) {
+                    super.challengeSolved();
+                } else if (remainingShots == 0) {
+                    super.challengeFailed();
+                }
             } else {
                 super.challengeFailed();
             }
 
-            cookie_x[tiro] = -500;
+            cookie_x[remainingShots] = -500;
         }
     }
 
@@ -92,32 +98,17 @@ public class CannonCat extends MiniGame {
         if (tempo2 - tempo1 > (100 - velocidade * 50)) {
             tempo1 = System.currentTimeMillis();
             cannonDirectionIndex++;
-            cannonDirectionIndex = cannonDirectionIndex % N_GATOS;
+            cannonDirectionIndex = cannonDirectionIndex % NUMBER_OF_CATS;
         }
-
-        for (i = 0; i < N_GATOS; i++) {
-            if (cat_x[i] == 0) {
-                c++;
-            }
-        }
-        if (c == N_GATOS) {
-            super.challengeSolved();
-        } else {
-            c = 0;
-        }
-        if (tiro <= 0 && c < N_GATOS) {
-            super.challengeFailed();
-        }
-
     }
 
     @Override
     public void onDrawGame() {
         batch.draw(background, 0, 0);
-        for (i = 0; i < N_GATOS; i++) {
+        for (int i = 0; i < NUMBER_OF_CATS; i++) {
             batch.draw(cat, cat_x[i], cat_y[i]);
         }
-        for (i = 0; i < MUNICAO; i++) {
+        for (int i = 0; i < MAX_AMMO; i++) {
             batch.draw(cookie, cookie_x[i], cookie_y[i]);
         }
         //Desenham as posições do canhão de maneira a girar no sentido horário
@@ -145,16 +136,17 @@ public class CannonCat extends MiniGame {
         NORTH_WEST(5),
         NORTH(6),
         NORTH_EAST(7);
-        
+
         private final int index;
+
         private Direction(int index) {
             this.index = index;
         }
-        
+
         public int getIndex() {
             return index;
         }
-        
+
         public static Direction valueOf(int index) {
             Direction found = null;
             for (Direction d : Direction.values()) {
