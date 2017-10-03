@@ -3,6 +3,7 @@ package br.cefetmg.games.minigames;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -20,7 +21,8 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 public class TheFridgeGame extends MiniGame {
 
     private Random generator;
-    private Sound backgroundSound, whistleUp, whistleDown, crash, clap;
+    private Music backgroundSound;
+    private Sound whistleUp, whistleDown, crash, clap;
     private Texture[] foodTexture, buttonsTexture;
     private Object[][] food;
     private Object[] shelfs;
@@ -469,7 +471,7 @@ public class TheFridgeGame extends MiniGame {
             this.buttonsTexture[i - 1] = assets.get("the-fridge-game/button" + aux + ".png", Texture.class);
         }
         //sounds//
-        backgroundSound = assets.get("the-fridge-game/city-shopping.mp3", Sound.class);
+        backgroundSound = assets.get("the-fridge-game/city-shopping.mp3", Music.class);
         whistleUp = assets.get("the-fridge-game/whistle-up.mp3", Sound.class);
         whistleDown = assets.get("the-fridge-game/whistle-down.mp3", Sound.class);
         crash = assets.get("the-fridge-game/crash.mp3", Sound.class);
