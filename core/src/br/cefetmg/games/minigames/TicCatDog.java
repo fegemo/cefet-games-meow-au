@@ -64,9 +64,9 @@ public class TicCatDog extends MiniGame {
     private int[][] ticCatDogMatrix; //Matriz que armazena estado atual de cada quadrado
     private final int EMPTY_SQUARE = 0, CAT_SQUARE = 1, DOG_SQUARE = 2;
 
-    private final float squareHeight = viewport.getWorldHeight() / 5;
-    private final float squareWidth = viewport.getWorldWidth() / 5;
-    private final float initialScaleMouse = (float) 0.05;
+    private float squareHeight;
+    private float squareWidth;
+    private float initialScaleMouse;
 
     private final int CAT_TURN = 1, DOG_TURN = 2;
     private int turn;
@@ -97,7 +97,11 @@ public class TicCatDog extends MiniGame {
 
         catMeowingSound = assets.get("tic-cat-dog/cat-meowing.wav", Sound.class);
         dogBarkingSound = assets.get("tic-cat-dog/dog-barking.wav", Sound.class);
-
+        
+        squareHeight = viewport.getWorldHeight() / 5;
+        squareWidth = viewport.getWorldWidth() / 5;
+        initialScaleMouse = (float) 0.05;
+        
         mouseArrowSprite.setOriginCenter();
         mouseArrowSprite.setScale(initialScaleMouse, initialScaleMouse);
 
@@ -268,7 +272,7 @@ public class TicCatDog extends MiniGame {
             //Inteligência artificial: melhor movimento selecionado
             if(catCleverness == CAT_SMART)
                 move = minimax(ticCatDogMatrix, CAT_TURN);
-            else //CAT_DUMB
+            else //Movimento randômico (CAT_DUMB)
                 move = getRandomMove(ticCatDogMatrix);
                 
             //Realiza-se o movimento
