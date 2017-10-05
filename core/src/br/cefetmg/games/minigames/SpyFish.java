@@ -40,7 +40,7 @@ public class SpyFish extends MiniGame {
     private int numberOfLostChips = 0;
 
     public SpyFish(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 20000f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
+        super(screen, observer, difficulty, 20000f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
         this.texturaFundo = assets.get("spy-fish/ocean.jpeg", Texture.class);
@@ -77,6 +77,9 @@ public class SpyFish extends MiniGame {
         fish.update(dt);
         for (Iterator<MemoryChip> iterator = chips.iterator(); iterator.hasNext();) {
             MemoryChip mc = iterator.next();
+            if (mc.position.y >= -35) {
+                mc.update();
+            }
             if (mc.collidesWith(this.fish)) {
                 //se o peixe pegar um cartão de memoria
                 iterator.remove();
@@ -276,10 +279,7 @@ public class SpyFish extends MiniGame {
 
         public void render(SpriteBatch sb) {
             // se dentro da tela e sem colisão com other - desenha
-            if (this.position.y >= -35) {
                 this.sprite.draw(sb);
-                update();
-            }
         }
 
         public Vector2 getPositionMemoryCard() {
@@ -348,8 +348,12 @@ public class SpyFish extends MiniGame {
         }
 
         public void atualiza(Direcionamento guia, float delta) {
-            velocidade.add(guia.aceleracao.scl(delta));
-            posicao.add(velocidade.scl(delta));
+            Vector2 aux = new Vector2(guia.aceleracao);
+            aux.scl(delta);
+            velocidade.add(aux);
+            Vector2 auxVelocidade = new Vector2(velocidade);
+            auxVelocidade.scl(delta);
+            posicao.add(auxVelocidade);
             orientacao += guia.rotacao * delta;
             orientacao = orientacao % ((float) Math.PI * 2);
         }
@@ -382,8 +386,8 @@ public class SpyFish extends MiniGame {
         }
 
         public Buscar() {
-            this.maxAceleracao = 5000;
-            this.constanteVelocidade = 0;
+            this.maxAceleracao = 2000;
+            this.constanteVelocidade = 2;
         }
 
         public Direcionamento guiar(Pose agente, Vector2 alvo) {
