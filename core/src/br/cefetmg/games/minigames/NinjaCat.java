@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
@@ -23,7 +24,7 @@ public class NinjaCat extends MiniGame {
 
     private float spawnInterval;
     private float speed;
-    private final float catSpeed = 24f;
+    private float catSpeed = 33f;
 
     private Sprite backGround;
     private Sprite arrow;
@@ -147,7 +148,7 @@ public class NinjaCat extends MiniGame {
 
     private void spawnZombies() {
         Zombie zomb;
-        if (rand.nextInt() % 2 == 0) {
+        if (spawnedZombies % 2 == 0) {
             zomb = new Zombie(zombieTex);
             zomb.setCenter(0, 0);
             zomb.setScale(2.25f);
@@ -167,8 +168,9 @@ public class NinjaCat extends MiniGame {
         this.speed = DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 2, 6);
         this.spawnInterval = DifficultyCurve.S_NEGATIVE
-                .getCurveValueBetween(difficulty, 1.5f, 2.5f);
-        this.totalZombies = (int) Math.ceil(maxDuration / spawnInterval) - 3;
+                .getCurveValueBetween(difficulty, .75f, 2.75f);
+        this.totalZombies = (int) Math.ceil(maxDuration / spawnInterval) + 5;
+        this.catSpeed = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 24, 33);
     }
 
     @Override
@@ -195,19 +197,43 @@ public class NinjaCat extends MiniGame {
                 cat.flipFrames(true, false);
                 right = false;
             }
-
-            if (Gdx.input.justTouched() && !rampage && !gameover) {
-                for (Zombie zomb : zombies) {
-                    if (zomb.getBoundingRectangle().overlaps(arrow.getBoundingRectangle())) {
-                        rampage = true;
-                        if (arrow.getX() > cat.getX() && !right) {
-                            flip = false;
-                            right = true;
-                        } else if (arrow.getX() < cat.getX() && right) {
-                            flip = true;
-                            right = false;
+            if (!rampage && !gameover) {
+                if (Gdx.input.justTouched()) {
+                    for (Zombie zomb : zombies) {
+                        if (zomb.getBoundingRectangle().overlaps(arrow.getBoundingRectangle())) {
+                            rampage = true;
+                            if (arrow.getX() > cat.getX() && !right) {
+                                flip = false;
+                                right = true;
+                            } else if (arrow.getX() < cat.getX() && right) {
+                                flip = true;
+                                right = false;
+                            }
+                            break;
                         }
-                        break;
+                    }
+                } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                    for (Zombie zomb : zombies) {
+                        if (zomb.getX() > cat.getX()) {
+
+                            rampage = true;
+                            if (!right) {
+                                right = true;
+                            }
+                            break;
+
+                        }
+                    }
+                } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                    for (Zombie zomb : zombies) {
+                        if (zomb.getX() < cat.getX()) {
+
+                            rampage = true;
+                            if (right) {
+                                right = false;
+                            }
+                            break;
+                        }
                     }
                 }
             }
@@ -380,7 +406,8 @@ public class NinjaCat extends MiniGame {
         }
     }
 
-    void setCat(Texture tex) {
+    void setCat(Texture tex
+    ) {
         float x, y;
         if (pose) {
             x = ci.getX();
@@ -406,7 +433,8 @@ public class NinjaCat extends MiniGame {
     }
 
     @Override
-    public void onUpdate(float dt) {
+    public void onUpdate(float dt
+    ) {
         if (gameclear && !end) {
             if (victory) {
                 ci = new CatIntro(catPose);
@@ -481,13 +509,14 @@ public class NinjaCat extends MiniGame {
                         }
                         rampage = false;
                         if (rand.nextInt() % 2 == 0) {
-                            ken1.play(.1f);
+                            ken1.play(.05f);
                         } else {
-                            ken2.play(.1f);
+                            ken2.play(.05f);
                         }
 
                         if (hit) {
                             setCat(atk1);
+
                         } else {
                             setCat(atk);
                         }
