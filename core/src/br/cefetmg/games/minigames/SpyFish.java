@@ -43,7 +43,7 @@ public class SpyFish extends MiniGame {
         super(screen, observer, difficulty, 20000f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
-        this.texturaFundo = assets.get("spy-fish/ocean.jpeg", Texture.class);
+        this.texturaFundo = assets.get("spy-fish/ocean.png", Texture.class);
     }
 
     @Override
@@ -154,8 +154,6 @@ public class SpyFish extends MiniGame {
         private Sprite sprite;
         private Circle circle;
         private ShapeRenderer shapeRenderer;
-        private float tempoX = 0.0f;
-        private boolean aux = true;
 
         public Fish(Texture texture) {
             this.sprite = new Sprite(texture);
@@ -173,17 +171,6 @@ public class SpyFish extends MiniGame {
             this.sprite.setPosition(x, y);
             //atualiza a posicao do retangulo de colisao
             this.circle.setPosition(x + (this.sprite.getWidth() / 2), y + (this.sprite.getHeight() / 2));
-            if (aux) {
-                this.tempoX = x;
-                aux = !aux;
-            }
-            if (this.tempoX > x) {
-                if (!this.sprite.isFlipX()) {
-                    this.sprite.flip(true, false);
-                }
-            } else if (this.sprite.isFlipX()) {
-                this.sprite.flip(true, false);
-            }
         }
 
         public void update(float dt) {
