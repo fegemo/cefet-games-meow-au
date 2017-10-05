@@ -34,6 +34,10 @@ public class PhantomCat extends MiniGame {
     private float initialEnemyScale;
     private int totalEnemies;
     private float spawnInterval;
+    //variavel que define se o jogo acabou ou não
+    //true acabou
+    //false não acabou ainda
+    private boolean END;
 
     public PhantomCat(BaseScreen screen, MiniGameStateObserver observer,
             float difficulty) {
@@ -108,15 +112,14 @@ public class PhantomCat extends MiniGame {
         viewport.unproject(click);
         this.target.setPosition(click.x - this.target.getWidth() / 2,
                 click.y - this.target.getHeight() / 2);
-        
+
         // verifica se matou um inimigo
         if (Gdx.input.justTouched()) {
             for (int i = 0; i < enemies.size; i++) {
                 Sprite sprite = enemies.get(i);
                 // se há interseção entre o retângulo da sprite e do alvo,
                 // o tiro acertou
-                
-                
+
                 if (sprite.getBoundingRectangle().overlaps(
                         target.getBoundingRectangle())) {
                     dieCat.play();
@@ -127,7 +130,7 @@ public class PhantomCat extends MiniGame {
                     // se tiver matado todos os inimigos, o desafio
                     // está resolvido
                     if (this.enemiesKilled >= this.totalEnemies) {
-                        fundo.stop();
+                        this.END = true;
                         super.challengeSolved();
                     }
 
@@ -146,7 +149,7 @@ public class PhantomCat extends MiniGame {
             if (sprite.getScaleY() < 2.0f) {
                 sprite.setScale(sprite.getScaleX() + 0.3f * dt);
             } else {
-                fundo.stop();
+                this.END = true;
                 challengeFailed();
             }
         }
@@ -161,6 +164,8 @@ public class PhantomCat extends MiniGame {
                                 : 1;
             }
         });
+        
+        
     }
 
     @Override
@@ -171,6 +176,18 @@ public class PhantomCat extends MiniGame {
             sprite.draw(batch);
         }
         target.draw(batch);
+        
+        if (isPaused()) {
+            //pause na musica
+            fundo.pause();
+        }else if ( !isPaused() && !this.END){
+            //resume na musica
+            fundo.play();
+        }else{
+            // stop na musica no fim do jogo
+            fundo.stop();
+        }
+
     }
 
     @Override

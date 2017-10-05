@@ -40,7 +40,7 @@ public class PlayingGamesScreen extends BaseScreen
         sequencer = new GameSequencer(5, new HashSet<MiniGameFactory>(
                 Arrays.asList(
                         // flávio
-                        /*new ShootTheCariesFactory(),
+                        new ShootTheCariesFactory(),
                         new ShooTheTartarusFactory(),
                         // gustavo henrique e rogenes
                         new BasCATballFactory(),
@@ -57,8 +57,8 @@ public class PlayingGamesScreen extends BaseScreen
                         new TicCatDogFactory(),
                         new JumpTheObstaclesFactory(),
                         // luiza e pedro cordeiro
-                        new SpyFishFactory(),*/
-                        new PhantomCatFactory()/*
+                        new SpyFishFactory(),
+                        new PhantomCatFactory(),
                         // gabriel e natália
                         new MouseAttackFactory(),
                         new JetRatFactory(),
@@ -73,7 +73,7 @@ public class PlayingGamesScreen extends BaseScreen
                         new NinjaCatFactory(),
                         //estevao e sarah
                         new TheFridgeGameFactory(),
-                        new KillTheRatsFactory()*/
+                        new KillTheRatsFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);
