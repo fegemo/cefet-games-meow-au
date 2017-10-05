@@ -81,7 +81,9 @@ public class CatchThatHomework extends MiniGame {
     public void onHandlePlayingInput() {
         Vector3 click = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         viewport.unproject(click);
-        cat.setCenter(click.x, cat.height);
+        if (click.x > 0 && click.x < viewport.getWorldWidth()) {
+            cat.setCenter(click.x, cat.height);
+        }
     }
 
     @Override
