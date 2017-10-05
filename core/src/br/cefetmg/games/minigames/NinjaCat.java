@@ -24,7 +24,7 @@ public class NinjaCat extends MiniGame {
 
     private float spawnInterval;
     private float speed;
-    private float catSpeed = 33f;
+    private float catSpeed;
 
     private Sprite backGround;
     private Sprite arrow;
@@ -406,8 +406,7 @@ public class NinjaCat extends MiniGame {
         }
     }
 
-    void setCat(Texture tex
-    ) {
+    void setCat(Texture tex) {
         float x, y;
         if (pose) {
             x = ci.getX();
@@ -433,8 +432,7 @@ public class NinjaCat extends MiniGame {
     }
 
     @Override
-    public void onUpdate(float dt
-    ) {
+    public void onUpdate(float dt) {
         if (gameclear && !end) {
             if (victory) {
                 ci = new CatIntro(catPose);
@@ -503,9 +501,9 @@ public class NinjaCat extends MiniGame {
                 for (Zombie zomb : zombies) {
                     if (zomb.getBoundingRectangle().overlaps(cat.getBoundingRectangle())) {
                         if (rand.nextInt() % 2 == 0) {
-                            dzsound.play(.035f);
+                            dzsound.play(.017f);
                         } else {
-                            dzsound1.play(.035f);
+                            dzsound1.play(.017f);
                         }
                         rampage = false;
                         if (rand.nextInt() % 2 == 0) {
