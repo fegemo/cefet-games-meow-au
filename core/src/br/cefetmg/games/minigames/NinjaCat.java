@@ -168,8 +168,8 @@ public class NinjaCat extends MiniGame {
         this.speed = DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 2, 6);
         this.spawnInterval = DifficultyCurve.S_NEGATIVE
-                .getCurveValueBetween(difficulty, .75f, 2.75f);
-        this.totalZombies = (int) Math.ceil(maxDuration / spawnInterval) + 5;
+                .getCurveValueBetween(difficulty, .65f, 2.5f);
+        this.totalZombies = (int) Math.ceil(maxDuration / spawnInterval) + 8;
         this.catSpeed = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 24, 33);
     }
 
@@ -198,21 +198,20 @@ public class NinjaCat extends MiniGame {
                 right = false;
             }
             if (!rampage && !gameover) {
-                if (Gdx.input.justTouched()) {
-                    for (Zombie zomb : zombies) {
-                        if (zomb.getBoundingRectangle().overlaps(arrow.getBoundingRectangle())) {
-                            rampage = true;
-                            if (arrow.getX() > cat.getX() && !right) {
-                                flip = false;
-                                right = true;
-                            } else if (arrow.getX() < cat.getX() && right) {
-                                flip = true;
-                                right = false;
-                            }
-                            break;
+                for (Zombie zomb : zombies) {
+                    if (zomb.getBoundingRectangle().overlaps(arrow.getBoundingRectangle())) {
+                        rampage = true;
+                        if (arrow.getX() > cat.getX() && !right) {
+                            flip = false;
+                            right = true;
+                        } else if (arrow.getX() < cat.getX() && right) {
+                            flip = true;
+                            right = false;
                         }
+                        break;
                     }
-                } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                }
+                if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !rampage) {
                     for (Zombie zomb : zombies) {
                         if (zomb.getX() > cat.getX()) {
 
@@ -224,7 +223,7 @@ public class NinjaCat extends MiniGame {
 
                         }
                     }
-                } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && !rampage) {
                     for (Zombie zomb : zombies) {
                         if (zomb.getX() < cat.getX()) {
 
