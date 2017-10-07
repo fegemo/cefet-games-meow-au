@@ -113,7 +113,7 @@ public class RainingCats extends MiniGame {
     protected void configureDifficultyParameters(float difficulty) {
 
         this.speed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 2.5f, 8);
+                .getCurveValueBetween(difficulty, 2.5f, 7);
         this.spawnInterval = DifficultyCurve.S_NEGATIVE
                 .getCurveValueBetween(difficulty, 0.5f, 2f);
         this.totalCats = (int) Math.ceil(maxDuration / spawnInterval) - 3;
