@@ -1,5 +1,7 @@
 package br.cefetmg.games.minigames;
 
+import static br.cefetmg.games.Config.WORLD_HEIGHT;
+import static br.cefetmg.games.Config.WORLD_WIDTH;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
@@ -16,15 +18,17 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import java.util.Random;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 
 /**
  *
  * @author
  */
+
 public class MouseAttack extends MiniGame {
 
-    private Cat2 cat;
+    private static Cat2 cat;
     private Monster monster;
 
     private Array<Monster> enemies;
@@ -35,6 +39,7 @@ public class MouseAttack extends MiniGame {
     private Texture catTexture;
     private Texture targetTexture;
     private Texture projectileTexture;
+    private Texture background;
 
     private int enemiesKilled;
     private int spawnedEnemies;
@@ -46,9 +51,9 @@ public class MouseAttack extends MiniGame {
     private int totalEnemies;
     private float spawnInterval;
     private int numberOfEnemy;
-    private int difficulty = 1; //dificuldades: 0-fácil, 1-médio, 2-difícil
 
     private boolean drawProj = false;
+    public boolean animateCat = false;
 
     public MouseAttack(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -64,6 +69,8 @@ public class MouseAttack extends MiniGame {
 
         monsterTexture = assets.get(
                 "mouse-attack/sprite-monster.png", Texture.class);
+        background = assets.get(
+                "mouse-attack/bg_grass.png", Texture.class);
         catTexture = assets.get(
                 "mouse-attack/sprite-cat.png", Texture.class);
         targetTexture = assets.get(
@@ -83,13 +90,6 @@ public class MouseAttack extends MiniGame {
 
         enemiesKilled = 0;
         spawnedEnemies = 0;
-        if (difficulty == 0) {
-            numberOfEnemy = 5;
-        } else if (difficulty == 1) {
-            numberOfEnemy = 10;
-        } else if (difficulty == 2) {
-            numberOfEnemy = 20;
-        }
 
         for (int i = 0; i < numberOfEnemy; i++) {
             spawnEnemy();
@@ -115,31 +115,26 @@ public class MouseAttack extends MiniGame {
     int mul = 1;
 
     private void spawnEnemy() {
-        // pega x e y entre 0 e 1
 
         Vector2 position = new Vector2(rand.nextFloat() - mul * (float) 0.2, rand.nextFloat());
         mul = mul * (-1);
-        // multiplica x e y pela largura e altura da tela
         monster = new Monster(monsterTexture);
-        position.scl(
-                viewport.getWorldWidth() - monster.getWidth()
-                * initialEnemyScale,
-                viewport.getWorldHeight()
-                - monster.getHeight() * initialEnemyScale);
+        rand.nextInt((int)viewport.getWorldWidth());
+        
+        Random r = new Random();
+        position.x  = (int) (r.nextInt((int) ((int)viewport.getWorldWidth()-110)) + 50);
+        position.y  = (int) (r.nextInt((int) ((int)viewport.getWorldHeight()-110)) + 100);
 
+        
         monster.setScale(2);
-        monster.setPosition(position.x, position.y);
+        monster.setPosition(Math.abs(position.x), position.y);
         enemies.add(monster);
 
     }
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        this.initialEnemyScale = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 1.15f, 0.8f);
-        this.spawnInterval = DifficultyCurve.S_NEGATIVE
-                .getCurveValueBetween(difficulty, 0.5f, 1.5f);
-        this.totalEnemies = (int) Math.ceil(maxDuration / spawnInterval) - 3;
+        this.numberOfEnemy = (int) (10*difficulty + 5);
     }
 
     Vector2 direction;
@@ -147,7 +142,8 @@ public class MouseAttack extends MiniGame {
     @Override
     public void onHandlePlayingInput() {
         // atualiza a posição do alvo de acordo com o mouse
-        cat.setCenter(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
+        //cat.setCenter(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
+        cat.setCenter(100, 100);
         Vector3 click = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         viewport.unproject(click);
         this.target.setPosition(click.x - this.target.getWidth() / 2,
@@ -158,11 +154,13 @@ public class MouseAttack extends MiniGame {
             direction = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 
             Projetil projetil = new Projetil(projectileTexture);
-            projetil.setPosition(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
+            //projetil.setPosition(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
+            projetil.setPosition(100, 100);
             projetil.shoot(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
             projectiles.add(projetil);
 
             drawProj = true;
+            animateCat = true;
 
             shootSound.play();
         }
@@ -171,8 +169,7 @@ public class MouseAttack extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
-        cat.update(dt);
-        cat.update();
+        
 
         for (int i = 0; i < enemies.size; i++) {
             enemies.get(i).update(dt);
@@ -180,10 +177,7 @@ public class MouseAttack extends MiniGame {
             if (enemies.get(i).getMorto()) {
                 monsterDieSound.play();
                 this.enemiesKilled++;
-                // remove o inimigo do array
                 this.enemies.removeValue(enemies.get(i), true);
-                // se tiver matado todos os inimigos, o desafio
-                // está resolvido
                 if (this.enemiesKilled >= this.numberOfEnemy) {
                     super.challengeSolved();
                 }
@@ -194,26 +188,28 @@ public class MouseAttack extends MiniGame {
         if (drawProj) {
             for (int i = 0; i < projectiles.size; i++) {
                 projectiles.get(i).update(Gdx.graphics.getDeltaTime());
+                projectiles.get(i).setPosition(projectiles.get(i).position.x+100, projectiles.get(i).position.y+100);
 
             }
             for (int i = 0; i < enemies.size; i++) {
                 //Sprite sprite = enemies.get(i);
                 Monster m = enemies.get(i);
-                // se há interseção entre o retângulo da sprite e do alvo,
-                // o tiro acertou
                 for (int j = 0; j < projectiles.size; j++) {
                     if (m.getBoundingRectangle().overlaps(
-                            projectiles.get(j).projeSprite.getBoundingRectangle())) {
+                            projectiles.get(j).getBoundingRectangle())) {
 
                         m.changeAnimation();
                         m.setMorto(true);
-                        // pára de iterar, porque senão o tiro pode pegar em mais
-                        // de um inimigo
                         break;
                     }
                 }
 
             }
+        }
+        cat.update(dt);
+        if(animateCat){            
+            cat.animate= true;
+            animateCat=false;
         }
     }
 
@@ -225,13 +221,15 @@ public class MouseAttack extends MiniGame {
     @Override
     public void onDrawGame() {
 
+        batch.draw(background, 0, 0, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+        
         for (int i = 0; i < enemies.size; i++) {
             Monster m = enemies.get(i);
             m.draw(batch);
         }
         if (drawProj) {
             for (int i = 0; i < projectiles.size; i++) {
-                projectiles.get(i).projeSprite.draw(batch);
+                projectiles.get(i).draw(batch);
             }
         }
         cat.draw(batch);
@@ -253,6 +251,7 @@ public class MouseAttack extends MiniGame {
         Texture spriteSheet;
         float sx;
         float sy;
+        public boolean animate = false;
 
         float tempoDaAnimacao;
 
@@ -327,15 +326,9 @@ public class MouseAttack extends MiniGame {
         }
 
         public void changeAnimation() {
-
-            x++;
-
-            if (x % 2 == 0) {
-                super.setAnimation(power);
-            } else {
-                super.setAnimation(parado);
-            }
-            super.getAnimation().setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+            this.setAnimation(power);
+            this.getAnimation().setPlayMode(Animation.PlayMode.NORMAL);
+            
 
         }
 
@@ -343,23 +336,35 @@ public class MouseAttack extends MiniGame {
         public void update() {
 
             tempoDaAnimacao += Gdx.graphics.getDeltaTime();
-            if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
+            if(animate)
+                changeAnimation();
+            
+            if(isAnimationFinished()&& animate==true){
+                animate=false;
+                this.setAnimation(parado);
+                this.getAnimation().setPlayMode(Animation.PlayMode.NORMAL);
+                
+            }
+                
+            
+            /*if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
                 Gdx.input.setInputProcessor(new InputAdapter() {
                     @Override
                     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                         if (button == Buttons.LEFT) {
-                            changeAnimation();
+                            cat.changeAnimation();
                             return true;
                         }
                         return false;
                     }
                 });
-            }
+            }*/
         }
     }
 
-    static class Projetil {
+    static class Projetil extends AnimatedSprite{
 
+        TextureRegion[][] quadrosDaAnimacao;
         public float maxVelocity = 450;
         public Vector2 position = new Vector2();
         public Vector2 velocity = new Vector2();
@@ -367,10 +372,32 @@ public class MouseAttack extends MiniGame {
         float targetY;
         Texture texture;
         public Sprite projeSprite;
+        Animation shoot;
 
-        public Projetil(Texture texture) {
-            this.texture = texture;
-            projeSprite = new Sprite(texture);
+        public Projetil(final Texture texture) {
+            
+            super(new Animation(0.1f, new Array<TextureRegion>() {
+                {
+                    TextureRegion[][] frames = TextureRegion.split(
+                            texture, 16, 19);
+                    super.addAll(new TextureRegion[]{
+                        frames[0][0]
+                    });
+                }
+            }));
+
+            quadrosDaAnimacao = TextureRegion.split(texture, 16, 19);
+
+            shoot = new Animation(0.1f,
+                    quadrosDaAnimacao[0][0],
+                    quadrosDaAnimacao[0][1],
+                    quadrosDaAnimacao[0][2]);
+            //this.texture = texture;
+            //projeSprite = new Sprite(texture);
+            
+            this.setAnimation(shoot);
+            this.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
+            
         }
 
         public void shoot(float targetX, float targetY) {
@@ -379,12 +406,12 @@ public class MouseAttack extends MiniGame {
 
         public void update(float deltaTime) {
             position.add(velocity.x * deltaTime, velocity.y * deltaTime);
-            projeSprite.setPosition(position.x, position.y);
+            //projeSprite.setPosition(position.x+100, position.y+100);
         }
 
-        public void setPosition(float x, float y) {
-            projeSprite.setPosition(x, y);
-        }
+        /*public void setPosition(float x, float y) {
+            //projeSprite.setPosition(x, y);
+        }*/
 
     }
 
