@@ -228,9 +228,10 @@ public class BasCATball extends MiniGame {
 
         if (Gdx.input.isTouched()) {
             if (withoutBall) {
-                if (Gdx.input.getX() >= viewport.getWorldWidth() / 2) {
+                
+                if (Gdx.input.getX() >= viewport.getScreenWidth() / 2) {
                     player.setX(player.getX() + 6);
-                    arrowR = lightArrowR;
+                    arrowR = lightArrowR; 
                 } else {
                     player.setX(player.getX() - 6);
                     arrowL = lightArrowL;
@@ -254,7 +255,7 @@ public class BasCATball extends MiniGame {
                     failing = true;
                 }
             } else if (withoutBall) {
-                if (Gdx.input.getX() >= viewport.getWorldWidth() / 2) {
+                if (Gdx.input.getX() >= viewport.getScreenWidth() / 2) {
                     doraemon.startAnimation("movingFront");
                     position = "standingFront";
 
@@ -294,15 +295,15 @@ public class BasCATball extends MiniGame {
 
         if (withoutBall) {
             ball.setPosition(ball.getX(), ball.getY() + gravity);
-            if ((ball.getY() + ball.getHeight() * ball.getScaleY()) < viewport.getWorldHeight() * 0.2) {
+            if ((ball.getY() + ball.getHeight() * ball.getScaleY()) < viewport.getScreenWidth() * 0.2) {
                 super.challengeFailed();
             }//Se não conseguiu nem pegar a bola perde o desafio
 
             if (ball.getBoundingRectangle().overlaps(player.getBoundingRectangle())) {
                 withBall = true;
                 withoutBall = false;
-                if (player.getX() + player.getWidth() / 2 * player.getScaleX() <= viewport.getWorldWidth() / 2) {
-                    a = ((viewport.getWorldHeight() * 8 / 10) - viewport.getWorldHeight() * 0.25f) / (viewport.getWorldWidth() - player.getX() + player.getWidth() / 2 * player.getScaleX());
+                if (player.getX() + player.getWidth() / 2 * player.getScaleX() <= viewport.getScreenWidth() / 2) {
+                    a = ((viewport.getWorldHeight() * 8 / 10) - viewport.getWorldHeight() * 0.25f) / (viewport.getScreenWidth() - player.getX() + player.getWidth() / 2 * player.getScaleX());
                     ballGoingRight = true;
                     dorami.setX(basketPositionRX);
                     position = "standingFront";
@@ -333,10 +334,10 @@ public class BasCATball extends MiniGame {
         } else if (shooting) {
 
             if ((ball2.getX() + ball2.getWidth() / 2 * ball2.getScaleX() <= basketPositionRX) && ballGoingRight) {
-                ball2.setX(ball2.getX() + viewport.getWorldWidth() / 150);
+                ball2.setX(ball2.getX() + viewport.getScreenWidth() / 150);
                 ball2.setY(eq(ball2.getX()));
             } else if (ball2.getX() + ball2.getWidth() / 2 * ball2.getScaleX() >= basketPositionLX && ballGoingLeft) {
-                ball2.setX(ball2.getX() - viewport.getWorldWidth() / 150);
+                ball2.setX(ball2.getX() - viewport.getScreenWidth() / 150);
                 ball2.setY(eq2(ball2.getX()));
             } else {
 
@@ -367,9 +368,9 @@ public class BasCATball extends MiniGame {
             }
             cont++;
             if (ballGoingRight) {
-                ball2.setX(ball2.getX() + viewport.getWorldWidth() / 200);
+                ball2.setX(ball2.getX() + viewport.getScreenWidth() / 200);
             } else if (ballGoingLeft) {
-                ball2.setX(ball2.getX() - viewport.getWorldWidth() / 200);
+                ball2.setX(ball2.getX() - viewport.getScreenWidth() / 200);
             }
             if (cont > 120 && b == 0) {
                 doh.play();
