@@ -63,6 +63,10 @@ public class BasCATball extends MiniGame {
     private boolean forward;
     private boolean ballGoingLeft;
     private boolean ballGoingRight;
+    private boolean stopPlayingBeatStarPlayingFlyingDown;
+    private boolean startPlayingFail;
+    private boolean startPlayingDoh;
+      
 
     private float barPositionX;
     private float targetPositionX;
@@ -76,7 +80,7 @@ public class BasCATball extends MiniGame {
     private final float basketPositionRX = viewport.getWorldWidth() * 0.795f;
     private final float basketPositionLX = viewport.getWorldWidth() * 0.190f;
 
-    private int cont = 0, w = 0, z = 0, b = 0;
+    private int timerCount = 0;
 
     private String position;
 
@@ -96,6 +100,9 @@ public class BasCATball extends MiniGame {
         shooting = false;
         ballGoingLeft = false;
         ballGoingRight = false;
+        stopPlayingBeatStarPlayingFlyingDown = true;
+        startPlayingFail = true;
+        startPlayingDoh = true;
         position = "standingFront";
 
         courtTexture = assets.get("bascatball/court.png", Texture.class);
@@ -172,7 +179,7 @@ public class BasCATball extends MiniGame {
         ball = new Sprite(ballTexture);
         ball.setScale(0.08f);
         ball.setOrigin(0, 0);
-        ball.setPosition((viewport.getWorldWidth() * (0.05f + rand.nextFloat() * 0.9f)),
+        ball.setPosition((basketPositionLX*0.75f + rand.nextFloat() * basketPositionRX*0.85f ),
                 viewport.getWorldHeight() + viewport.getWorldHeight() * 0.1f);
 
         bar = new Sprite(barTexture);
@@ -214,10 +221,10 @@ public class BasCATball extends MiniGame {
     protected void configureDifficultyParameters(float difficulty) {
         selectorSpeed = DifficultyCurve.LINEAR.getCurveValueBetween(
                 difficulty,
-                viewport.getWorldWidth() / 100f,
-                viewport.getWorldWidth() / 50f
+                viewport.getWorldWidth() / 95f,
+                viewport.getWorldWidth() / 55f
         );
-        targetScaleX = DifficultyCurve.LINEAR_NEGATIVE.getCurveValueBetween(difficulty, 0.03f, 0.4f);
+        targetScaleX = DifficultyCurve.LINEAR_NEGATIVE.getCurveValueBetween(difficulty, 0.05f, 0.4f);
     }
 
     @Override
@@ -231,12 +238,19 @@ public class BasCATball extends MiniGame {
                 
                 if (Gdx.input.getX() >= viewport.getScreenWidth() / 2) {
                     player.setX(player.getX() + 6);
-                    arrowR = lightArrowR; 
+                    arrowR = lightArrowR;
+                    if(player.getX()>=viewport.getWorldWidth()*0.942){
+                        player.setX(player.getX() - 6);
+                    }
                 } else {
                     player.setX(player.getX() - 6);
                     arrowL = lightArrowL;
+                    if(player.getX()<=viewport.getWorldWidth()*0.008){
+                        player.setX(player.getX() + 6);
+                    }
                 }
-            }
+                
+            }     
         } else {
             arrowL = darkArrowL;
             arrowR = darkArrowR;
@@ -267,36 +281,29 @@ public class BasCATball extends MiniGame {
         }
     }
 
-    float eq(float posicaox) {
+    float eqBallRightTrajetory(float posicaox) {
         return viewport.getWorldHeight() * 0.15f + a * posicaox;
     }
 
-    float eq2(float posicaox) {
+    float eqBallLeftTrajetory(float posicaox) {
         return viewport.getWorldHeight() * 0.90f + a * posicaox;
     }
 
     @Override
     public void onUpdate(float dt) {
 
-        if (super.getState() == MiniGameState.PLAYER_FAILED) {
-            beat.stop();
-            fail.stop();
-            flyingdown.stop();
-            doh.stop();
-        }
-        if (super.getState() == MiniGameState.PLAYER_SUCCEEDED) {
-            beat.stop();
-            fail.stop();
-            flyingdown.stop();
-            doh.stop();
-        }
-
         doraemon.update(dt);
 
         if (withoutBall) {
             ball.setPosition(ball.getX(), ball.getY() + gravity);
-            if ((ball.getY() + ball.getHeight() * ball.getScaleY()) < viewport.getScreenWidth() * 0.2) {
-                super.challengeFailed();
+            if ((ball.getY() + ball.getHeight() * ball.getScaleY()) < viewport.getScreenHeight() * 0.2) {
+                timerCount++;
+                beat.stop();
+                if(timerCount>5){
+                    doh.play();
+                    super.challengeFailed();
+                }
+                
             }//Se não conseguiu nem pegar a bola perde o desafio
 
             if (ball.getBoundingRectangle().overlaps(player.getBoundingRectangle())) {
@@ -335,48 +342,48 @@ public class BasCATball extends MiniGame {
 
             if ((ball2.getX() + ball2.getWidth() / 2 * ball2.getScaleX() <= basketPositionRX) && ballGoingRight) {
                 ball2.setX(ball2.getX() + viewport.getScreenWidth() / 150);
-                ball2.setY(eq(ball2.getX()));
+                ball2.setY(eqBallRightTrajetory(ball2.getX()));
             } else if (ball2.getX() + ball2.getWidth() / 2 * ball2.getScaleX() >= basketPositionLX && ballGoingLeft) {
                 ball2.setX(ball2.getX() - viewport.getScreenWidth() / 150);
-                ball2.setY(eq2(ball2.getX()));
+                ball2.setY(eqBallLeftTrajetory(ball2.getX()));
             } else {
 
-                cont++;
+                timerCount++;
 
-                if (cont > 10) {
+                if (timerCount > 10) {
                     dorami.setY(dorami.getY() + gravity - fall);
-                    if (w == 0) {
+                    if (stopPlayingBeatStarPlayingFlyingDown) {
                         beat.stop();
                         flyingdown.play(1, 0.8f, 1);
-                        w++;
+                        stopPlayingBeatStarPlayingFlyingDown=false;
                     }
                 }
 
                 if (dorami.getBoundingRectangle().y <= (ball2.getBoundingRectangle().y - 3)) {
                     ball2.setY(ball2.getY() - fall + gravity);
                 }
-                if (cont > 70) {
+                if (timerCount > 70) {
                     super.challengeSolved();
                 }
                 fall += 0.15;
             }
         } else if (failing) {
             beat.stop();
-            if (z == 0) {
+            if (startPlayingFail) {
                 fail.play(1, 0.8f, 1);
-                z++;
+                startPlayingFail = false;
             }
-            cont++;
+            timerCount++;
             if (ballGoingRight) {
                 ball2.setX(ball2.getX() + viewport.getScreenWidth() / 200);
             } else if (ballGoingLeft) {
                 ball2.setX(ball2.getX() - viewport.getScreenWidth() / 200);
             }
-            if (cont > 120 && b == 0) {
+            if (timerCount > 120 && startPlayingDoh) {
                 doh.play();
-                b++;
+                startPlayingDoh=false;
             }
-            if (cont > 150) {
+            if (timerCount > 150) {
                 super.challengeFailed();
             }
         }
