@@ -24,6 +24,7 @@ public class DodgeTheVeggies extends MiniGame {
     private Texture catSpritesheet;
     private Cat cat;
     private Texture veggieTexture;
+    private Texture faintedCatTexture;
     private Array<Veggie> veggies;
     private Array<Texture> veggieTextures;
     private Sound backgroundMusic;
@@ -37,9 +38,18 @@ public class DodgeTheVeggies extends MiniGame {
     }
 
     @Override
+    protected void challengeFailed() {
+        boolean isFlipX = cat.isFlipX();
+        cat.setRegion(faintedCatTexture);
+        cat.flip(isFlipX, false);
+        super.challengeFailed();
+    }
+
+    @Override
     protected void onStart() {
         catSpritesheet = assets.get("dodge-the-veggies/cat-spritesheet.png", Texture.class);
         backgroundImage = assets.get("dodge-the-veggies/background.png", Texture.class);
+        faintedCatTexture = assets.get("dodge-the-veggies/fainted-cat-texture.png", Texture.class);
         veggieTextures = new Array<Texture>();
         veggies = new Array<Veggie>();
         veggieTextures.addAll(
@@ -114,7 +124,12 @@ public class DodgeTheVeggies extends MiniGame {
             cat.flipFrames(true, false);
         }
 
-        cat.setCenter(click.x, click.y);
+        Rectangle viewportRectangle = new Rectangle(0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        if (viewportRectangle.contains(cat.getBoundingRectangle())) {
+           cat.setCenter(click.x, click.y);
+        } else {
+            challengeFailed();
+        }
     }
 
     @Override
@@ -129,7 +144,7 @@ public class DodgeTheVeggies extends MiniGame {
 //            Colisão veggie x cat
             if (veggie.getBoundingRectangle()
                     .overlaps(cat.getBoundingRectangle())) {
-                super.challengeFailed();
+                challengeFailed();
             } else if (veggie.getX() + veggie.FRAME_WIDTH / 2f > viewport.getWorldWidth() || veggie.getX() < 0) {
                 Vector2 speed = veggie.getSpeed();
                 veggie.setSpeed(new Vector2(-speed.x, speed.y));
@@ -153,7 +168,6 @@ public class DodgeTheVeggies extends MiniGame {
         for (Veggie veggie : veggies) {
             veggie.draw(batch);
         }
-  
     }
 
     @Override
@@ -169,7 +183,6 @@ public class DodgeTheVeggies extends MiniGame {
     class Cat extends MultiAnimatedSprite {
         private final int lives = 9;
         private final float height;
-
         static final int FRAME_WIDTH = 497;
         static final int FRAME_HEIGHT = 291;
 
