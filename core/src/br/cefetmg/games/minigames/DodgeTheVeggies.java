@@ -63,7 +63,7 @@ public class DodgeTheVeggies extends MiniGame {
         cat.setCenter(
             viewport.getWorldWidth() / 2f,
             cat.height);
-        cat.setScale(0.4f);
+        cat.setScale(0.3f);
 
         timer.scheduleTask(new Task() {
             @Override
@@ -78,8 +78,8 @@ public class DodgeTheVeggies extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        this.speedMultiplier = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 1f, 2f);
-        this.spawnIntervalMultiplier = DifficultyCurve.S.getCurveValueBetween(difficulty, 1f, 0.5f);
+        this.speedMultiplier = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 1f, 2f) * 0.5f;
+        this.spawnIntervalMultiplier = DifficultyCurve.S.getCurveValueBetween(difficulty, 1f, 0.5f) * 1.5f;
     }
 
     private void spawnVeggies() {
