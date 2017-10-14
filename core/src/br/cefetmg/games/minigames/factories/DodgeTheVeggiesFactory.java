@@ -22,13 +22,13 @@ public class DodgeTheVeggiesFactory implements MiniGameFactory {
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
             {
-                put("cucumber-madness/potato.png", Texture.class);
-                put("cucumber-madness/tomato.png", Texture.class);
-                put("cucumber-madness/onion.png", Texture.class);
-                put("cucumber-madness/carrot.png", Texture.class);
-                put("cucumber-madness/cat-sprite.png", Texture.class);
-                put("cucumber-madness/background.png", Texture.class);
-                put("cucumber-madness/bensound-jazzcomedy.mp3", Sound.class);
+                put("dodge-the-veggies/potato.png", Texture.class);
+                put("dodge-the-veggies/tomato.png", Texture.class);
+                put("dodge-the-veggies/onion.png", Texture.class);
+                put("dodge-the-veggies/carrot.png", Texture.class);
+                put("dodge-the-veggies/cat-sprite.png", Texture.class);
+                put("dodge-the-veggies/background.png", Texture.class);
+                put("dodge-the-veggies/bensound-jazzcomedy.mp3", Sound.class);
             }
         };
     }

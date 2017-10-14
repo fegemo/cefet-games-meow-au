@@ -33,16 +33,16 @@ public class DodgeTheVeggies extends MiniGame {
 
     @Override
     protected void onStart() {
-        catTexture = assets.get("cucumber-madness/cat-sprite.png", Texture.class);
-        backgroundImage = assets.get("cucumber-madness/background.png", Texture.class);
+        catTexture = assets.get("dodge-the-veggies/cat-sprite.png", Texture.class);
+        backgroundImage = assets.get("dodge-the-veggies/background.png", Texture.class);
         veggieTextures = new Array<Texture>();
         veggies = new Array<Veggie>();
         veggieTextures.addAll(
-            assets.get("cucumber-madness/carrot.png", Texture.class),
-            assets.get("cucumber-madness/onion.png", Texture.class),
-            assets.get("cucumber-madness/tomato.png", Texture.class),
-            assets.get("cucumber-madness/potato.png", Texture.class));
-        backgroundMusic = assets.get("cucumber-madness/bensound-jazzcomedy.mp3", Sound.class);
+            assets.get("dodge-the-veggies/carrot.png", Texture.class),
+            assets.get("dodge-the-veggies/onion.png", Texture.class),
+            assets.get("dodge-the-veggies/tomato.png", Texture.class),
+            assets.get("dodge-the-veggies/potato.png", Texture.class));
+        backgroundMusic = assets.get("dodge-the-veggies/bensound-jazzcomedy.mp3", Sound.class);
 
         cat = new Cat(catTexture, 0 + 200);
         cat.setCenter(
