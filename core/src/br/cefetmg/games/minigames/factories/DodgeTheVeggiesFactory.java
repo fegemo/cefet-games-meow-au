@@ -26,7 +26,7 @@ public class DodgeTheVeggiesFactory implements MiniGameFactory {
                 put("dodge-the-veggies/tomato.png", Texture.class);
                 put("dodge-the-veggies/onion.png", Texture.class);
                 put("dodge-the-veggies/carrot.png", Texture.class);
-                put("dodge-the-veggies/cat-sprite.png", Texture.class);
+                put("dodge-the-veggies/cat-spritesheet.png", Texture.class);
                 put("dodge-the-veggies/background.png", Texture.class);
                 put("dodge-the-veggies/bensound-jazzcomedy.mp3", Sound.class);
             }
