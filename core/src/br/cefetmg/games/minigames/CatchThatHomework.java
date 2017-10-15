@@ -49,7 +49,7 @@ public class CatchThatHomework extends MiniGame {
             viewport.getWorldWidth() / 2f,
             cat.height);
         cat.setScale(5);
-        
+
         homeworks = new Array<Homework>();
 
         timer.scheduleTask(new Task() {
@@ -136,8 +136,8 @@ public class CatchThatHomework extends MiniGame {
         private final int lives = 1;
         private final float height;
 
-        static final int FRAME_WIDTH = 50;
-        static final int FRAME_HEIGHT = 50;
+        static final int FRAME_WIDTH = 22;
+        static final int FRAME_HEIGHT = 34;
         
         public Cat(final Texture catSpritesheet, float height) {
             super(new HashMap<String, Animation>() {
@@ -148,11 +148,12 @@ public class CatchThatHomework extends MiniGame {
                     Animation walking = new Animation(0.2f,
                             frames[0][0],
                             frames[0][1],
+                            frames[0][2],
+                            frames[1][0],
+                            frames[1][1],
+                            frames[1][2],
                             frames[0][3],
-                            frames[0][4],
-                            frames[0][5],
-                            frames[0][6],
-                            frames[0][7]);
+                            frames[1][3]);
                     walking.setPlayMode(Animation.PlayMode.LOOP);
                     put("walking", walking);
                 }
