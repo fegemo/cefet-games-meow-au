@@ -1,25 +1,18 @@
 package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.minigames.util.DifficultyCurve;
-import br.cefetmg.games.graphics.MultiAnimatedSprite;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
-import java.util.HashMap;
-import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
-
 
 public class CatchThatHomework extends MiniGame {
 
@@ -30,8 +23,8 @@ public class CatchThatHomework extends MiniGame {
     private Sound backgroundMusic;
     private float speedMultiplier;
     private Texture backgroundImage;
-    
-    private float spawnInterval = 1;
+
+    private final float spawnInterval = 1;
 
     public CatchThatHomework(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
@@ -46,8 +39,8 @@ public class CatchThatHomework extends MiniGame {
 
         cat = new Cat(catSpritesheet, 200);
         cat.setCenter(
-            viewport.getWorldWidth() / 2f,
-            cat.height);
+                viewport.getWorldWidth() / 2f,
+                cat.height);
         cat.setScale(5);
 
         homeworks = new Array<Homework>();
@@ -59,7 +52,7 @@ public class CatchThatHomework extends MiniGame {
             }
 
         }, 0, this.spawnInterval);
-        
+
         backgroundMusic.play();
     }
 
@@ -95,11 +88,11 @@ public class CatchThatHomework extends MiniGame {
         cat.update(dt);
 
         for (Homework homework : homeworks) {
-//            Colisão com o gato
+            // Colisão com o gato
             if (homework.getBoundingRectangle()
                     .overlaps(cat.getBoundingRectangle())) {
                 homeworks.removeValue(homework, true);
-//                Colisão com o chão
+                // Colisão com o chão
             } else if (homework.getY() < 0) {
                 super.challengeFailed();
             }
@@ -119,12 +112,12 @@ public class CatchThatHomework extends MiniGame {
         for (Homework homework : homeworks) {
             homework.draw(batch);
         }
-        
+
     }
 
     @Override
     public String getInstructions() {
-        return "Catch that homework!";
+        return "Pegue o dever de casa!";
     }
 
     @Override
@@ -161,8 +154,9 @@ public class CatchThatHomework extends MiniGame {
             this.height = height;
         }
     }
-    
+
     class Homework extends Sprite {
+
         static final int FRAME_WIDTH = 32;
         static final int FRAME_HEIGHT = 32;
         private Vector2 speed;
@@ -171,7 +165,7 @@ public class CatchThatHomework extends MiniGame {
             super(texture);
             this.speed = speed;
         }
-        
+
         public void update(float dt) {
             this.setPosition(this.getX(),
                     this.getY() - this.speed.y * dt);

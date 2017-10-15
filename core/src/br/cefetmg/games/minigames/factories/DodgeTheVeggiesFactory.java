@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
-
 public class DodgeTheVeggiesFactory implements MiniGameFactory {
 
     @Override

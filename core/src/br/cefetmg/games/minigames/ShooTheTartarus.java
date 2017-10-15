@@ -1,3 +1,4 @@
+
 package br.cefetmg.games.minigames;
 
 import br.cefetmg.games.minigames.util.DifficultyCurve;
@@ -35,7 +36,7 @@ public class ShooTheTartarus extends MiniGame {
     private Array<Tartarus> enemies;
     private Array<Tooth> teeth;
     private int numberOfBrokenTeeth;
-
+  
     // variáveis do desafio - variam com a dificuldade do minigame
     private float minimumEnemySpeed;
     private float maximumEnemySpeed;
@@ -49,6 +50,7 @@ public class ShooTheTartarus extends MiniGame {
     }
 
     @Override
+    
     protected void onStart() {
         toothbrushTexture = assets.get(
                 "shoo-the-tartarus/toothbrush-spritesheet.png", Texture.class);
@@ -70,6 +72,7 @@ public class ShooTheTartarus extends MiniGame {
         teeth = new Array<Tooth>();
         numberOfBrokenTeeth = 0;
 
+        
         initializeTeeth();
         timer.scheduleTask(new Task() {
             @Override
@@ -79,6 +82,8 @@ public class ShooTheTartarus extends MiniGame {
 
         }, 0, this.spawnInterval);
     }
+    
+    
 
     private void initializeTeeth() {
         TextureRegion[][] frames = TextureRegion.split(toothTexture,
@@ -174,6 +179,7 @@ public class ShooTheTartarus extends MiniGame {
         sound.setPan(id, tartarusPosition.x < viewport.getWorldWidth()
                 ? -1 : 1, 1);
     }
+
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {

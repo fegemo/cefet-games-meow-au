@@ -20,7 +20,7 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
 /**
  *
- * @author Flávio Coutinho - fegemo <coutinho@decom.cefetmg.br>
+ * @inspirado no tp de cinematica
  */
 public class PlayingGamesScreen extends BaseScreen
         implements MiniGameStateObserver {
@@ -40,11 +40,40 @@ public class PlayingGamesScreen extends BaseScreen
         sequencer = new GameSequencer(5, new HashSet<MiniGameFactory>(
                 Arrays.asList(
                         // flávio
+                        new ShootTheCariesFactory(),
+                        new ShooTheTartarusFactory(),
+                        // gustavo henrique e rogenes
+                        new BasCATballFactory(),
+                        new RunningFactory(),
+                        // rafael e luis carlos
                         new DodgeTheVeggiesFactory(),
-                        new CatchThatHomeworkFactory()
-//                        new ShootTheCariesFactory(),
-//                        new ShooTheTartarusFactory()
-
+                        new CatchThatHomeworkFactory(),
+                        // adriel
+                        new UnderwaterCatFactory(),
+                        // arthur e pedro
+                        new DogBarksCatFleeFactory(),
+                        new ClickFindCatFactory(),
+                        // cassiano e gustavo jordão
+                        new TicCatDogFactory(),
+                        new JumpTheObstaclesFactory(),
+                        // luiza e pedro cordeiro
+                        new SpyFishFactory(),
+                        new PhantomCatFactory(),
+                        // gabriel e natália
+                        new MouseAttackFactory(),
+                        new JetRatFactory(),
+                        // emanoel e vinícius
+                        new HeadSoccerFactory(),
+                        new CatAvoiderFactory(),
+                        // joão e miguel
+                        new CannonCatFactory(),
+                        new MeowsicFactory(),
+                        // túlio
+                        new RainingCatsFactory(),
+                        new NinjaCatFactory(),
+                        //estevao e sarah
+                        new TheFridgeGameFactory(),
+                        new KillTheRatsFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);
@@ -117,21 +146,20 @@ public class PlayingGamesScreen extends BaseScreen
 
         // se há um próximo jogo na sequência, carrega-o
         if (this.sequencer.hasNextGame()) {
-            loadNextGame();            
-        } 
-        // se não há mais jogos, o jogador concluiu a sequência e ainda possui
+            loadNextGame();
+        } // se não há mais jogos, o jogador concluiu a sequência e ainda possui
         // vidas
         else {
             // mostra mensagem de vitória
             this.transitionTo(PlayScreenState.FINISHED_WON);
         }
     }
-    
+
     private void loadNextGame() {
         // carrega o novo jogo (pede ao sequenciador o próximo)
         currentGame = sequencer.nextGame();
         currentGame.start();
-        
+
         // atualiza o número de sequência do jogo atual na HUD
         hud.setGameIndex(sequencer.getGameNumber());
     }
@@ -204,7 +232,7 @@ public class PlayingGamesScreen extends BaseScreen
                 if (state == MiniGameState.PLAYER_FAILED) {
                     loseLife();
                 }
-                
+
                 inputMultiplexer.removeProcessor(currentGame.getInputProcessor());
                 Timer.instance().scheduleTask(new Task() {
                     @Override
@@ -242,6 +270,11 @@ public class PlayingGamesScreen extends BaseScreen
             inputMultiplexer.addProcessor(currentGame.getInputProcessor());
         }
     }
+
+    @Override
+    public void showMessage(String strMessage) {
+        hud.showMessage(strMessage);
+    }
     // </editor-fold>
 
     enum PlayScreenState {
@@ -249,5 +282,4 @@ public class PlayingGamesScreen extends BaseScreen
         FINISHED_GAME_OVER,
         FINISHED_WON
     }
-
 }

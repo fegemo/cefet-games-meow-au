@@ -30,7 +30,7 @@ public class DodgeTheVeggies extends MiniGame {
     private Sound backgroundMusic;
     private float speedMultiplier;
     private float spawnIntervalMultiplier;
-    private float spawnInterval = 1;
+    private final float spawnInterval = 1;
     private Texture backgroundImage;
 
     public DodgeTheVeggies(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
@@ -72,7 +72,7 @@ public class DodgeTheVeggies extends MiniGame {
             }
 
         }, 0, this.spawnIntervalMultiplier * this.spawnInterval);
-        
+
         backgroundMusic.play();
     }
 
@@ -87,7 +87,7 @@ public class DodgeTheVeggies extends MiniGame {
 
         Vector2 direction;
         Vector2 position = new Vector2();
-        
+
         direction = new Vector2(MathUtils.random(-1, 1) * 300, MathUtils.random(-1, 1) * 300);
         if (direction.x != 0f || direction.y != 0f) {
             Veggie veggie = new Veggie(veggieTextures.get(index), direction.scl(this.speedMultiplier));
@@ -111,7 +111,7 @@ public class DodgeTheVeggies extends MiniGame {
 
             veggie.setPosition(position.x, position.y);
             veggies.add(veggie);
-        }  
+        }
     }
 
     @Override
@@ -141,7 +141,7 @@ public class DodgeTheVeggies extends MiniGame {
         cat.update(dt);
 
         for (Veggie veggie : veggies) {
-//            Colisão veggie x cat
+            // Colisão veggie x cat
             if (veggie.getBoundingRectangle()
                     .overlaps(cat.getBoundingRectangle())) {
                 challengeFailed();
@@ -172,7 +172,7 @@ public class DodgeTheVeggies extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "dodge the veggies";
+        return "Desvie dos vegetais";
     }
 
     @Override
@@ -208,8 +208,9 @@ public class DodgeTheVeggies extends MiniGame {
             this.height = height;
         }
     }
-    
+
     class Veggie extends Sprite {
+
         private int FRAME_WIDTH;
         private int FRAME_HEIGHT;
         private Vector2 speed;
@@ -217,7 +218,7 @@ public class DodgeTheVeggies extends MiniGame {
         public Veggie(Texture texture, Vector2 speed) {
             super(texture);
             this.speed = speed;
-            
+
 //            carrot
             if (texture == veggieTextures.get(0)) {
                 FRAME_WIDTH = 34;
