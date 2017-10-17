@@ -1,6 +1,6 @@
 # cefet-games-meow-au
 
-Um jogo simples, descomprometido e maroto descobrir sobre a secreta vida
+Um jogo simples, descomprometido e maroto para descobrir sobre a secreta vida
 animal.
 
 ## Instruções para Começar
@@ -63,7 +63,7 @@ o nome dele, **sem maiúsculas e acentuação, com hífen separando as palavras,
 caso haja mais de uma (_e.g._, `assets/shoot-the-caries`).
 
 Para os _microgames_, estamos usando um **gerenciador de _assets_** para
-pré-carregá-los de forma que, quando da execução da sequência de _microgames_,
+pré-carregá-los de forma que, aquando da execução da sequência de _microgames_,
 o jogo não pára para carregar os recursos e isso dá uma experiência de jogo
 melhor.
 
