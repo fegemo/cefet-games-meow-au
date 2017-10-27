@@ -71,7 +71,7 @@ public class PlayingGamesScreen extends BaseScreen
                         // túlio
                         new RainingCatsFactory(),
                         new NinjaCatFactory(),
-                        //estevao e sarah
+                        //estevao e sarah//
                         new TheFridgeGameFactory(),
                         new KillTheRatsFactory()
                 )

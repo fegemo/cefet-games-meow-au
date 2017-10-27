@@ -3,6 +3,7 @@ package br.cefetmg.games.minigames;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -20,7 +21,8 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 public class TheFridgeGame extends MiniGame {
 
     private Random generator;
-    private Sound backgroundSound, whistleUp, whistleDown, crash, clap;
+    private Music backgroundSound;
+    private Sound whistleUp, whistleDown, crash, clap;
     private Texture[] foodTexture, buttonsTexture;
     private Object[][] food;
     private Object[] shelfs;
@@ -29,7 +31,8 @@ public class TheFridgeGame extends MiniGame {
     private Cat cat;
     private CHOICE currentChoice;
 
-    private int shakingCounter = 0, shelfAmount, fridgeLimitsXMax, fridgeLimitsXMin, fridgeLimitsYMax, fridgeLimitsYMin;
+    private int shakingCounter = 0, shelfAmount;
+    private float fridgeLimitsXMax, fridgeLimitsXMin, fridgeLimitsYMax, fridgeLimitsYMin;
     private final int initialFridgeHeight = 550, initialFridgeWidth = 500;
     private final float gravity = 9.8f, scale = 305;
     private final Vector2 initialFridgePosition = new Vector2(750, 100), finalFridgePosition = new Vector2(650, 20);
@@ -363,19 +366,19 @@ public class TheFridgeGame extends MiniGame {
         if (fridge.texture.getX() > finalFridgePosition.x) {//zooming//
             fridge.texture.setX(fridge.texture.getX() - 1.25f); //ratio between x and y final//
             fridge.texture.setSize(fridge.texture.getWidth() + 1.25f, fridge.texture.getHeight());
-            fridgeLimitsXMin = Math.round((120 * fridge.texture.getWidth()) / initialFridgeWidth); //update the limits, using the ratios//
-            fridgeLimitsXMax = Math.round((360 * fridge.texture.getWidth()) / initialFridgeWidth);
+            fridgeLimitsXMin = ((120 * fridge.texture.getWidth()) / initialFridgeWidth); //update the limits, using the ratios//
+            fridgeLimitsXMax = ((360 * fridge.texture.getWidth()) / initialFridgeWidth);
             background.texture.setX(background.texture.getX() - 2);
             background.texture.setSize(background.texture.getWidth() + 2, background.texture.getHeight());
             done = false;
         }
         if (fridge.texture.getY() > finalFridgePosition.y) {
-            fridge.texture.setY(fridge.texture.getY() - 1);
-            fridge.texture.setSize(fridge.texture.getWidth(), fridge.texture.getHeight() + 1);
-            fridgeLimitsYMin = Math.round((50 * fridge.texture.getHeight()) / initialFridgeHeight);
-            fridgeLimitsYMax = Math.round((400 * fridge.texture.getHeight()) / initialFridgeHeight);
-            background.texture.setY(background.texture.getY() - 1);
-            background.texture.setSize(background.texture.getWidth(), background.texture.getHeight() + 1);
+            fridge.texture.setY(fridge.texture.getY() - 1f);
+            fridge.texture.setSize(fridge.texture.getWidth(), fridge.texture.getHeight() + 1f);
+            fridgeLimitsYMin = ((50 * fridge.texture.getHeight()) / initialFridgeHeight);
+            fridgeLimitsYMax = ((400 * fridge.texture.getHeight()) / initialFridgeHeight);
+            background.texture.setY(background.texture.getY() - 1f);
+            background.texture.setSize(background.texture.getWidth(), background.texture.getHeight() + 1f);
             done = false;
         }
         if (done) { //cat starts to walk//
@@ -422,7 +425,7 @@ public class TheFridgeGame extends MiniGame {
     }
 
     private void setPositionsFoodMatrix() {
-        int x = fridgeLimitsXMin, y = fridgeLimitsYMin;
+        float x = fridgeLimitsXMin, y = fridgeLimitsYMin;
         for (int i = 0; i < shelfAmount; i++) {
             for (int j = 0; j < 3; j++) {
                 if (food[i][j] != null) {
@@ -469,7 +472,7 @@ public class TheFridgeGame extends MiniGame {
             this.buttonsTexture[i - 1] = assets.get("the-fridge-game/button" + aux + ".png", Texture.class);
         }
         //sounds//
-        backgroundSound = assets.get("the-fridge-game/city-shopping.mp3", Sound.class);
+        backgroundSound = assets.get("the-fridge-game/city-shopping.mp3", Music.class);
         whistleUp = assets.get("the-fridge-game/whistle-up.mp3", Sound.class);
         whistleDown = assets.get("the-fridge-game/whistle-down.mp3", Sound.class);
         crash = assets.get("the-fridge-game/crash.mp3", Sound.class);
@@ -554,7 +557,7 @@ public class TheFridgeGame extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Alcance os peixes na última prateleira antes que o tempo acabe.";
+        return "Alcance os peixes na última prateleira";
     }
 
     @Override
