@@ -254,7 +254,7 @@ public class KillTheRats extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Sobreviva ao ataque dos ratos\nNão deixe que muitos ratos cheguem do outro lado";
+        return "Não deixe muitos ratos passarem";
     }
 
     @Override
