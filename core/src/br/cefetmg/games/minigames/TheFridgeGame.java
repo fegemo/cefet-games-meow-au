@@ -557,7 +557,7 @@ public class TheFridgeGame extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Alcance os peixes na última prateleira antes que o tempo acabe.";
+        return "Alcance os peixes na última prateleira";
     }
 
     @Override
