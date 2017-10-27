@@ -339,7 +339,7 @@ public class UnderwaterCat extends MiniGame {
         static final int FRAME_HEIGHT = 87;
 
         Spiky(final Texture spikyTexture) {
-            super(new Animation(0.2f, workFrames(spikyTexture, 4, 12)));
+            super(new Animation<TextureRegion>(0.2f, workFrames(spikyTexture, 4, 12)));
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
             super.setAutoUpdate(false);
         }
