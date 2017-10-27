@@ -9,6 +9,7 @@ import br.cefetmg.games.minigames.KillTheRats;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.screens.BaseScreen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
@@ -38,8 +39,8 @@ public class KillTheRatsFactory implements MiniGameFactory {
                 put("kill-the-rats/primary_weapon.png", Texture.class);
                 put("kill-the-rats/secondary_weapon.png", Texture.class);
                 
-                put("kill-the-rats/JerryFive.mp3", Sound.class);
-                put("kill-the-rats/Rats_Ambience.mp3", Sound.class);
+                put("kill-the-rats/JerryFive.mp3", Music.class);
+                put("kill-the-rats/Rats_Ambience.mp3", Music.class);
                 put("kill-the-rats/rat.mp3", Sound.class);
                 put("kill-the-rats/pistol_silenced_walther.mp3", Sound.class);
                 put("kill-the-rats/bomb.mp3", Sound.class);
