@@ -7,6 +7,7 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,8 +38,8 @@ public class KillTheRats extends MiniGame {
     private Texture primaryWeapon_Texture;
     private Texture secondaryWeapon_Texture;
     
-    private Sound levelSound;
-    private Sound ratsSound;
+    private Music levelSound;
+    private Music ratsSound;
     private Sound bombSound;
     private Sound ratSound;
     private Sound fireSound;
@@ -82,8 +83,8 @@ public class KillTheRats extends MiniGame {
         primaryWeapon_Texture = assets.get("kill-the-rats/primary_weapon.png", Texture.class);
         secondaryWeapon_Texture = assets.get("kill-the-rats/secondary_weapon.png", Texture.class);
         
-        levelSound = assets.get("kill-the-rats/JerryFive.mp3", Sound.class);
-        ratsSound = assets.get("kill-the-rats/Rats_Ambience.mp3", Sound.class);
+        levelSound = assets.get("kill-the-rats/JerryFive.mp3", Music.class);
+        ratsSound = assets.get("kill-the-rats/Rats_Ambience.mp3", Music.class);
         ratSound = assets.get("kill-the-rats/rat.mp3", Sound.class);
         fireSound = assets.get("kill-the-rats/pistol_silenced_walther.mp3", Sound.class);
         bombSound = assets.get("kill-the-rats/bomb.mp3", Sound.class);
@@ -109,7 +110,8 @@ public class KillTheRats extends MiniGame {
         stopAllSounds = false;
         changeWeapon = false;
         
-        levelSound.play(0.8f);
+        levelSound.play();
+        levelSound.setVolume(0.8f);
         ratsSound.play();
     }
     
@@ -160,6 +162,8 @@ public class KillTheRats extends MiniGame {
     
     @Override
     protected void configureDifficultyParameters(float difficulty) {
+        /*
+        // Valores antigos para os parâmetros de dificuldade
         this.maxNumRats = (int) DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 100, 250);
         this.minimumEnemySpeed = DifficultyCurve.LINEAR
@@ -168,6 +172,17 @@ public class KillTheRats extends MiniGame {
                 .getCurveValueBetween(difficulty, 4, 7);
         this.percentIgnoreRats = DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 0.75f, 0.3f);
+        */
+        
+        // Valores atualizados para os parâmetros de dificuldade
+        this.maxNumRats = (int) DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 80, 160);
+        this.minimumEnemySpeed = DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 2, 6);
+        this.maximumEnemySpeed = DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 4, 7);
+        this.percentIgnoreRats = DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 0.5f, 0.8f);
     }
     
     @Override
@@ -239,7 +254,7 @@ public class KillTheRats extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Ataque os Ratos";
+        return "Não deixe muitos ratos passarem";
     }
 
     @Override
