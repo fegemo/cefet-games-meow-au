@@ -25,9 +25,9 @@ import java.util.Random;
 public class SpyFish extends MiniGame {
 
     //texturas
-    private final Texture texturaFish;
+    private Texture texturaFish;
     private Texture texturaFundo;
-    private final Texture texturaMemoCard;
+    private Texture texturaMemoCard;
 
     private ArrayList<MemoryChip> chips;
 
@@ -38,16 +38,17 @@ public class SpyFish extends MiniGame {
     private int numberOfChipsToTake;
     private float chipMaxSpeed;
     private int numberOfLostChips = 0;
+    private int chipsTaken = 0;
 
     public SpyFish(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 20000f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
-        this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
-        this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
-        this.texturaFundo = assets.get("spy-fish/ocean.png", Texture.class);
     }
 
     @Override
     protected void onStart() {
+        this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
+        this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
+        this.texturaFundo = assets.get("spy-fish/ocean.png", Texture.class);
         chips = new ArrayList<MemoryChip>();
         for (int i = 0; i < this.maxChips; i++) {
             chips.add(new MemoryChip(texturaMemoCard, this.chipMaxSpeed));
@@ -77,19 +78,19 @@ public class SpyFish extends MiniGame {
         fish.update(dt);
         for (Iterator<MemoryChip> iterator = chips.iterator(); iterator.hasNext();) {
             MemoryChip mc = iterator.next();
-            if (mc.position.y >= -35) {
-                mc.update();
-            }
+            mc.update();
             if (mc.collidesWith(this.fish)) {
                 //se o peixe pegar um cartão de memoria
+                chipsTaken++;
                 iterator.remove();
-                if (chips.size() == (this.maxChips - this.numberOfChipsToTake)) {
+                if (chipsTaken >= this.numberOfChipsToTake) {
                     super.challengeSolved();
                 }
             }
             if (mc.getPositionMemoryCard().y < -1) {
                 numberOfLostChips++;
-                if (numberOfLostChips > (this.maxChips + this.numberOfChipsToTake)) {
+                iterator.remove();
+                if (numberOfLostChips > (this.maxChips - this.numberOfChipsToTake)) {
                     // se chegar nessa parte do codigo, é pq não tem como 
                     // mais pegar o numero minimo de chips
                     super.challengeFailed();
