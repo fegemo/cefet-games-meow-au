@@ -164,8 +164,6 @@ public class JumpTheObstacles extends MiniGame {
 
         private final Vector2 force;
         
-        private float jumpingTime = 0.0f;
-
         Dog(final Texture kongTexture) {
             super(new HashMap<String, Animation>() {
                 {
@@ -196,9 +194,13 @@ public class JumpTheObstacles extends MiniGame {
 
                     Animation jumping = new Animation(Dog.TOTAL_JUMPING_TIME / 6.0f,
                             frames[0][0],
+                            frames[0][1],
                             frames[0][2],
                             frames[0][4],
+                            frames[0][4],
+                            frames[0][5],
                             frames[0][6],
+                            frames[0][7],
                             frames[0][8],
                             frames[0][0]
                     );
@@ -237,41 +239,19 @@ public class JumpTheObstacles extends MiniGame {
 
             switch (state) {
                 case NONE:
-                    //setY(Y_POSITION);
                     speed.y = 0.0f;
                     force.y = 0.0f;
-                    jumpingTime = 0.0f;
                     break;
-                case JUMPING:
-                    jumpingTime += dt;
-                                
-                    if (jumpingTime >= TOTAL_JUMPING_TIME / 2.0f) {
-                        state = JumpState.FALLING;
-                        startAnimation("jumping");
-                    }
-                    break;
-                case FALLING:
-                    jumpingTime -= dt;
-                        
-                    if (jumpingTime <= 0.0f) {
+                case JUMPING:                               
+                    super.setPosition(super.getX() + this.speed.x * dt,
+                        Math.max(super.getY() + (this.speed.y * dt), Y_POSITION));
+                    this.speed.y += this.force.y;//*dt;
+                    if (super.getY() <= Y_POSITION) {
                         state = JumpState.NONE;
                         startAnimation("walking");
                     }
                     break;
             }
-
-            super.setPosition(super.getX() + this.speed.x * dt,
-                    Math.max(super.getY() + (this.speed.y * dt), Y_POSITION));
-            
-            if(state != JumpState.NONE){
-                this.speed.y += this.force.y;//*dt;
-            }
-            
-            System.out.println("Velocidade: "+speed.y);
-            System.out.println("Posicao: "+super.getY());
-            System.out.println("Tempo: "+dt);
-            System.out.println("Forca: "+force.y);
-            System.out.println("");
         }
 
         public void jump() {
@@ -284,6 +264,7 @@ public class JumpTheObstacles extends MiniGame {
                 Sound sound = jumpSound;
                 long id = sound.play(0.5f);
                 sound.setPan(id, dog.getX(), 0.25f);
+                startAnimation("jumping");
             }
         }
 
@@ -358,7 +339,6 @@ public class JumpTheObstacles extends MiniGame {
 
     enum JumpState {
         NONE,
-        JUMPING,
-        FALLING
+        JUMPING
     }
 }
