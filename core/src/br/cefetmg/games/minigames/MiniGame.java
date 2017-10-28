@@ -34,16 +34,12 @@ public abstract class MiniGame {
     protected final Timer timer;
     private boolean isPaused;
 
-//    private final BitmapFont messagesFont;
     private boolean challengeSolved;
     private MiniGameStateObserver stateObserver;
     private long timeWhenPausedLastTime;
     private InputProcessor miniGameInputProcessor;
     private float difficulty;
 
-//    public MiniGame(AssetManager assets, Viewport viewport, float difficulty,
-//            float maxDuration, TimeoutBehavior endOfGameSituation, 
-//            final MiniGameStateObserver observer) {
     public MiniGame(BaseScreen screen, MiniGameStateObserver observer,
             float difficulty, float maxDuration, 
             TimeoutBehavior endOfGameSituation) {
@@ -54,7 +50,6 @@ public abstract class MiniGame {
                     + ".");
         }
 
-//        this.screen = screen;
         this.assets = screen.assets;
         this.viewport = screen.viewport;
         this.batch = screen.batch;
@@ -64,10 +59,6 @@ public abstract class MiniGame {
         this.timeSpentPlaying = 0;
         this.timeSpentOnInstructions = 0;
         this.stateObserver = observer;
-//        this.messagesFont = this.screen.assets.get("fonts/sawasdee-50.fnt");
-//        this.messagesFont.getRegion().getTexture().setFilter(
-//                Texture.TextureFilter.Linear,
-//                Texture.TextureFilter.Linear);
         this.rand = new Random();
         this.timer = new Timer();
         this.timer.stop();
@@ -148,13 +139,6 @@ public abstract class MiniGame {
                 break;
         }
     }
-
-//    protected void drawMessage(String message, float scale) {
-//        messagesFont.setColor(Color.BLACK);
-//        this.screen.drawCenterAlignedText(message, scale,
-//                this.screen.viewport.getWorldHeight() / 2);
-//    }
-//
 
     public final void draw() {
         switch (this.state) {
