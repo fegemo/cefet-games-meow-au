@@ -220,6 +220,19 @@ public class Running extends MiniGame {
     public void onDrawGame() {
         batch.draw(fundoTexture, 0, 0);
         ball.draw(batch);
+        for (int i = 0; i < woolArray.size; i++) {
+            Sprite sprite = woolArray.get(i);
+            sprite.draw(batch);
+        }
+        for (int i = 0; i < boneArray.size; i++) {
+            Sprite sprite = boneArray.get(i);
+            sprite.draw(batch);
+        }
+        for (int i = 0; i < kitArray.size; i++) {
+            Sprite sprite = kitArray.get(i);
+            sprite.draw(batch);
+        }
+
         Dog firstDog = dogs.get(0);
         
         if(cat.getY() > firstDog.getY()){
@@ -235,19 +248,6 @@ public class Running extends MiniGame {
             Dog dog = dogs.get(i);
             dog.draw(batch);
         }
-        for (int i = 0; i < woolArray.size; i++) {
-            Sprite sprite = woolArray.get(i);
-            sprite.draw(batch);
-        }
-        for (int i = 0; i < boneArray.size; i++) {
-            Sprite sprite = boneArray.get(i);
-            sprite.draw(batch);
-        }
-        for (int i = 0; i < kitArray.size; i++) {
-            Sprite sprite = kitArray.get(i);
-            sprite.draw(batch);
-        }
-
     }
 
     @Override
