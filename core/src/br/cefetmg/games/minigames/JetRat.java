@@ -112,7 +112,6 @@ public class JetRat extends MiniGame {
                 .getCurveValueBetween(difficulty, 120, 150);
         this.difficulty = (int) (Math.ceil(DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 1, 4))-1);
-        System.out.println("Diff "+this.difficulty);
     }
     
     @Override
@@ -145,12 +144,9 @@ public class JetRat extends MiniGame {
        
         mouse.update(dt);
         srcX += 5;
-        /*if (aceleracao > -1 * WORLD_HEIGHT * 0.00009f);
-        aceleracao -= WORLD_HEIGHT * 0.00005f; //gravidade */
 
         if (posY < screenHeight + 2) {
             posY -= velocidade ;
-           //aceleracao//2.5; 1;
         }else{
             super.challengeFailed();
             meon.stop();
@@ -159,16 +155,12 @@ public class JetRat extends MiniGame {
             posX -= 0.5;
         }
         if (Gdx.input.justTouched()) {
-          //  aceleracao += WORLD_HEIGHT * 0.002f;
             cont=10;
-           // posY -= WORLD_HEIGHT * 0.07;
             posX += 2;
         }
         
         if(cont>0){
             cont--;
-         //   System.out.println("ola");
-            //posY -=WORLD_HEIGHT * 0.001f;
             posY -= WORLD_HEIGHT * 0.012;
         }
         // atualiza os inimigos (quadro de animação + colisão com dentes)
