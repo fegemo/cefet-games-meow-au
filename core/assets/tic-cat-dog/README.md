@@ -45,9 +45,9 @@ A imagem de _background_ foi desenhada na origem (0,0) com comprimento "viewport
 
 * [Imagem do gato que compôs o background](https://w-dog.net/wallpaper/cat-silhouette-cat-black-background-background-black-fon/id/259288/)
 
-* [Imagem do cachorro de óculos utilizada para identificar um movimento](http://www.airpets.com/export-your-pet-from-uk)
+* [Imagem do cachorro utilizada para identificar um movimento](http://www.myify.net/imagens-de-desenhos-de-cachorros/)
 
-* [Imagem do gato rasgando folha utilizada para identificar um movimento](https://www.petful.com/pet-health/common-toxins-cat/)
+* [Imagem do gato rasgando utilizada para identificar um movimento](https://br.pinterest.com/explore/gatos-desenhos/)
 
 ##### Algoritmo
 

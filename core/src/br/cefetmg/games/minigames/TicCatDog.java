@@ -64,12 +64,15 @@ public class TicCatDog extends MiniGame {
     private int[][] ticCatDogMatrix; //Matriz que armazena estado atual de cada quadrado
     private final int EMPTY_SQUARE = 0, CAT_SQUARE = 1, DOG_SQUARE = 2;
 
-    private final float squareHeight = viewport.getWorldHeight() / 5;
-    private final float squareWidth = viewport.getWorldWidth() / 5;
-    private final float initialScaleMouse = (float) 0.05;
+    private float squareHeight;
+    private float squareWidth;
+    private float initialScaleMouse;
 
     private final int CAT_TURN = 1, DOG_TURN = 2;
     private int turn;
+    
+    private final int CAT_DUMB = 1, CAT_SMART = 2;
+    private int catCleverness;
 
     private Random generator = new Random();
 
@@ -94,7 +97,11 @@ public class TicCatDog extends MiniGame {
 
         catMeowingSound = assets.get("tic-cat-dog/cat-meowing.wav", Sound.class);
         dogBarkingSound = assets.get("tic-cat-dog/dog-barking.wav", Sound.class);
-
+        
+        squareHeight = viewport.getWorldHeight() / 5;
+        squareWidth = viewport.getWorldWidth() / 5;
+        initialScaleMouse = (float) 0.05;
+        
         mouseArrowSprite.setOriginCenter();
         mouseArrowSprite.setScale(initialScaleMouse, initialScaleMouse);
 
@@ -118,10 +125,18 @@ public class TicCatDog extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        if (difficulty < 1) {
+        if(difficulty <= 0.25) { //Fácil: cachorro começa, gato randômico
             turn = DOG_TURN;
-        } else {
+            catCleverness = CAT_DUMB;
+        } else if (difficulty <= 0.5) { //Médio: gato começa, gato randômico
             turn = CAT_TURN;
+            catCleverness = CAT_DUMB;
+        } else if (difficulty <= 0.75) { //Difícil: gato começa, gato assertivo
+            turn = CAT_TURN;
+            catCleverness = CAT_SMART;
+        } else { //Impossível: gato começa, gato assertivo, tempo reduzido
+            turn = CAT_TURN;
+            catCleverness = CAT_SMART;
             super.maxDuration /= 2;
         }
     }
@@ -204,6 +219,15 @@ public class TicCatDog extends MiniGame {
         }
     }
 
+    private Move getRandomMove(int[][] matrix) {
+        while(true) {
+            int i = generator.nextInt(3);
+            int j = generator.nextInt(3);
+            if(matrix[i][j] == EMPTY_SQUARE)
+                return new Move(i, j);
+        }
+    }
+    
     @Override
     public void onHandlePlayingInput() {
         //Recebe a posição do mouse e atualiza a Sprite de mouse
@@ -243,9 +267,14 @@ public class TicCatDog extends MiniGame {
             }
         } //Movimento do gato
         else if (turn == CAT_TURN && isThereAvailableSquare(ticCatDogMatrix)) {
-            //Inteligência artificial: melhor movimento selecionado
-            Move move = minimax(ticCatDogMatrix, CAT_TURN);
+            Move move;
 
+            //Inteligência artificial: melhor movimento selecionado
+            if(catCleverness == CAT_SMART)
+                move = minimax(ticCatDogMatrix, CAT_TURN);
+            else //Movimento randômico (CAT_DUMB)
+                move = getRandomMove(ticCatDogMatrix);
+                
             //Realiza-se o movimento
             ticCatDogMatrix[move.getX()][move.getY()] = CAT_SQUARE;
             ticTacToeSprites[move.getX()][move.getY()].setTexture(catSquareTexture);
