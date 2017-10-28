@@ -1,5 +1,6 @@
 package br.cefetmg.games.minigames;
 
+import br.cefetmg.games.graphics.MultiAnimatedSprite;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -13,6 +14,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import java.util.HashMap;
 
 public class CatchThatHomework extends MiniGame {
 
@@ -126,7 +130,6 @@ public class CatchThatHomework extends MiniGame {
     }
 
     class Cat extends MultiAnimatedSprite {
-        private final int lives = 1;
         private final float height;
 
         static final int FRAME_WIDTH = 22;
