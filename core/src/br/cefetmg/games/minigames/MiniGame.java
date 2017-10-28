@@ -99,6 +99,10 @@ public abstract class MiniGame {
 
         // libera o cursor do mouse
         Gdx.input.setCursorCatched(false);
+        
+        if (state == MiniGameState.PLAYING) {
+            onGamePaused(isPaused);
+        }
     }
 
     public final void resume() {
@@ -113,6 +117,7 @@ public abstract class MiniGame {
         // ou do final do jogo), oculta novamente o cursor
         if (state == MiniGameState.PLAYING) {
             Gdx.input.setCursorCatched(shouldHideMousePointer());
+            onGamePaused(isPaused);
         }
 
     }
@@ -231,6 +236,16 @@ public abstract class MiniGame {
     protected void onEnd() {
         
     }
+    
+    /**
+     * É chamado pelo próprio MiniGame quando ele é pausado/resumido pelo 
+     * jogador. Pode ser usado para interromper/retomar a música de fundo, por
+     * exemplo.
+     * @param justPaused acabou de pausar (true) ou resumir (false).
+     */
+    protected void onGamePaused(boolean justPaused) {
+
+    }
 
     /**
      * Configura os parâmetros de dificuldade do jogo como, por exemplo,
@@ -276,5 +291,4 @@ public abstract class MiniGame {
      * ou não.
      */
     public abstract boolean shouldHideMousePointer();
-
 }
