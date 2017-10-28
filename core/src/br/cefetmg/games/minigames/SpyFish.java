@@ -107,8 +107,7 @@ public class SpyFish extends MiniGame {
 
     @Override
     public void onDrawGame() {
-        update(Gdx.graphics.getDeltaTime());
-        batch.draw(texturaFundo, 0f, 0f, 1280f, 720f);
+        batch.draw(texturaFundo, 0f, 0f, viewport.getWorldWidth(), viewport.getWorldHeight());
         this.fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
         for (MemoryChip chip : chips) {
             chip.render(batch);
@@ -154,6 +153,7 @@ public class SpyFish extends MiniGame {
         private Sprite sprite;
         private Circle circle;
         private ShapeRenderer shapeRenderer;
+        private final Buscar algoritmoMovimentacao;
 
         public Fish(Texture texture) {
             this.sprite = new Sprite(texture);
@@ -162,6 +162,7 @@ public class SpyFish extends MiniGame {
             this.circle = new Circle(this.sprite.getX() + (this.sprite.getWidth() / 2), this.sprite.getY() + (this.sprite.getHeight() / 2),
                     (float) Math.sqrt((Math.pow(this.sprite.getHeight() / 2, 2)) + Math.pow(this.sprite.getWidth() / 2, 2)));
             alvo = new Vector2(20, 220);
+            this.algoritmoMovimentacao = new Buscar(2000, 500, 1);
             this.pose = new Pose(alvo);
         }
 
@@ -175,9 +176,8 @@ public class SpyFish extends MiniGame {
         public void update(float dt) {
             // pergunta ao algoritmo de movimento (comportamento) 
             // para onde devemos ir
-            Buscar b = new Buscar();
             if (this.alvo != null) {
-                Direcionamento direcionamento = b.guiar(this.pose, this.alvo, this.circle.radius, 10, 1);
+                Direcionamento direcionamento = algoritmoMovimentacao.guiar(this.pose, this.alvo, this.circle.radius, 4, 1);
                 // faz a simulação física usando novo estado da entidade cinemática
                 pose.atualiza(direcionamento, dt);
                 this.sprite.setFlip(pose.velocidade.x < 0, false);
@@ -356,55 +356,37 @@ public class SpyFish extends MiniGame {
     static class Buscar {
 
         private final float maxAceleracao;
-        private final float constanteVelocidade;
-
-        public Buscar(float aceleracaoMax, float velocidadeConst) {
+        private final float minAceleracao;
+        private final float coeficienteDeResistencia;
+        
+        public Buscar(float aceleracaoMax, float aceleracaoMin,
+                float coeficienteDeResistencia) {
             this.maxAceleracao = aceleracaoMax;
-            this.constanteVelocidade = velocidadeConst;
-        }
-
-        public Buscar() {
-            this.maxAceleracao = 2000;
-            this.constanteVelocidade = 2;
-        }
-
-        public Direcionamento guiar(Pose agente, Vector2 alvo) {
-            Direcionamento output = new Direcionamento();
-            Vector2 aux = alvo;
-            //acho q é algo assim
-            aux.sub(agente.posicao);
-            if (aux.len2() > maxAceleracao * maxAceleracao) {//verifica o tamanho do vetor se for mto grande normaliza e multiplica pela maxAceleracao
-                aux.nor();
-                aux.scl(maxAceleracao);
-            }
-            output.aceleracao = aux;
-            Vector2 auxV = new Vector2(agente.velocidade);
-            output.aceleracao.sub(auxV.scl(constanteVelocidade));//aceleracao = forca/m - kv
-            output.rotacao = 0;
-            return output;
+            this.minAceleracao = aceleracaoMin;
+            this.coeficienteDeResistencia = coeficienteDeResistencia;
         }
 
         public Direcionamento guiar(Pose agente, Vector2 alvo, float raioAgente, float raioAlvoDesacelerar, float raioAlvoChegar) {
             Direcionamento output = new Direcionamento();
-            Vector2 posicaoDoAlvo = new Vector2(alvo);
-            //acho q é algo assim
-            posicaoDoAlvo.sub(agente.posicao);
-            if (posicaoDoAlvo.len2() > maxAceleracao * maxAceleracao) {
+            Vector2 distanciaAteAlvo = new Vector2(alvo).sub(agente.posicao);
+
+            if (distanciaAteAlvo.len() > maxAceleracao) {
                 //verifica o tamanho do vetor se for mto grande normaliza e multiplica pela maxAceleracao
-                posicaoDoAlvo.nor();
-                posicaoDoAlvo.scl(maxAceleracao);
+                distanciaAteAlvo.nor().scl(maxAceleracao);
+            } else if (distanciaAteAlvo.len() < minAceleracao) {
+                distanciaAteAlvo.nor().scl(minAceleracao);
             }
             Vector2 posicaoAgente = new Vector2(agente.posicao);
             if (posicaoAgente.dst2(alvo) < (Math.pow(raioAgente + raioAlvoDesacelerar, 2))) {
                 if (posicaoAgente.dst2(alvo) < ((raioAgente + raioAlvoChegar) * (raioAgente + raioAlvoChegar))) {
-                    posicaoDoAlvo = new Vector2(0, 0);
+                    distanciaAteAlvo = new Vector2(0, 0);
                 } else {
-                    posicaoDoAlvo.scl(1 / 10);
+                    distanciaAteAlvo.scl(1 / 10);
                 }
             }
-            output.aceleracao = posicaoDoAlvo;
+            output.aceleracao = distanciaAteAlvo;
             Vector2 auxV = new Vector2(agente.velocidade);
-            output.aceleracao.sub(auxV.scl(constanteVelocidade));//aceleracao = forca/m - kv
+            output.aceleracao.sub(auxV.scl(coeficienteDeResistencia));//aceleracao = forca/m - kv
 
             //a rotacao ou direcao do bichinho nos podemos considerar q esta na direcao da velocidade
             //mas por meio da duvida acho q seria algo assim
