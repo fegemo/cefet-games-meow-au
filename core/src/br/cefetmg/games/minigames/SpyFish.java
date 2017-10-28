@@ -147,7 +147,7 @@ public class SpyFish extends MiniGame {
     }
 
     // <editor-fold desc="Classes internas da SpyFish" defaultstate="collapsed">
-    static class Fish extends Sprite implements Collidable {
+    static class Fish implements Collidable {
 
         private Vector2 alvo;
         private Pose pose;
@@ -157,16 +157,15 @@ public class SpyFish extends MiniGame {
 
         public Fish(Texture texture) {
             this.sprite = new Sprite(texture);
-            this.sprite = new Sprite(texture);
-            this.shapeRenderer = new ShapeRenderer();
             this.sprite.setPosition(20.0f, 220.0f);
+            this.shapeRenderer = new ShapeRenderer();
             this.circle = new Circle(this.sprite.getX() + (this.sprite.getWidth() / 2), this.sprite.getY() + (this.sprite.getHeight() / 2),
                     (float) Math.sqrt((Math.pow(this.sprite.getHeight() / 2, 2)) + Math.pow(this.sprite.getWidth() / 2, 2)));
             alvo = new Vector2(20, 220);
             this.pose = new Pose(alvo);
         }
 
-        public void update(float x, float y) {
+        private void setPosition(float x, float y) {
             //atualiza a posição do peixe
             this.sprite.setPosition(x, y);
             //atualiza a posicao do retangulo de colisao
@@ -181,21 +180,13 @@ public class SpyFish extends MiniGame {
                 Direcionamento direcionamento = b.guiar(this.pose, this.alvo, this.circle.radius, 10, 1);
                 // faz a simulação física usando novo estado da entidade cinemática
                 pose.atualiza(direcionamento, dt);
-                update(pose.posicao.x, pose.posicao.y);
+                this.sprite.setFlip(pose.velocidade.x < 0, false);
+                setPosition(pose.posicao.x, pose.posicao.y);
             }
         }
 
         public void render(SpriteBatch sb, float x, float y) {
-            float spriteX = this.sprite.getX();
-            float spriteY = this.sprite.getY();
-            if ((1280 >= spriteX && 0 <= spriteX) && (720 >= spriteY && 0 <= spriteY)) {
-                //se estiver dentro da tela
-                //update(x,y);
-                if ((1280 >= this.sprite.getX() && 0 <= this.sprite.getX()) && (720 >= this.sprite.getY() && 0 <= this.sprite.getY())) {
-                    // se dentro da tela
-                    this.sprite.draw(sb);
-                }
-            }
+            sprite.draw(sb);
         }
 
         public void updateAccordingToTheMouse(float x, float y) {
