@@ -88,7 +88,7 @@ public class JumpTheObstacles extends MiniGame {
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         this.minimumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 400, 1600);
+                .getCurveValueBetween(difficulty, 400, 1200);
         this.spawnInterval = DifficultyCurve.LINEAR_NEGATIVE
                 .getCurveValueBetween(difficulty, 0.9f, 1.2f);
     }
