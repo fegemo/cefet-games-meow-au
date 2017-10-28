@@ -95,7 +95,7 @@ public class Running extends MiniGame {
     }
 
     protected void setPositions(boolean blnChange) {
-        cat.setPosition(0, viewport.getWorldHeight() * rand.nextFloat());
+        cat.setPosition(0, (viewport.getWorldHeight() - cat.getHeight()) * rand.nextFloat());
         catSpeed = (float) 0.8;
         ball = new Sprite(ballTexture);
         float fltBall = rand.nextFloat();
@@ -147,9 +147,9 @@ public class Running extends MiniGame {
 
     @Override
     public void onHandlePlayingInput() {
-        if (Gdx.input.getY() > 0 && Gdx.input.getY() < (viewport.getWorldHeight() - cat.getHeight() * fltScale)) {
-            cat.setY(Gdx.input.getY());
-        }
+        Vector2 pointer = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        viewport.unproject(pointer);
+        cat.setY(Math.min(pointer.y, viewport.getWorldHeight() - cat.getHeight()));
     }
 
     @Override
@@ -347,12 +347,6 @@ public class Running extends MiniGame {
                 super.setPosition(super.getX() + catSpeed,
                         super.getY());
             }
-        }
-
-        Vector2 getPosition() {
-            return new Vector2(
-                    this.getX(),
-                    this.getY());
         }
     }
 
