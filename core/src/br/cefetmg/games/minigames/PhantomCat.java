@@ -122,7 +122,7 @@ public class PhantomCat extends MiniGame {
 
                 if (sprite.getBoundingRectangle().overlaps(
                         target.getBoundingRectangle())) {
-                    dieCat.play();
+                    dieCat.play(0.05f);
                     // contabiliza um inimigo morto
                     this.enemiesKilled++;
                     // remove o inimigo do array
