@@ -2,7 +2,6 @@ package br.cefetmg.games.minigames;
 
 import static br.cefetmg.games.Config.WORLD_HEIGHT;
 import static br.cefetmg.games.Config.WORLD_WIDTH;
-import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -14,8 +13,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
-import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.Random;
@@ -343,22 +340,7 @@ public class MouseAttack extends MiniGame {
                 animate=false;
                 this.setAnimation(parado);
                 this.getAnimation().setPlayMode(Animation.PlayMode.NORMAL);
-                
             }
-                
-            
-            /*if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
-                Gdx.input.setInputProcessor(new InputAdapter() {
-                    @Override
-                    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                        if (button == Buttons.LEFT) {
-                            cat.changeAnimation();
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-            }*/
         }
     }
 
@@ -404,14 +386,11 @@ public class MouseAttack extends MiniGame {
             velocity.set(targetX - position.x, targetY - position.y).nor().scl(maxVelocity);
         }
 
+        @Override
         public void update(float deltaTime) {
+            super.update(deltaTime);
             position.add(velocity.x * deltaTime, velocity.y * deltaTime);
-            //projeSprite.setPosition(position.x+100, position.y+100);
         }
-
-        /*public void setPosition(float x, float y) {
-            //projeSprite.setPosition(x, y);
-        }*/
 
     }
 
