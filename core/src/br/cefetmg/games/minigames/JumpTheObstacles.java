@@ -68,7 +68,7 @@ public class JumpTheObstacles extends MiniGame {
     }
 
     private void spawnEnemy() {
-        Vector2 cannonballPosition = new Vector2(Gdx.graphics.getWidth() + Math.min(0.0f, ((float) Math.random()) * 200.0f - 100.0f), 0.0f);
+        Vector2 cannonballPosition = new Vector2(viewport.getWorldWidth() + Math.min(0.0f, ((float) Math.random()) * 200.0f - 100.0f), 0.0f);
 
         Vector2 cannonballSpeed = new Vector2(-this.minimumEnemySpeed, 0.0f);
 
