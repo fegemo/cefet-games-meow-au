@@ -143,8 +143,6 @@ public class CatchThatHomework extends MiniGame {
                                     FRAME_WIDTH, FRAME_HEIGHT);
                     Animation walking = new Animation(0.2f,
                             frames[0][0],
-                            frames[0][1],
-                            frames[0][2],
                             frames[1][0],
                             frames[1][1],
                             frames[1][2],
