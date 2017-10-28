@@ -5,6 +5,7 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,7 +16,8 @@ import com.badlogic.gdx.math.Vector3;
 public class Meowsic extends MiniGame {
 
     private Texture background;
-    private Sound song1, song2, song3, song4, song5, music, fail;
+    private Sound song1, song2, song3, song4, song5, fail;
+    private Music music1, music2, music3, music4, music5;
     private Texture cat;
     private Texture sheet;
     private Texture note1, note2, note3, note4, note5;
@@ -56,18 +58,30 @@ public class Meowsic extends MiniGame {
         song3 = assets.get("meowsic/song3.wav", Sound.class);
         song4 = assets.get("meowsic/song4.wav", Sound.class);
         song5 = assets.get("meowsic/song5.wav", Sound.class);
-        music = assets.get("meowsic/music.wav", Sound.class);
+        music1 = assets.get("meowsic/music1.mp3", Music.class);
+        music2 = assets.get("meowsic/music2.mp3", Music.class);
+        music3 = assets.get("meowsic/music3.mp3", Music.class);
+        music4 = assets.get("meowsic/music4.mp3", Music.class);
+        music5 = assets.get("meowsic/music5.mp3", Music.class);
         fail = assets.get("meowsic/fail.wav", Sound.class);
 
-        for (i = 0; i < NUMBER_OF_NOTES - 1; i++) {
+        for (i = 0; i < NUMBER_OF_NOTES; i++) {
             noteX[i] = 350 + laneSize * MathUtils.random(0, 4);
-            noteY[i] = 500 + i * 125;
+            noteY[i] = 470 + i * 125;
             clicked[i] = 0;
         }
-        //Força que a última nota seja Dó, para soar mais "bonito"
-        noteX[NUMBER_OF_NOTES - 1] = 350;
-        noteY[NUMBER_OF_NOTES - 1] = 500 + i * 110 + MathUtils.random(0, 20);
-        music.play(0.8f);
+        
+        //Seleciona música de acordo com a velocidade
+        if(velocidade < 2.7)
+            music1.play();
+        else if (velocidade <3.0)
+            music2.play();
+        else if (velocidade <3.8)
+            music3.play();
+        else if (velocidade <4.6)
+            music4.play();
+        else 
+            music5.play();
     }
 
     @Override
@@ -115,7 +129,11 @@ public class Meowsic extends MiniGame {
         if (somaErros >= 6) {
             errorCounter = 1;
             super.challengeFailed();
-            music.stop();
+            music1.stop();
+            music2.stop();
+            music3.stop();
+            music4.stop();
+            music5.stop();
             fail.play();
         }
 
