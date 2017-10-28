@@ -137,7 +137,7 @@ public class TicCatDog extends MiniGame {
         } else { //Impossível: gato começa, gato assertivo, tempo reduzido
             turn = CAT_TURN;
             catCleverness = CAT_SMART;
-            super.maxDuration /= 2;
+            super.maxDuration /= 1.5;
         }
     }
 
