@@ -5,6 +5,8 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,11 +27,17 @@ public class PhantomCat extends MiniGame {
     private Texture catsTexture;
     private Texture targetTexture;
     private Texture fundoTexture;
+    private Sound dieCat;
+    private Music fundo;
     private int enemiesKilled;
     private int spawnedEnemies;
     private float initialEnemyScale;
     private int totalEnemies;
     private float spawnInterval;
+    //variavel que define se o jogo acabou ou não
+    //true acabou
+    //false não acabou ainda
+    private boolean END;
 
     public PhantomCat(BaseScreen screen, MiniGameStateObserver observer,
             float difficulty) {
@@ -46,6 +54,10 @@ public class PhantomCat extends MiniGame {
                 "phantom-cat/target.png", Texture.class);
         fundoTexture = assets.get(
                 "phantom-cat/fundo.jpg", Texture.class);
+        dieCat = Gdx.audio.newSound(Gdx.files.internal("phantom-cat/cat.mp3"));
+        fundo = Gdx.audio.newMusic(Gdx.files.internal("phantom-cat/fundo.mp3"));
+        fundo.play();
+        fundo.setVolume(.2f);
         target = new Sprite(targetTexture);
         target.setOriginCenter();
         enemiesKilled = 0;
@@ -107,8 +119,10 @@ public class PhantomCat extends MiniGame {
                 Sprite sprite = enemies.get(i);
                 // se há interseção entre o retângulo da sprite e do alvo,
                 // o tiro acertou
+
                 if (sprite.getBoundingRectangle().overlaps(
                         target.getBoundingRectangle())) {
+                    dieCat.play();
                     // contabiliza um inimigo morto
                     this.enemiesKilled++;
                     // remove o inimigo do array
@@ -116,6 +130,7 @@ public class PhantomCat extends MiniGame {
                     // se tiver matado todos os inimigos, o desafio
                     // está resolvido
                     if (this.enemiesKilled >= this.totalEnemies) {
+                        this.END = true;
                         super.challengeSolved();
                     }
 
@@ -134,6 +149,7 @@ public class PhantomCat extends MiniGame {
             if (sprite.getScaleY() < 2.0f) {
                 sprite.setScale(sprite.getScaleX() + 0.3f * dt);
             } else {
+                this.END = true;
                 challengeFailed();
             }
         }
@@ -148,6 +164,8 @@ public class PhantomCat extends MiniGame {
                                 : 1;
             }
         });
+        
+        
     }
 
     @Override
@@ -158,6 +176,18 @@ public class PhantomCat extends MiniGame {
             sprite.draw(batch);
         }
         target.draw(batch);
+        
+        if (isPaused()) {
+            //pause na musica
+            fundo.pause();
+        }else if ( !isPaused() && !this.END){
+            //resume na musica
+            fundo.play();
+        }else{
+            // stop na musica no fim do jogo
+            fundo.stop();
+        }
+
     }
 
     @Override
