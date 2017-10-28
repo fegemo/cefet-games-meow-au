@@ -25,9 +25,9 @@ import java.util.Random;
 public class SpyFish extends MiniGame {
 
     //texturas
-    private final Texture texturaFish;
+    private Texture texturaFish;
     private Texture texturaFundo;
-    private final Texture texturaMemoCard;
+    private Texture texturaMemoCard;
 
     private ArrayList<MemoryChip> chips;
 
@@ -38,16 +38,17 @@ public class SpyFish extends MiniGame {
     private int numberOfChipsToTake;
     private float chipMaxSpeed;
     private int numberOfLostChips = 0;
+    private int chipsTaken = 0;
 
     public SpyFish(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
-        super(screen, observer, difficulty, 20000f, TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
-        this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
-        this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
-        this.texturaFundo = assets.get("spy-fish/ocean.jpeg", Texture.class);
+        super(screen, observer, difficulty, 20000f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
     }
 
     @Override
     protected void onStart() {
+        this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
+        this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
+        this.texturaFundo = assets.get("spy-fish/ocean.png", Texture.class);
         chips = new ArrayList<MemoryChip>();
         for (int i = 0; i < this.maxChips; i++) {
             chips.add(new MemoryChip(texturaMemoCard, this.chipMaxSpeed));
@@ -77,16 +78,19 @@ public class SpyFish extends MiniGame {
         fish.update(dt);
         for (Iterator<MemoryChip> iterator = chips.iterator(); iterator.hasNext();) {
             MemoryChip mc = iterator.next();
+            mc.update();
             if (mc.collidesWith(this.fish)) {
                 //se o peixe pegar um cartão de memoria
+                chipsTaken++;
                 iterator.remove();
-                if (chips.size() == (this.maxChips - this.numberOfChipsToTake)) {
+                if (chipsTaken >= this.numberOfChipsToTake) {
                     super.challengeSolved();
                 }
             }
             if (mc.getPositionMemoryCard().y < -1) {
                 numberOfLostChips++;
-                if (numberOfLostChips > (this.maxChips + this.numberOfChipsToTake)) {
+                iterator.remove();
+                if (numberOfLostChips > (this.maxChips - this.numberOfChipsToTake)) {
                     // se chegar nessa parte do codigo, é pq não tem como 
                     // mais pegar o numero minimo de chips
                     super.challengeFailed();
@@ -104,8 +108,7 @@ public class SpyFish extends MiniGame {
 
     @Override
     public void onDrawGame() {
-        update(Gdx.graphics.getDeltaTime());
-        batch.draw(texturaFundo, 0f, 0f, 1280f, 720f);
+        batch.draw(texturaFundo, 0f, 0f, viewport.getWorldWidth(), viewport.getWorldHeight());
         this.fish.render(batch, getMousePosInGameWorld().x, getMousePosInGameWorld().y);
         for (MemoryChip chip : chips) {
             chip.render(batch);
@@ -144,68 +147,47 @@ public class SpyFish extends MiniGame {
     }
 
     // <editor-fold desc="Classes internas da SpyFish" defaultstate="collapsed">
-    static class Fish extends Sprite implements Collidable {
+    static class Fish implements Collidable {
 
         private Vector2 alvo;
         private Pose pose;
         private Sprite sprite;
         private Circle circle;
         private ShapeRenderer shapeRenderer;
-        private float tempoX = 0.0f;
-        private boolean aux = true;
+        private final Buscar algoritmoMovimentacao;
 
         public Fish(Texture texture) {
             this.sprite = new Sprite(texture);
-            this.sprite = new Sprite(texture);
-            this.shapeRenderer = new ShapeRenderer();
             this.sprite.setPosition(20.0f, 220.0f);
+            this.shapeRenderer = new ShapeRenderer();
             this.circle = new Circle(this.sprite.getX() + (this.sprite.getWidth() / 2), this.sprite.getY() + (this.sprite.getHeight() / 2),
                     (float) Math.sqrt((Math.pow(this.sprite.getHeight() / 2, 2)) + Math.pow(this.sprite.getWidth() / 2, 2)));
             alvo = new Vector2(20, 220);
+            this.algoritmoMovimentacao = new Buscar(2000, 500, 1);
             this.pose = new Pose(alvo);
         }
 
-        public void update(float x, float y) {
+        private void setPosition(float x, float y) {
             //atualiza a posição do peixe
             this.sprite.setPosition(x, y);
             //atualiza a posicao do retangulo de colisao
             this.circle.setPosition(x + (this.sprite.getWidth() / 2), y + (this.sprite.getHeight() / 2));
-            if (aux) {
-                this.tempoX = x;
-                aux = !aux;
-            }
-            if (this.tempoX > x) {
-                if (!this.sprite.isFlipX()) {
-                    this.sprite.flip(true, false);
-                }
-            } else if (this.sprite.isFlipX()) {
-                this.sprite.flip(true, false);
-            }
         }
 
         public void update(float dt) {
             // pergunta ao algoritmo de movimento (comportamento) 
             // para onde devemos ir
-            Buscar b = new Buscar();
             if (this.alvo != null) {
-                Direcionamento direcionamento = b.guiar(this.pose, this.alvo, this.circle.radius, 10, 1);
+                Direcionamento direcionamento = algoritmoMovimentacao.guiar(this.pose, this.alvo, this.circle.radius, 4, 1);
                 // faz a simulação física usando novo estado da entidade cinemática
                 pose.atualiza(direcionamento, dt);
-                update(pose.posicao.x, pose.posicao.y);
+                this.sprite.setFlip(pose.velocidade.x < 0, false);
+                setPosition(pose.posicao.x, pose.posicao.y);
             }
         }
 
         public void render(SpriteBatch sb, float x, float y) {
-            float spriteX = this.sprite.getX();
-            float spriteY = this.sprite.getY();
-            if ((1280 >= spriteX && 0 <= spriteX) && (720 >= spriteY && 0 <= spriteY)) {
-                //se estiver dentro da tela
-                //update(x,y);
-                if ((1280 >= this.sprite.getX() && 0 <= this.sprite.getX()) && (720 >= this.sprite.getY() && 0 <= this.sprite.getY())) {
-                    // se dentro da tela
-                    this.sprite.draw(sb);
-                }
-            }
+            sprite.draw(sb);
         }
 
         public void updateAccordingToTheMouse(float x, float y) {
@@ -276,10 +258,7 @@ public class SpyFish extends MiniGame {
 
         public void render(SpriteBatch sb) {
             // se dentro da tela e sem colisão com other - desenha
-            if (this.position.y >= -35) {
                 this.sprite.draw(sb);
-                update();
-            }
         }
 
         public Vector2 getPositionMemoryCard() {
@@ -348,8 +327,12 @@ public class SpyFish extends MiniGame {
         }
 
         public void atualiza(Direcionamento guia, float delta) {
-            velocidade.add(guia.aceleracao.scl(delta));
-            posicao.add(velocidade.scl(delta));
+            Vector2 aux = new Vector2(guia.aceleracao);
+            aux.scl(delta);
+            velocidade.add(aux);
+            Vector2 auxVelocidade = new Vector2(velocidade);
+            auxVelocidade.scl(delta);
+            posicao.add(auxVelocidade);
             orientacao += guia.rotacao * delta;
             orientacao = orientacao % ((float) Math.PI * 2);
         }
@@ -374,55 +357,37 @@ public class SpyFish extends MiniGame {
     static class Buscar {
 
         private final float maxAceleracao;
-        private final float constanteVelocidade;
-
-        public Buscar(float aceleracaoMax, float velocidadeConst) {
+        private final float minAceleracao;
+        private final float coeficienteDeResistencia;
+        
+        public Buscar(float aceleracaoMax, float aceleracaoMin,
+                float coeficienteDeResistencia) {
             this.maxAceleracao = aceleracaoMax;
-            this.constanteVelocidade = velocidadeConst;
-        }
-
-        public Buscar() {
-            this.maxAceleracao = 5000;
-            this.constanteVelocidade = 0;
-        }
-
-        public Direcionamento guiar(Pose agente, Vector2 alvo) {
-            Direcionamento output = new Direcionamento();
-            Vector2 aux = alvo;
-            //acho q é algo assim
-            aux.sub(agente.posicao);
-            if (aux.len2() > maxAceleracao * maxAceleracao) {//verifica o tamanho do vetor se for mto grande normaliza e multiplica pela maxAceleracao
-                aux.nor();
-                aux.scl(maxAceleracao);
-            }
-            output.aceleracao = aux;
-            Vector2 auxV = new Vector2(agente.velocidade);
-            output.aceleracao.sub(auxV.scl(constanteVelocidade));//aceleracao = forca/m - kv
-            output.rotacao = 0;
-            return output;
+            this.minAceleracao = aceleracaoMin;
+            this.coeficienteDeResistencia = coeficienteDeResistencia;
         }
 
         public Direcionamento guiar(Pose agente, Vector2 alvo, float raioAgente, float raioAlvoDesacelerar, float raioAlvoChegar) {
             Direcionamento output = new Direcionamento();
-            Vector2 posicaoDoAlvo = new Vector2(alvo);
-            //acho q é algo assim
-            posicaoDoAlvo.sub(agente.posicao);
-            if (posicaoDoAlvo.len2() > maxAceleracao * maxAceleracao) {
+            Vector2 distanciaAteAlvo = new Vector2(alvo).sub(agente.posicao);
+
+            if (distanciaAteAlvo.len() > maxAceleracao) {
                 //verifica o tamanho do vetor se for mto grande normaliza e multiplica pela maxAceleracao
-                posicaoDoAlvo.nor();
-                posicaoDoAlvo.scl(maxAceleracao);
+                distanciaAteAlvo.nor().scl(maxAceleracao);
+            } else if (distanciaAteAlvo.len() < minAceleracao) {
+                distanciaAteAlvo.nor().scl(minAceleracao);
             }
             Vector2 posicaoAgente = new Vector2(agente.posicao);
             if (posicaoAgente.dst2(alvo) < (Math.pow(raioAgente + raioAlvoDesacelerar, 2))) {
                 if (posicaoAgente.dst2(alvo) < ((raioAgente + raioAlvoChegar) * (raioAgente + raioAlvoChegar))) {
-                    posicaoDoAlvo = new Vector2(0, 0);
+                    distanciaAteAlvo = new Vector2(0, 0);
                 } else {
-                    posicaoDoAlvo.scl(1 / 10);
+                    distanciaAteAlvo.scl(1 / 10);
                 }
             }
-            output.aceleracao = posicaoDoAlvo;
+            output.aceleracao = distanciaAteAlvo;
             Vector2 auxV = new Vector2(agente.velocidade);
-            output.aceleracao.sub(auxV.scl(constanteVelocidade));//aceleracao = forca/m - kv
+            output.aceleracao.sub(auxV.scl(coeficienteDeResistencia));//aceleracao = forca/m - kv
 
             //a rotacao ou direcao do bichinho nos podemos considerar q esta na direcao da velocidade
             //mas por meio da duvida acho q seria algo assim

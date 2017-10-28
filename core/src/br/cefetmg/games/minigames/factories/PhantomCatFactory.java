@@ -9,6 +9,7 @@ import br.cefetmg.games.minigames.PhantomCat;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.screens.BaseScreen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
 import java.util.Map;
