@@ -31,6 +31,8 @@ public class JumpTheObstacles extends MiniGame {
     private float minimumEnemySpeed;
     private float spawnInterval;
 
+    static final float Y_POSITION = 250.0f;
+    
     public JumpTheObstacles(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f,
@@ -66,13 +68,14 @@ public class JumpTheObstacles extends MiniGame {
     }
 
     private void spawnEnemy() {
-        Vector2 cannonballPosition = new Vector2(Gdx.graphics.getWidth() + ((float) Math.random()) * 200.0f - 100.0f, 0.0f);
+        Vector2 cannonballPosition = new Vector2(viewport.getWorldWidth() + Math.min(0.0f, ((float) Math.random()) * 200.0f - 100.0f), 0.0f);
 
         Vector2 cannonballSpeed = new Vector2(-this.minimumEnemySpeed, 0.0f);
 
         Obstacle enemy = new Obstacle(obstaclesTexture);
         enemy.setPosition(cannonballPosition.x, cannonballPosition.y);
         enemy.speed = cannonballSpeed;
+        enemy.setY(Y_POSITION);
         enemies.add(enemy);
 
         // toca um efeito sonoro
@@ -85,7 +88,7 @@ public class JumpTheObstacles extends MiniGame {
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         this.minimumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 800, 1000);
+                .getCurveValueBetween(difficulty, 400, 1200);
         this.spawnInterval = DifficultyCurve.LINEAR_NEGATIVE
                 .getCurveValueBetween(difficulty, 0.9f, 1.2f);
     }
@@ -146,8 +149,8 @@ public class JumpTheObstacles extends MiniGame {
 
     class Dog extends MultiAnimatedSprite {
 
-        static final float SPEED = 700.0f;
-
+        static final float SPEED = 750.0f;
+        
         static final int FRAME_WIDTH = 120;
         static final int FRAME_HEIGHT = 130;
 
@@ -159,8 +162,8 @@ public class JumpTheObstacles extends MiniGame {
 
         private final Vector2 speed;
 
-        private float jumpingTime = 0.0f;
-
+        private final Vector2 force;
+        
         Dog(final Texture kongTexture) {
             super(new HashMap<String, Animation>() {
                 {
@@ -168,6 +171,13 @@ public class JumpTheObstacles extends MiniGame {
                             kongTexture, FRAME_WIDTH, FRAME_HEIGHT);
 
                     Animation walking = new Animation(0.05f,
+                            frames[1][0],
+                            frames[1][0],
+                            frames[1][0],
+                            frames[1][0],
+                            frames[1][0],
+                            frames[1][0],
+                            frames[1][0],
                             frames[1][0],
                             frames[1][1],
                             frames[1][2],
@@ -184,9 +194,13 @@ public class JumpTheObstacles extends MiniGame {
 
                     Animation jumping = new Animation(Dog.TOTAL_JUMPING_TIME / 6.0f,
                             frames[0][0],
+                            frames[0][1],
                             frames[0][2],
                             frames[0][4],
+                            frames[0][4],
+                            frames[0][5],
                             frames[0][6],
+                            frames[0][7],
                             frames[0][8],
                             frames[0][0]
                     );
@@ -199,9 +213,11 @@ public class JumpTheObstacles extends MiniGame {
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
             super.setAutoUpdate(false);
 
-            this.setX(X_POSITION);
-
+            //this.setX(X_POSITION);
+            this.setPosition(X_POSITION, Y_POSITION);
+            
             speed = new Vector2(0.0f, 0.0f);
+            force = new Vector2(0.0f, 0.0f);
 
             state = JumpState.NONE;
 
@@ -224,40 +240,31 @@ public class JumpTheObstacles extends MiniGame {
             switch (state) {
                 case NONE:
                     speed.y = 0.0f;
-                    jumpingTime = 0.0f;
+                    force.y = 0.0f;
                     break;
-                case JUMPING:
-                    jumpingTime += dt;
-                    speed.y = SPEED;
-
-                    if (jumpingTime >= TOTAL_JUMPING_TIME / 2.0f) {
-                        state = JumpState.FALLING;
-                        startAnimation("jumping");
-                    }
-                    break;
-                case FALLING:
-                    jumpingTime -= dt;
-                    speed.y = -SPEED;
-
-                    if (jumpingTime <= 0.0f) {
+                case JUMPING:                               
+                    super.setPosition(super.getX() + this.speed.x * dt,
+                        Math.max(super.getY() + (this.speed.y * dt), Y_POSITION));
+                    this.speed.y += this.force.y;//*dt;
+                    if (super.getY() <= Y_POSITION) {
                         state = JumpState.NONE;
                         startAnimation("walking");
                     }
                     break;
             }
-
-            super.setPosition(super.getX() + this.speed.x * dt,
-                    Math.max(super.getY() + (this.speed.y * dt), 0.0f));
         }
 
         public void jump() {
             if (state == JumpState.NONE) {
                 state = JumpState.JUMPING;
-
+                speed.y = SPEED;
+                force.y = -2*SPEED/(TOTAL_JUMPING_TIME/Gdx.graphics.getDeltaTime());
+                
                 // toca um efeito sonoro
                 Sound sound = jumpSound;
                 long id = sound.play(0.5f);
                 sound.setPan(id, dog.getX(), 0.25f);
+                startAnimation("jumping");
             }
         }
 
@@ -332,7 +339,6 @@ public class JumpTheObstacles extends MiniGame {
 
     enum JumpState {
         NONE,
-        JUMPING,
-        FALLING
+        JUMPING
     }
 }
