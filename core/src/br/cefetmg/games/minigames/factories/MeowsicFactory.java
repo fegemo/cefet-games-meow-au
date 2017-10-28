@@ -4,6 +4,7 @@ import br.cefetmg.games.minigames.Meowsic;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.screens.BaseScreen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
@@ -35,7 +36,11 @@ public class MeowsicFactory implements MiniGameFactory {
                 put("meowsic/song3.wav", Sound.class);
                 put("meowsic/song4.wav", Sound.class);
                 put("meowsic/song5.wav", Sound.class);
-                put("meowsic/music.wav", Sound.class);
+                put("meowsic/music1.mp3", Music.class);
+                put("meowsic/music2.mp3", Music.class);
+                put("meowsic/music3.mp3", Music.class);
+                put("meowsic/music4.mp3", Music.class);
+                put("meowsic/music5.mp3", Music.class);
                 put("meowsic/fail.wav", Sound.class);
             }
         };
