@@ -1,5 +1,6 @@
 package br.cefetmg.games.minigames;
 
+import br.cefetmg.games.graphics.MultiAnimatedSprite;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -13,10 +14,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import java.util.HashMap;
 
 public class CatchThatHomework extends MiniGame {
 
-    private Texture catTexture;
+    private Texture catSpritesheet;
     private Cat cat;
     private Texture homeworkTexture;
     private Array<Homework> homeworks;
@@ -32,12 +36,12 @@ public class CatchThatHomework extends MiniGame {
 
     @Override
     protected void onStart() {
-        catTexture = assets.get("catch-that-homework/cat-sprite.png", Texture.class);
+        catSpritesheet = assets.get("catch-that-homework/cat-spritesheet.png", Texture.class);
         homeworkTexture = assets.get("catch-that-homework/homework.png", Texture.class);
         backgroundMusic = assets.get("catch-that-homework/bensound-sexy.mp3", Sound.class);
         backgroundImage = assets.get("catch-that-homework/valley.png", Texture.class);
 
-        cat = new Cat(catTexture, 0 + 200);
+        cat = new Cat(catSpritesheet, 200);
         cat.setCenter(
                 viewport.getWorldWidth() / 2f,
                 cat.height);
@@ -74,7 +78,9 @@ public class CatchThatHomework extends MiniGame {
     public void onHandlePlayingInput() {
         Vector3 click = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         viewport.unproject(click);
-        cat.setCenter(click.x, cat.height);
+        if (click.x > 0 && click.x < viewport.getWorldWidth()) {
+            cat.setCenter(click.x, cat.height);
+        }
     }
 
     @Override
@@ -82,6 +88,8 @@ public class CatchThatHomework extends MiniGame {
         for (Homework homework : homeworks) {
             homework.update(dt);
         }
+
+        cat.update(dt);
 
         for (Homework homework : homeworks) {
             // Colisão com o gato
@@ -121,15 +129,29 @@ public class CatchThatHomework extends MiniGame {
         return true;
     }
 
-    class Cat extends Sprite {
-
+    class Cat extends MultiAnimatedSprite {
         private final float height;
 
-        static final int FRAME_WIDTH = 50;
-        static final int FRAME_HEIGHT = 50;
-
-        public Cat(Texture texture, float height) {
-            super(texture);
+        static final int FRAME_WIDTH = 22;
+        static final int FRAME_HEIGHT = 34;
+        
+        public Cat(final Texture catSpritesheet, float height) {
+            super(new HashMap<String, Animation>() {
+                {
+                    TextureRegion[][] frames = TextureRegion
+                            .split(catSpritesheet,
+                                    FRAME_WIDTH, FRAME_HEIGHT);
+                    Animation walking = new Animation(0.2f,
+                            frames[0][0],
+                            frames[1][0],
+                            frames[1][1],
+                            frames[1][2],
+                            frames[0][3],
+                            frames[1][3]);
+                    walking.setPlayMode(Animation.PlayMode.LOOP);
+                    put("walking", walking);
+                }
+            }, "walking");
             this.height = height;
         }
     }
