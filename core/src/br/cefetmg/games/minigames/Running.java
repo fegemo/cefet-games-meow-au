@@ -95,8 +95,8 @@ public class Running extends MiniGame {
     }
 
     protected void setPositions(boolean blnChange) {
-        cat.setPosition(0, viewport.getWorldHeight() * rand.nextFloat());
-        catSpeed = (float) 0.5;
+        cat.setPosition(0, (viewport.getWorldHeight() - cat.getHeight()) * rand.nextFloat());
+        catSpeed = (float) 0.8;
         ball = new Sprite(ballTexture);
         float fltBall = rand.nextFloat();
         if (fltBall > 0.8) {
@@ -130,11 +130,11 @@ public class Running extends MiniGame {
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         this.minimumdogSpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 120, 180);
+                .getCurveValueBetween(difficulty, 100, 180);
         this.totalBone = (int) DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 0, 5) + 1;
+                .getCurveValueBetween(difficulty, 3, 6) + 1;
         this.totalKit = (int) DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 0, 8) + 1;
+                .getCurveValueBetween(difficulty, 2, 8) + 1;
         this.totalWool = (int) DifficultyCurve.LINEAR_NEGATIVE
                 .getCurveValueBetween(difficulty, 3, 6) + 1;
         if (difficulty >= 0.5) {
@@ -147,9 +147,9 @@ public class Running extends MiniGame {
 
     @Override
     public void onHandlePlayingInput() {
-        if (Gdx.input.getY() > 0 && Gdx.input.getY() < (viewport.getWorldHeight() - cat.getHeight() * fltScale)) {
-            cat.setY(Gdx.input.getY());
-        }
+        Vector2 pointer = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        viewport.unproject(pointer);
+        cat.setY(Math.min(pointer.y, viewport.getWorldHeight() - cat.getHeight()));
     }
 
     @Override
@@ -220,11 +220,6 @@ public class Running extends MiniGame {
     public void onDrawGame() {
         batch.draw(fundoTexture, 0, 0);
         ball.draw(batch);
-        cat.draw(batch);
-        for (int i = 0; i < dogs.size; i++) {
-            Dog dog = dogs.get(i);
-            dog.draw(batch);
-        }
         for (int i = 0; i < woolArray.size; i++) {
             Sprite sprite = woolArray.get(i);
             sprite.draw(batch);
@@ -238,6 +233,21 @@ public class Running extends MiniGame {
             sprite.draw(batch);
         }
 
+        Dog firstDog = dogs.get(0);
+        
+        if(cat.getY() > firstDog.getY()){
+            cat.draw(batch);
+            firstDog.draw(batch);
+        }
+        else{
+            firstDog.draw(batch);
+            cat.draw(batch);
+        }
+        
+        for (int i = 1; i < dogs.size; i++) {
+            Dog dog = dogs.get(i);
+            dog.draw(batch);
+        }
     }
 
     @Override
@@ -338,20 +348,14 @@ public class Running extends MiniGame {
                         super.getY());
             }
         }
-
-        Vector2 getPosition() {
-            return new Vector2(
-                    this.getX(),
-                    this.getY());
-        }
     }
 
     class Dog extends AnimatedSprite {
 
         private Vector2 speed;
 
-        static final int FRAME_WIDTH = 162;
-        static final int FRAME_HEIGHT = 142;
+        static final int FRAME_WIDTH = 164;
+        static final int FRAME_HEIGHT = 144;
 
         Dog(final Texture dogTexture) {
             super(new Animation(0.1f, new Array<TextureRegion>() {
