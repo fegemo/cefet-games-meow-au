@@ -44,7 +44,7 @@ public class PlayingGamesScreen extends BaseScreen
                         new ShootTheCariesFactory(),
                         new ShooTheTartarusFactory(),
                         // gustavo henrique e rogenes
-			new BasCATballFactory(),
+			                  new BasCATballFactory(),
                         new RunningFactory(),
                         // rafael e luis carlos
                         new DodgeTheVeggiesFactory(),
