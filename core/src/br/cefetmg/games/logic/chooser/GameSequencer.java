@@ -64,8 +64,16 @@ public class GameSequencer extends BaseGameSequencer {
     }
 
     private void determineGameSequence() {
+        ArrayList<Integer> indexList = new ArrayList<Integer>();
+        
+        for (int i = 0; i < numberOfGames; i++)
+            indexList.add(i);
+        
         for (int i = 0; i < numberOfGames; i++) {
-            indexSequence[i] = MathUtils.random(availableGames.size() - 1);
+            int index = MathUtils.random(indexList.size() - 1);
+            indexSequence[i] = indexList.get(index);
+            indexList.remove(index);
+            //indexSequence[i] = MathUtils.random(availableGames.size() - 1); // instrução original
         }
     }
 
