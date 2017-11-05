@@ -195,7 +195,9 @@ public class PlayingGamesScreen extends BaseScreen
             case FINISHED_GAME_OVER:
                 Gdx.input.setCursorCatched(false);
                 break;
-
+            case BACK_MENU:
+                super.game.setScreen(new MenuScreen(super.game, this));
+                break;
         }
         this.state = newState;
     }
@@ -245,6 +247,8 @@ public class PlayingGamesScreen extends BaseScreen
                 Gdx.input.setCursorCatched(false);
                 hud.cancelEndingTimer();
                 break;
+            case BACK_MENU:
+                transitionTo(PlayScreenState.BACK_MENU);
         }
     }
 
@@ -270,7 +274,7 @@ public class PlayingGamesScreen extends BaseScreen
             inputMultiplexer.addProcessor(currentGame.getInputProcessor());
         }
     }
-
+    
     @Override
     public void showMessage(String strMessage) {
         hud.showMessage(strMessage);
@@ -280,6 +284,7 @@ public class PlayingGamesScreen extends BaseScreen
     enum PlayScreenState {
         PLAYING,
         FINISHED_GAME_OVER,
-        FINISHED_WON
+        FINISHED_WON,
+        BACK_MENU
     }
 }

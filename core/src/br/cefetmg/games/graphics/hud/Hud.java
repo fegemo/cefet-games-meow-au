@@ -1,6 +1,7 @@
 package br.cefetmg.games.graphics.hud;
 
 import br.cefetmg.games.Config;
+import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
@@ -20,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Align;
@@ -44,6 +46,9 @@ public class Hud {
     private Texture clockTexture;
     private Image mask;
     private Button pauseButton;
+    private Button backMenuButton;
+    private Button okBackMenuButton;
+    private Button noBackMenuButton;
     private Sound timerSound;
     private Clock clock;
 
@@ -62,6 +67,10 @@ public class Hud {
                 Texture.class));
         skin.add("pause", screen.assets.get("hud/pause-button.png",
                 Texture.class));
+        skin.add("confirm", screen.assets.get("hud/unpause-button.png",
+                Texture.class));
+        skin.add("unnconfirmed", screen.assets.get("hud/pause-button.png",
+                Texture.class));
         lifeTexture = screen.assets.get("hud/lives.png");
         clockTexture = screen.assets.get("hud/clock.png");
 
@@ -75,6 +84,7 @@ public class Hud {
             public void changed(ChangeEvent event, Actor actor) {
                 isPaused = !isPaused;
                 mask.setVisible(isPaused);
+                backMenuButton.setVisible(isPaused);
                 if (isPaused) {
                     stateObserver.onGamePaused();
                     clock.pauseTicking();
@@ -86,7 +96,50 @@ public class Hud {
             }
 
         });
-
+        
+        backMenuButton = new TextButton("Voltar ao menu inicial", skin);
+        backMenuButton.setVisible(false);
+        backMenuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                backMenuButton.setVisible(false);
+                hidePauseButton();
+                showMessage("Ao voltar para o menu inicial seu progresso sera perdido/n Deseja confimar operacao?");
+                okBackMenuButton.setVisible(true);
+                noBackMenuButton.setVisible(true);
+            }
+        });
+        
+        okBackMenuButton = new TextButton("Ok",skin);
+        okBackMenuButton.setVisible(false);
+        okBackMenuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                stateObserver.onStateChanged(MiniGameState.BACK_MENU);
+            }
+        });
+        noBackMenuButton = new TextButton("Nao", skin);
+        noBackMenuButton.setVisible(false);
+        noBackMenuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                hideMessage();
+                noBackMenuButton.setVisible(false);
+                okBackMenuButton.setVisible(false);
+                backMenuButton.setVisible(true);
+                showPauseButton();
+            }
+        });
+        backMenuButton.setWidth(stage.getViewport().getWorldWidth());
+        backMenuButton.setY(stage.getViewport().getWorldHeight() * 0.75f);
+        okBackMenuButton.setY(stage.getViewport().getWorldHeight() * 0.50f);
+        noBackMenuButton.setY(stage.getViewport().getWorldHeight() * 0.50f);
+        okBackMenuButton.setX(stage.getViewport().getWorldWidth()  * 0.75f);
+        noBackMenuButton.setX(stage.getViewport().getWorldWidth()  * 0.25f);
+        stage.addActor(backMenuButton);
+        stage.addActor(okBackMenuButton);
+        stage.addActor(noBackMenuButton);
+        
         currentLives = Config.MAX_LIVES;
         
         mask = new Image(screen.assets.get("hud/gray-mask.png", Texture.class));
@@ -218,5 +271,8 @@ public class Hud {
     public void showMessage(String message) {
         centeredLabel.setText(message);
     }
-
+    
+    public void hideMessage() {
+        centeredLabel.setText("");
+    }
 }
