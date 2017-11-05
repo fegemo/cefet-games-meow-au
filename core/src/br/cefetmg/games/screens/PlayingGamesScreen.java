@@ -1,6 +1,7 @@
 package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
+import br.cefetmg.games.Transition.TransitionScreen;
 import br.cefetmg.games.graphics.hud.Hud;
 import br.cefetmg.games.logic.chooser.BaseGameSequencer;
 import br.cefetmg.games.logic.chooser.GameSequencer;
@@ -17,6 +18,8 @@ import java.util.HashSet;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import com.badlogic.gdx.Screen;
+import java.util.ArrayList;
 
 /**
  *
@@ -156,10 +159,24 @@ public class PlayingGamesScreen extends BaseScreen
     }
 
     private void loadNextGame() {
-        // carrega o novo jogo (pede ao sequenciador o próximo)
-        currentGame = sequencer.nextGame();
-        currentGame.start();
-
+        TransitionScreen transitionScreen = new TransitionScreen(this);
+        
+        if (currentGame == null) {
+            // carrega o novo jogo (pede ao sequenciador o próximo)
+            currentGame = sequencer.nextGame();
+            currentGame.start();
+            
+            //transitionScreen.execute(TransitionScreen.Effect.FADE_OUT, 1f);
+        } else {
+            transitionScreen.execute(TransitionScreen.Effect.FADE_IN_OUT, 1f, new Task() {
+                @Override
+                public void run() {
+                    currentGame = sequencer.nextGame();
+                    currentGame.start();
+                }
+            });
+        }
+        
         // atualiza o número de sequência do jogo atual na HUD
         hud.setGameIndex(sequencer.getGameNumber());
     }
@@ -169,7 +186,7 @@ public class PlayingGamesScreen extends BaseScreen
                 super.viewport.getWorldHeight() * 0.35f);
     }
 
-    private boolean preload() {
+    public boolean preload() {
         if (super.assets.update() && !hasPreloaded) {
             hud.create();
             inputMultiplexer.addProcessor(hud.getInputProcessor());
