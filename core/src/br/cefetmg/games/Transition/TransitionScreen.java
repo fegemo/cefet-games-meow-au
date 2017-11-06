@@ -71,7 +71,7 @@ public class TransitionScreen extends ScreenAdapter {
             transitionEffects.add(new ActionsTransitionEffect(new Timer.Task() {
                 @Override
                 public void run() {
-                    game.setScreen(next);
+                    current = next;
                 }
             }));
         }
@@ -80,14 +80,14 @@ public class TransitionScreen extends ScreenAdapter {
     public void execute(Effect effect, float duration, Timer.Task task) {
         switch (effect) {
             case FADE_IN:
-                transitionEffects.add(new FadeInTransitionEffect(1f));
+                transitionEffects.add(new FadeInTransitionEffect(duration));
                 setTask(task);
             break;
             case FADE_IN_OUT:
-                transitionEffects.add(new FadeInTransitionEffect(1f));
+                transitionEffects.add(new FadeInTransitionEffect(duration));
             case FADE_OUT:
                 setTask(task);
-                transitionEffects.add(new FadeOutTransitionEffect(1f));
+                transitionEffects.add(new FadeOutTransitionEffect(duration));
             break;
             default:
                 setTask(task);

@@ -26,8 +26,10 @@ public class ActionsTransitionEffect extends TransitionEffect {
         if (once) {
             Timer.instance().scheduleTask(task, duration);
             once = false;
+        } else {
+            current.show();
+            if (current.assets.update())
+                isFinished = true;
         }
-        
-        isFinished = true;
     }
 }

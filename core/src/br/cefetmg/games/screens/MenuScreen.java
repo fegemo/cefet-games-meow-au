@@ -1,18 +1,11 @@
 package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
-import br.cefetmg.games.Transition.ActionsTransitionEffect;
-import br.cefetmg.games.Transition.FadeInTransitionEffect;
-import br.cefetmg.games.Transition.FadeOutTransitionEffect;
-import br.cefetmg.games.Transition.TransitionEffect;
 import br.cefetmg.games.Transition.TransitionScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Timer;
-import java.util.ArrayList;
 
 /**
  * Uma tela de Menu Principal do jogo.

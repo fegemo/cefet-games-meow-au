@@ -159,15 +159,12 @@ public class PlayingGamesScreen extends BaseScreen
     }
 
     private void loadNextGame() {
-        TransitionScreen transitionScreen = new TransitionScreen(this);
-        
         if (currentGame == null) {
             // carrega o novo jogo (pede ao sequenciador o próximo)
             currentGame = sequencer.nextGame();
             currentGame.start();
-            
-            //transitionScreen.execute(TransitionScreen.Effect.FADE_OUT, 1f);
         } else {
+            TransitionScreen transitionScreen = new TransitionScreen(this);
             transitionScreen.execute(TransitionScreen.Effect.FADE_IN_OUT, 1f, new Task() {
                 @Override
                 public void run() {
@@ -186,7 +183,7 @@ public class PlayingGamesScreen extends BaseScreen
                 super.viewport.getWorldHeight() * 0.35f);
     }
 
-    public boolean preload() {
+    private boolean preload() {
         if (super.assets.update() && !hasPreloaded) {
             hud.create();
             inputMultiplexer.addProcessor(hud.getInputProcessor());
