@@ -1,6 +1,7 @@
 
 package br.cefetmg.games.Transition;
 
+import br.cefetmg.games.GameCustom;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Timer;
@@ -30,8 +31,13 @@ public class ActionsTransitionEffect extends TransitionEffect {
         } else {
             current.show();
             current.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            if (current.assets.update())
+            if (current.assets.update()) { // aguarda a conclusão do carregamento dos assets
+                if (current.game instanceof GameCustom) {
+                    GameCustom game = (GameCustom) current.game;
+                    game.setLoadedScreen(current); // informa que a tela já foi carregada
+                }
                 isFinished = true;
+            }
         }
     }
 }
