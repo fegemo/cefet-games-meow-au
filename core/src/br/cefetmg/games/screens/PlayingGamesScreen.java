@@ -18,8 +18,6 @@ import java.util.HashSet;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
-import com.badlogic.gdx.Screen;
-import java.util.ArrayList;
 
 /**
  *

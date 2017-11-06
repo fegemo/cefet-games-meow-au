@@ -23,8 +23,6 @@ public class TransitionScreen extends ScreenAdapter {
     private ArrayList<TransitionEffect> transitionEffects;
     private int currentTransitionEffect;
 
-    // ======== Construtores ======== //
-    
     private TransitionScreen(BaseScreen current, BaseScreen next, ArrayList<TransitionEffect> transitionEffects) {
         this.current = current;
         this.next = next;
@@ -33,21 +31,7 @@ public class TransitionScreen extends ScreenAdapter {
         this.game = current.game;
     }
     
-    private TransitionScreen(BaseScreen current, BaseScreen next) {
-        this.current = current;
-        this.next = next;
-        this.transitionEffects = new ArrayList<TransitionEffect>();
-        this.currentTransitionEffect = 0;
-        this.game = current.game;
-    }
-    
-    private TransitionScreen(BaseScreen current) {
-        this.current = current;
-        this.next = current;
-        this.transitionEffects = new ArrayList<TransitionEffect>();
-        this.currentTransitionEffect = 0;
-        this.game = current.game;
-    }
+    // ======== Sobrecarga para getInstance ======== //
     
     public static TransitionScreen getInstance(BaseScreen current, BaseScreen next, ArrayList<TransitionEffect> transitionEffects) {
         if (lastInstance == null)
@@ -57,17 +41,15 @@ public class TransitionScreen extends ScreenAdapter {
     }
     
     public static TransitionScreen getInstance(BaseScreen current, BaseScreen next) {
-        if (lastInstance == null)
-            return new TransitionScreen(current, next);
-        else
-            return lastInstance;
+        return getInstance(current, next, new ArrayList<TransitionEffect>());
     }
     
     public static TransitionScreen getInstance(BaseScreen current) {
-        if (lastInstance == null)
-            return new TransitionScreen(current);
-        else
-            return lastInstance;
+        return getInstance(current, current, new ArrayList<TransitionEffect>());
+    }
+    
+    public static TransitionScreen getInstance() {
+        return lastInstance;
     }
     
     // ================ //
@@ -86,6 +68,8 @@ public class TransitionScreen extends ScreenAdapter {
         if (transitionEffects.get(currentTransitionEffect).isFinished())
             currentTransitionEffect++;
     }
+    
+    // ================ //
     
     private void setTask(Timer.Task task) {
         if (task != null)
@@ -130,6 +114,11 @@ public class TransitionScreen extends ScreenAdapter {
     }
     
     public void execute() {
+        if (lastInstance != null)
+            return;
+        else
+            lastInstance = this;
+        
         if (transitionEffects != null && !transitionEffects.isEmpty())
             game.setScreen(this);
     }

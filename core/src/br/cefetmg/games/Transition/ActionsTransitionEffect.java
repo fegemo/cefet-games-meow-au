@@ -2,6 +2,7 @@
 package br.cefetmg.games.Transition;
 
 import br.cefetmg.games.screens.BaseScreen;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Timer;
 
 public class ActionsTransitionEffect extends TransitionEffect {
@@ -28,6 +29,7 @@ public class ActionsTransitionEffect extends TransitionEffect {
             once = false;
         } else {
             current.show();
+            current.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             if (current.assets.update())
                 isFinished = true;
         }
