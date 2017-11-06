@@ -95,7 +95,7 @@ public class MenuScreen extends BaseScreen {
      * Navega para a tela de jogo.
      */
     private void navigateToMicroGameScreen() {
-        TransitionScreen transitionScreen = new TransitionScreen(this, new PlayingGamesScreen(game, this));
+        TransitionScreen transitionScreen = TransitionScreen.getInstance(this, new PlayingGamesScreen(game, this));
         transitionScreen.execute(TransitionScreen.Effect.FADE_IN_OUT, 1f);
         
         //game.setScreen(new PlayingGamesScreen(game, this));

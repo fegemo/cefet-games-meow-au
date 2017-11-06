@@ -164,7 +164,7 @@ public class PlayingGamesScreen extends BaseScreen
             currentGame = sequencer.nextGame();
             currentGame.start();
         } else {
-            TransitionScreen transitionScreen = new TransitionScreen(this);
+            TransitionScreen transitionScreen = TransitionScreen.getInstance(this);
             transitionScreen.execute(TransitionScreen.Effect.FADE_IN_OUT, 1f, new Task() {
                 @Override
                 public void run() {

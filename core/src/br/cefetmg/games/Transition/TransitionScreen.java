@@ -16,15 +16,16 @@ public class TransitionScreen extends ScreenAdapter {
         FADE_IN_OUT
     }
     
-    Game game;
-    BaseScreen current;
-    BaseScreen next;
-    ArrayList<TransitionEffect> transitionEffects;
-    int currentTransitionEffect;
+    private static TransitionScreen lastInstance = null;
+    private Game game;
+    private BaseScreen current;
+    private BaseScreen next;
+    private ArrayList<TransitionEffect> transitionEffects;
+    private int currentTransitionEffect;
 
     // ======== Construtores ======== //
     
-    public TransitionScreen(BaseScreen current, BaseScreen next, ArrayList<TransitionEffect> transitionEffects) {
+    private TransitionScreen(BaseScreen current, BaseScreen next, ArrayList<TransitionEffect> transitionEffects) {
         this.current = current;
         this.next = next;
         this.transitionEffects = transitionEffects;
@@ -32,7 +33,7 @@ public class TransitionScreen extends ScreenAdapter {
         this.game = current.game;
     }
     
-    public TransitionScreen(BaseScreen current, BaseScreen next) {
+    private TransitionScreen(BaseScreen current, BaseScreen next) {
         this.current = current;
         this.next = next;
         this.transitionEffects = new ArrayList<TransitionEffect>();
@@ -40,12 +41,33 @@ public class TransitionScreen extends ScreenAdapter {
         this.game = current.game;
     }
     
-    public TransitionScreen(BaseScreen current) {
+    private TransitionScreen(BaseScreen current) {
         this.current = current;
         this.next = current;
         this.transitionEffects = new ArrayList<TransitionEffect>();
         this.currentTransitionEffect = 0;
         this.game = current.game;
+    }
+    
+    public static TransitionScreen getInstance(BaseScreen current, BaseScreen next, ArrayList<TransitionEffect> transitionEffects) {
+        if (lastInstance == null)
+            return new TransitionScreen(current, next, transitionEffects);
+        else
+            return lastInstance;
+    }
+    
+    public static TransitionScreen getInstance(BaseScreen current, BaseScreen next) {
+        if (lastInstance == null)
+            return new TransitionScreen(current, next);
+        else
+            return lastInstance;
+    }
+    
+    public static TransitionScreen getInstance(BaseScreen current) {
+        if (lastInstance == null)
+            return new TransitionScreen(current);
+        else
+            return lastInstance;
     }
     
     // ================ //
@@ -54,6 +76,7 @@ public class TransitionScreen extends ScreenAdapter {
     public void render(float delta) {
         if (currentTransitionEffect >= transitionEffects.size()) {
             game.setScreen(next);
+            lastInstance = null;
             return;
         }
 
@@ -78,6 +101,11 @@ public class TransitionScreen extends ScreenAdapter {
     }
     
     public void execute(Effect effect, float duration, Timer.Task task) {
+        if (lastInstance != null)
+            return;
+        
+        lastInstance = this;
+        
         switch (effect) {
             case FADE_IN:
                 transitionEffects.add(new FadeInTransitionEffect(duration));
