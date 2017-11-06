@@ -4,6 +4,7 @@ import br.cefetmg.games.Config;
 import br.cefetmg.games.graphics.hud.Hud;
 import br.cefetmg.games.logic.chooser.BaseGameSequencer;
 import br.cefetmg.games.logic.chooser.GameSequencer;
+import br.cefetmg.games.logic.chooser.InfiniteGameSequencer;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.factories.*;
 import br.cefetmg.games.minigames.util.MiniGameState;
@@ -37,7 +38,7 @@ public class PlayingGamesScreen extends BaseScreen
         super(game, previous);
         state = PlayScreenState.PLAYING;
         lives = Config.MAX_LIVES;
-        sequencer = new GameSequencer(5, new HashSet<MiniGameFactory>(
+        sequencer = new InfiniteGameSequencer(new HashSet<MiniGameFactory>(
                 Arrays.asList(
                         // flávio
                         new ShootTheCariesFactory(),
