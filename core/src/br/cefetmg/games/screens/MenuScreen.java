@@ -28,7 +28,8 @@ public class MenuScreen extends BaseScreen {
     public static final int PLAY_Y = 360;
     public static final int RANKING_Y = 276;
     public static final int CREDITS_Y = 192;
-    public static final int EXIT_Y = 108;
+    public static final int WORLD_Y = 108;
+    public static final int EXIT_Y = 24;
     
     public static final int LOGO_X = 160;
     public static final int LOGO_Y = 360;
@@ -41,6 +42,7 @@ public class MenuScreen extends BaseScreen {
     private Texture btnExit;
     private Texture btnRanking;
     private Texture btnCredits;
+    private Texture btnWorld;
     private Texture btnNormal;
     private Texture btnSurvival;
     private Texture btnBack;
@@ -73,6 +75,7 @@ public class MenuScreen extends BaseScreen {
         btnExit = new Texture("menu/button_sair.png");
         btnRanking = new Texture("menu/button_ranking.png");
         btnCredits = new Texture("menu/button_creditos.png");
+        btnWorld = new Texture("menu/button_mundo.png");
         btnNormal = new Texture("menu/button_normal.png");
         btnSurvival = new Texture("menu/button_survival.png");
         btnBack = new Texture("menu/button_voltar.png");
@@ -112,36 +115,64 @@ public class MenuScreen extends BaseScreen {
             Rectangle playBounds=new Rectangle(BUTTONS_X, PLAY_Y, BUTTONS_WIDTH,BUTTONS_HEIGHT);
             Rectangle rankingBounds=new Rectangle(BUTTONS_X, RANKING_Y, BUTTONS_WIDTH,BUTTONS_HEIGHT);
             Rectangle creditsBounds=new Rectangle(BUTTONS_X, CREDITS_Y, BUTTONS_WIDTH,BUTTONS_HEIGHT);
+            Rectangle worldBounds=new Rectangle(BUTTONS_X, WORLD_Y, BUTTONS_WIDTH,BUTTONS_HEIGHT);
             Rectangle exitBounds=new Rectangle(BUTTONS_X, EXIT_Y, BUTTONS_WIDTH,BUTTONS_HEIGHT);
             
             
             if(!selecionaModo){
                 if(playBounds.contains(tmp.x,tmp.y)){
                     selecionaModo = true;
-                    click1.play();
+                    click2.play();
                 }
                 if(rankingBounds.contains(tmp.x,tmp.y)){
-                    click1.play();
+                    /*
+                    
+                    CHAMADA DA TELA DE RANKING
+                    
+                    */
+                    
+                    click2.play();
                 }
                 if(creditsBounds.contains(tmp.x,tmp.y)){
-                    click1.play();
-                }
-                if(exitBounds.contains(tmp.x,tmp.y)){
+                    /*
+                    
+                    CHAMADA DA TELA DE CRÉDITOS
+                    
+                    */
                     click2.play();
+                }
+                if(worldBounds.contains(tmp.x,tmp.y)){
+                    /*
+                    
+                    CHAMADA DA TELA OVERWORLD
+                    
+                    
+                    */
+                    click2.play();
+                }                
+                if(exitBounds.contains(tmp.x,tmp.y)){
+                    click1.play();
                     System.exit(0);
                 }
             }
             else{
                 if(playBounds.contains(tmp.x,tmp.y)){
-                    click1.play();
+                    //CHAMADA DO MODO NORMAL
+                    click2.play();
                     navigateToMicroGameScreen();
                 }
                 if(rankingBounds.contains(tmp.x,tmp.y)){
-                    click1.play();
+                    /*
+                    
+                    CHAMADA DO MODO SURVIVAL
+                    
+                    */
+                    click2.play();
                 }
                 if(creditsBounds.contains(tmp.x,tmp.y)){
+                    //Volta para os botões
                     selecionaModo = false;
-                    click2.play();
+                    click1.play();
                 }
             }
             
@@ -179,6 +210,8 @@ public class MenuScreen extends BaseScreen {
             batch.draw(btnRanking, BUTTONS_X, RANKING_Y,
                 BUTTONS_WIDTH,BUTTONS_HEIGHT);
             batch.draw(btnCredits, BUTTONS_X, CREDITS_Y,
+                BUTTONS_WIDTH,BUTTONS_HEIGHT);
+            batch.draw(btnWorld, BUTTONS_X, WORLD_Y,
                 BUTTONS_WIDTH,BUTTONS_HEIGHT);
             batch.draw(btnExit, BUTTONS_X, EXIT_Y,
                 BUTTONS_WIDTH,BUTTONS_HEIGHT);
