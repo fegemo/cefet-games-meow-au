@@ -1,6 +1,7 @@
 package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
+import br.cefetmg.games.Transition.TransitionScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -213,6 +215,16 @@ public abstract class BaseScreen extends ScreenAdapter {
             // desenha o conteúdo da tela
             draw();
         }
+    }
+    
+    public void transitionScreen(BaseScreen screen, TransitionScreen.Effect effect, float duration) {
+        TransitionScreen transitionScreen = TransitionScreen.getInstance(this, screen);
+        transitionScreen.execute(effect, duration);
+    }
+    
+    public void transitionGame(TransitionScreen.Effect effect, float duration, Timer.Task task) {
+        TransitionScreen transitionScreen = TransitionScreen.getInstance(this);
+        transitionScreen.execute(effect, duration, task);
     }
 
     /**

@@ -111,7 +111,9 @@ public class PlayingGamesScreen extends BaseScreen
                 || state == PlayScreenState.FINISHED_GAME_OVER) {
             if (Gdx.input.justTouched()) {
                 // volta para o menu principal
-                super.game.setScreen(new MenuScreen(super.game, this));
+                transitionScreen(new MenuScreen(super.game, this), 
+                        TransitionScreen.Effect.FADE_IN_OUT, 1f);
+                //super.game.setScreen(new MenuScreen(super.game, this));
             }
         }
     }
@@ -162,8 +164,7 @@ public class PlayingGamesScreen extends BaseScreen
             currentGame = sequencer.nextGame();
             currentGame.start();
         } else {
-            TransitionScreen transitionScreen = TransitionScreen.getInstance(this);
-            transitionScreen.execute(TransitionScreen.Effect.FADE_IN_OUT, 1f, new Task() {
+            transitionGame(TransitionScreen.Effect.FADE_IN_OUT, 0.5f, new Task() {
                 @Override
                 public void run() {
                     currentGame = sequencer.nextGame();

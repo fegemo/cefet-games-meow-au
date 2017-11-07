@@ -59,8 +59,8 @@ public class SplashScreen extends BaseScreen {
      * Navega para a tela de Menu.
      */
     private void navigateToMenuScreen() {
-        TransitionScreen transitionScreen = TransitionScreen.getInstance(this, new MenuScreen(game, this));
-        transitionScreen.execute(TransitionScreen.Effect.FADE_IN_OUT, 0.5f);
+        transitionScreen(new MenuScreen(game, this), 
+                        TransitionScreen.Effect.FADE_IN_OUT, 0.5f);
         
         //game.setScreen(new MenuScreen(game, this));
     }
