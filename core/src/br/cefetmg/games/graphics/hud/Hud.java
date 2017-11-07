@@ -41,6 +41,7 @@ public class Hud {
 
     private Countdown countdown;
     private Texture lifeTexture;
+    private Texture explodeLifeTexture;
     private Texture clockTexture;
     private Image mask;
     private Button pauseButton;
@@ -62,7 +63,8 @@ public class Hud {
                 Texture.class));
         skin.add("pause", screen.assets.get("hud/pause-button.png",
                 Texture.class));
-        lifeTexture = screen.assets.get("hud/lives.png");
+        lifeTexture = screen.assets.get("hud/lifeTexture.png");
+        explodeLifeTexture = screen.assets.get("hud/explodeLifeTexture.png");
         clockTexture = screen.assets.get("hud/clock.png");
 
         pauseButton = new ImageButton(
@@ -95,7 +97,7 @@ public class Hud {
         mask.setTouchable(Touchable.disabled);
         stage.addActor(mask);
 
-        centeredLabel = new Label("", new LabelStyle(screen.assets.get("snacker-comic-50.ttf", BitmapFont.class), Color.BLACK));
+        centeredLabel = new Label("", new LabelStyle(screen.assets.get("brainfish-50.ttf", BitmapFont.class), Color.BLACK));
         centeredLabel.setWrap(true);
         centeredLabel.setAlignment(Align.center);
         centeredLabel.setWidth(stage.getViewport().getWorldWidth());
@@ -122,7 +124,7 @@ public class Hud {
 
         livesGroup = new HorizontalGroup();
         for (int i = 0; i < Config.MAX_LIVES; i++) {
-            livesGroup.addActor(new LifeHeart(lifeTexture));
+            livesGroup.addActor(new LifeHeart(lifeTexture,explodeLifeTexture));
         }
 
         timerSound = screen.assets.get("hud/tick-tock.mp3", Sound.class);

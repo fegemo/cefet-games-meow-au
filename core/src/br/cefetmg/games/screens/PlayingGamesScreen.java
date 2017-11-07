@@ -87,7 +87,8 @@ public class PlayingGamesScreen extends BaseScreen
         assets.load("hud/gray-mask.png", Texture.class);
         assets.load("hud/unpause-button.png", Texture.class);
         assets.load("hud/pause-button.png", Texture.class);
-        assets.load("hud/lives.png", Texture.class);
+        assets.load("hud/lifeTexture.png", Texture.class);
+        assets.load("hud/explodeLifeTexture.png", Texture.class);
         assets.load("hud/clock.png", Texture.class);
         assets.load("hud/tick-tock.mp3", Sound.class);
         Gdx.input.setInputProcessor(inputMultiplexer);
