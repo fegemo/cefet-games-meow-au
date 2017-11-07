@@ -3,18 +3,52 @@ package br.cefetmg.games.screens;
 import br.cefetmg.games.Config;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 
 /**
  * Uma tela de Menu Principal do jogo.
  *
  * @author Flávio Coutinho - fegemo <coutinho@decom.cefetmg.br>
  */
+
+
+
 public class MenuScreen extends BaseScreen {
 
+    public static final int BUTTONS_X = 538;
+    public static final int BUTTONS_WIDTH = 204;
+    public static final int BUTTONS_HEIGHT = 54;
+    public static final int PLAY_Y = 360;
+    public static final int RANKING_Y = 276;
+    public static final int CREDITS_Y = 192;
+    public static final int EXIT_Y = 108;
+    
+    public static final int LOGO_X = 160;
+    public static final int LOGO_Y = 360;
+    public static final int LOGO_WIDTH = 960;
+    public static final int LOGO_HEIGHT = 386;
+    
     private static final int NUMBER_OF_TILED_BACKGROUND_TEXTURE = 7;
     private TextureRegion background;
+    private Texture btnPlay;
+    private Texture btnExit;
+    private Texture btnRanking;
+    private Texture btnCredits;
+    private Texture btnNormal;
+    private Texture btnSurvival;
+    private Texture btnBack;
+    private Texture logo;
+    private boolean selecionaModo = false;
+    private Sound click1;
+    private Sound click2;
+    
 
     /**
      * Cria uma nova tela de menu.
@@ -34,7 +68,17 @@ public class MenuScreen extends BaseScreen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
 
         // instancia a textura e a região de textura (usada para repetir)
-        background = new TextureRegion(new Texture("menu-background.png"));
+        background = new TextureRegion(new Texture("menu/menu-background.png"));
+        btnPlay = new Texture("menu/button_jogar.png");
+        btnExit = new Texture("menu/button_sair.png");
+        btnRanking = new Texture("menu/button_ranking.png");
+        btnCredits = new Texture("menu/button_creditos.png");
+        btnNormal = new Texture("menu/button_normal.png");
+        btnSurvival = new Texture("menu/button_survival.png");
+        btnBack = new Texture("menu/button_voltar.png");
+        logo = new Texture("menu/logo.png");
+        click1 = Gdx.audio.newSound(Gdx.files.internal("menu/click1.mp3"));
+        click2 = Gdx.audio.newSound(Gdx.files.internal("menu/click2.mp3"));
         // configura a textura para repetir caso ela ocupe menos espaço que o
         // espaço disponível
         background.getTexture().setWrap(
@@ -51,6 +95,7 @@ public class MenuScreen extends BaseScreen {
                 (int) (background.getTexture().getHeight()
                         * NUMBER_OF_TILED_BACKGROUND_TEXTURE
                         / Config.DESIRED_ASPECT_RATIO));
+        
     }
 
     /**
@@ -58,10 +103,48 @@ public class MenuScreen extends BaseScreen {
      */
     @Override
     public void handleInput() {
-        // se qualquer interação é feita (teclado, mouse pressionado, tecla
-        // tocada), navega para a próxima tela (de jogo)
+       
+        
+        //verifica se clique foi em algum botão
         if (Gdx.input.justTouched()) {
-            navigateToMicroGameScreen();
+            Vector3 tmp=new Vector3(Gdx.input.getX(),Gdx.input.getY(), 0);
+            camera.unproject(tmp);
+            Rectangle playBounds=new Rectangle(BUTTONS_X, PLAY_Y, BUTTONS_WIDTH,BUTTONS_HEIGHT);
+            Rectangle rankingBounds=new Rectangle(BUTTONS_X, RANKING_Y, BUTTONS_WIDTH,BUTTONS_HEIGHT);
+            Rectangle creditsBounds=new Rectangle(BUTTONS_X, CREDITS_Y, BUTTONS_WIDTH,BUTTONS_HEIGHT);
+            Rectangle exitBounds=new Rectangle(BUTTONS_X, EXIT_Y, BUTTONS_WIDTH,BUTTONS_HEIGHT);
+            
+            
+            if(!selecionaModo){
+                if(playBounds.contains(tmp.x,tmp.y)){
+                    selecionaModo = true;
+                    click1.play();
+                }
+                if(rankingBounds.contains(tmp.x,tmp.y)){
+                    click1.play();
+                }
+                if(creditsBounds.contains(tmp.x,tmp.y)){
+                    click1.play();
+                }
+                if(exitBounds.contains(tmp.x,tmp.y)){
+                    click2.play();
+                    System.exit(0);
+                }
+            }
+            else{
+                if(playBounds.contains(tmp.x,tmp.y)){
+                    click1.play();
+                    navigateToMicroGameScreen();
+                }
+                if(rankingBounds.contains(tmp.x,tmp.y)){
+                    click1.play();
+                }
+                if(creditsBounds.contains(tmp.x,tmp.y)){
+                    selecionaModo = false;
+                    click2.play();
+                }
+            }
+            
         }
     }
 
@@ -74,6 +157,8 @@ public class MenuScreen extends BaseScreen {
     public void update(float dt) {
         float speed = dt * 0.25f;
         background.scroll(speed, -speed);
+        
+        
     }
 
     /**
@@ -85,8 +170,31 @@ public class MenuScreen extends BaseScreen {
         batch.draw(background, 0, 0,
                 viewport.getWorldWidth(),
                 viewport.getWorldHeight());
-        drawCenterAlignedText("Pressione qualquer tecla para jogar",
-                viewport.getWorldHeight() * 0.35f);
+        batch.draw(logo, LOGO_X, LOGO_Y,
+                LOGO_WIDTH,LOGO_HEIGHT);
+        
+        if(!selecionaModo){
+            batch.draw(btnPlay, BUTTONS_X, PLAY_Y,
+                BUTTONS_WIDTH,BUTTONS_HEIGHT);
+            batch.draw(btnRanking, BUTTONS_X, RANKING_Y,
+                BUTTONS_WIDTH,BUTTONS_HEIGHT);
+            batch.draw(btnCredits, BUTTONS_X, CREDITS_Y,
+                BUTTONS_WIDTH,BUTTONS_HEIGHT);
+            batch.draw(btnExit, BUTTONS_X, EXIT_Y,
+                BUTTONS_WIDTH,BUTTONS_HEIGHT);
+        }
+        else{
+            batch.draw(btnNormal, BUTTONS_X, PLAY_Y,
+                BUTTONS_WIDTH,BUTTONS_HEIGHT);
+            batch.draw(btnSurvival, BUTTONS_X, RANKING_Y,
+                BUTTONS_WIDTH,BUTTONS_HEIGHT);
+            batch.draw(btnBack, BUTTONS_X, CREDITS_Y,
+                BUTTONS_WIDTH,BUTTONS_HEIGHT);
+        }
+        
+       
+        /*drawCenterAlignedText("Pressione qualquer tecla para jogar",
+                viewport.getWorldHeight() * 0.35f);*/
         batch.end();
     }
 
