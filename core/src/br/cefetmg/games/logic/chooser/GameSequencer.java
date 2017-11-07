@@ -64,15 +64,15 @@ public class GameSequencer extends BaseGameSequencer {
     }
 
     private void determineGameSequence() {
-        ArrayList<Integer> indexList = new ArrayList<Integer>();
-        
-        for (int i = 0; i < numberOfGames; i++)
-            indexList.add(i);
+        int lastIndex = -1; // valor inicial diferente de qualquer outro índice
         
         for (int i = 0; i < numberOfGames; i++) {
-            int index = MathUtils.random(indexList.size() - 1);
-            indexSequence[i] = indexList.get(index);
-            indexList.remove(index);
+            int index = MathUtils.random(availableGames.size() - 1);
+            if (index != lastIndex) { // garante que o último ínidce sorteado não irá repetir
+                indexSequence[i] = index;
+                lastIndex = index;
+            } else
+                i--;
             //indexSequence[i] = MathUtils.random(availableGames.size() - 1); // instrução original
         }
     }
