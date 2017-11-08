@@ -40,12 +40,14 @@ public class DogBarksCatFlee extends MiniGame {
     private float spawnInterval;
     private float tempoDeAnimacao;
     private int morreu = 0;
+    private float difficulty;
     public float telaAnda = 3.5f;
     public int contadorLatidos = 0;
     public boolean consegueOuvir = false;
 
     public DogBarksCatFlee(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
+        this.difficulty = difficulty;
     }
 
     private void tilesDraw() {
@@ -152,14 +154,14 @@ public class DogBarksCatFlee extends MiniGame {
 
     private void initializeCat() {
         TextureRegion[][] textureCat = TextureRegion.split(catTexture, catTexture.getWidth(), catTexture.getHeight());
-        enemy = new Cat((int) ((float) scareThreshold() * DifficultyCurve.S.getCurveValueBetween(spawnInterval, 5f, 1f)), posicaoInicial, textureCat[0][0]);
+        enemy = new Cat(scareThreshold(difficulty), posicaoInicial, textureCat[0][0]);
         enemy.setQuantidadeVidas(spawnInterval);
         enemy.setPosition(enemy.getInitialPosition());
         enemy.spawn();
     }
 
-    private int scareThreshold() {
-        return MathUtils.random(1, 5);
+    private int scareThreshold(float difficulty) {
+        return (int) DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 1, 10);
     }
 
     @Override
