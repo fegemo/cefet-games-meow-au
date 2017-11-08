@@ -22,18 +22,18 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
  *
  * @inspirado no tp de cinematica
  */
-public class PlayingGamesScreen extends BaseScreen
+public class PlayingGamesScreen2 extends BaseScreen
         implements MiniGameStateObserver {
 
     private MiniGame currentGame;
-    private final BaseGameSequencer sequencer;
-    private final Hud hud;
+    private BaseGameSequencer sequencer;
+    private Hud hud;
     private PlayScreenState state;
     private int lives;
     private boolean hasPreloaded;
-    private final InputMultiplexer inputMultiplexer;
+    private InputMultiplexer inputMultiplexer;
 
-    public PlayingGamesScreen(Game game, BaseScreen previous) {
+    public PlayingGamesScreen2(Game game, BaseScreen previous) {
         super(game, previous);
         state = PlayScreenState.PLAYING;
         lives = Config.MAX_LIVES;
