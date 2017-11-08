@@ -51,8 +51,8 @@ public class PlayingGamesScreen extends BaseScreen
                         // adriel
                         //new UnderwaterCatFactory(),
                         // arthur e pedro
-                        new DogBarksCatFleeFactory()
-                        //new ClickFindCatFactory(),
+                        //new DogBarksCatFleeFactory(),
+                        new ClickFindCatFactory()
                         // cassiano e gustavo jordão
                         //new TicCatDogFactory(),
                         //new JumpTheObstaclesFactory(),
