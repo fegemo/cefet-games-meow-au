@@ -1,6 +1,7 @@
 package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
+import br.cefetmg.games.transition.TransitionScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
@@ -235,7 +236,10 @@ public class MenuScreen extends BaseScreen {
      * Navega para a tela de jogo.
      */
     private void navigateToMicroGameScreen() {
-        game.setScreen(new PlayingGamesScreen(game, this));
+        transitionScreen(new PlayingGamesScreen(super.game, this), 
+                        TransitionScreen.Effect.FADE_IN_OUT, 1f);
+        
+        //game.setScreen(new PlayingGamesScreen(game, this));
     }
 
 
