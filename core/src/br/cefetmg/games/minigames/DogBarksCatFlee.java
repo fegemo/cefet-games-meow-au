@@ -85,7 +85,7 @@ public class DogBarksCatFlee extends MiniGame {
 
     private void catDraw() {
         if (!enemy.isVivo()) {
-            if(contadorLatidos < enemy.getScareThreshold()/2 ){
+            if(player.barkCounter < enemy.getScareThreshold()/2 ){
                 batch.draw(enemy.getTexture(), enemy.getPosition().x, enemy.getPosition().y);
             }else{
                 batch.draw(catTexture2,enemy.getPosition().x,enemy.getPosition().y);
