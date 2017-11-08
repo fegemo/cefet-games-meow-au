@@ -100,7 +100,7 @@ public class DogBarksCatFlee extends MiniGame {
     protected void onStart() {
         tempoDeAnimacao = 0;
         whiningSound = assets.get("DogBarksCatFlee/dog-whining-sound.mp3", Sound.class);
-        deadTexture = assets.get("DogBarksCatFlee/kitten1-alt_3.png", Texture.class);
+        deadTexture = assets.get("DogBarksCatFlee/kitten1-alt_4.png", Texture.class);
         barkSound = assets.get("DogBarksCatFlee/BarkSound.wav", Sound.class);
         dogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
         dogTexture = assets.get("DogBarksCatFlee/dog_spritesheet.png", Texture.class);
