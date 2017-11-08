@@ -62,7 +62,8 @@ public class HeadSoccer extends MiniGame {
     private Sprite bottomK;
     private ArrayList objects;
     private Rectangle bot_Rect;
-
+    
+    private boolean isOver;
     protected Music backgroundMusic;
 
     public HeadSoccer(BaseScreen screen,
@@ -148,10 +149,7 @@ public class HeadSoccer extends MiniGame {
         goalCrossLeft = new Obstacle(obstacleTexture, new Vector2(0, 284), 150, height);
         rightGoal = new Obstacle(obstacleTexture, new Vector2(1184, floorBall), width, 190);
         goalCrossRight = new Obstacle(obstacleTexture, new Vector2(1141, 284), 150, height);
-
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("head-soccer/soccer.mp3"));
-        backgroundMusic.setLooping(true);
-        backgroundMusic.play();
+        backgroundMusic = assets.get("head-soccer/soccer.mp3", Music.class);
     }
 
     private void finilizeGame() {
@@ -167,11 +165,11 @@ public class HeadSoccer extends MiniGame {
     public void finishGame() {
         if (goalB) {
             super.challengeFailed();
-            backgroundMusic.stop();
+            isOver = true;
         }
         if (goalP) {
             super.challengeSolved();
-            backgroundMusic.stop();
+            isOver = true;
         }
     }
 
@@ -392,6 +390,8 @@ public class HeadSoccer extends MiniGame {
 
     @Override
     public void onDrawGame() {
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
         background.draw(batch);
         goalLeft.draw(batch);
         goalRight.draw(batch);
@@ -404,11 +404,21 @@ public class HeadSoccer extends MiniGame {
         bottomD.draw(batch);
         bottomJ.draw(batch);
         bottomK.draw(batch);
+        
+        if (isOver) {
+            backgroundMusic.stop();
+        }
     }
 
     @Override
     public boolean shouldHideMousePointer() {
         return false;
+    }
+    
+        @Override
+    protected void onEnd() {
+        isOver = true;
+        backgroundMusic.stop();
     }
 
     // <editor-fold desc="Classes internas da HeadSoccer" defaultstate="collapsed">

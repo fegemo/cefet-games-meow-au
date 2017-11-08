@@ -21,25 +21,18 @@ class LifeHeart extends Actor {
     private static final int FRAME_WIDTH = 100;
     private static final int FRAME_HEIGHT = 112;
 
-    LifeHeart(Texture lifeTexture) {
+    LifeHeart(Texture lifeTexture, Texture explodeTexture) {
         TextureRegion[][] frames = TextureRegion
                 .split(lifeTexture, FRAME_WIDTH, FRAME_HEIGHT);
-        Animation alive = new Animation(1f, frames[3][4]);
-        Animation dying = new Animation(0.025f,
-                frames[3][4], frames[3][3], frames[3][2], frames[3][1],
-                frames[3][0], frames[2][7], frames[2][6], frames[2][5],
-                frames[2][4], frames[2][3], frames[2][2], frames[2][1],
-                frames[2][0], frames[1][7], frames[1][6], frames[1][5],
-                frames[1][4], frames[1][3], frames[1][2], frames[1][1],
-                frames[1][0], frames[0][7], frames[0][6], frames[0][5],
-                frames[0][4], frames[0][3], frames[0][2], frames[0][1],
-                frames[0][0]
-        );
+        Animation alive = new Animation<TextureRegion>(0.025f, workFrames(lifeTexture, 7, 7));
+        alive.setPlayMode(Animation.PlayMode.LOOP);
+        Animation dying = new Animation<TextureRegion>(0.025f, workFrames(explodeTexture, 3, 6));
+                
         HashMap<String, Animation> animations
                 = new HashMap<String, Animation>();
         animations.put("alive", alive);
         animations.put("dying", dying);
-
+        
         sprite = new MultiAnimatedSprite(animations, "alive");
         sprite.setCenterFrames(true);
         sprite.setUseFrameRegionSize(true);
@@ -72,4 +65,20 @@ class LifeHeart extends Actor {
     public void alive() {
         sprite.startAnimation("alive");
     }
+    
+    private TextureRegion[] workFrames(final Texture texture, int rows, int columns) {
+        TextureRegion[][] tmp = TextureRegion.split(texture,
+                texture.getWidth() / columns,
+                texture.getHeight() / rows);
+
+        TextureRegion[] frames = new TextureRegion[columns * rows];
+        int index = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                frames[index++] = tmp[i][j];
+            }
+        }
+        return frames;
+    }
 }
+
