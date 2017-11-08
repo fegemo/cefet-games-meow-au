@@ -41,6 +41,7 @@ public class Hud {
 
     private Countdown countdown;
     private Texture lifeTexture;
+    private Texture explodeLifeTexture;
     private Texture clockTexture;
     private Image mask;
     private Button pauseButton;
@@ -62,7 +63,8 @@ public class Hud {
                 Texture.class));
         skin.add("pause", screen.assets.get("hud/pause-button.png",
                 Texture.class));
-        lifeTexture = screen.assets.get("hud/lives.png");
+        lifeTexture = screen.assets.get("hud/lifeTexture.png");
+        explodeLifeTexture = screen.assets.get("hud/explodeLifeTexture.png");
         clockTexture = screen.assets.get("hud/clock.png");
 
         pauseButton = new ImageButton(
@@ -82,32 +84,31 @@ public class Hud {
                     stateObserver.onGameResumed();
                     clock.resumeTicking();
                 }
-                
+
             }
 
         });
 
         currentLives = Config.MAX_LIVES;
-        
+
         mask = new Image(screen.assets.get("hud/gray-mask.png", Texture.class));
         mask.setBounds(0, 0, stage.getWidth(), stage.getHeight());
         mask.setVisible(false);
         mask.setTouchable(Touchable.disabled);
         stage.addActor(mask);
 
-        centeredLabel = new Label("", new LabelStyle(screen.assets.get("snacker-comic-50.ttf", BitmapFont.class), Color.BLACK));
+        centeredLabel = new Label("", new LabelStyle(screen.assets.get("brainfish-50.ttf", BitmapFont.class), Color.BLACK));
         centeredLabel.setWrap(true);
         centeredLabel.setAlignment(Align.center);
         centeredLabel.setWidth(stage.getViewport().getWorldWidth());
         centeredLabel.setY(stage.getViewport().getWorldHeight() * 0.75f);
         stage.addActor(centeredLabel);
-        
+
         countdown = new Countdown(screen.assets.get("hud/countdown.png", Texture.class));
         countdown.setAlign(Align.center);
         countdown.setOrigin(Align.center);
-        countdown.setPosition(stage.getViewport().getWorldWidth()/2, stage.getViewport().getWorldHeight()/2, Align.center);
+        countdown.setPosition(stage.getViewport().getWorldWidth() / 2, stage.getViewport().getWorldHeight() / 2, Align.center);
         stage.addActor(countdown);
-        
 
         // faz a parte de baixo da HUD com um "layout de tabela":
         // https://github.com/libgdx/libgdx/wiki/Table
@@ -117,12 +118,11 @@ public class Hud {
 
         sequenceIndexLabel = new Label(
                 String.format("%03d", 1), new LabelStyle(
-                        screen.assets.get("fonts/sawasdee-50.fnt", BitmapFont.class)
-                        , Color.ORANGE));
+                screen.assets.get("fonts/sawasdee-50.fnt", BitmapFont.class), Color.ORANGE));
 
         livesGroup = new HorizontalGroup();
         for (int i = 0; i < Config.MAX_LIVES; i++) {
-            livesGroup.addActor(new LifeHeart(lifeTexture));
+            livesGroup.addActor(new LifeHeart(lifeTexture, explodeLifeTexture));
         }
 
         timerSound = screen.assets.get("hud/tick-tock.mp3", Sound.class);
@@ -135,11 +135,9 @@ public class Hud {
         table.add(livesGroup).uniformX();
         table.add().uniformX();
         table.add(sequenceIndexLabel).uniformX();
-        
-        
+
         // DESCOMENTE a linha abaixo para ver as bordas da tabela
         //table.debug();
-
         stage.addActor(table);
 
     }

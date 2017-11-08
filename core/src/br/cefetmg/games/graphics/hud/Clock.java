@@ -29,15 +29,8 @@ class Clock extends Actor {
 
     Clock(Texture clockTexture, Sound timerSound) {
         this.timerSound = timerSound;
-        TextureRegion[][] frames = TextureRegion
-                .split(clockTexture, FRAME_WIDTH, FRAME_HEIGHT);
-        Animation animation = new Animation(1f,
-                frames[0][3],
-                frames[0][2],
-                frames[0][1],
-                frames[0][0]);
 
-        sprite = new AnimatedSprite(animation);
+        sprite = new AnimatedSprite(new Animation<TextureRegion>(0.2f, workFrames(clockTexture, 5, 7)));
         sprite.setAutoUpdate(false);
         sprite.setCenterFrames(true);
         sprite.setUseFrameRegionSize(true);
@@ -115,5 +108,22 @@ class Clock extends Actor {
         sprite.stop();
         sprite.update(1);
         timerSound.stop();
+    }
+    
+    
+      private TextureRegion[] workFrames(final Texture texture, int rows, int columns) {
+        TextureRegion[][] tmp = TextureRegion.split(texture,
+                texture.getWidth() / columns,
+                texture.getHeight() / rows);
+
+        TextureRegion[] swimFrames = new TextureRegion[columns * rows];
+        int index = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                swimFrames[index++] = tmp[i][j];
+            }
+        }
+        return swimFrames;
+
     }
 }

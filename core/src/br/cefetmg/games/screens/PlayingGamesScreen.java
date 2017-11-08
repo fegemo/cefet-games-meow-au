@@ -17,6 +17,8 @@ import java.util.HashSet;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 
 /**
  *
@@ -83,12 +85,16 @@ public class PlayingGamesScreen extends BaseScreen
     @Override
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
-        assets.load("hud/countdown.png", Texture.class);
+        TextureParameter linearFilter = new TextureLoader.TextureParameter();
+        linearFilter.minFilter = Texture.TextureFilter.Linear;
+        linearFilter.magFilter = Texture.TextureFilter.Linear;
+        assets.load("hud/countdown.png", Texture.class, linearFilter);
         assets.load("hud/gray-mask.png", Texture.class);
-        assets.load("hud/unpause-button.png", Texture.class);
-        assets.load("hud/pause-button.png", Texture.class);
-        assets.load("hud/lives.png", Texture.class);
-        assets.load("hud/clock.png", Texture.class);
+        assets.load("hud/unpause-button.png", Texture.class, linearFilter);
+        assets.load("hud/pause-button.png", Texture.class, linearFilter);
+        assets.load("hud/lifeTexture.png", Texture.class, linearFilter);
+        assets.load("hud/explodeLifeTexture.png", Texture.class, linearFilter);
+        assets.load("hud/clock.png", Texture.class, linearFilter);
         assets.load("hud/tick-tock.mp3", Sound.class);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
