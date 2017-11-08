@@ -258,6 +258,7 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void cleanUp() {
         background.getTexture().dispose();
+        musicaTema.stop();
     }
 
 }
