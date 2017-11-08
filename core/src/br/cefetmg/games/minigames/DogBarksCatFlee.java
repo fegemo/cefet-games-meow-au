@@ -33,6 +33,7 @@ public class DogBarksCatFlee extends MiniGame {
     private Sound meawSound;
     private Sound whiningSound;
     private Texture catTexture;
+    private Texture catTexture2;
     private Cat enemy;
     private Array<Tiles> tilesVector;
     private Vector2 posicaoInicial;
@@ -82,7 +83,11 @@ public class DogBarksCatFlee extends MiniGame {
 
     private void catDraw() {
         if (!enemy.isVivo()) {
-            batch.draw(enemy.getTexture(), enemy.getPosition().x, enemy.getPosition().y);
+            if(contadorLatidos < enemy.getScareThreshold()/2 ){
+                batch.draw(enemy.getTexture(), enemy.getPosition().x, enemy.getPosition().y);
+            }else{
+                batch.draw(catTexture2,enemy.getPosition().x,enemy.getPosition().y);
+            }
         }
         if (enemy.isVivo() && morreu < 10) {
             batch.draw(deadTexture, enemy.oldPos.x, enemy.oldPos.y);
@@ -113,6 +118,7 @@ public class DogBarksCatFlee extends MiniGame {
                 quadrosDeAnimacao2[0][4]);
         dogBarking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         dogWalking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        catTexture2 = assets.get("DogBarksCatFlee/kitten1-alt_3.png", Texture.class);
         catTexture = assets.get("DogBarksCatFlee/kitten1-alt.png", Texture.class);
         meawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
 
@@ -159,7 +165,7 @@ public class DogBarksCatFlee extends MiniGame {
     }
 
     private int scareThreshold() {
-        return MathUtils.random(1, 5);
+        return 3;
     }
 
     @Override
@@ -229,7 +235,8 @@ public class DogBarksCatFlee extends MiniGame {
         public boolean mostrarGatoMorto = false;
         public Vector2 oldPos;
         public boolean visivel = true;
-
+        public Texture texturaResabiado1;
+        
         // Construtor do Jogo DogBarksCatFlee
         public Cat(int scaredThreshold, Vector2 position, TextureRegion textureCat) {
             super(position, textureCat);
