@@ -9,28 +9,31 @@ import com.badlogic.gdx.utils.Timer;
 public class ActionsTransitionEffect extends TransitionEffect {
     
     private final Timer.Task task;
-    private boolean once;
+    private boolean alreadyExecutedOnce;
+    private boolean alreadySwitchedScreens;
     
     public ActionsTransitionEffect(Timer.Task task) {
-        super(0);
-        this.task = task;
-        once = true;
+        this(task, 0);
     }
     
     public ActionsTransitionEffect(Timer.Task task, float duration) {
         super(duration);
         this.task = task;
-        once = true;
+        alreadyExecutedOnce = false;
+        alreadySwitchedScreens = false;
     }
     
     @Override
     public void render(BaseScreen current) {
-        if (once) {
+        if (!alreadyExecutedOnce) {
             Timer.instance().scheduleTask(task, duration);
-            once = false;
+            alreadyExecutedOnce = true;
         } else {
-            current.show();
-            current.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            if (!alreadySwitchedScreens) {
+                alreadySwitchedScreens = true;
+                current.show();
+                current.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            }
             if (current.assets.update()) { // aguarda a conclusão do carregamento dos assets
                 if (current.game instanceof MeowAuGame) {
                     MeowAuGame game = (MeowAuGame) current.game;
