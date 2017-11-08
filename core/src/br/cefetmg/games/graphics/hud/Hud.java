@@ -84,13 +84,13 @@ public class Hud {
                     stateObserver.onGameResumed();
                     clock.resumeTicking();
                 }
-                
+
             }
 
         });
 
         currentLives = Config.MAX_LIVES;
-        
+
         mask = new Image(screen.assets.get("hud/gray-mask.png", Texture.class));
         mask.setBounds(0, 0, stage.getWidth(), stage.getHeight());
         mask.setVisible(false);
@@ -103,13 +103,12 @@ public class Hud {
         centeredLabel.setWidth(stage.getViewport().getWorldWidth());
         centeredLabel.setY(stage.getViewport().getWorldHeight() * 0.75f);
         stage.addActor(centeredLabel);
-        
+
         countdown = new Countdown(screen.assets.get("hud/countdown.png", Texture.class));
         countdown.setAlign(Align.center);
         countdown.setOrigin(Align.center);
-        countdown.setPosition(stage.getViewport().getWorldWidth()/2, stage.getViewport().getWorldHeight()/2, Align.center);
+        countdown.setPosition(stage.getViewport().getWorldWidth() / 2, stage.getViewport().getWorldHeight() / 2, Align.center);
         stage.addActor(countdown);
-        
 
         // faz a parte de baixo da HUD com um "layout de tabela":
         // https://github.com/libgdx/libgdx/wiki/Table
@@ -119,12 +118,11 @@ public class Hud {
 
         sequenceIndexLabel = new Label(
                 String.format("%03d", 1), new LabelStyle(
-                        screen.assets.get("fonts/sawasdee-50.fnt", BitmapFont.class)
-                        , Color.ORANGE));
+                screen.assets.get("fonts/sawasdee-50.fnt", BitmapFont.class), Color.ORANGE));
 
         livesGroup = new HorizontalGroup();
         for (int i = 0; i < Config.MAX_LIVES; i++) {
-            livesGroup.addActor(new LifeHeart(lifeTexture,explodeLifeTexture));
+            livesGroup.addActor(new LifeHeart(lifeTexture, explodeLifeTexture));
         }
 
         timerSound = screen.assets.get("hud/tick-tock.mp3", Sound.class);
@@ -137,11 +135,9 @@ public class Hud {
         table.add(livesGroup).uniformX();
         table.add().uniformX();
         table.add(sequenceIndexLabel).uniformX();
-        
-        
+
         // DESCOMENTE a linha abaixo para ver as bordas da tabela
         //table.debug();
-
         stage.addActor(table);
 
     }

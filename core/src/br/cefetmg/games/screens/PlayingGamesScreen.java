@@ -17,6 +17,8 @@ import java.util.HashSet;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 
 /**
  *
@@ -40,40 +42,40 @@ public class PlayingGamesScreen extends BaseScreen
         sequencer = new GameSequencer(5, new HashSet<MiniGameFactory>(
                 Arrays.asList(
                         // flávio
-                         //new ShootTheCariesFactory(),
-                         //new ShooTheTartarusFactory(),
+                        new ShootTheCariesFactory(),
+                        new ShooTheTartarusFactory(),
                         // gustavo henrique e rogenes
-                         new BasCATballFactory(),
-                         new RunningFactory(),
+                        new BasCATballFactory(),
+                        new RunningFactory(),
                         // rafael e luis carlos
-                         new DodgeTheVeggiesFactory(),
-                         new CatchThatHomeworkFactory(),
+                        new DodgeTheVeggiesFactory(),
+                        new CatchThatHomeworkFactory(),
                         // adriel
-                         new UnderwaterCatFactory(),
+                        new UnderwaterCatFactory(),
                         // arthur e pedro
-                         new DogBarksCatFleeFactory(),
-                         new ClickFindCatFactory(),
+                        new DogBarksCatFleeFactory(),
+                        new ClickFindCatFactory(),
                         // cassiano e gustavo jordão
-                         new TicCatDogFactory(),
-                         new JumpTheObstaclesFactory(),
+                        new TicCatDogFactory(),
+                        new JumpTheObstaclesFactory(),
                         // luiza e pedro cordeiro
-                         new SpyFishFactory(),
-                         new PhantomCatFactory(),
+                        new SpyFishFactory(),
+                        new PhantomCatFactory(),
                         // gabriel e natália
-                         new MouseAttackFactory(),
-                         new JetRatFactory(),
+                        new MouseAttackFactory(),
+                        new JetRatFactory(),
                         // emanoel e vinícius
-                         new HeadSoccerFactory(),
-                         new CatAvoiderFactory(),
+                        new HeadSoccerFactory(),
+                        new CatAvoiderFactory(),
                         // joão e miguel
-                         new CannonCatFactory(),
-                         new MeowsicFactory(),
+                        new CannonCatFactory(),
+                        new MeowsicFactory(),
                         // túlio
-                         new RainingCatsFactory(),
-                         new NinjaCatFactory(),
+                        new RainingCatsFactory(),
+                        new NinjaCatFactory(),
                         //estevao e sarah//
-                         new TheFridgeGameFactory(),
-                         new KillTheRatsFactory()
+                        new TheFridgeGameFactory(),
+                        new KillTheRatsFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);
@@ -83,13 +85,16 @@ public class PlayingGamesScreen extends BaseScreen
     @Override
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
-        assets.load("hud/countdown.png", Texture.class);
+        TextureParameter linearFilter = new TextureLoader.TextureParameter();
+        linearFilter.minFilter = Texture.TextureFilter.Linear;
+        linearFilter.magFilter = Texture.TextureFilter.Linear;
+        assets.load("hud/countdown.png", Texture.class, linearFilter);
         assets.load("hud/gray-mask.png", Texture.class);
-        assets.load("hud/unpause-button.png", Texture.class);
-        assets.load("hud/pause-button.png", Texture.class);
-        assets.load("hud/lifeTexture.png", Texture.class);
-        assets.load("hud/explodeLifeTexture.png", Texture.class);
-        assets.load("hud/clock.png", Texture.class);
+        assets.load("hud/unpause-button.png", Texture.class, linearFilter);
+        assets.load("hud/pause-button.png", Texture.class, linearFilter);
+        assets.load("hud/lifeTexture.png", Texture.class, linearFilter);
+        assets.load("hud/explodeLifeTexture.png", Texture.class, linearFilter);
+        assets.load("hud/clock.png", Texture.class, linearFilter);
         assets.load("hud/tick-tock.mp3", Sound.class);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
