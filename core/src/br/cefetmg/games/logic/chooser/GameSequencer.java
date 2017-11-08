@@ -71,9 +71,9 @@ public class GameSequencer extends BaseGameSequencer {
             if (index != lastIndex) { // garante que o último ínidce sorteado não irá repetir
                 indexSequence[i] = index;
                 lastIndex = (availableGames.size() == 1) ? -1 : index;
-            } else
+            } else {
                 i--;
-            //indexSequence[i] = MathUtils.random(availableGames.size() - 1); // instrução original
+            }
         }
     }
 
