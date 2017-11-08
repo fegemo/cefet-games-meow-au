@@ -167,7 +167,7 @@ public class DogBarksCatFlee extends MiniGame {
     }
 
     private int scareThreshold(float difficulty) {
-        return (int) DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 1, 10);
+        return (int) DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 3, 20);
     }
 
     @Override
