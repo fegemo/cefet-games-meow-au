@@ -48,7 +48,10 @@ public abstract class BaseScreen extends ScreenAdapter {
     private BitmapFont messagesFont;
     private float deviceAspectRatioDivergenceFromDesired;
     private boolean wasJustDisposed = false;
-
+    
+    public LoadingScreen loadingScreen;
+    public boolean isLoadingOver = true;
+    
     /**
      * Cria uma instância de tela.
      * 
@@ -63,6 +66,7 @@ public abstract class BaseScreen extends ScreenAdapter {
         this.camera = new OrthographicCamera();
         this.viewport = chooseBestViewport();
         this.assets = new AssetManager();
+        this.loadingScreen = new LoadingScreen(this.viewport);
 
         FileHandleResolver resolver = new InternalFileHandleResolver();
         assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
@@ -186,22 +190,21 @@ public abstract class BaseScreen extends ScreenAdapter {
      * chamada.
      */
     @Override
-    public final void render(float dt) {
-        if (assets.update()) {
-            if (messagesFont == null) {
+    public final void render(float dt)
+    {
+        if (assets.update() && isLoadingOver) {
+            if (messagesFont == null)
                 messagesFont = assets.get("snacker-comic-50.ttf");
-            }
             // chama função para gerenciar o input
             handleInput();
-            
+
             // chama função para atualizar a lógica da tela
             update(dt);
 
             // a tela pode ter sido "disposed" durante este último update, então
             // verificamos se isso aconteceu para saber se seguimos adiante
-            if (wasJustDisposed) {
+            if (wasJustDisposed)
                 return;
-            }
 
             // define o sistema de coordenadas (projeção) a ser usada pelo
             // spriteBatch
@@ -212,6 +215,8 @@ public abstract class BaseScreen extends ScreenAdapter {
 
             // desenha o conteúdo da tela
             draw();
+        } else {
+            isLoadingOver = this.loadingScreen.draw(assets);
         }
     }
 
