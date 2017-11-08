@@ -91,9 +91,7 @@ public class DogBarksCatFlee extends MiniGame {
                 batch.draw(catTexture2,enemy.getPosition().x,enemy.getPosition().y);
             }
         }else{
-        //if (enemy.isVivo() && morreu < 10) {
             batch.draw(deadTexture, enemy.oldPos.x, enemy.oldPos.y);
-            super.challengeSolved();
         }
     }
 
@@ -145,7 +143,7 @@ public class DogBarksCatFlee extends MiniGame {
             meawSound.play();
             enemy.morreu();
             player.resetBarkCounter();
-            //super.challengeSolved();
+            super.challengeSolved();
         }
         if (enemy.isVivo() && (enemy.getQuantidadeVidas() > 0)) {
             enemy.spawn();
