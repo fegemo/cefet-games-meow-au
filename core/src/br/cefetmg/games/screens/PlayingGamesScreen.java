@@ -1,7 +1,7 @@
 package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
-import br.cefetmg.games.Transition.TransitionScreen;
+import br.cefetmg.games.transition.TransitionScreen;
 import br.cefetmg.games.graphics.hud.Hud;
 import br.cefetmg.games.logic.chooser.BaseGameSequencer;
 import br.cefetmg.games.logic.chooser.GameSequencer;

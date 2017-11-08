@@ -1,14 +1,14 @@
 
-package br.cefetmg.games.Transition;
+package br.cefetmg.games.transition;
 
-import br.cefetmg.games.GameCustom;
+import br.cefetmg.games.MeowAuGame;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Timer;
 
 public class ActionsTransitionEffect extends TransitionEffect {
     
-    private Timer.Task task;
+    private final Timer.Task task;
     private boolean once;
     
     public ActionsTransitionEffect(Timer.Task task) {
@@ -32,8 +32,8 @@ public class ActionsTransitionEffect extends TransitionEffect {
             current.show();
             current.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             if (current.assets.update()) { // aguarda a conclusão do carregamento dos assets
-                if (current.game instanceof GameCustom) {
-                    GameCustom game = (GameCustom) current.game;
+                if (current.game instanceof MeowAuGame) {
+                    MeowAuGame game = (MeowAuGame) current.game;
                     game.setLoadedScreen(current); // informa que a tela já foi carregada
                 }
                 isFinished = true;

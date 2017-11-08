@@ -1,7 +1,7 @@
 package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
-import br.cefetmg.games.Transition.TransitionScreen;
+import br.cefetmg.games.transition.TransitionScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;

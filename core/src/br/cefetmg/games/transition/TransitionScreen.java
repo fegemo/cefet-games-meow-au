@@ -1,5 +1,4 @@
-
-package br.cefetmg.games.Transition;
+package br.cefetmg.games.transition;
 
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Game;
@@ -8,19 +7,19 @@ import com.badlogic.gdx.utils.Timer;
 import java.util.ArrayList;
 
 public class TransitionScreen extends ScreenAdapter {
-    
+
     public enum Effect {
         NONE,
         FADE_IN,
         FADE_OUT,
         FADE_IN_OUT
     }
-    
+
     private static TransitionScreen lastInstance = null;
-    private Game game;
+    private final Game game;
     private BaseScreen current;
-    private BaseScreen next;
-    private ArrayList<TransitionEffect> transitionEffects;
+    private final BaseScreen next;
+    private final ArrayList<TransitionEffect> transitionEffects;
     private int currentTransitionEffect;
 
     private TransitionScreen(BaseScreen current, BaseScreen next, ArrayList<TransitionEffect> transitionEffects) {
@@ -30,30 +29,29 @@ public class TransitionScreen extends ScreenAdapter {
         this.currentTransitionEffect = 0;
         this.game = current.game;
     }
-    
+
     // ======== Sobrecarga para getInstance ======== //
-    
     public static TransitionScreen getInstance(BaseScreen current, BaseScreen next, ArrayList<TransitionEffect> transitionEffects) {
-        if (lastInstance == null)
+        if (lastInstance == null) {
             return new TransitionScreen(current, next, transitionEffects);
-        else
+        } else {
             return lastInstance;
+        }
     }
-    
+
     public static TransitionScreen getInstance(BaseScreen current, BaseScreen next) {
         return getInstance(current, next, new ArrayList<TransitionEffect>());
     }
-    
+
     public static TransitionScreen getInstance(BaseScreen current) {
         return getInstance(current, current, new ArrayList<TransitionEffect>());
     }
-    
+
     public static TransitionScreen getInstance() {
         return lastInstance;
     }
-    
-    // ================ //
 
+    // ================ //
     @Override
     public void render(float delta) {
         if (currentTransitionEffect >= transitionEffects.size()) {
@@ -65,16 +63,16 @@ public class TransitionScreen extends ScreenAdapter {
         transitionEffects.get(currentTransitionEffect).update(delta);
         transitionEffects.get(currentTransitionEffect).render(current);
 
-        if (transitionEffects.get(currentTransitionEffect).isFinished())
+        if (transitionEffects.get(currentTransitionEffect).isFinished()) {
             currentTransitionEffect++;
+        }
     }
-    
+
     // ================ //
-    
     private void setTask(Timer.Task task) {
-        if (task != null)
+        if (task != null) {
             transitionEffects.add(new ActionsTransitionEffect(task));
-        else if (current != next) {
+        } else if (current != next) {
             transitionEffects.add(new ActionsTransitionEffect(new Timer.Task() {
                 @Override
                 public void run() {
@@ -83,43 +81,46 @@ public class TransitionScreen extends ScreenAdapter {
             }));
         }
     }
-    
+
     public void execute(Effect effect, float duration, Timer.Task task) {
-        if (lastInstance != null)
+        if (lastInstance != null) {
             return;
-        
+        }
+
         lastInstance = this;
-        
+
         switch (effect) {
             case FADE_IN:
                 transitionEffects.add(new FadeInTransitionEffect(duration));
                 setTask(task);
-            break;
+                break;
             case FADE_IN_OUT:
                 transitionEffects.add(new FadeInTransitionEffect(duration));
             case FADE_OUT:
                 setTask(task);
                 transitionEffects.add(new FadeOutTransitionEffect(duration));
-            break;
+                break;
             default:
                 setTask(task);
-            break;
+                break;
         }
-        
+
         game.setScreen(this);
     }
-    
+
     public void execute(Effect effect, float duration) {
         execute(effect, duration, null);
     }
-    
+
     public void execute() {
-        if (lastInstance != null)
+        if (lastInstance != null) {
             return;
-        else
+        } else {
             lastInstance = this;
-        
-        if (transitionEffects != null && !transitionEffects.isEmpty())
+        }
+
+        if (transitionEffects != null && !transitionEffects.isEmpty()) {
             game.setScreen(this);
+        }
     }
 }
