@@ -5,6 +5,7 @@ import br.cefetmg.games.transition.TransitionScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -52,6 +53,7 @@ public class MenuScreen extends BaseScreen {
     private Sound click1;
     private Sound click2;
     
+    private Music musicaTema;
 
     /**
      * Cria uma nova tela de menu.
@@ -70,6 +72,13 @@ public class MenuScreen extends BaseScreen {
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
 
+        //instancia música tema
+        musicaTema = Gdx.audio.newMusic(Gdx.files.internal("menu/meowautheme.mp3"));
+        //ativa loop
+        musicaTema.setLooping(true);
+        //toca musica
+        musicaTema.play();
+        
         // instancia a textura e a região de textura (usada para repetir)
         background = new TextureRegion(new Texture("menu/menu-background.png"));
         btnPlay = new Texture("menu/button_jogar.png");
@@ -249,6 +258,7 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void cleanUp() {
         background.getTexture().dispose();
+        musicaTema.stop();
     }
 
 }
