@@ -1,5 +1,6 @@
 package br.cefetmg.games.minigames;
 
+import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
@@ -26,16 +27,18 @@ public class ClickFindCat extends MiniGame {
     private Sound happyMeawSound;
     private float initialCatScale;
     private float hipotenuzaDaTela;
-
+    private float difficulty;
+    
     public ClickFindCat(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
+        this.difficulty = difficulty;
     }
 
     @Override
     protected void onStart() {
         hipotenuzaDaTela = viewport.getScreenWidth() * viewport.getScreenWidth()
                 + viewport.getScreenHeight() * viewport.getScreenHeight();
-        initialCatScale = .2f;
+        initialCatScale = DifficultyCurve.LINEAR_NEGATIVE.getCurveValue(difficulty);
         catTexture = assets.get("ClickFindCat/gatinho-grande.png", Texture.class);
 
         miraTexture = assets.get("ClickFindCat/target.png", Texture.class);
