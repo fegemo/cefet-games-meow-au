@@ -84,15 +84,16 @@ public class DogBarksCatFlee extends MiniGame {
     }
 
     private void catDraw() {
-        if (!enemy.isVivo()) {
+        if (!enemy.isVivo()){
             if(player.barkCounter < enemy.getScareThreshold()/2 ){
                 batch.draw(enemy.getTexture(), enemy.getPosition().x, enemy.getPosition().y);
             }else{
                 batch.draw(catTexture2,enemy.getPosition().x,enemy.getPosition().y);
             }
-        }
-        if (enemy.isVivo() && morreu < 10) {
+        }else{
+        //if (enemy.isVivo() && morreu < 10) {
             batch.draw(deadTexture, enemy.oldPos.x, enemy.oldPos.y);
+            super.challengeSolved();
         }
     }
 
@@ -144,7 +145,7 @@ public class DogBarksCatFlee extends MiniGame {
             meawSound.play();
             enemy.morreu();
             player.resetBarkCounter();
-            super.challengeSolved();
+            //super.challengeSolved();
         }
         if (enemy.isVivo() && (enemy.getQuantidadeVidas() > 0)) {
             enemy.spawn();
@@ -161,7 +162,7 @@ public class DogBarksCatFlee extends MiniGame {
     private void initializeCat() {
         TextureRegion[][] textureCat = TextureRegion.split(catTexture, catTexture.getWidth(), catTexture.getHeight());
         enemy = new Cat(scareThreshold(difficulty), posicaoInicial, textureCat[0][0]);
-        enemy.setQuantidadeVidas(spawnInterval);
+        enemy.setQuantidadeVidas(1);
         enemy.setPosition(enemy.getInitialPosition());
         enemy.spawn();
     }
@@ -268,7 +269,7 @@ public class DogBarksCatFlee extends MiniGame {
             this.morto = true;  
             oldPos = this.getPosition();
             mostrarGatoMorto = !mostrarGatoMorto;
-            setPosition(new Vector2(POSICAO_INICIAL_GATO_X, POSICAO_INICIAL_GATO_Y));
+            //setPosition(new Vector2(POSICAO_INICIAL_GATO_X, POSICAO_INICIAL_GATO_Y));
         }
 
         public boolean isVivo() {
@@ -280,7 +281,7 @@ public class DogBarksCatFlee extends MiniGame {
         }
 
         public void setQuantidadeVidas(float variavelControleDificuldade) {
-            this.quantidadeVidas = (int) (MathUtils.ceil(variavelControleDificuldade * 8));
+            this.quantidadeVidas = 1;//(int) (MathUtils.ceil(variavelControleDificuldade * 8));
         }
 
         public boolean shouldTriggerFleeAction(int barkCounter) {
