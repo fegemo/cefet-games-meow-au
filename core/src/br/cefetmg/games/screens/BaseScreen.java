@@ -216,7 +216,7 @@ public abstract class BaseScreen extends ScreenAdapter {
             // desenha o conteúdo da tela
             draw();
         } else {
-            isLoadingOver = this.loadingScreen.draw(assets);
+            isLoadingOver = this.loadingScreen.draw(assets, batch);
         }
     }
 

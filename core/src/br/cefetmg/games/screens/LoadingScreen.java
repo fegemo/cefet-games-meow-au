@@ -1,5 +1,6 @@
 package br.cefetmg.games.screens;
 
+import br.cefetmg.games.Config;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -30,6 +32,8 @@ public class LoadingScreen
     private long lastUpdate = 0L;
     private float remainingPercentage = 1.0f;
     private float step = 0.05f;
+    
+    private TextureRegion background;
 
     public LoadingScreen(Viewport viewport)
     {
@@ -43,13 +47,20 @@ public class LoadingScreen
         cooldownTimerBlue.setColor(Color.BLUE);
 
         stage.addActor(cooldownTimerBlue);
+        
+        // instancia a textura e a região de textura
+        background = new TextureRegion(new Texture("loading-page.jpg"));
     }
 
-    public boolean draw(AssetManager assets)
+    public boolean draw(AssetManager assets, SpriteBatch batch)
     {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        batch.begin();
+        batch.draw(background, viewport.getWorldWidth()/5, viewport.getWorldHeight()/5, 3*viewport.getWorldWidth()/5, 3*viewport.getWorldHeight()/5);
+        batch.end();
+        
         if (System.currentTimeMillis() - lastUpdate > 25L) {
             cooldownTimerBlue.update(remainingPercentage);
 
