@@ -3,6 +3,7 @@ package br.cefetmg.games.screens;
 import br.cefetmg.games.Config;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -15,6 +16,7 @@ public class MenuScreen extends BaseScreen {
 
     private static final int NUMBER_OF_TILED_BACKGROUND_TEXTURE = 7;
     private TextureRegion background;
+    private Music musicaTema;
 
     /**
      * Cria uma nova tela de menu.
@@ -33,6 +35,13 @@ public class MenuScreen extends BaseScreen {
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
 
+        //instancia música tema
+        musicaTema = Gdx.audio.newMusic(Gdx.files.internal("menu/meowautheme.mp3"));
+        //ativa loop
+        musicaTema.setLooping(true);
+        //toca musica
+        musicaTema.play();
+        
         // instancia a textura e a região de textura (usada para repetir)
         background = new TextureRegion(new Texture("menu-background.png"));
         // configura a textura para repetir caso ela ocupe menos espaço que o
@@ -51,6 +60,7 @@ public class MenuScreen extends BaseScreen {
                 (int) (background.getTexture().getHeight()
                         * NUMBER_OF_TILED_BACKGROUND_TEXTURE
                         / Config.DESIRED_ASPECT_RATIO));
+        
     }
 
     /**
