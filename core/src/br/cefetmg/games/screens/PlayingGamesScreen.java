@@ -51,29 +51,29 @@ public class PlayingGamesScreen extends BaseScreen
                         // adriel
                         //new UnderwaterCatFactory(),
                         // arthur e pedro
-                        new DogBarksCatFleeFactory()
-                        //new ClickFindCatFactory(),
+                        new DogBarksCatFleeFactory(),
+                        new ClickFindCatFactory(),
                         // cassiano e gustavo jordão
-                        //new TicCatDogFactory(),
-                        //new JumpTheObstaclesFactory(),
+                        new TicCatDogFactory(),
+                        new JumpTheObstaclesFactory(),
                         // luiza e pedro cordeiro
-                        //new SpyFishFactory(),
-                        //new PhantomCatFactory(),
+                        new SpyFishFactory(),
+                        new PhantomCatFactory(),
                         // gabriel e natália
-                       // new MouseAttackFactory(),
-                        //new JetRatFactory(),
+                        new MouseAttackFactory(),
+                        new JetRatFactory(),
                         // emanoel e vinícius
-                        //new HeadSoccerFactory(),
-                        //new CatAvoiderFactory(),
+                        new HeadSoccerFactory(),
+                        new CatAvoiderFactory(),
                         // joão e miguel
-                        //new CannonCatFactory(),
-                        //new MeowsicFactory(),
+                        new CannonCatFactory(),
+                        new MeowsicFactory(),
                         // túlio
-                        //new RainingCatsFactory(),
-                        //new NinjaCatFactory(),
+                        new RainingCatsFactory(),
+                        new NinjaCatFactory(),
                         //estevao e sarah//
-                        //new TheFridgeGameFactory(),
-                        //new KillTheRatsFactory()
+                        new TheFridgeGameFactory(),
+                        new KillTheRatsFactory()
                 )
         ), 0, 1, this, this);
         hud = new Hud(this, this);
