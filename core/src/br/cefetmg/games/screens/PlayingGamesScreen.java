@@ -1,6 +1,7 @@
 package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
+import br.cefetmg.games.Transition.TransitionScreen;
 import br.cefetmg.games.graphics.hud.Hud;
 import br.cefetmg.games.logic.chooser.BaseGameSequencer;
 import br.cefetmg.games.logic.chooser.GameSequencer;
@@ -116,7 +117,9 @@ public class PlayingGamesScreen extends BaseScreen
                 || state == PlayScreenState.FINISHED_GAME_OVER) {
             if (Gdx.input.justTouched()) {
                 // volta para o menu principal
-                super.game.setScreen(new MenuScreen(super.game, this));
+                transitionScreen(new MenuScreen(super.game, this), 
+                        TransitionScreen.Effect.FADE_IN_OUT, 1f);
+                //super.game.setScreen(new MenuScreen(super.game, this));
             }
         }
     }
@@ -162,10 +165,20 @@ public class PlayingGamesScreen extends BaseScreen
     }
 
     private void loadNextGame() {
-        // carrega o novo jogo (pede ao sequenciador o próximo)
-        currentGame = sequencer.nextGame();
-        currentGame.start();
-
+        if (currentGame == null) {
+            // carrega o novo jogo (pede ao sequenciador o próximo)
+            currentGame = sequencer.nextGame();
+            currentGame.start();
+        } else {
+            transitionGame(TransitionScreen.Effect.FADE_IN_OUT, 0.5f, new Task() {
+                @Override
+                public void run() {
+                    currentGame = sequencer.nextGame();
+                    currentGame.start();
+                }
+            });
+        }
+        
         // atualiza o número de sequência do jogo atual na HUD
         hud.setGameIndex(sequencer.getGameNumber());
     }

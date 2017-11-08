@@ -13,7 +13,7 @@ import com.badlogic.gdx.Input.Keys;
  * 
  * @author Flávio Coutinho - fegemo <coutinho@decom.cefetmg.br>
  */
-public class MeowAuGame extends Game {
+public class MeowAuGame extends GameCustom {
     
     @Override
     public void create() {
