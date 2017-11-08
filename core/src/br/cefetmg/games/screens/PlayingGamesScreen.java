@@ -117,7 +117,7 @@ public class PlayingGamesScreen extends BaseScreen
                 || state == PlayScreenState.FINISHED_GAME_OVER) {
             if (Gdx.input.justTouched()) {
                 // volta para o menu principal
-                transitionScreen(new MenuScreen(super.game, this), 
+                transitionScreen(new MenuScreen(super.game, this),
                         TransitionScreen.Effect.FADE_IN_OUT, 1f);
                 //super.game.setScreen(new MenuScreen(super.game, this));
             }
@@ -178,7 +178,7 @@ public class PlayingGamesScreen extends BaseScreen
                 }
             });
         }
-        
+
         // atualiza o número de sequência do jogo atual na HUD
         hud.setGameIndex(sequencer.getGameNumber());
     }
