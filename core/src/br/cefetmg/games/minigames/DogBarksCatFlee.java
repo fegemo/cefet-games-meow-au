@@ -310,7 +310,7 @@ public class DogBarksCatFlee extends MiniGame {
         }
 
         public TextureRegion getBarkingAnimationFrame(float dt) {
-            return ((TextureRegion) animacaoLatindo.getKeyFrame(dt));
+            return ((TextureRegion) animacaoLatindo.getKeyFrame(0.93f));
         }
 
         public TextureRegion getWalkingAnimationFrame(float dt) {
