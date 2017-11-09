@@ -66,7 +66,7 @@ public abstract class BaseScreen extends ScreenAdapter {
         this.camera = new OrthographicCamera();
         this.viewport = chooseBestViewport();
         this.assets = new AssetManager();
-        this.loadingScreen = new LoadingScreen(this.viewport);
+        this.loadingScreen = new LoadingScreen();
 
         FileHandleResolver resolver = new InternalFileHandleResolver();
         assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
@@ -217,7 +217,7 @@ public abstract class BaseScreen extends ScreenAdapter {
             // desenha o conteúdo da tela
             draw();
         } else if (this.game.getScreen().toString().contains("PlayingGamesScreen")) {
-            isLoadingOver = this.loadingScreen.draw(assets, batch);
+            isLoadingOver = this.loadingScreen.draw(assets, batch, viewport);
         }
     }
 

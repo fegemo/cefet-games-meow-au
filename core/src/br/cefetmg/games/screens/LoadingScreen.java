@@ -26,8 +26,6 @@ public class LoadingScreen
 {    
     private Stage stage;
     private CooldownTimer cooldownTimerBlue;
-    
-    protected final Viewport viewport;
 
     private long lastUpdate = 0L;
     private float remainingPercentage = 1.0f;
@@ -37,10 +35,8 @@ public class LoadingScreen
     
     private TextureRegion background;
 
-    public LoadingScreen(Viewport viewport)
-    {
-        this.viewport = viewport;
-        
+    public LoadingScreen()
+    {        
         stage = new Stage();
 
         cooldownTimerBlue = new CooldownTimer(false);
@@ -54,13 +50,13 @@ public class LoadingScreen
         background = new TextureRegion(new Texture("loading-page.jpg"));
     }
 
-    public boolean draw(AssetManager assets, SpriteBatch batch)
+    public boolean draw(AssetManager assets, SpriteBatch batch, Viewport viewport)
     {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(background, 0, TIMER_SIZE);
+        batch.draw(background, 0, TIMER_SIZE, viewport.getWorldWidth(), viewport.getWorldHeight()-TIMER_SIZE);
         batch.end();
         
         if (System.currentTimeMillis() - lastUpdate > 25L) {
