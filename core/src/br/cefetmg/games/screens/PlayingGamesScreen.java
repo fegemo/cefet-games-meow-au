@@ -110,8 +110,15 @@ public class PlayingGamesScreen extends BaseScreen
         if (state == PlayScreenState.FINISHED_WON
                 || state == PlayScreenState.FINISHED_GAME_OVER) {
             if (Gdx.input.justTouched()) {
-                // volta para o menu principal
-                super.game.setScreen(new MenuScreen(super.game, this));
+              
+                if(sequencer instanceof InfiniteGameSequencer){
+                    super.game.setScreen(new RankingScreen(super.game,this));
+                    
+                }else{
+                    //volta para o menu principal
+                    super.game.setScreen(new MenuScreen(super.game, this));
+                }
+            
             }
         }
     }
