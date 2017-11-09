@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 public class MenuScreen extends BaseScreen {
 
         
-    public static final int BUTTONS_X = 538;
+    public static final int BUTTONS_X = (int) (Gdx.graphics.getWidth()*0.6);
     public static final int BUTTONS_WIDTH = 204;
     public static final int BUTTONS_HEIGHT = 54;
     public static final int PLAY_Y = 360;
