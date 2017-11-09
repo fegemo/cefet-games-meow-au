@@ -31,7 +31,9 @@ public class LoadingScreen
 
     private long lastUpdate = 0L;
     private float remainingPercentage = 1.0f;
-    private float step = 0.05f;
+    
+    private final float STEP = 0.05f;
+    private final int TIMER_SIZE = 100;
     
     private TextureRegion background;
 
@@ -42,8 +44,8 @@ public class LoadingScreen
         stage = new Stage();
 
         cooldownTimerBlue = new CooldownTimer(false);
-        cooldownTimerBlue.setSize(100, 100);
-        cooldownTimerBlue.setPosition(viewport.getWorldWidth() - 150, 0);
+        cooldownTimerBlue.setSize(TIMER_SIZE, TIMER_SIZE);
+        cooldownTimerBlue.setPosition(0, 0);
         cooldownTimerBlue.setColor(Color.BLUE);
 
         stage.addActor(cooldownTimerBlue);
@@ -58,15 +60,15 @@ public class LoadingScreen
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(background, viewport.getWorldWidth()/5, viewport.getWorldHeight()/5, 3*viewport.getWorldWidth()/5, 3*viewport.getWorldHeight()/5);
+        batch.draw(background, 0, TIMER_SIZE);
         batch.end();
         
         if (System.currentTimeMillis() - lastUpdate > 25L) {
             cooldownTimerBlue.update(remainingPercentage);
 
             //A medida que os assets são carregados, atualiza-se suavemente o círculo de carregamento
-            if(remainingPercentage - step >= 1 - assets.getProgress())
-                remainingPercentage -= step;
+            if(remainingPercentage - STEP >= 1 - assets.getProgress())
+                remainingPercentage -= STEP;
             
             lastUpdate = System.currentTimeMillis();
         }
@@ -74,7 +76,7 @@ public class LoadingScreen
         stage.act();
         stage.draw();
         
-        if(remainingPercentage <= step)
+        if(remainingPercentage <= STEP)
             return true;
         return false;
     }
