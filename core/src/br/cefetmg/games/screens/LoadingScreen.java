@@ -75,6 +75,7 @@ public class LoadingScreen
 
         stage.act();
         stage.draw();
+        System.out.println(remainingPercentage);
         
         if(remainingPercentage <= STEP)
             return true;
