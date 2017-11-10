@@ -21,7 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Align;
@@ -47,8 +46,8 @@ public class Hud {
     private Image mask;
     private Button pauseButton;
     private Button backMenuButton;
-    private Button okBackMenuButton;
-    private Button noBackMenuButton;
+    private Button confirmButton;
+    private Button unnconfirmedButton;
     private Sound timerSound;
     private Clock clock;
 
@@ -67,9 +66,11 @@ public class Hud {
                 Texture.class));
         skin.add("pause", screen.assets.get("hud/pause-button.png",
                 Texture.class));
-        skin.add("confirm", screen.assets.get("hud/unpause-button.png",
+        skin.add("confirm", screen.assets.get("hud/confirm-button.png",
                 Texture.class));
-        skin.add("unnconfirmed", screen.assets.get("hud/pause-button.png",
+        skin.add("unnconfirmed", screen.assets.get("hud/unnconfirmed-button.png",
+                Texture.class));
+        skin.add("back-menu", screen.assets.get("hud/back-menu-button.png",
                 Texture.class));
         lifeTexture = screen.assets.get("hud/lives.png");
         clockTexture = screen.assets.get("hud/clock.png");
@@ -91,54 +92,60 @@ public class Hud {
                 } else {
                     stateObserver.onGameResumed();
                     clock.resumeTicking();
-                }
-                
+                }   
             }
-
         });
         
-        backMenuButton = new TextButton("Voltar ao menu inicial", skin);
+        backMenuButton = new ImageButton(
+                skin.getDrawable("back-menu")
+        );
         backMenuButton.setVisible(false);
         backMenuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 backMenuButton.setVisible(false);
                 hidePauseButton();
-                showMessage("Ao voltar para o menu inicial seu progresso sera perdido/n Deseja confimar operacao?");
-                okBackMenuButton.setVisible(true);
-                noBackMenuButton.setVisible(true);
+                showMessage("Ao voltar para o menu inicial seu progresso sera perdido\n Deseja confimar operacao?");
+                confirmButton.setVisible(true);
+                unnconfirmedButton.setVisible(true);
             }
         });
         
-        okBackMenuButton = new TextButton("Ok",skin);
-        okBackMenuButton.setVisible(false);
-        okBackMenuButton.addListener(new ChangeListener() {
+        confirmButton = new ImageButton(
+                skin.getDrawable("confirm")
+        );
+        confirmButton.setVisible(false);
+        confirmButton.setScale(2);
+        confirmButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 stateObserver.onStateChanged(MiniGameState.BACK_MENU);
             }
         });
-        noBackMenuButton = new TextButton("Nao", skin);
-        noBackMenuButton.setVisible(false);
-        noBackMenuButton.addListener(new ChangeListener() {
+        unnconfirmedButton = new ImageButton(
+                skin.getDrawable("unnconfirmed")
+        );
+        unnconfirmedButton.setVisible(false);
+        unnconfirmedButton.setScale(2);
+        unnconfirmedButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 hideMessage();
-                noBackMenuButton.setVisible(false);
-                okBackMenuButton.setVisible(false);
+                unnconfirmedButton.setVisible(false);
+                confirmButton.setVisible(false);
                 backMenuButton.setVisible(true);
                 showPauseButton();
             }
         });
-        backMenuButton.setWidth(stage.getViewport().getWorldWidth());
-        backMenuButton.setY(stage.getViewport().getWorldHeight() * 0.75f);
-        okBackMenuButton.setY(stage.getViewport().getWorldHeight() * 0.50f);
-        noBackMenuButton.setY(stage.getViewport().getWorldHeight() * 0.50f);
-        okBackMenuButton.setX(stage.getViewport().getWorldWidth()  * 0.75f);
-        noBackMenuButton.setX(stage.getViewport().getWorldWidth()  * 0.25f);
+        backMenuButton.setX(stage.getViewport().getWorldWidth() * 0.50f-backMenuButton.getWidth()/2);
+        backMenuButton.setY(stage.getViewport().getWorldHeight() * 0.55f);
+        confirmButton.setY(stage.getViewport().getWorldHeight() * 0.50f);
+        unnconfirmedButton.setY(stage.getViewport().getWorldHeight() * 0.50f);
+        confirmButton.setX(stage.getViewport().getWorldWidth()  * 0.75f);
+        unnconfirmedButton.setX(stage.getViewport().getWorldWidth()  * 0.25f);
         stage.addActor(backMenuButton);
-        stage.addActor(okBackMenuButton);
-        stage.addActor(noBackMenuButton);
+        stage.addActor(confirmButton);
+        stage.addActor(unnconfirmedButton);
         
         currentLives = Config.MAX_LIVES;
         
