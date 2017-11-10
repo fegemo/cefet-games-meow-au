@@ -78,12 +78,12 @@ public class MenuScreen extends BaseScreen {
         click2 = Gdx.audio.newSound(Gdx.files.internal("menu/click2.mp3"));
         // configura a textura para repetir caso ela ocupe menos espaço que o
         // espaço disponível
-        background.getTexture().setWrap(
-                Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+     //   background.getTexture().setWrap(
+       //         Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
         // define a largura da região de desenho de forma que ela seja repetida
         // um número de vezes igual a NUMBER_OF_TILED_BACKGROUND_TEXTURE
-        background.setRegionWidth(
+        /*   background.setRegionWidth(
                 background.getTexture().getWidth()
                 * NUMBER_OF_TILED_BACKGROUND_TEXTURE);
         // idem para altura, porém será repetida um número de vezes igual a
@@ -91,7 +91,7 @@ public class MenuScreen extends BaseScreen {
         background.setRegionHeight(
                 (int) (background.getTexture().getHeight()
                 * NUMBER_OF_TILED_BACKGROUND_TEXTURE
-                / Config.DESIRED_ASPECT_RATIO));
+                / Config.DESIRED_ASPECT_RATIO));*/
 
     }
 
@@ -168,7 +168,7 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void update(float dt) {
         float speed = dt * 0.25f;
-        background.scroll(speed, -speed);
+     //   background.scroll(speed, -speed);
 
     }
 
