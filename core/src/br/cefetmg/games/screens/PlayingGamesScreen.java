@@ -169,21 +169,24 @@ public class PlayingGamesScreen extends BaseScreen
 
     private void loadNextGame() {
         if (currentGame == null) {
-            // carrega o novo jogo (pede ao sequenciador o próximo)
+            // carrega o primeiro jogo (pede ao sequenciador o próximo)
             currentGame = sequencer.nextGame();
             currentGame.start();
+
+            // atualiza o número de sequência do jogo atual na HUD
+            hud.setGameIndex(sequencer.getGameNumber());
         } else {
             transitionGame(TransitionScreen.Effect.FADE_IN_OUT, 0.5f, new Task() {
                 @Override
                 public void run() {
                     currentGame = sequencer.nextGame();
                     currentGame.start();
+
+                    // atualiza o número de sequência do jogo atual na HUD
+                    hud.setGameIndex(sequencer.getGameNumber());
                 }
             });
         }
-
-        // atualiza o número de sequência do jogo atual na HUD
-        hud.setGameIndex(sequencer.getGameNumber());
     }
 
     private void drawEndGame() {
