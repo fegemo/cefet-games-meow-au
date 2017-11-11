@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
@@ -38,8 +39,9 @@ public class CatAvoider extends MiniGame {
 
     private AnimatedSprite catMovingUpR, catMovingUpL, catMovingDownR, catMovingDownL;
     private AnimatedSprite catMovingLeft, catMovingRight;
-    private static Music backgroundMusic, impact;
-
+    private static Music backgroundMusic;
+    private static Sound impact;
+    
     private final Wool wool = new Wool();
     private final Cat cat = new Cat();
 
@@ -147,11 +149,17 @@ public class CatAvoider extends MiniGame {
         wool.sprite = new Sprite(wool.texture);
         wool.sprite.setSize(50, 50);
 
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("avoider/ninja_theme.mp3"));
+        backgroundMusic = assets.get("avoider/ninja_theme.mp3", Music.class);
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
 
-        impact = Gdx.audio.newMusic(Gdx.files.internal("avoider/impact.mp3"));
+        impact = assets.get("avoider/impact.mp3", Sound.class);
+    }
+    
+    
+    @Override
+    public void onEnd(){
+        backgroundMusic.stop();
     }
 
     public float getCurveValue(float value) {

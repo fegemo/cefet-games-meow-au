@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
 import java.util.Map;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 
 public class CatAvoiderFactory implements MiniGameFactory {
 
@@ -30,6 +32,8 @@ public class CatAvoiderFactory implements MiniGameFactory {
                 put("avoider/cat-moving-downR.png", Texture.class);
                 put("avoider/cat-moving-left.png", Texture.class);
                 put("avoider/cat-moving-right.png", Texture.class);
+                put("avoider/ninja_theme.mp3", Music.class);
+                put("avoider/impact.mp3", Sound.class);
             }
         };
     }
