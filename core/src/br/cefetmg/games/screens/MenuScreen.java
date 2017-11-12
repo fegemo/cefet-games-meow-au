@@ -194,8 +194,8 @@ public class MenuScreen extends BaseScreen {
      * Navega para a tela de jogo.
      */
     private void navigateToMicroGameScreen() {
-        transitionScreen(new PlayingGamesScreen(super.game, this),
-                TransitionScreen.Effect.FADE_IN_OUT, 1f);
+         transitionScreen(new OverWorld(super.game, this),
+                        TransitionScreen.Effect.FADE_IN_OUT, 1f);
     }
 
     /**
