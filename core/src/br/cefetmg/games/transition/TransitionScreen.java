@@ -1,9 +1,12 @@
 package br.cefetmg.games.transition;
 
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.screens.LoadingScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.ArrayList;
 
 public class TransitionScreen extends ScreenAdapter {
@@ -22,12 +25,16 @@ public class TransitionScreen extends ScreenAdapter {
     private final ArrayList<TransitionEffect> transitionEffects;
     private int currentTransitionEffect;
 
+    private LoadingScreen loadingScreen; //Tela de carregamento utilizada para transição para PlayingGamesScreen
+    private boolean isLoadingOver = true; //Variável de controle utilizada para garantir a conclusão da tela de carregamento
+
     private TransitionScreen(BaseScreen current, BaseScreen next, ArrayList<TransitionEffect> transitionEffects) {
         this.current = current;
         this.next = next;
         this.transitionEffects = transitionEffects;
         this.currentTransitionEffect = 0;
         this.game = current.game;
+        this.loadingScreen = new LoadingScreen();
     }
 
     // ======== Sobrecarga para getInstance ======== //
@@ -54,17 +61,23 @@ public class TransitionScreen extends ScreenAdapter {
     // ================ //
     @Override
     public void render(float delta) {
-        if (currentTransitionEffect >= transitionEffects.size()) {
-            game.setScreen(next);
-            lastInstance = null;
-            return;
-        }
+        //Verifica se os assets já foram carregados e se a tela de loading já foi concluída
+        if (current.assets.update() && isLoadingOver) {
+            if (currentTransitionEffect >= transitionEffects.size()) {
+                game.setScreen(next);
+                lastInstance = null;
+                return;
+            }
 
-        transitionEffects.get(currentTransitionEffect).update(delta);
-        transitionEffects.get(currentTransitionEffect).render(current);
+            transitionEffects.get(currentTransitionEffect).update(delta);
+            transitionEffects.get(currentTransitionEffect).render(current);
 
-        if (transitionEffects.get(currentTransitionEffect).isFinished()) {
-            currentTransitionEffect++;
+            if (transitionEffects.get(currentTransitionEffect).isFinished()) {
+                currentTransitionEffect++;
+            }
+        } else if (current.toString().contains("PlayingGamesScreen")) { //Se a próxima tela for a de PlayingGamesScreen
+            //A tela de carregamento será chamada até sua conclusão (isLoadingOver receber true)
+            isLoadingOver = loadingScreen.draw(current.assets, current.batch, current.viewport);
         }
     }
 

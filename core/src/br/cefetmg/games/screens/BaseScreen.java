@@ -50,9 +50,6 @@ public abstract class BaseScreen extends ScreenAdapter {
     private BitmapFont messagesFont;
     private float deviceAspectRatioDivergenceFromDesired;
     private boolean wasJustDisposed = false;
-
-    public LoadingScreen loadingScreen;
-    public boolean isLoadingOver = true;
     
     /**
      * Cria uma instância de tela.
@@ -68,7 +65,6 @@ public abstract class BaseScreen extends ScreenAdapter {
         this.camera = new OrthographicCamera();
         this.viewport = chooseBestViewport();
         this.assets = new AssetManager();
-        this.loadingScreen = new LoadingScreen();
 
         FileHandleResolver resolver = new InternalFileHandleResolver();
         assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
@@ -193,7 +189,7 @@ public abstract class BaseScreen extends ScreenAdapter {
      */
     @Override
     public final void render(float dt) {
-        if (assets.update() && isLoadingOver) {
+        if (assets.update()) {
             if (messagesFont == null) {
                 messagesFont = assets.get("brainfish-50.ttf");
             }
@@ -218,8 +214,6 @@ public abstract class BaseScreen extends ScreenAdapter {
 
             // desenha o conteúdo da tela
             draw();
-        } else if (this.game.getScreen().toString().contains("PlayingGamesScreen")) {
-            isLoadingOver = this.loadingScreen.draw(assets, batch, viewport);
         }
     }
     
