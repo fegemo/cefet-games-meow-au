@@ -147,10 +147,14 @@ public class DodgeTheVeggies extends MiniGame {
                 challengeFailed();
             } else if (veggie.getX() + veggie.FRAME_WIDTH / 2f > viewport.getWorldWidth() || veggie.getX() < 0) {
                 Vector2 speed = veggie.getSpeed();
-                veggie.setSpeed(new Vector2(-speed.x, speed.y));
+                if(veggie.getX()*speed.x < 0){
+                    veggie.setSpeed(new Vector2(-speed.x, speed.y));
+                }
             } else if (veggie.getY() + veggie.FRAME_HEIGHT / 2f > viewport.getWorldHeight() || veggie.getY() < 0) {
                 Vector2 speed = veggie.getSpeed();
-                veggie.setSpeed(new Vector2(speed.x, -speed.y));
+                if(veggie.getY()*speed.y < 0){
+                    veggie.setSpeed(new Vector2(speed.x, -speed.y));
+                }
             }
         }
     }
