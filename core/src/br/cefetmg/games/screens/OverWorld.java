@@ -200,7 +200,6 @@ public class OverWorld extends MenuScreen {
         growEffect();
 
         if (Gdx.input.justTouched() && hitActor != null) {
-            System.out.println(hitActor.getName());
             if ("menu".equals(hitActor.getName())) {
                 transitionScreen(new MenuScreen(super.game, this),
                         TransitionScreen.Effect.FADE_IN_OUT, 1f);
