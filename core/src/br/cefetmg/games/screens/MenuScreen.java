@@ -61,7 +61,7 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
-
+        Gdx.input.setCursorCatched(false);
         //instancia música tema
         musicaTema = Gdx.audio.newMusic(Gdx.files.internal("menu/meowautheme.mp3"));
         //ativa loop

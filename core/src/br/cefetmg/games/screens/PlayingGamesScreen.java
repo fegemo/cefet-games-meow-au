@@ -184,8 +184,6 @@ public class PlayingGamesScreen extends BaseScreen
                 break;
             case BACK_MENU:
                 super.game.setScreen(new MenuScreen(super.game, this));
-                 transitionScreen(new OverWorld(super.game, this),
-                        TransitionScreen.Effect.FADE_IN_OUT, 1f);
                 break;
         }
         this.state = newState;
