@@ -145,7 +145,7 @@ public class MenuScreen extends BaseScreen {
                 }
                 if (exitBounds.contains(clickPosition.x, clickPosition.y)) {
                     click1.play();
-                    System.exit(0);
+                    Gdx.app.exit();
                 }
             } else {
                 if (playBounds.contains(clickPosition.x, clickPosition.y)) {
