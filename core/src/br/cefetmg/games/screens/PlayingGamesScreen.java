@@ -20,6 +20,7 @@ import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
+import java.util.Set;
 
 /**
  *
@@ -36,49 +37,11 @@ public class PlayingGamesScreen extends BaseScreen
     private boolean hasPreloaded;
     private final InputMultiplexer inputMultiplexer;
 
-    public PlayingGamesScreen(Game game, BaseScreen previous) {
+    public PlayingGamesScreen(Game game, BaseScreen previous, int nGames, Set<MiniGameFactory> games,float initialDifficulty, float finalDifficulty) {
         super(game, previous);
         state = PlayScreenState.PLAYING;
         lives = Config.MAX_LIVES;
-        sequencer = new GameSequencer(5, new HashSet<MiniGameFactory>(
-                Arrays.asList(
-                        // flávio
-                        new ShootTheCariesFactory(),
-                        new ShooTheTartarusFactory(),
-                        // gustavo henrique e rogenes
-                        new BasCATballFactory(),
-                        new RunningFactory(),
-                        // rafael e luis carlos
-                        new DodgeTheVeggiesFactory(),
-                        new CatchThatHomeworkFactory(),
-                        // adriel
-                        new UnderwaterCatFactory(),
-                        // arthur e pedro
-                        new DogBarksCatFleeFactory(),
-                        new ClickFindCatFactory(),
-                        // cassiano e gustavo jordão
-                        new TicCatDogFactory(),
-                        new JumpTheObstaclesFactory(),
-                        // luiza e pedro cordeiro
-                        new SpyFishFactory(),
-                        new PhantomCatFactory(),
-                        // gabriel e natália
-                        new MouseAttackFactory(),
-                        new JetRatFactory(),
-                        // emanoel e vinícius
-                        new HeadSoccerFactory(),
-                        new CatAvoiderFactory(),
-                        // joão e miguel
-                        new CannonCatFactory(),
-                        new MeowsicFactory(),
-                        // túlio
-                        new RainingCatsFactory(),
-                        new NinjaCatFactory(),
-                        //estevao e sarah//
-                        new TheFridgeGameFactory(),
-                        new KillTheRatsFactory()
-                )
-        ), 0, 1, this, this);
+        sequencer = new GameSequencer(nGames, games, initialDifficulty, finalDifficulty, this, this);
         hud = new Hud(this, this);
         inputMultiplexer = new InputMultiplexer();
     }
@@ -120,9 +83,8 @@ public class PlayingGamesScreen extends BaseScreen
                 || state == PlayScreenState.FINISHED_GAME_OVER) {
             if (Gdx.input.justTouched()) {
                 // volta para o menu principal
-                transitionScreen(new MenuScreen(super.game, this),
+                 transitionScreen(new OverWorld(super.game, this),
                         TransitionScreen.Effect.FADE_IN_OUT, 1f);
-                //super.game.setScreen(new MenuScreen(super.game, this));
             }
         }
     }
