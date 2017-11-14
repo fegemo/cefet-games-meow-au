@@ -71,6 +71,10 @@ public class PlayingGamesScreen extends BaseScreen
         assets.load("sound/youlose.wav", Sound.class);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
+    
+    @Override
+    protected void assetsLoaded() {
+    }
 
     @Override
     public void cleanUp() {

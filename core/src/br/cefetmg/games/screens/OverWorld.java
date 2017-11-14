@@ -14,7 +14,7 @@ import java.util.Arrays;
 import br.cefetmg.games.minigames.factories.*;
 import java.util.HashSet;
 
-public class OverWorld extends MenuScreen {
+public class OverWorld extends BaseScreen {
 
     private Vector2 click;
     private Stage stage;
@@ -434,5 +434,15 @@ public class OverWorld extends MenuScreen {
     @Override
     public void draw() {
         stage.draw();
+    }
+
+    @Override
+    protected void assetsLoaded() {
+        
+    }
+
+    @Override
+    public void update(float dt) {
+        
     }
 }
