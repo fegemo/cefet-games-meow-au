@@ -34,6 +34,10 @@ public class PlayingGamesScreen extends BaseScreen
     private int lives;
     private boolean hasPreloaded;
     private final InputMultiplexer inputMultiplexer;
+    private Sound gameWonSound;
+    private Sound gameOverSound;
+    private Sound youLoseSound;
+    private Sound youWinSound;
 
     public PlayingGamesScreen(Game game, BaseScreen previous, int nGames, Set<MiniGameFactory> games,float initialDifficulty, float finalDifficulty) {
         super(game, previous);
@@ -61,6 +65,10 @@ public class PlayingGamesScreen extends BaseScreen
         assets.load("hud/back-menu-button.png", Texture.class, linearFilter);
         assets.load("hud/confirm-button.png", Texture.class, linearFilter);
         assets.load("hud/unnconfirmed-button.png", Texture.class, linearFilter);
+        assets.load("sound/gamewon.mp3", Sound.class);
+        assets.load("sound/gameover.wav", Sound.class);
+        assets.load("sound/youwin.wav", Sound.class);
+        assets.load("sound/youlose.wav", Sound.class);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
@@ -123,6 +131,7 @@ public class PlayingGamesScreen extends BaseScreen
         // vidas
         else {
             // mostra mensagem de vitória
+            gameWonSound.play();
             this.transitionTo(PlayScreenState.FINISHED_WON);
         }
     }
@@ -161,6 +170,11 @@ public class PlayingGamesScreen extends BaseScreen
             if (state == PlayScreenState.PLAYING && currentGame == null) {
                 advance();
             }
+
+            gameWonSound = assets.get("sound/gamewon.mp3");
+            gameOverSound = assets.get("sound/gameover.wav");
+            youLoseSound = assets.get("sound/youlose.wav");
+            youWinSound = assets.get("sound/youwin.wav");
 
             hasPreloaded = true;
         }
@@ -210,6 +224,7 @@ public class PlayingGamesScreen extends BaseScreen
                 if (sequencer.hasNextGame()) {
                     Gdx.input.setCursorCatched(false);
                 }
+                youWinSound.play();
             // deixa passar para próximo caso (esta foi
             // uma decisão consciente =)
 
@@ -218,6 +233,12 @@ public class PlayingGamesScreen extends BaseScreen
                 hud.showMessage(state == MiniGameState.PLAYER_FAILED ? "Falhou!" : "Conseguiu!");
                 if (state == MiniGameState.PLAYER_FAILED) {
                     loseLife();
+
+                    if (lives == 0) {
+                        gameOverSound.play();
+                    } else {
+                        youLoseSound.play();
+                    }
                 }
 
                 inputMultiplexer.removeProcessor(currentGame.getInputProcessor());
