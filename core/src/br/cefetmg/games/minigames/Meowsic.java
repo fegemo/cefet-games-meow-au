@@ -109,7 +109,34 @@ public class Meowsic extends MiniGame {
             }
         }
     }
-
+    
+    @Override
+    public void onGamePaused(boolean justPaused){
+       if(justPaused){
+            if(velocidade < 2.7)
+                music1.pause();
+            else if (velocidade <3.0)
+                music2.pause();
+            else if (velocidade <3.8)
+                music3.pause();
+            else if (velocidade <4.6)
+                music4.pause();
+            else 
+                music5.pause();
+        }
+       else
+            if(velocidade < 2.7)
+                music1.play();
+            else if (velocidade <3.0)
+                music2.play();
+            else if (velocidade <3.8)
+                music3.play();
+            else if (velocidade <4.6)
+                music4.play();
+            else 
+                music5.play();
+    }
+    
     @Override
     public void onDrawGame() {
         // Desenha cenário
@@ -222,5 +249,4 @@ public class Meowsic extends MiniGame {
     public boolean shouldHideMousePointer() {
         return true;
     }
-
 }
