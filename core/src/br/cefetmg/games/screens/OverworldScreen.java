@@ -14,7 +14,7 @@ import java.util.Arrays;
 import br.cefetmg.games.minigames.factories.*;
 import java.util.HashSet;
 
-public class OverWorld extends BaseScreen {
+public class OverworldScreen extends BaseScreen {
 
     private Vector2 click;
     private Stage stage;
@@ -29,7 +29,7 @@ public class OverWorld extends BaseScreen {
             icon5, stage5,
             exit, menu, play, water;
 
-    public OverWorld(Game game, BaseScreen previous) {
+    public OverworldScreen(Game game, BaseScreen previous) {
         super(game, previous);
     }
 

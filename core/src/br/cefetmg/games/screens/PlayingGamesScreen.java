@@ -93,7 +93,7 @@ public class PlayingGamesScreen extends BaseScreen
                 || state == PlayScreenState.FINISHED_GAME_OVER) {
             if (Gdx.input.justTouched()) {
                 // volta para o menu principal
-                 transitionScreen(new OverWorld(super.game, this),
+                 transitionScreen(new OverworldScreen(super.game, this),
                         TransitionScreen.Effect.FADE_IN_OUT, 1f);
             }
         }
