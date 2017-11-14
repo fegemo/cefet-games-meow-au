@@ -61,7 +61,7 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
-
+        Gdx.input.setCursorCatched(false);
         //instancia música tema
         musicaTema = Gdx.audio.newMusic(Gdx.files.internal("menu/meowautheme.mp3"));
         //ativa loop
@@ -194,8 +194,8 @@ public class MenuScreen extends BaseScreen {
      * Navega para a tela de jogo.
      */
     private void navigateToMicroGameScreen() {
-        transitionScreen(new PlayingGamesScreen(super.game, this),
-                TransitionScreen.Effect.FADE_IN_OUT, 1f);
+         transitionScreen(new OverWorld(super.game, this),
+                        TransitionScreen.Effect.FADE_IN_OUT, 1f);
     }
 
     /**
