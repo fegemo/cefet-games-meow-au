@@ -21,6 +21,13 @@ public class OverWorld extends MenuScreen {
     private boolean check = false;
     private boolean stop;
     private boolean s1, s2, s3, s4, s5;
+    private Image map, arrow,
+            icon1, stage1,
+            icon2, stage2,
+            icon3, stage3,
+            icon4, stage4,
+            icon5, stage5,
+            exit, menu, play, water;
 
     public OverWorld(Game game, BaseScreen previous) {
         super(game, previous);
@@ -37,22 +44,22 @@ public class OverWorld extends MenuScreen {
         s4 = false;
         s5 = false;
 
-        Image map = new Image(new Texture(Gdx.files.internal("world/desert.png")));
-        Image arrow = new Image(new Texture(Gdx.files.internal("world/arrow.png")));
-        Image icon1 = new Image(new Texture(Gdx.files.internal("world/icon1.png")));
-        Image stage1 = new Image(new Texture(Gdx.files.internal("world/stage1.png")));
-        Image stage2 = new Image(new Texture(Gdx.files.internal("world/stage2.png")));
-        Image stage3 = new Image(new Texture(Gdx.files.internal("world/stage3.png")));
-        Image stage4 = new Image(new Texture(Gdx.files.internal("world/stage4.png")));
-        Image stage5 = new Image(new Texture(Gdx.files.internal("world/stage5.png")));
-        Image exit = new Image(new Texture(Gdx.files.internal("world/exit.png")));
-        Image icon2 = new Image(new Texture(Gdx.files.internal("world/icon2.png")));
-        Image icon3 = new Image(new Texture(Gdx.files.internal("world/icon3.png")));
-        Image icon4 = new Image(new Texture(Gdx.files.internal("world/icon4.png")));
-        Image icon5 = new Image(new Texture(Gdx.files.internal("world/icon5.png")));
-        Image menu = new Image(new Texture(Gdx.files.internal("world/menu.png")));
-        Image play = new Image(new Texture(Gdx.files.internal("world/play.png")));
-        Image water = new Image(new Texture(Gdx.files.internal("world/water.jpg")));
+        map = new Image(new Texture(Gdx.files.internal("world/desert.png")));
+        arrow = new Image(new Texture(Gdx.files.internal("world/arrow.png")));
+        icon1 = new Image(new Texture(Gdx.files.internal("world/icon1.png")));
+        stage1 = new Image(new Texture(Gdx.files.internal("world/stage1.png")));
+        stage2 = new Image(new Texture(Gdx.files.internal("world/stage2.png")));
+        stage3 = new Image(new Texture(Gdx.files.internal("world/stage3.png")));
+        stage4 = new Image(new Texture(Gdx.files.internal("world/stage4.png")));
+        stage5 = new Image(new Texture(Gdx.files.internal("world/stage5.png")));
+        exit = new Image(new Texture(Gdx.files.internal("world/exit.png")));
+        icon2 = new Image(new Texture(Gdx.files.internal("world/icon2.png")));
+        icon3 = new Image(new Texture(Gdx.files.internal("world/icon3.png")));
+        icon4 = new Image(new Texture(Gdx.files.internal("world/icon4.png")));
+        icon5 = new Image(new Texture(Gdx.files.internal("world/icon5.png")));
+        menu = new Image(new Texture(Gdx.files.internal("world/menu.png")));
+        play = new Image(new Texture(Gdx.files.internal("world/play.png")));
+        water = new Image(new Texture(Gdx.files.internal("world/water.jpg")));
 
         map.setName("map");
         water.setName("water");
@@ -170,22 +177,6 @@ public class OverWorld extends MenuScreen {
     @Override
     public void handleInput() {
         Gdx.input.setCursorCatched(true);
-        Group group = (Group) stage.getActors().first();
-        Image map = (Image) group.findActor("map");
-        Image arrow = (Image) group.findActor("arrow");
-        Image icon1 = (Image) group.findActor("icon1");
-        Image icon2 = (Image) group.findActor("icon2");
-        Image icon3 = (Image) group.findActor("icon3");
-        Image icon4 = (Image) group.findActor("icon4");
-        Image icon5 = (Image) group.findActor("icon5");
-        Image menu = (Image) group.findActor("menu");
-        Image stage1 = (Image) group.findActor("stage1");
-        Image stage2 = (Image) group.findActor("stage2");
-        Image stage3 = (Image) group.findActor("stage3");
-        Image stage4 = (Image) group.findActor("stage4");
-        Image stage5 = (Image) group.findActor("stage5");
-        Image play = (Image) group.findActor("play");
-        Image exit = (Image) group.findActor("exit");
 
         click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);
@@ -280,10 +271,6 @@ public class OverWorld extends MenuScreen {
 
     private void firstStage(boolean go) {
         s1 = true;
-        Group group = (Group) stage.getActors().first();
-        Image stage1 = (Image) group.findActor("stage1");
-        Image play = (Image) group.findActor("play");
-        Image exit = (Image) group.findActor("exit");
         stage1.setZIndex(18);
         exit.setZIndex(19);
         play.setZIndex(19);
@@ -305,10 +292,6 @@ public class OverWorld extends MenuScreen {
 
     private void secondStage(boolean go) {
         s2 = true;
-        Group group = (Group) stage.getActors().first();
-        Image stage2 = (Image) group.findActor("stage2");
-        Image play = (Image) group.findActor("play");
-        Image exit = (Image) group.findActor("exit");
         stage2.setZIndex(18);
         exit.setZIndex(19);
         play.setZIndex(19);
@@ -330,10 +313,6 @@ public class OverWorld extends MenuScreen {
 
     private void thirdStage(boolean go) {
         s3 = true;
-        Group group = (Group) stage.getActors().first();
-        Image stage3 = (Image) group.findActor("stage3");
-        Image play = (Image) group.findActor("play");
-        Image exit = (Image) group.findActor("exit");
         stage3.setZIndex(18);
         exit.setZIndex(19);
         play.setZIndex(19);
@@ -353,10 +332,6 @@ public class OverWorld extends MenuScreen {
 
     private void fourthStage(boolean go) {
         s4 = true;
-        Group group = (Group) stage.getActors().first();
-        Image stage4 = (Image) group.findActor("stage4");
-        Image play = (Image) group.findActor("play");
-        Image exit = (Image) group.findActor("exit");
         stage4.setZIndex(18);
         exit.setZIndex(19);
         play.setZIndex(19);
@@ -377,10 +352,6 @@ public class OverWorld extends MenuScreen {
 
     private void lastStage(boolean go) {
         s5 = true;
-        Group group = (Group) stage.getActors().first();
-        Image stage5 = (Image) group.findActor("stage5");
-        Image play = (Image) group.findActor("play");
-        Image exit = (Image) group.findActor("exit");
         stage5.setZIndex(18);
         exit.setZIndex(19);
         play.setZIndex(19);
@@ -401,14 +372,6 @@ public class OverWorld extends MenuScreen {
     }
 
     private void growEffect() {
-        Group group = (Group) stage.getActors().first();
-        Image arrow = (Image) group.findActor("arrow");
-        Image icon1 = (Image) group.findActor("icon1");
-        Image icon2 = (Image) group.findActor("icon2");
-        Image icon3 = (Image) group.findActor("icon3");
-        Image icon4 = (Image) group.findActor("icon4");
-        Image icon5 = (Image) group.findActor("icon5");
-        Image menu = (Image) group.findActor("menu");
         Actor hitActor = stage.hit(arrow.getX(), arrow.getY() + arrow.getHeight() * arrow.getScaleY(), false);
         if (!stop && hitActor != null) {
             if ("icon1".equals(hitActor.getName())) {
