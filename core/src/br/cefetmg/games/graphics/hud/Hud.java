@@ -97,7 +97,7 @@ public class Hud {
         mask.setTouchable(Touchable.disabled);
         stage.addActor(mask);
 
-        centeredLabel = new Label("", new LabelStyle(screen.assets.get("brainfish-50.ttf", BitmapFont.class), Color.BLACK));
+        centeredLabel = new Label("", new LabelStyle(screen.assets.get("wickerman.ttf", BitmapFont.class), Color.BLACK));
         centeredLabel.setWrap(true);
         centeredLabel.setAlignment(Align.center);
         centeredLabel.setWidth(stage.getViewport().getWorldWidth());

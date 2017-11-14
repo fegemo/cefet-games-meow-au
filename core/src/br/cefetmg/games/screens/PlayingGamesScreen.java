@@ -118,9 +118,10 @@ public class PlayingGamesScreen extends BaseScreen
                 || state == PlayScreenState.FINISHED_GAME_OVER) {
             if (Gdx.input.justTouched()) {
                 if(sequencer instanceof InfiniteGameSequencer){
-                    super.game.setScreen(new RankingScreen(super.game,this));
+                    super.game.setScreen(new RankingScreen(super.game,this,sequencer.getGameNumber()));
                     
-                }else{
+                }
+                else if(sequencer instanceof GameSequencer){
                     // volta para o menu principal
                     transitionScreen(new MenuScreen(super.game, this),
                         TransitionScreen.Effect.FADE_IN_OUT, 1f);

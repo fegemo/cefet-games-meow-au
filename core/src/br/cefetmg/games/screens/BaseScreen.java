@@ -73,11 +73,12 @@ public abstract class BaseScreen extends ScreenAdapter {
 
         // fonte para mensagens
         FreeTypeFontLoaderParameter snackerComicParams = new FreeTypeFontLoaderParameter();
-        snackerComicParams.fontFileName = "fonts/brainfish.ttf";
+        snackerComicParams.fontFileName = "fonts/wickerman.ttf";
         snackerComicParams.fontParameters.size = 50;
         snackerComicParams.fontParameters.minFilter = Texture.TextureFilter.Linear;
         snackerComicParams.fontParameters.magFilter = Texture.TextureFilter.Linear;
-        assets.load("brainfish-50.ttf", BitmapFont.class, snackerComicParams);
+       // assets.load("brainfish-50.ttf", BitmapFont.class, snackerComicParams);
+        assets.load("wickerman.ttf",BitmapFont.class, snackerComicParams);
 
         // fonte para a HUD
         assets.load("fonts/sawasdee-50.fnt", BitmapFont.class);
@@ -191,7 +192,8 @@ public abstract class BaseScreen extends ScreenAdapter {
     public final void render(float dt) {
         if (assets.update()) {
             if (messagesFont == null) {
-                messagesFont = assets.get("brainfish-50.ttf");
+                messagesFont = assets.get("wickerman.ttf");
+                
             }
             // chama função para gerenciar o input
             handleInput();

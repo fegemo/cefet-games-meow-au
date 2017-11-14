@@ -140,6 +140,9 @@ public class MenuScreen extends BaseScreen {
                     CHAMADA DA TELA DE RANKING
                     
                     */
+                    transitionScreen(new RankingScreen(super.game, this),
+                    TransitionScreen.Effect.FADE_IN_OUT, 1f);
+            
                     
                     click2.play();
                 }
