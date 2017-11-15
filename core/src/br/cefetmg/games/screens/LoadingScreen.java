@@ -1,7 +1,5 @@
 package br.cefetmg.games.screens;
 
-import br.cefetmg.games.Config;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -21,72 +19,73 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 //REFERÊNCIA DESTE CÓDIGO: https://github.com/serhiy/libgdx-circular-cooldown
+public class LoadingScreen {
 
-public class LoadingScreen
-{    
-    private Stage stage;
-    private CooldownTimer cooldownTimerBlue;
+    private final Stage stage;
+    private final CooldownTimer cooldownTimerBlue;
 
     private long lastUpdate = 0L;
     private float remainingPercentage = 1.0f;
-    
+
     private final float STEP = 0.05f;
     private final int TIMER_SIZE = 100;
-    
-    private TextureRegion background;
 
-    public LoadingScreen()
-    {        
+    private final TextureRegion background;
+
+    public LoadingScreen() {
         stage = new Stage();
 
-        cooldownTimerBlue = new CooldownTimer(false);
+        cooldownTimerBlue = new CooldownTimer(true);
         cooldownTimerBlue.setSize(TIMER_SIZE, TIMER_SIZE);
         cooldownTimerBlue.setPosition(0, 0);
         cooldownTimerBlue.setColor(Color.BLUE);
 
         stage.addActor(cooldownTimerBlue);
-        
+
         // instancia a textura e a região de textura
-        background = new TextureRegion(new Texture("loading-page.jpg"));
+        Texture backgroundTexture = new Texture("loading-page.jpg");
+        backgroundTexture.setFilter(
+                Texture.TextureFilter.Linear,
+                Texture.TextureFilter.Linear);
+        background = new TextureRegion(backgroundTexture);
     }
 
-    public boolean draw(AssetManager assets, SpriteBatch batch, Viewport viewport)
-    {
+    public boolean draw(AssetManager assets, SpriteBatch batch, Viewport viewport) {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(background, 0, TIMER_SIZE, viewport.getScreenWidth(), viewport.getScreenHeight()-TIMER_SIZE);
+        batch.draw(background, 0, TIMER_SIZE, viewport.getScreenWidth(), viewport.getScreenHeight() - TIMER_SIZE);
         batch.end();
-        
+
         if (System.currentTimeMillis() - lastUpdate > 25L) {
             cooldownTimerBlue.update(remainingPercentage);
 
             //A medida que os assets são carregados, atualiza-se suavemente o círculo de carregamento
-            if(remainingPercentage - STEP >= 1 - assets.getProgress())
+            if (remainingPercentage - STEP >= 1 - assets.getProgress()) {
                 remainingPercentage -= STEP;
-            
+            }
+
             lastUpdate = System.currentTimeMillis();
         }
 
         stage.act();
         stage.draw();
-        
-        if(remainingPercentage <= STEP) {
+
+        if (remainingPercentage <= STEP) {
             remainingPercentage = 1.0f;
             return true;
         }
         return false;
     }
 
-    public class CooldownTimer extends Table
-    {
+    public class CooldownTimer extends Table {
 
         private static final float START_ANGLE = 90;
 
         private final boolean clockwise;
 
-        private Table cooldownDisplay;
+        private final Table cooldownDisplay;
         private TextureRegionDrawable cooldownTexture;
 
         private float alpha = 0.5f;
@@ -94,8 +93,7 @@ public class LoadingScreen
         /**
          * @param clockwise determines the rotation side of the cooldown timer.
          */
-        public CooldownTimer(boolean clockwise)
-        {
+        public CooldownTimer(boolean clockwise) {
             this.clockwise = clockwise;
 
             cooldownDisplay = new Table();
@@ -106,8 +104,7 @@ public class LoadingScreen
         /**
          * @param remainingPercentage to be rendered by cooldown timer.
          */
-        public void update(float remainingPercentage)
-        {
+        public void update(float remainingPercentage) {
             cooldownDisplay.clear();
 
             Image cooldownTimer = new Image(cooldownTimer(remainingPercentage));
@@ -115,23 +112,21 @@ public class LoadingScreen
             cooldownDisplay.addActor(cooldownTimer);
         }
 
-        public float getAlpha()
-        {
+        public float getAlpha() {
             return alpha;
         }
 
         /**
          * @param alpha to be applied to the final cooldown indicator.
          */
-        public void setAlpha(float alpha)
-        {
+        public void setAlpha(float alpha) {
             this.alpha = alpha;
         }
 
-        private Drawable cooldownTimer(float remainingPercentage)
-        {
-            if (remainingPercentage > 1.0f || remainingPercentage < 0.0f)
+        private Drawable cooldownTimer(float remainingPercentage) {
+            if (remainingPercentage > 1.0f || remainingPercentage < 0.0f) {
                 return null;
+            }
 
             float radius = Math.min(getWidth() / 2, getHeight() / 2);
             float angle = calculateAngle(remainingPercentage);
@@ -162,10 +157,11 @@ public class LoadingScreen
 
                 display.setBlending(Blending.None);
 
-                if (cooldownTexture == null)
+                if (cooldownTexture == null) {
                     cooldownTexture = new TextureRegionDrawable(new TextureRegion(new Texture(display)));
-                else
+                } else {
                     cooldownTexture.getRegion().getTexture().draw(display, 0, 0);
+                }
 
                 return cooldownTexture;
             } finally {
@@ -175,16 +171,15 @@ public class LoadingScreen
             }
         }
 
-        private float calculateAngle(float remainingPercentage)
-        {
-            if (clockwise)
+        private float calculateAngle(float remainingPercentage) {
+            if (clockwise) {
                 return 360 - 360 * remainingPercentage;
-            else
+            } else {
                 return 360 * remainingPercentage - 360;
+            }
         }
 
-        private int calculateSegments(float angle)
-        {
+        private int calculateSegments(float angle) {
             return Math.max(1, (int) (6 * (float) Math.cbrt(Math.abs(angle)) * (Math.abs(angle) / 360.0f)));
         }
     }
