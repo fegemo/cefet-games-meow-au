@@ -12,12 +12,14 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import br.cefetmg.games.transition.TransitionScreen;
 import java.util.Arrays;
 import br.cefetmg.games.minigames.factories.*;
+import com.badlogic.gdx.audio.Sound;
 import java.util.HashSet;
 
 public class OverworldScreen extends BaseScreen {
 
     private Vector2 click;
     private Stage stage;
+    protected Sound click1;
     private boolean check = false;
     private boolean stop;
     private boolean s1, s2, s3, s4, s5;
@@ -35,15 +37,7 @@ public class OverworldScreen extends BaseScreen {
 
     @Override
     public void appear() {
-        Gdx.gl.glClearColor(0, 0, .5f, 1);
-        stage = new Stage(new ScreenViewport());
-        Group group = new Group();
-        s1 = false;
-        s2 = false;
-        s3 = false;
-        s4 = false;
-        s5 = false;
-
+        Gdx.gl.glClearColor(1, 1, 1, 1);
         map = new Image(new Texture(Gdx.files.internal("world/desert.png")));
         arrow = new Image(new Texture(Gdx.files.internal("world/arrow.png")));
         icon1 = new Image(new Texture(Gdx.files.internal("world/icon1.png")));
@@ -52,7 +46,7 @@ public class OverworldScreen extends BaseScreen {
         stage3 = new Image(new Texture(Gdx.files.internal("world/stage3.png")));
         stage4 = new Image(new Texture(Gdx.files.internal("world/stage4.png")));
         stage5 = new Image(new Texture(Gdx.files.internal("world/stage5.png")));
-        exit = new Image(new Texture(Gdx.files.internal("world/exit.png")));
+        exit = new Image(new Texture(Gdx.files.internal("world/menu.png")));
         icon2 = new Image(new Texture(Gdx.files.internal("world/icon2.png")));
         icon3 = new Image(new Texture(Gdx.files.internal("world/icon3.png")));
         icon4 = new Image(new Texture(Gdx.files.internal("world/icon4.png")));
@@ -60,7 +54,20 @@ public class OverworldScreen extends BaseScreen {
         menu = new Image(new Texture(Gdx.files.internal("world/menu.png")));
         play = new Image(new Texture(Gdx.files.internal("world/play.png")));
         water = new Image(new Texture(Gdx.files.internal("world/water.jpg")));
+        assets.load("menu/click2.mp3", Sound.class);
 
+    }
+
+    @Override
+    protected void assetsLoaded() {
+        s1 = false;
+        s2 = false;
+        s3 = false;
+        s4 = false;
+        s5 = false;
+        click1 = assets.get("menu/click2.mp3", Sound.class);
+        stage = new Stage(new ScreenViewport());
+        Group group = new Group();
         map.setName("map");
         water.setName("water");
         play.setName("play");
@@ -115,58 +122,54 @@ public class OverworldScreen extends BaseScreen {
         water.setScale(viewport.getWorldWidth() / water.getWidth(), viewport.getWorldHeight() / water.getHeight());
         water.setPosition(0, 0);
 
-        play.setScale(.65f);
+        play.setScale(.9f);
         play.setOrigin(0, 0);
-        play.setPosition(viewport.getWorldWidth() / 2 + 150, viewport.getWorldHeight() / 2 - 260);
-        exit.setScale(1f);
+        play.setPosition(viewport.getWorldWidth() / 2 + 50, viewport.getWorldHeight() / 2 - 100);
+        exit.setScale(.9f);
         exit.setOrigin(0, 0);
-        exit.setPosition(viewport.getWorldWidth() / 2 + 320, viewport.getWorldHeight() / 2 + 260);
+        exit.setPosition(viewport.getWorldWidth() / 2 - 225, viewport.getWorldHeight() / 2 - 100);
 
-        icon1.setScale(0.3f);
+        icon1.setScale(0.2f);
         icon1.setOrigin(0, 0);
         icon1.setPosition(775.29376f, 176.95001f);
-        stage1.setScale(0.9f);
+        stage1.setScale(0.8f);
         stage1.setOrigin(0, 0);
-        stage1.setPosition(viewport.getWorldWidth() / 2 - stage1.getWidth() * stage1.getScaleX() / 2, viewport.getWorldHeight() / 2 - stage1.getHeight() * stage1.getScaleY() / 2);
-
+        
         icon2.setScale(0.9f);
         icon2.setOrigin(0, 0);
         icon2.setPosition(325.83545f, 453.82504f);
-        stage2.setScale(0.9f);
+        stage2.setScale(0.8f);
         stage2.setOrigin(0, 0);
-        stage2.setPosition(viewport.getWorldWidth() / 2 - stage2.getWidth() * stage2.getScaleX() / 2, viewport.getWorldHeight() / 2 - stage2.getHeight() * stage2.getScaleY() / 2);
-
+        
         icon3.setScale(0.3f);
         icon3.setOrigin(0, 0);
         icon3.setPosition(570.648f, 545.2626f);
-        stage3.setScale(0.9f);
+        stage3.setScale(0.8f);
         stage3.setOrigin(0, 0);
-        stage3.setPosition(viewport.getWorldWidth() / 2 - stage3.getWidth() * stage3.getScaleX() / 2, viewport.getWorldHeight() / 2 - stage3.getHeight() * stage3.getScaleY() / 2);
-
+        
         icon4.setScale(0.25f);
         icon4.setOrigin(0, 0);
         icon4.setPosition(630.8559f, 316.95004f);
-        stage4.setScale(0.9f);
+        stage4.setScale(0.8f);
         stage4.setOrigin(0, 0);
-        stage4.setPosition(viewport.getWorldWidth() / 2 - stage4.getWidth() * stage4.getScaleX() / 2, viewport.getWorldHeight() / 2 - stage4.getHeight() * stage4.getScaleY() / 2);
-
+        
         icon5.setScale(0.4f);
         icon5.setOrigin(0, 0);
         icon5.setPosition(983.3172f, 320.38754f);
-        stage5.setScale(0.9f);
+        stage5.setScale(0.8f);
         stage5.setOrigin(0, 0);
-        stage5.setPosition(viewport.getWorldWidth() / 2 - stage5.getWidth() * stage5.getScaleX() / 2, viewport.getWorldHeight() / 2 - stage5.getHeight() * stage5.getScaleY() / 2);
-
+        
         arrow.setScale(0.08f);
         arrow.setOrigin(0, 0);
         arrow.setPosition(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2);
 
-        menu.setScale(0.1f);
+        menu.setScale(.8f);
         menu.setOrigin(0, 0);
         menu.setPosition(0, 0);
 
         stage.setViewport(viewport);
         stage.act(Gdx.graphics.getDeltaTime());
+
     }
 
     @Override
@@ -190,18 +193,21 @@ public class OverworldScreen extends BaseScreen {
 
         growEffect();
 
-        if (Gdx.input.justTouched() && hitActor != null) {
+        if (Gdx.input.justTouched() && hitActor != null && !stop) {
             if ("menu".equals(hitActor.getName())) {
+                click1.play();
                 transitionScreen(new MenuScreen(super.game, this),
                         TransitionScreen.Effect.FADE_IN_OUT, 1f);
                 stop = true;
 
             } else if (s1) {
                 if ("play".equals(hitActor.getName())) {
+                    stop = true;
+                    click1.play();
                     firstStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
-                    stage1.setZIndex(0);
+                    click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     s1 = false;
@@ -209,10 +215,12 @@ public class OverworldScreen extends BaseScreen {
                 }
             } else if (s2) {
                 if ("play".equals(hitActor.getName())) {
+                    stop = true;
+                    click1.play();
                     secondStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
-                    stage2.setZIndex(0);
+                    click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     s2 = false;
@@ -220,10 +228,12 @@ public class OverworldScreen extends BaseScreen {
                 }
             } else if (s3) {
                 if ("play".equals(hitActor.getName())) {
+                    stop = true;
+                    click1.play();
                     thirdStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
-                    stage3.setZIndex(0);
+                    click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     s3 = false;
@@ -231,10 +241,12 @@ public class OverworldScreen extends BaseScreen {
                 }
             } else if (s4) {
                 if ("play".equals(hitActor.getName())) {
+                    stop = true;
+                    click1.play();
                     fourthStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
-                    stage4.setZIndex(0);
+                    click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     s4 = false;
@@ -242,24 +254,30 @@ public class OverworldScreen extends BaseScreen {
                 }
             } else if (s5) {
                 if ("play".equals(hitActor.getName())) {
+                    stop = true;
+                    click1.play();
                     lastStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
-                    stage5.setZIndex(0);
+                    click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     s5 = false;
-
                 }
             } else if ("icon1".equals(hitActor.getName())) {
+                click1.play();
                 firstStage(false);
             } else if ("icon2".equals(hitActor.getName())) {
+                click1.play();
                 secondStage(false);
             } else if ("icon3".equals(hitActor.getName())) {
+                click1.play();
                 thirdStage(false);
             } else if ("icon4".equals(hitActor.getName())) {
+                click1.play();
                 lastStage(false);
             } else if ("icon5".equals(hitActor.getName())) {
+                click1.play();
                 fourthStage(false);
             } else {
                 stop = false;
@@ -272,15 +290,12 @@ public class OverworldScreen extends BaseScreen {
     private void firstStage(boolean go) {
         s1 = true;
         stage1.setZIndex(18);
-        exit.setZIndex(19);
-        play.setZIndex(19);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
                     Arrays.asList(
-                            new RainingCatsFactory(),
-                            // flávio
-                            new ShootTheCariesFactory(),
-                            new ShooTheTartarusFactory(),
+                            
+                            new TheFridgeGameFactory(),
+                            new MouseAttackFactory(),
                             // gustavo henrique e rogenes
                             new BasCATballFactory(),
                             new RunningFactory()
@@ -293,8 +308,6 @@ public class OverworldScreen extends BaseScreen {
     private void secondStage(boolean go) {
         s2 = true;
         stage2.setZIndex(18);
-        exit.setZIndex(19);
-        play.setZIndex(19);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
                     Arrays.asList(
@@ -314,13 +327,11 @@ public class OverworldScreen extends BaseScreen {
     private void thirdStage(boolean go) {
         s3 = true;
         stage3.setZIndex(18);
-        exit.setZIndex(19);
-        play.setZIndex(19);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
                     Arrays.asList(
                             // cassiano e gustavo jordão
-                            new TicCatDogFactory(),
+                            new RainingCatsFactory(),
                             new JumpTheObstaclesFactory(),
                             // luiza e pedro cordeiro
                             new SpyFishFactory(),
@@ -333,14 +344,12 @@ public class OverworldScreen extends BaseScreen {
     private void fourthStage(boolean go) {
         s4 = true;
         stage4.setZIndex(18);
-        exit.setZIndex(19);
-        play.setZIndex(19);
         if (go) {
             stage4.setZIndex(stage4.getZIndex() + 7);
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
                     Arrays.asList(
                             // gabriel e natália
-                            new MouseAttackFactory(),
+                            new TicCatDogFactory(),
                             new JetRatFactory(),
                             // emanoel e vinícius
                             new HeadSoccerFactory(),
@@ -353,8 +362,6 @@ public class OverworldScreen extends BaseScreen {
     private void lastStage(boolean go) {
         s5 = true;
         stage5.setZIndex(18);
-        exit.setZIndex(19);
-        play.setZIndex(19);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
                     Arrays.asList(
@@ -364,7 +371,6 @@ public class OverworldScreen extends BaseScreen {
                             // túlio
                             new NinjaCatFactory(),
                             //estevao e sarah//
-                            new TheFridgeGameFactory(),
                             new KillTheRatsFactory()
                     )
             ), 1, 1), TransitionScreen.Effect.FADE_IN_OUT, 1f);
@@ -373,10 +379,10 @@ public class OverworldScreen extends BaseScreen {
 
     private void growEffect() {
         Actor hitActor = stage.hit(arrow.getX(), arrow.getY() + arrow.getHeight() * arrow.getScaleY(), false);
-        if (!stop && hitActor != null) {
+        if (!stop && hitActor != null && !s2 && !s3 && !s4 && !s1 && !s5) {
             if ("icon1".equals(hitActor.getName())) {
                 if (check) {
-                    icon1.setScale(.4f);
+                    icon1.setScale(.28f);
                     icon1.setPosition(755.29376f, 166.95001f);
                     check = !check;
                 }
@@ -404,15 +410,8 @@ public class OverworldScreen extends BaseScreen {
                     icon5.setPosition(973.3172f, 310.38754f);
                     check = !check;
                 }
-            } else if ("menu".equals(hitActor.getName())) {
-                if (check) {
-                    menu.setScale(.15f);
-                    check = !check;
-                }
             } else {
-                menu.setScale(.1f);
-
-                icon1.setScale(0.3f);
+                icon1.setScale(0.2f);
                 icon1.setPosition(775.29376f, 176.95001f);
 
                 icon2.setScale(0.9f);
@@ -430,19 +429,57 @@ public class OverworldScreen extends BaseScreen {
             }
         }
     }
-    
+
+    private void showStage(Image stage) {
+        if (stage.getScaleX() < .8f) {
+            stage.setScale(stage.getScaleX() + .1f);
+            stage.setPosition(viewport.getWorldWidth() / 2 - stage.getWidth() * stage.getScaleX() / 2, viewport.getWorldHeight() / 2 - stage.getHeight() * stage.getScaleY() / 2);
+
+        } else {
+            exit.setZIndex(19);
+            play.setZIndex(19);
+            arrow.setZIndex(20);
+        }
+    }
+
+    private void hideStage(Image stage) {
+        if (stage.getScaleX() > 0) {
+            stage.setScale(stage.getScaleX() - .1f);
+            stage.setPosition(viewport.getWorldWidth() / 2 - stage.getWidth() * stage.getScaleX() / 2, viewport.getWorldHeight() / 2 - stage.getHeight() * stage.getScaleY() / 2);
+        }
+    }
+
     @Override
     public void draw() {
         stage.draw();
     }
 
     @Override
-    protected void assetsLoaded() {
-        
-    }
-
-    @Override
     public void update(float dt) {
-        
+        if (s1) {
+            showStage(stage1);
+        } else {
+            hideStage(stage1);
+        }
+        if (s2) {
+            showStage(stage2);
+        } else {
+            hideStage(stage2);
+        }
+        if (s3) {
+            showStage(stage3);
+        } else {
+            hideStage(stage3);
+        }
+        if (s4) {
+            showStage(stage4);
+        } else {
+            hideStage(stage4);
+        }
+        if (s5) {
+            showStage(stage5);
+        } else {
+            hideStage(stage5);
+        }
     }
 }

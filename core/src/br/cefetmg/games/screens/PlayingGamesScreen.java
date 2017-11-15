@@ -39,7 +39,8 @@ public class PlayingGamesScreen extends BaseScreen
     private Sound youLoseSound;
     private Sound youWinSound;
 
-    public PlayingGamesScreen(Game game, BaseScreen previous, int nGames, Set<MiniGameFactory> games,float initialDifficulty, float finalDifficulty) {
+    public PlayingGamesScreen(Game game, BaseScreen previous, int nGames, Set<MiniGameFactory> games,
+            float initialDifficulty, float finalDifficulty) {
         super(game, previous);
         state = PlayScreenState.PLAYING;
         lives = Config.MAX_LIVES;
