@@ -13,6 +13,7 @@ import br.cefetmg.games.transition.TransitionScreen;
 import java.util.Arrays;
 import br.cefetmg.games.minigames.factories.*;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import java.util.HashSet;
 
 public class OverworldScreen extends BaseScreen {
@@ -31,6 +32,8 @@ public class OverworldScreen extends BaseScreen {
             icon5, stage5,
             exit, menu, play, water;
 
+    private Music backgroundMusic;
+    
     public OverworldScreen(Game game, BaseScreen previous) {
         super(game, previous);
     }
@@ -55,7 +58,7 @@ public class OverworldScreen extends BaseScreen {
         play = new Image(new Texture(Gdx.files.internal("world/play.png")));
         water = new Image(new Texture(Gdx.files.internal("world/water.jpg")));
         assets.load("menu/click2.mp3", Sound.class);
-
+        assets.load("world/overworldtheme.mp3", Music.class); 
     }
 
     @Override
@@ -66,6 +69,9 @@ public class OverworldScreen extends BaseScreen {
         s4 = false;
         s5 = false;
         click1 = assets.get("menu/click2.mp3", Sound.class);
+        backgroundMusic = assets.get("world/overworldtheme.mp3", Music.class);
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
         stage = new Stage(new ScreenViewport());
         Group group = new Group();
         map.setName("map");
@@ -175,6 +181,7 @@ public class OverworldScreen extends BaseScreen {
     @Override
     public void cleanUp() {
         assets.dispose();
+        backgroundMusic.stop();
     }
 
     @Override
