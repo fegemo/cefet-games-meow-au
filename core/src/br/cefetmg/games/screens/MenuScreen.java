@@ -40,8 +40,8 @@ public class MenuScreen extends BaseScreen {
     private Texture btnSurvival;
     private Texture btnBack;
     private Texture logo;
-    private Sound click1;
-    private Sound click2;
+    protected Sound click1;
+    protected Sound click2;
     private int selecionaModo = 0;
 
     private Music musicaTema;
