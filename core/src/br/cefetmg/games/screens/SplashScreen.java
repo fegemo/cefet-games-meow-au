@@ -49,7 +49,12 @@ public class SplashScreen extends BaseScreen {
                 super.viewport.getWorldWidth() / 2,
                 super.viewport.getWorldHeight() / 2);
     }
-    
+
+
+    @Override
+    protected void assetsLoaded() {
+    }
+   
     @Override
     public void cleanUp() {
         logo.getTexture().dispose();

@@ -3,6 +3,7 @@ package br.cefetmg.games.screens;
 import br.cefetmg.games.transition.TransitionScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
@@ -61,27 +62,49 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.input.setCursorCatched(false);
 
         //instancia música tema
-        musicaTema = Gdx.audio.newMusic(Gdx.files.internal("menu/meowautheme.mp3"));
-        //ativa loop
-        musicaTema.setLooping(true);
-        //toca musica
-        musicaTema.play();
+        assets.load("menu/meowautheme.mp3", Music.class);
 
         // instancia a textura e a região de textura (usada para repetir)
-        background = new TextureRegion(new Texture("menu/menu-background.png"));
-        btnPlay = new Texture("menu/button_jogar.png");
-        btnExit = new Texture("menu/button_sair.png");
-        btnRanking = new Texture("menu/button_ranking.png");
-        btnCredits = new Texture("menu/button_creditos.png");
-        btnNormal = new Texture("menu/button_normal.png");
-        btnSurvival = new Texture("menu/button_survival.png");
-        btnBack = new Texture("menu/button_voltar.png");
-        logo = new Texture("menu/logo.png");
-        click1 = Gdx.audio.newSound(Gdx.files.internal("menu/click1.mp3"));
-        click2 = Gdx.audio.newSound(Gdx.files.internal("menu/click2.mp3"));
+        TextureLoader.TextureParameter linearFilter = new TextureLoader.TextureParameter();
+        linearFilter.minFilter = Texture.TextureFilter.Linear;
+        linearFilter.magFilter = Texture.TextureFilter.Linear;
+        assets.load("menu/menu-background.png", Texture.class, linearFilter);
+        assets.load("menu/button_jogar.png", Texture.class, linearFilter);
+        assets.load("menu/button_sair.png", Texture.class, linearFilter);
+        assets.load("menu/button_ranking.png", Texture.class, linearFilter);
+        assets.load("menu/button_creditos.png", Texture.class, linearFilter);
+        assets.load("menu/button_normal.png", Texture.class, linearFilter);
+        assets.load("menu/button_survival.png", Texture.class, linearFilter);
+        assets.load("menu/button_voltar.png", Texture.class, linearFilter);
+        assets.load("menu/logo.png", Texture.class, linearFilter);
+
+        assets.load("menu/click1.mp3", Sound.class);
+        assets.load("menu/click2.mp3", Sound.class);
     }
+   
+    @Override
+    protected void assetsLoaded() {
+        background = new TextureRegion(assets.get("menu/menu-background.png", Texture.class));
+        btnPlay = assets.get("menu/button_jogar.png", Texture.class);
+        btnExit = assets.get("menu/button_sair.png", Texture.class);
+        btnRanking = assets.get("menu/button_ranking.png", Texture.class);
+        btnCredits = assets.get("menu/button_creditos.png", Texture.class);
+        btnNormal = assets.get("menu/button_normal.png", Texture.class);
+        btnSurvival = assets.get("menu/button_survival.png", Texture.class);
+        btnBack = assets.get("menu/button_voltar.png", Texture.class);
+        logo = assets.get("menu/logo.png", Texture.class);
+
+        musicaTema = assets.get("menu/meowautheme.mp3", Music.class);
+        musicaTema.setLooping(true);
+        musicaTema.play();
+
+        click1 = assets.get("menu/click1.mp3", Sound.class);
+        click2 = assets.get("menu/click2.mp3", Sound.class);
+    }
+
 
     /**
      * Recebe <em>input</em> do jogador.
@@ -122,7 +145,7 @@ public class MenuScreen extends BaseScreen {
                 }
                 if (exitBounds.contains(clickPosition.x, clickPosition.y)) {
                     click1.play();
-                    System.exit(0);
+                    Gdx.app.exit();
                 }
             } else {
                 if (playBounds.contains(clickPosition.x, clickPosition.y)) {
@@ -194,8 +217,8 @@ public class MenuScreen extends BaseScreen {
      * Navega para a tela de jogo.
      */
     private void navigateToMicroGameScreen() {
-        transitionScreen(new PlayingGamesScreen(super.game, this),
-                TransitionScreen.Effect.FADE_IN_OUT, 1f);
+         transitionScreen(new OverworldScreen(super.game, this),
+                        TransitionScreen.Effect.FADE_IN_OUT, 1f);
     }
 
     /**
