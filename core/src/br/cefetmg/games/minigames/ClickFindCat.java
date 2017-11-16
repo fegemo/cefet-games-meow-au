@@ -206,10 +206,10 @@ public class ClickFindCat extends MiniGame {
             }
             posicao.add(QuantoAndou);
             
-            if (posicao.x < 0) posicao.x = 0; direcao = Direcao.DIREITA;
-            else if (posicao.x > larguraDoMundo) posicao.x = larguraDoMundo; direcao = Direcao.ESQUERDA;
-            if (posicao.y < 0) posicao.y = 0; direcao = Direcao.CIMA;
-            else if (posicao.y > larguraDoMundo) posicao.y = larguraDoMundo; direcao = Direcao.BAIXO;
+            if (posicao.x < 0){ posicao.x = 0; direcao = Direcao.DIREITA;}
+            else if(posicao.x > larguraDoMundo){ posicao.x = larguraDoMundo; direcao = Direcao.ESQUERDA;}
+            if (posicao.y < 0){ posicao.y = 0; direcao = Direcao.CIMA;}
+            else if(posicao.y > larguraDoMundo){ posicao.y = larguraDoMundo; direcao = Direcao.BAIXO;}
         }
         
         public void fugir () {
