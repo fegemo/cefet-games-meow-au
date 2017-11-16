@@ -51,8 +51,8 @@ public class OverworldScreen extends BaseScreen {
         stage1 = new Image(new Texture(Gdx.files.internal("world/stage1.png")));
         stage2 = new Image(new Texture(Gdx.files.internal("world/stage2.png")));
         stage3 = new Image(new Texture(Gdx.files.internal("world/stage3.png")));
-        stage4 = new Image(new Texture(Gdx.files.internal("world/stage4.png")));
-        stage5 = new Image(new Texture(Gdx.files.internal("world/stage5.png")));
+        stage5 = new Image(new Texture(Gdx.files.internal("world/stage4.png")));
+        stage4 = new Image(new Texture(Gdx.files.internal("world/stage5.png")));
         exit = new Image(new Texture(Gdx.files.internal("world/menu.png")));
         icon2 = new Image(new Texture(Gdx.files.internal("world/icon2.png")));
         icon3 = new Image(new Texture(Gdx.files.internal("world/icon3.png")));
@@ -310,16 +310,16 @@ public class OverworldScreen extends BaseScreen {
             } else if ("icon1".equals(hitActor.getName())) {
                 click2.play();
                 firstStage(false);
-            } else if ("icon2".equals(hitActor.getName()) && currentStage > 1) {
+            } else if ("icon2".equals(hitActor.getName()) && currentStage >= 1) {
                 click2.play();
                 secondStage(false);
-            } else if ("icon3".equals(hitActor.getName()) && currentStage > 2) {
+            } else if ("icon3".equals(hitActor.getName()) && currentStage >= 2) {
                 click2.play();
                 thirdStage(false);
-            } else if ("icon4".equals(hitActor.getName()) && currentStage > 3) {
+            } else if ("icon4".equals(hitActor.getName()) && currentStage >= 3) {
                 click2.play();
                 lastStage(false);
-            } else if ("icon5".equals(hitActor.getName()) && currentStage > 4) {
+            } else if ("icon5".equals(hitActor.getName()) && currentStage >= 4) {
                 click2.play();
                 fourthStage(false);
             } else {
@@ -422,7 +422,6 @@ public class OverworldScreen extends BaseScreen {
     
     private void DesenharCadeados(){
         int i=0;
-        System.out.println(""+currentStage);
         for (Image cadeado : cadeados ) {
             if(i>currentStage){
                 cadeado.draw(batch,0);
