@@ -319,7 +319,7 @@ public class OverworldScreen extends BaseScreen {
                             new BasCATballFactory(),
                             new RunningFactory()
                     )
-            ), .2f, .2f), TransitionScreen.Effect.FADE_IN_OUT,
+            ), .1f, .2f), TransitionScreen.Effect.FADE_IN_OUT,
                     1f);
         }
     }
@@ -331,15 +331,15 @@ public class OverworldScreen extends BaseScreen {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
                     Arrays.asList(
                             // rafael e luis carlos
-                            // new DodgeTheVeggiesFactory(),
-                            // new CatchThatHomeworkFactory(),
+                            new DodgeTheVeggiesFactory(),
+                            new CatchThatHomeworkFactory(),
                             // adriel
-                            // new UnderwaterCatFactory(),
+                            new UnderwaterCatFactory(),
                             // arthur e pedro
-                            // new DogBarksCatFleeFactory(),
+                            new DogBarksCatFleeFactory(),
                             new ClickFindCatFactory()
                     )
-            ), .4f, .4f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
+            ), .3f, .4f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
         }
     }
 
@@ -356,7 +356,7 @@ public class OverworldScreen extends BaseScreen {
                             new SpyFishFactory(),
                             new PhantomCatFactory()
                     )
-            ), .6f, .6f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
+            ), .5f, .6f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
         }
     }
 
@@ -374,7 +374,7 @@ public class OverworldScreen extends BaseScreen {
                             new HeadSoccerFactory(),
                             new CatAvoiderFactory()
                     )
-            ), .8f, .8f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
+            ), .7f, .8f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
         }
     }
 
@@ -392,7 +392,7 @@ public class OverworldScreen extends BaseScreen {
                             //estevao e sarah//
                             new KillTheRatsFactory()
                     )
-            ), 1, 1), TransitionScreen.Effect.FADE_IN_OUT, 1f);
+            ), 0.9f, 1), TransitionScreen.Effect.FADE_IN_OUT, 1f);
         }
     }
 
