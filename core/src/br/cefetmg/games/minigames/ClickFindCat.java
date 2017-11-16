@@ -288,8 +288,11 @@ public class ClickFindCat extends MiniGame {
         }
         
         public void fugir () {
+            Vector2 Auxiliar2 = new Vector2(posicao.x,posicao.y);
             Vector2 Auxiliar = new Vector2(Steering.x,Steering.y);
-            velocidade = Auxiliar.sub(alvo);
+             Auxiliar2.sub(alvo);
+            Auxiliar.sub(alvo);
+            velocidade = Auxiliar.add(Auxiliar2);
             //velocidade.scl(1/100);
             System.out.println("velocidade1 = "+velocidade.toString());
             velocidade.x *=(double) 1 /(double) 100;
