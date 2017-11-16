@@ -208,7 +208,7 @@ public class OverworldScreen extends BaseScreen {
         if (!file.exists()) {
             file.writeString("0:", false);
             file.writeString("0", true);
-            currentStage = 1;
+            currentStage = 0;
             score = 0;
         }else {
             String arquivo = new String(file.readString());
@@ -239,9 +239,6 @@ public class OverworldScreen extends BaseScreen {
         Actor hitActor = stage.hit(arrow.getX(), arrow.getY() + arrow.getHeight() * arrow.getScaleY(), false);
         
         growEffect();
-        for (int i = 0; i <= currentStage; i++) {
-            openStages[i] = false;
-        }
         if (Gdx.input.justTouched() && hitActor != null && !stop) {
             if ("menu".equals(hitActor.getName())) {
                 click1.play();
@@ -313,16 +310,16 @@ public class OverworldScreen extends BaseScreen {
             } else if ("icon1".equals(hitActor.getName())) {
                 click2.play();
                 firstStage(false);
-            } else if ("icon2".equals(hitActor.getName())) {
+            } else if ("icon2".equals(hitActor.getName()) && currentStage > 1) {
                 click2.play();
                 secondStage(false);
-            } else if ("icon3".equals(hitActor.getName())) {
+            } else if ("icon3".equals(hitActor.getName()) && currentStage > 2) {
                 click2.play();
                 thirdStage(false);
-            } else if ("icon4".equals(hitActor.getName())) {
+            } else if ("icon4".equals(hitActor.getName()) && currentStage > 3) {
                 click2.play();
                 lastStage(false);
-            } else if ("icon5".equals(hitActor.getName())) {
+            } else if ("icon5".equals(hitActor.getName()) && currentStage > 4) {
                 click2.play();
                 fourthStage(false);
             } else {
