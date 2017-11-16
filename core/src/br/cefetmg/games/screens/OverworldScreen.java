@@ -36,7 +36,7 @@ public class OverworldScreen extends BaseScreen {
             icon5, stage5,
             exit, menu, play, water;
     private ArrayList<Image> cadeados;
-    private boolean desenhaMeio;
+    private boolean desenhaMeio=true;
     private Music backgroundMusic;
     private int currentStage;
     private int score;
@@ -84,7 +84,7 @@ public class OverworldScreen extends BaseScreen {
             cadeados.add(new Image(new Texture(Gdx.files.internal("world/cadeado.png"))));
         }
         bool1 = true;
-        desenhaMeio = false;
+        desenhaMeio = true;
         click1 = assets.get("menu/click2.mp3", Sound.class);
         click2 = assets.get("menu/click3.mp3", Sound.class);
         backgroundMusic = assets.get("world/overworldtheme.mp3", Music.class);
@@ -263,84 +263,93 @@ public class OverworldScreen extends BaseScreen {
                     stop = true;
                     click1.play();
                     firstStage(true);
+                    desenhaMeio=true;
                 }
                 if ("exit".equals(hitActor.getName())) {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     openStages[0] = false;
+                    desenhaMeio=true;
                 }
             }else if (openStages[1]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
                     secondStage(true);
+                    desenhaMeio=true;
                 }
                 if ("exit".equals(hitActor.getName())) {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     openStages[1] = false;
-
+                    desenhaMeio=true;
                 }
             } else if (openStages[2]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
                     thirdStage(true);
+                    desenhaMeio=true;
                 }
                 if ("exit".equals(hitActor.getName())) {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     openStages[2] = false;
-
+                    desenhaMeio=true;
                 }
             } else if (openStages[3]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
                     lastStage(true);
+                    desenhaMeio=true;
                 }
                 if ("exit".equals(hitActor.getName())) {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     openStages[3] = false;
-
+                    desenhaMeio=true;
                 }
             } else if (openStages[4]) {
                 if ("play".equals(hitActor.getName())) {
+                    
                     stop = true;
                     click1.play();
                     fourthStage(true);
+                    desenhaMeio=true;
                 }
                 if ("exit".equals(hitActor.getName())) {
+                    
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     openStages[4] = false;
+                    desenhaMeio=true;
                 }
             } else if ("icon1".equals(hitActor.getName())) {
-                click1.play();
+                click1.play();desenhaMeio=false;
                 firstStage(false);
             } else if ("icon2".equals(hitActor.getName()) && currentStage >= 1) {
-                click1.play();
+                click1.play();desenhaMeio=false;
                 secondStage(false);
             } else if ("icon3".equals(hitActor.getName()) && currentStage >= 2) {
-                click1.play();
+                click1.play();desenhaMeio=false;
                 thirdStage(false);
             } else if ("icon4".equals(hitActor.getName()) && currentStage >= 3) {
-                click1.play();
+                click1.play();desenhaMeio=false;
                 lastStage(false);
             } else if ("icon5".equals(hitActor.getName()) && currentStage >= 4) {
-                click1.play();
+                click1.play();desenhaMeio=false;
                 fourthStage(false);
             } else if((("icon5".equals(hitActor.getName()) && currentStage<4 )|| ("icon4".equals(hitActor.getName())&& currentStage<3)||("icon3".equals(hitActor.getName())&& currentStage<2) || ("icon2".equals(hitActor.getName())&& currentStage<1))){
                 click2.play();
                 stop = false;
+            }else{
             }
-
         }
         arrow.setZIndex(20);
     }
@@ -460,10 +469,12 @@ public class OverworldScreen extends BaseScreen {
         int i=0;
         for (Image cadeado : cadeados ) {
             if(i>currentStage){
-                if (desenhaMeio) {
-                    System.out.println("ENTROU");
-                    if (i != 3) cadeado.draw(batch,1);
-                } else cadeado.draw(batch,1);
+               if(i==3){
+                    if(desenhaMeio)
+                        cadeado.draw(batch,1);
+               }
+               else
+                cadeado.draw(batch,1);  
             }
             i++;
         }
@@ -554,39 +565,29 @@ public class OverworldScreen extends BaseScreen {
     @Override
     public void update(float dt) {
         if (openStages[0]) {
-            desenhaMeio = true;
             showStage(stage1);
         } else {
-            desenhaMeio = false;
             hideStage(stage1);
         }
         if (openStages[1]) {
             showStage(stage2);
-            desenhaMeio = true;
         } else {
             hideStage(stage2);
-            desenhaMeio = false;
         }
         if (openStages[2]) {
             showStage(stage3);
-            desenhaMeio = true;
         } else {
             hideStage(stage3);
-            desenhaMeio = false;
         }
         if (openStages[3]) {
             showStage(stage4);
-            desenhaMeio = true;
         } else {
             hideStage(stage4);
-            desenhaMeio = false;
         }
         if (openStages[4]) {
             showStage(stage5);
-            desenhaMeio = true;
         } else {
             hideStage(stage5);
-            desenhaMeio = false;
         }
     }
 }
