@@ -4,9 +4,16 @@ import br.cefetmg.games.Config;
 import br.cefetmg.games.transition.TransitionScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.utils.TimeUtils;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 /**
  * A tela de <em>splash</em> (inicial, com a logomarca) do jogo.
@@ -14,7 +21,7 @@ import com.badlogic.gdx.utils.TimeUtils;
  * @author Flávio Coutinho - fegemo <coutinho@decom.cefetmg.br>
  */
 public class SplashScreen extends BaseScreen {
-
+    private final int MAX_FRAMES = 51;
     /**
      * Momento em que a tela foi mostrada (em milissegundos).
      */
@@ -23,8 +30,10 @@ public class SplashScreen extends BaseScreen {
     /**
      * Uma {@link Sprite} que contém a logo da empresa CEFET-GAMES.
      */
-    private Sprite logo;
-
+    
+    private Sprite[] logo = new Sprite[MAX_FRAMES];
+    Music backgroundMusic;
+    
     /**
      * Cria uma nova tela de <em>splash</em>.
      *
@@ -35,6 +44,9 @@ public class SplashScreen extends BaseScreen {
         super(game, previous);
     }
 
+    private int i;
+    private int timer = 0;
+    
     /**
      * Configura parâmetros iniciais da tela.
      */
@@ -42,12 +54,13 @@ public class SplashScreen extends BaseScreen {
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         timeWhenScreenShowedUp = TimeUtils.millis();
-        logo = new Sprite(new Texture("splash/cefet-games-logo.png"));
-        logo.getTexture().setFilter(
-                Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        logo.setCenter(
-                super.viewport.getWorldWidth() / 2,
-                super.viewport.getWorldHeight() / 2);
+        for(int i = 0; i<MAX_FRAMES; i++) {
+            logo[i] = new Sprite(new Texture("splash/frames/"+Integer.toString(i+1)+".png"));
+            logo[i].getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+            logo[i].setCenter(super.viewport.getWorldWidth()/2, super.viewport.getWorldHeight()/2);
+        }
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("splash/splash.mp3"));
+        backgroundMusic.play();
     }
 
 
@@ -57,7 +70,7 @@ public class SplashScreen extends BaseScreen {
    
     @Override
     public void cleanUp() {
-        logo.getTexture().dispose();
+        backgroundMusic.stop();
     }
 
     /**
@@ -95,6 +108,10 @@ public class SplashScreen extends BaseScreen {
                 >= Config.TIME_ON_SPLASH_SCREEN) {
             navigateToMenuScreen();
         }
+        if(i!=MAX_FRAMES-1 && timer%4==0) {
+            i++;
+        }
+        timer++;
     }
 
     /**
@@ -103,7 +120,7 @@ public class SplashScreen extends BaseScreen {
     @Override
     public void draw() {
         batch.begin();
-        logo.draw(batch);
+        logo[i].draw(batch);
         batch.end();
     }
 }
