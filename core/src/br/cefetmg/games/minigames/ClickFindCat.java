@@ -164,10 +164,10 @@ public class ClickFindCat extends MiniGame {
     static class Rat {
         
         private final TextureRegion[][] quadrosDeAnimacao;
-        private final Animation<TextureRegion> andarParaFrente;
-        private final Animation<TextureRegion> andarParaTras;
         private final Animation<TextureRegion> andarParaDireita;
+        private final Animation<TextureRegion> andarParaTras;
         private final Animation<TextureRegion> andarParaEsquerda;
+        private final Animation<TextureRegion> andarParaCima;
         private Vector2 posicao;
         private Direcao direcao;
         private Vector2 Steering;
@@ -188,26 +188,26 @@ public class ClickFindCat extends MiniGame {
         		quadrosDeAnimacao[0][2]);
         andarParaTras.setPlayMode(PlayMode.LOOP_PINGPONG);
         
-        andarParaFrente = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
+        andarParaDireita = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
         		quadrosDeAnimacao[2][0],
         		quadrosDeAnimacao[2][1],
         		quadrosDeAnimacao[2][2]
         });
-        andarParaFrente.setPlayMode(PlayMode.LOOP_PINGPONG);
+        andarParaDireita.setPlayMode(PlayMode.LOOP_PINGPONG);
         
-        andarParaDireita = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
+        andarParaEsquerda = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
         		quadrosDeAnimacao[1][0],
         		quadrosDeAnimacao[1][1],
         		quadrosDeAnimacao[1][2]
         });
-        andarParaDireita.setPlayMode(PlayMode.LOOP_PINGPONG);
+        andarParaEsquerda.setPlayMode(PlayMode.LOOP_PINGPONG);
         
-        andarParaEsquerda = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
+        andarParaCima = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
         		quadrosDeAnimacao[3][0],
         		quadrosDeAnimacao[3][1],
         		quadrosDeAnimacao[3][2]
         });
-        andarParaEsquerda.setPlayMode(PlayMode.LOOP_PINGPONG);
+        andarParaCima.setPlayMode(PlayMode.LOOP_PINGPONG);
         }
         
         public void fuga(float x, float y){
@@ -234,7 +234,7 @@ public class ClickFindCat extends MiniGame {
         
         public void andar (float larguraDoMundo, float alturaDoMundo) {
             float ande= randomBinomial();
-            float passo = 30 * randomBinomial();
+            float passo = 30 * (float) Math.random();
             if( tipoDeMovimento == tipoDeMovimento.FUGIR){
                 fugir();
                 System.out.println("velocidade"+velocidade.toString() + "posição" + posicao.toString());
@@ -326,21 +326,17 @@ public class ClickFindCat extends MiniGame {
         
         public void render (SpriteBatch batch, float tempoDeAnimacao) {
             switch (direcao) {
-                case CIMA:
-                    // Cima
-                    batch.draw((TextureRegion)andarParaFrente.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
+                case DIREITA:
+                    batch.draw((TextureRegion)andarParaDireita.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
                     break;
                 case BAIXO:
-                    // Baixo
                     batch.draw((TextureRegion)andarParaTras.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
                     break;
-                case ESQUERDA:
-                    // Esquerda
-                    batch.draw((TextureRegion)andarParaEsquerda.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
+                case CIMA:
+                    batch.draw((TextureRegion)andarParaCima.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
                     break;
-                case DIREITA:
-                    // Direita
-                    batch.draw((TextureRegion)andarParaDireita.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
+                case ESQUERDA:
+                    batch.draw((TextureRegion)andarParaEsquerda.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
                     break;
                 default:
                     break;
