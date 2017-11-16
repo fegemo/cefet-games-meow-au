@@ -227,7 +227,6 @@ public class OverworldScreen extends BaseScreen {
             currentStage = Integer.parseInt(split[0]);
             score = Integer.parseInt(split[1]);
         }
-        currentStage =0;
     }
 
     @Override
