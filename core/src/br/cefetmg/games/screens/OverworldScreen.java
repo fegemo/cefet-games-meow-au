@@ -24,7 +24,7 @@ public class OverworldScreen extends BaseScreen {
     private Stage stage;
     protected Sound click1,click2;
     private boolean check = false;
-    private boolean stop;
+    private boolean stop,bool1=false;
     private Vector2[] posicaoIcone;
     private boolean[] openStages;
     private Image map, arrow,
@@ -78,6 +78,7 @@ public class OverworldScreen extends BaseScreen {
         for (int i = 0; i < 5; i++) {
             cadeados.add(new Image(new Texture(Gdx.files.internal("world/cadeado.png"))));
         }
+        bool1 = true;
         click1 = assets.get("menu/click2.mp3", Sound.class);
         click2 = assets.get("menu/click3.mp3", Sound.class);
         backgroundMusic = assets.get("world/overworldtheme.mp3", Music.class);
@@ -201,7 +202,6 @@ public class OverworldScreen extends BaseScreen {
         }
         
         // File Handle
-       
         // Read and Create Progress File
         FileHandle file = Gdx.files.local("data/ProgressFile.txt");
         System.out.println(file.path());
@@ -425,9 +425,12 @@ public class OverworldScreen extends BaseScreen {
     
     private void DesenharCadeados(){
         int i=0;
+        System.out.println(""+currentStage);
         for (Image cadeado : cadeados ) {
-            if(i<currentStage)
+            if(i>currentStage){
+                cadeado.draw(batch,0);
                 cadeado.draw(batch,1);
+            }
             i++;
         }
     }
@@ -506,8 +509,10 @@ public class OverworldScreen extends BaseScreen {
 
     @Override
     public void draw() {
+        batch.begin();
+            DesenharCadeados();
         stage.draw();
-        DesenharCadeados();
+        batch.end();
     }
 
     @Override
