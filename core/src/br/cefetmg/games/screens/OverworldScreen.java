@@ -308,20 +308,20 @@ public class OverworldScreen extends BaseScreen {
                     openStages[4] = false;
                 }
             } else if ("icon1".equals(hitActor.getName())) {
-                click2.play();
+                click1.play();
                 firstStage(false);
             } else if ("icon2".equals(hitActor.getName()) && currentStage >= 1) {
-                click2.play();
+                click1.play();
                 secondStage(false);
             } else if ("icon3".equals(hitActor.getName()) && currentStage >= 2) {
-                click2.play();
+                click1.play();
                 thirdStage(false);
             } else if ("icon4".equals(hitActor.getName()) && currentStage >= 3) {
-                click2.play();
-                lastStage(false);
-            } else if ("icon5".equals(hitActor.getName()) && currentStage >= 4) {
-                click2.play();
+                click1.play();
                 fourthStage(false);
+            } else if ("icon5".equals(hitActor.getName()) && currentStage >= 4) {
+                click1.play();
+                lastStage(false);
             } else {
                 stop = false;
             }
