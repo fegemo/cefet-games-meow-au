@@ -122,12 +122,6 @@ public class ClickFindCat extends MiniGame {
             happyMeawSound.play();
         }
         tempoDeAnimacao += Gdx.graphics.getDeltaTime();
-        timer.scheduleTask(new Task () {
-            @Override
-            public void run () {
-                rat.movimento();
-            }
-        }, 0, 60);
         
         if(ratWasRunning){
             rat.movimento();
@@ -240,7 +234,7 @@ public class ClickFindCat extends MiniGame {
         
         public void andar (float larguraDoMundo, float alturaDoMundo) {
             float ande= randomBinomial();
-            float passo = 10 * randomBinomial();
+            float passo = 5;
             if( tipoDeMovimento == tipoDeMovimento.FUGIR){
                 fugir();
                 System.out.println("velocidade"+velocidade.toString() + "posição" + posicao.toString());
@@ -275,7 +269,7 @@ public class ClickFindCat extends MiniGame {
         }
         
         public void MudarDirecao () {
-            float chance = (float) randomBinomial();
+            float chance = (float) Math.random();
             if (chance < 0.25) {
                 direcao = Direcao.DIREITA;
             } else if (chance < 0.5) {
