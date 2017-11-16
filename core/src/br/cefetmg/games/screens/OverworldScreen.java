@@ -323,6 +323,7 @@ public class OverworldScreen extends BaseScreen {
                 click1.play();
                 lastStage(false);
             } else {
+                click2.play();
                 stop = false;
             }
 
