@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer.Task;
 
 /**
  *
@@ -35,6 +36,7 @@ public class ClickFindCat extends MiniGame {
     private float initialCatScale;
     private float hipotenuzaDaTela;
     private float difficulty;
+    private float tempoDeAnimacao;
     
     public ClickFindCat(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
@@ -43,6 +45,7 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     protected void onStart() {
+        tempoDeAnimacao = 0;
         hipotenuzaDaTela = viewport.getScreenWidth() * viewport.getScreenWidth()
                 + viewport.getScreenHeight() * viewport.getScreenHeight();
         initialCatScale = 0.5f * DifficultyCurve.LINEAR_NEGATIVE.getCurveValue(difficulty);
@@ -105,7 +108,17 @@ public class ClickFindCat extends MiniGame {
         } else if (rand.nextInt() % 4 == 1 && super.getState() == MiniGameState.PLAYER_SUCCEEDED) {
             happyMeawSound.play();
         }
-        rat.movimento(viewport.getWorldWidth(), viewport.getWorldHeight());
+        tempoDeAnimacao += Gdx.graphics.getDeltaTime();
+        timer.scheduleTask(new Task () {
+            @Override
+            public void run () {
+                rat.movimento(viewport.getWorldWidth(), viewport.getWorldHeight());
+            }
+        }, 0, 1000);
+        
+        
+
+        
     }
 
     @Override
@@ -113,7 +126,7 @@ public class ClickFindCat extends MiniGame {
         if (super.getState() == MiniGameState.PLAYER_FAILED || super.getState() == MiniGameState.PLAYER_SUCCEEDED) {
             catSprite.draw(batch);
         }
-        rat.render(batch);
+        rat.render(batch,tempoDeAnimacao);
         //Desenha a Mira
         miraSprite.draw(batch);
 
@@ -136,14 +149,12 @@ public class ClickFindCat extends MiniGame {
         private final Animation<TextureRegion> andarParaTras;
         private final Animation<TextureRegion> andarParaDireita;
         private final Animation<TextureRegion> andarParaEsquerda;
-        private final float tempoDeAnimacao;
         private Vector2 posicao;
         private Direcao direcao;
         private TipoDeMovimento tipoDeMovimento;
         
         public Rat (Texture SpriteSheet) {
          posicao = new Vector2(0,0);
-         tempoDeAnimacao = 0;
          direcao = Direcao.CIMA;
          tipoDeMovimento = TipoDeMovimento.VAGAR;
          quadrosDeAnimacao = TextureRegion.split (SpriteSheet,42,32);
@@ -191,25 +202,68 @@ public class ClickFindCat extends MiniGame {
         
         public void vagar (float larguraDoMundo, float alturaDoMundo) {
             Vector2 QuantoAndou = new Vector2();
-            if (posicao.x <= 0) {
-                QuantoAndou.x = Math.abs(randomBinomial());
-            } else if (posicao.x >= larguraDoMundo) {
-                QuantoAndou.x = -Math.abs(randomBinomial());
-            } else {
-                QuantoAndou.x = randomBinomial();
-                if (QuantoAndou.x > 0) direcao = Direcao.DIREITA;
-                else direcao = Direcao.ESQUERDA;
+            float chance = (float) Math.random();
+            float passo = 5;
+            switch (direcao) {
+                case DIREITA:
+                    if (chance < 0.25) {
+                        direcao = Direcao.DIREITA;
+                        QuantoAndou.x = passo;
+                    } else if (chance < 0.5) {
+                        direcao = Direcao.CIMA;
+                        QuantoAndou.y = passo;
+                    } else if (chance < 0.75) {
+                        direcao = Direcao.BAIXO;
+                        QuantoAndou.y = -passo;
+                    } else {
+                        direcao = Direcao.ESQUERDA;
+                        QuantoAndou.x = -passo;
+                    }   break;
+                case ESQUERDA:
+                    if (chance < 0.25) {
+                        direcao = Direcao.ESQUERDA;
+                        QuantoAndou.x = -passo;
+                    } else if (chance < 0.5) {
+                        direcao = Direcao.BAIXO;
+                        QuantoAndou.y = -passo;
+                    } else if (chance < 0.75) {
+                        direcao = Direcao.CIMA;
+                        QuantoAndou.y = passo;
+                    } else {
+                        direcao = Direcao.DIREITA;
+                        QuantoAndou.x = passo;
+                    }   break;
+                case CIMA:
+                    if (chance < 0.25) {
+                        direcao = Direcao.CIMA;
+                        QuantoAndou.y = passo;
+                    } else if (chance < 0.5) {
+                        direcao = Direcao.ESQUERDA;
+                        QuantoAndou.x = -passo;
+                    } else if (chance < 0.75) {
+                        direcao = Direcao.DIREITA;
+                        QuantoAndou.x = passo;
+                    } else {
+                        direcao = Direcao.BAIXO;
+                        QuantoAndou.y = -passo;
+                    }   break;
+                case BAIXO:
+                    if (chance < 0.25) {
+                        direcao = Direcao.BAIXO;
+                        QuantoAndou.y = -passo;
+                    } else if (chance < 0.5) {
+                        direcao = Direcao.DIREITA;
+                        QuantoAndou.x = passo;
+                    } else if (chance < 0.75) {
+                        direcao = Direcao.ESQUERDA;
+                        QuantoAndou.x = -passo;
+                    } else {
+                        direcao = Direcao.CIMA;
+                        QuantoAndou.y = passo;
+                    }   break;
+                default:
+                    break;
             }
-            if (posicao.y <= 0) {
-                QuantoAndou.y = Math.abs(randomBinomial());
-            } else if (posicao.y >= alturaDoMundo) {
-                QuantoAndou.y = -Math.abs(randomBinomial());
-            } else {
-                QuantoAndou.y = randomBinomial();
-                if (QuantoAndou.y > 0 && QuantoAndou.y > QuantoAndou.x) direcao = Direcao.CIMA;
-                else if (QuantoAndou.y < 0 && QuantoAndou.y < QuantoAndou.x) direcao = Direcao.BAIXO;
-            }
-            QuantoAndou.scl(100);
             posicao.add(QuantoAndou);
             
             if (posicao.x < 0) {posicao.x = 0; direcao = Direcao.DIREITA;}
@@ -227,7 +281,7 @@ public class ClickFindCat extends MiniGame {
             return (float)(Math.random() - Math.random());
         }
         
-        public void render (SpriteBatch batch) {
+        public void render (SpriteBatch batch, float tempoDeAnimacao) {
             switch (direcao) {
                 case CIMA:
                     // Cima
