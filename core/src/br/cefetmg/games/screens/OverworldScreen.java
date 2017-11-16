@@ -15,6 +15,7 @@ import br.cefetmg.games.minigames.factories.*;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class OverworldScreen extends BaseScreen {
@@ -24,7 +25,7 @@ public class OverworldScreen extends BaseScreen {
     protected Sound click1,click2;
     private boolean check = false;
     private boolean stop;
-    private boolean s1, s2, s3, s4, s5;
+    private boolean[] openStages;
     private Image map, arrow,
             icon1, stage1,
             icon2, stage2,
@@ -33,7 +34,8 @@ public class OverworldScreen extends BaseScreen {
             icon5, stage5,
             exit, menu, play, water;
     private Music backgroundMusic;
-    
+    private int currentStage;
+    private int score;
     public OverworldScreen(Game game, BaseScreen previous) {
         super(game, previous);
     }
@@ -64,11 +66,10 @@ public class OverworldScreen extends BaseScreen {
 
     @Override
     protected void assetsLoaded() {
-        s1 = false;
-        s2 = false;
-        s3 = false;
-        s4 = false;
-        s5 = false;
+        openStages = new boolean[5];
+        for(int i = 1; i < 6; i++) {
+            openStages[i] = false;
+        }
         click1 = assets.get("menu/click2.mp3", Sound.class);
         click2 = assets.get("menu/click3.mp3", Sound.class);
         backgroundMusic = assets.get("world/overworldtheme.mp3", Music.class);
@@ -178,14 +179,24 @@ public class OverworldScreen extends BaseScreen {
         stage.setViewport(viewport);
         stage.act(Gdx.graphics.getDeltaTime());
        
-        // File Handle
+        // Read and Create Progress File
         FileHandle file = Gdx.files.local("data/ProgressFile.txt");
         System.out.println(file.path());
         if (!file.exists()) {
-            file.writeString("Stage1", false);
+            file.writeString("1:", false);
             file.writeString("0", true);
+            currentStage = 1;
+            score = 0;
         }else {
+            String arquivo = new String(file.readString());
+            String[] split = arquivo.split(":");
+            currentStage = Integer.parseInt(split[0]);
+            score = Integer.parseInt(split[1]);
         }
+        for(int i = 1; i <= currentStage; i++) {
+            openStages[i] = true;
+        }
+        
         
 
     }
@@ -211,7 +222,6 @@ public class OverworldScreen extends BaseScreen {
         Actor hitActor = stage.hit(arrow.getX(), arrow.getY() + arrow.getHeight() * arrow.getScaleY(), false);
 
         growEffect();
-        s1=s2=s3=s4=s5=false;
         if (Gdx.input.justTouched() && hitActor != null && !stop) {
             if ("menu".equals(hitActor.getName())) {
                 click1.play();
