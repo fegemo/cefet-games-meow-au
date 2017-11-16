@@ -65,16 +65,17 @@ public class OverworldScreen extends BaseScreen {
         assets.load("menu/click3.mp3", Sound.class);
         assets.load("world/overworldtheme.mp3", Music.class); 
         assets.load("world/overworldtheme.mp3", Music.class);
-        for (int i = 0; i < 5; i++) {
-            cadeados.add(new Image(new Texture(Gdx.files.internal("world/cadeado.png"))));
-        }
     }
 
     @Override
     protected void assetsLoaded() {
         openStages = new boolean[5];
+        cadeados = new ArrayList<Image>();
         for(int i = 0; i < 5; i++) {
             openStages[i] = false;
+        }
+        for (int i = 0; i < 5; i++) {
+            cadeados.add(new Image(new Texture(Gdx.files.internal("world/cadeado.png"))));
         }
         click1 = assets.get("menu/click2.mp3", Sound.class);
         click2 = assets.get("menu/click3.mp3", Sound.class);
@@ -214,9 +215,6 @@ public class OverworldScreen extends BaseScreen {
             currentStage = Integer.parseInt(split[0]);
             score = Integer.parseInt(split[1]);
         }
-        for (i = 0; i <= currentStage; i++) {
-            openStages[i] = true;
-        }
     }
 
     @Override
@@ -238,8 +236,11 @@ public class OverworldScreen extends BaseScreen {
 
         arrow.setZIndex(0);
         Actor hitActor = stage.hit(arrow.getX(), arrow.getY() + arrow.getHeight() * arrow.getScaleY(), false);
-
+        
         growEffect();
+        for (int i = 0; i <= currentStage; i++) {
+            openStages[i] = false;
+        }
         if (Gdx.input.justTouched() && hitActor != null && !stop) {
             if ("menu".equals(hitActor.getName())) {
                 click1.play();
