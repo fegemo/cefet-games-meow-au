@@ -38,6 +38,7 @@ public class OverworldScreen extends BaseScreen {
     private Music backgroundMusic;
     private int currentStage;
     private int score;
+    FileHandle file;
     public OverworldScreen(Game game, BaseScreen previous) {
         super(game, previous);
     }
@@ -61,10 +62,12 @@ public class OverworldScreen extends BaseScreen {
         menu = new Image(new Texture(Gdx.files.internal("world/menu.png")));
         play = new Image(new Texture(Gdx.files.internal("world/play.png")));
         water = new Image(new Texture(Gdx.files.internal("world/water.jpg")));
+        file = Gdx.files.local("data/ProgressFile.txt");
         assets.load("menu/click2.mp3", Sound.class);
         assets.load("menu/click3.mp3", Sound.class);
         assets.load("world/overworldtheme.mp3", Music.class); 
         assets.load("world/overworldtheme.mp3", Music.class);
+        
 
     }
 
@@ -203,7 +206,6 @@ public class OverworldScreen extends BaseScreen {
         
         // File Handle
         // Read and Create Progress File
-        FileHandle file = Gdx.files.local("data/ProgressFile.txt");
         System.out.println(file.path());
         if (!file.exists()) {
             file.writeString("0:", false);
@@ -348,6 +350,10 @@ public class OverworldScreen extends BaseScreen {
             ), .1f, .2f), TransitionScreen.Effect.FADE_IN_OUT,
                     1f);
         }
+        score += 2;
+        if (currentStage == 0) currentStage = 1;
+        String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
+        file.writeString(stage, false);
     }
 
     private void secondStage(boolean go) {
@@ -367,6 +373,10 @@ public class OverworldScreen extends BaseScreen {
                     )
             ), .3f, .4f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
         }
+        score += 4;
+        if (currentStage == 1) currentStage = 2;
+        String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
+        file.writeString(stage, false);
     }
 
     private void thirdStage(boolean go) {
@@ -384,6 +394,10 @@ public class OverworldScreen extends BaseScreen {
                     )
             ), .5f, .6f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
         }
+        score += 6;
+        if (currentStage == 2) currentStage = 3;
+        String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
+        file.writeString(stage, false);
     }
 
     private void fourthStage(boolean go) {
@@ -402,6 +416,10 @@ public class OverworldScreen extends BaseScreen {
                     )
             ), .7f, .8f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
         }
+        score += 8;
+        if (currentStage == 3) currentStage = 4;
+        String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
+        file.writeString(stage, false);
     }
 
     private void lastStage(boolean go) {
@@ -420,6 +438,10 @@ public class OverworldScreen extends BaseScreen {
                     )
             ), 0.9f, 1), TransitionScreen.Effect.FADE_IN_OUT, 1f);
         }
+        score += 10;
+        if (currentStage == 4) currentStage = 5;
+        String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
+        file.writeString(stage, false);
     }
     
     private void DesenharCadeados(){
