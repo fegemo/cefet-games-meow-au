@@ -52,7 +52,7 @@ public class ClickFindCat extends MiniGame {
         hipotenuzaDaTela = viewport.getScreenWidth() * viewport.getScreenWidth()
                 + viewport.getScreenHeight() * viewport.getScreenHeight();
         
-        initialCatScale = DifficultyCurve.LINEAR_NEGATIVE.getCurveValue(difficulty);
+        initialCatScale = 0.5f*DifficultyCurve.LINEAR_NEGATIVE.getCurveValue(difficulty);
         CatScaleX = initialCatScale*(float) Math.pow((double)(viewport.getWorldWidth()/1280),(double)initialCatScale);
         CatScaleY = initialCatScale*(float) Math.pow((double)(viewport.getWorldHeight()/720),(double)initialCatScale);
         catTexture = assets.get("ClickFindCat/gatinho-grande.png", Texture.class);
@@ -79,7 +79,7 @@ public class ClickFindCat extends MiniGame {
 
         catSprite = new Sprite(catTexture);
         catSprite.setPosition(posicaoInicial.x, posicaoInicial.y);
-        System.out.println("" +CatScaleX+" " + CatScaleY);
+        System.out.println(difficulty+" "+initialCatScale +" " + CatScaleX + " " + CatScaleY);
         catSprite.setScale(CatScaleX, CatScaleY);
         
     }
@@ -133,7 +133,7 @@ public class ClickFindCat extends MiniGame {
         catSprite.draw(batch);
         if (super.getState() == MiniGameState.PLAYER_FAILED || super.getState() == MiniGameState.PLAYER_SUCCEEDED) {
             //catSprite.draw(batch);
-            System.out.println("Achou achou");
+            //System.out.println("Achou achou");
         }
         rat.render(batch,tempoDeAnimacao);
         //Desenha a Mira
