@@ -335,7 +335,7 @@ public class OverworldScreen extends BaseScreen {
             } else if ("icon5".equals(hitActor.getName()) && currentStage >= 4) {
                 click1.play();
                 lastStage(false);
-            } else if( !("icon5".equals(hitActor.getName()) && currentStage >= 4) && !("icon4".equals(hitActor.getName()) && currentStage >= 3) || !("icon3".equals(hitActor.getName()) && currentStage >= 2) && !("icon2".equals(hitActor.getName()) && currentStage >= 1) && !("icon1".equals(hitActor.getName()))  ){
+            } else if((("icon5".equals(hitActor.getName()) && currentStage<4 )|| ("icon4".equals(hitActor.getName())&& currentStage<3)||("icon3".equals(hitActor.getName())&& currentStage<2) || ("icon2".equals(hitActor.getName())&& currentStage<1))){
                 click2.play();
                 stop = false;
             }
