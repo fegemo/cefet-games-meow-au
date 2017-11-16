@@ -344,7 +344,7 @@ public class OverworldScreen extends BaseScreen {
         arrow.setZIndex(20);
     }
 
-    private void firstStage(boolean go) {
+   private void firstStage(boolean go) {
         openStages[0] = true;
         stage1.setZIndex(18);
         if (go) {
@@ -359,11 +359,12 @@ public class OverworldScreen extends BaseScreen {
                     )
             ), .1f, .2f), TransitionScreen.Effect.FADE_IN_OUT,
                     1f);
+            score += 2;
+            if (currentStage == 0) currentStage = 1;
+            String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
+            file.writeString(stage, false);
         }
-        score += 2;
-        if (currentStage == 0) currentStage = 1;
-        String stagre = (String.valueOf(currentStage)+":"+String.valueOf(score));
-        file.writeString(stagre, false);
+        
     }
 
     private void secondStage(boolean go) {
@@ -382,11 +383,11 @@ public class OverworldScreen extends BaseScreen {
                             new ClickFindCatFactory()
                     )
             ), .3f, .4f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
+            score += 4;
+            if (currentStage == 1) currentStage = 2;
+            String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
+            file.writeString(stage, false);
         }
-        score += 4;
-        if (currentStage == 1) currentStage = 2;
-        String stager = (String.valueOf(currentStage)+":"+String.valueOf(score));
-        file.writeString(stager, false);
     }
 
     private void thirdStage(boolean go) {
@@ -403,11 +404,11 @@ public class OverworldScreen extends BaseScreen {
                             new PhantomCatFactory()
                     )
             ), .5f, .6f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
+            score += 6;
+            if (currentStage == 2) currentStage = 3;
+            String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
+            file.writeString(stage, false);
         }
-        score += 6;
-        if (currentStage == 2) currentStage = 3;
-        String stagre = (String.valueOf(currentStage)+":"+String.valueOf(score));
-        file.writeString(stagre, false);
     }
 
     private void fourthStage(boolean go) {
@@ -425,11 +426,11 @@ public class OverworldScreen extends BaseScreen {
                             new CatAvoiderFactory()
                     )
             ), .7f, .8f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
+            score += 8;
+            if (currentStage == 3) currentStage = 4;
+            String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
+            file.writeString(stage, false);
         }
-        score += 8;
-        if (currentStage == 3) currentStage = 4;
-        String stager = (String.valueOf(currentStage)+":"+String.valueOf(score));
-        file.writeString(stager, false);
     }
 
     private void lastStage(boolean go) {
@@ -447,11 +448,11 @@ public class OverworldScreen extends BaseScreen {
                             new KillTheRatsFactory()
                     )
             ), 0.9f, 1), TransitionScreen.Effect.FADE_IN_OUT, 1f);
+            score += 10;
+            if (currentStage == 4) currentStage = 5;
+            String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
+            file.writeString(stage, false);
         }
-        score += 10;
-        if (currentStage == 4) currentStage = 5;
-        String stager = (String.valueOf(currentStage)+":"+String.valueOf(score));
-        file.writeString(stager, false);
     }
     
     private void DesenharCadeados(){
