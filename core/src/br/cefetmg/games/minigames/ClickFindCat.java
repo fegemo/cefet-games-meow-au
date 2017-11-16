@@ -140,9 +140,9 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     public void onDrawGame() {
-        catSprite.draw(batch);
+        //catSprite.draw(batch);
         if (super.getState() == MiniGameState.PLAYER_FAILED || super.getState() == MiniGameState.PLAYER_SUCCEEDED) {
-            //catSprite.draw(batch);
+            catSprite.draw(batch);
             //System.out.println("Achou achou");
         }
         rat.render(batch,tempoDeAnimacao);
