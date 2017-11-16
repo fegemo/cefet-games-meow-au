@@ -36,6 +36,7 @@ public class OverworldScreen extends BaseScreen {
             icon5, stage5,
             exit, menu, play, water;
     private ArrayList<Image> cadeados;
+    private boolean desenhaMeio;
     private Music backgroundMusic;
     private int currentStage;
     private int score;
@@ -83,6 +84,7 @@ public class OverworldScreen extends BaseScreen {
             cadeados.add(new Image(new Texture(Gdx.files.internal("world/cadeado.png"))));
         }
         bool1 = true;
+        desenhaMeio = false;
         click1 = assets.get("menu/click2.mp3", Sound.class);
         click2 = assets.get("menu/click3.mp3", Sound.class);
         backgroundMusic = assets.get("world/overworldtheme.mp3", Music.class);
@@ -458,7 +460,10 @@ public class OverworldScreen extends BaseScreen {
         int i=0;
         for (Image cadeado : cadeados ) {
             if(i>currentStage){
-                cadeado.draw(batch,1);
+                if (desenhaMeio) {
+                    System.out.println("ENTROU");
+                    if (i != 3) cadeado.draw(batch,1);
+                } else cadeado.draw(batch,1);
             }
             i++;
         }
@@ -549,29 +554,39 @@ public class OverworldScreen extends BaseScreen {
     @Override
     public void update(float dt) {
         if (openStages[0]) {
+            desenhaMeio = true;
             showStage(stage1);
         } else {
+            desenhaMeio = false;
             hideStage(stage1);
         }
         if (openStages[1]) {
             showStage(stage2);
+            desenhaMeio = true;
         } else {
             hideStage(stage2);
+            desenhaMeio = false;
         }
         if (openStages[2]) {
             showStage(stage3);
+            desenhaMeio = true;
         } else {
             hideStage(stage3);
+            desenhaMeio = false;
         }
         if (openStages[3]) {
             showStage(stage4);
+            desenhaMeio = true;
         } else {
             hideStage(stage4);
+            desenhaMeio = false;
         }
         if (openStages[4]) {
             showStage(stage5);
+            desenhaMeio = true;
         } else {
             hideStage(stage5);
+            desenhaMeio = false;
         }
     }
 }
