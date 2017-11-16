@@ -67,7 +67,7 @@ public class OverworldScreen extends BaseScreen {
     @Override
     protected void assetsLoaded() {
         openStages = new boolean[5];
-        for(int i = 1; i < 6; i++) {
+        for(int i = 0; i < 5; i++) {
             openStages[i] = false;
         }
         click1 = assets.get("menu/click2.mp3", Sound.class);
@@ -183,7 +183,7 @@ public class OverworldScreen extends BaseScreen {
         FileHandle file = Gdx.files.local("data/ProgressFile.txt");
         System.out.println(file.path());
         if (!file.exists()) {
-            file.writeString("1:", false);
+            file.writeString("0:", false);
             file.writeString("0", true);
             currentStage = 1;
             score = 0;
@@ -193,7 +193,7 @@ public class OverworldScreen extends BaseScreen {
             currentStage = Integer.parseInt(split[0]);
             score = Integer.parseInt(split[1]);
         }
-        for(int i = 1; i <= currentStage; i++) {
+        for(int i = 0; i <= currentStage; i++) {
             openStages[i] = true;
         }
         
@@ -229,7 +229,7 @@ public class OverworldScreen extends BaseScreen {
                         TransitionScreen.Effect.FADE_IN_OUT, 1f);
                 stop = true;
 
-            } else if (s1) {
+            } else if (openStages[0]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
@@ -239,9 +239,9 @@ public class OverworldScreen extends BaseScreen {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
-                    s1 = false;
+                    openStages[0] = false;
                 }
-            } else if (s2) {
+            } else if (openStages[1]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
@@ -251,10 +251,10 @@ public class OverworldScreen extends BaseScreen {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
-                    s2 = false;
+                    openStages[1] = false;
 
                 }
-            } else if (s3) {
+            } else if (openStages[2]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
@@ -264,10 +264,10 @@ public class OverworldScreen extends BaseScreen {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
-                    s3 = false;
+                    openStages[2] = false;
 
                 }
-            } else if (s4) {
+            } else if (openStages[3]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
@@ -277,10 +277,10 @@ public class OverworldScreen extends BaseScreen {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
-                    s4 = false;
+                    openStages[3] = false;
 
                 }
-            } else if (s5) {
+            } else if (openStages[4]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
@@ -290,7 +290,7 @@ public class OverworldScreen extends BaseScreen {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
-                    s5 = false;
+                    openStages[4] = false;
                 }
             } else if ("icon1".equals(hitActor.getName())) {
                 click2.play();
@@ -316,7 +316,7 @@ public class OverworldScreen extends BaseScreen {
     }
 
     private void firstStage(boolean go) {
-        s1 = true;
+        openStages[0] = true;
         stage1.setZIndex(18);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
@@ -334,7 +334,7 @@ public class OverworldScreen extends BaseScreen {
     }
 
     private void secondStage(boolean go) {
-        s2 = true;
+        openStages[1] = true;
         stage2.setZIndex(18);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
@@ -353,7 +353,7 @@ public class OverworldScreen extends BaseScreen {
     }
 
     private void thirdStage(boolean go) {
-        s3 = true;
+        openStages[2] = true;
         stage3.setZIndex(18);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
@@ -370,7 +370,7 @@ public class OverworldScreen extends BaseScreen {
     }
 
     private void fourthStage(boolean go) {
-        s4 = true;
+        openStages[3] = true;
         stage4.setZIndex(18);
         if (go) {
             stage4.setZIndex(stage4.getZIndex() + 7);
@@ -388,7 +388,7 @@ public class OverworldScreen extends BaseScreen {
     }
 
     private void lastStage(boolean go) {
-        s5 = true;
+        openStages[4] = true;
         stage5.setZIndex(18);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
@@ -407,7 +407,7 @@ public class OverworldScreen extends BaseScreen {
 
     private void growEffect() {
         Actor hitActor = stage.hit(arrow.getX(), arrow.getY() + arrow.getHeight() * arrow.getScaleY(), false);
-        if (!stop && hitActor != null && !s2 && !s3 && !s4 && !s1 && !s5) {
+        if (!stop && hitActor != null && !openStages[1] && !openStages[2] && !openStages[3] && !openStages[0] && !openStages[4]) {
             if ("icon1".equals(hitActor.getName())) {
                 if (check) {
                     icon1.setScale(.28f);
@@ -484,27 +484,27 @@ public class OverworldScreen extends BaseScreen {
 
     @Override
     public void update(float dt) {
-        if (s1) {
+        if (openStages[0]) {
             showStage(stage1);
         } else {
             hideStage(stage1);
         }
-        if (s2) {
+        if (openStages[1]) {
             showStage(stage2);
         } else {
             hideStage(stage2);
         }
-        if (s3) {
+        if (openStages[2]) {
             showStage(stage3);
         } else {
             hideStage(stage3);
         }
-        if (s4) {
+        if (openStages[3]) {
             showStage(stage4);
         } else {
             hideStage(stage4);
         }
-        if (s5) {
+        if (openStages[4]) {
             showStage(stage5);
         } else {
             hideStage(stage5);
