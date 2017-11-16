@@ -112,12 +112,10 @@ public class ClickFindCat extends MiniGame {
         timer.scheduleTask(new Task () {
             @Override
             public void run () {
-                rat.movimento(viewport.getWorldWidth(), viewport.getWorldHeight());
+                rat.movimento();
             }
-        }, 0, 1000);
-        
-        
-
+        }, 0, 100000);
+        rat.andar(viewport.getWorldWidth(), viewport.getWorldHeight());
         
     }
 
@@ -126,7 +124,7 @@ public class ClickFindCat extends MiniGame {
         if (super.getState() == MiniGameState.PLAYER_FAILED || super.getState() == MiniGameState.PLAYER_SUCCEEDED) {
             catSprite.draw(batch);
         }
-        rat.render(batch,tempoDeAnimacao);
+         rat.render(batch,tempoDeAnimacao);
         //Desenha a Mira
         miraSprite.draw(batch);
 
@@ -187,10 +185,10 @@ public class ClickFindCat extends MiniGame {
         andarParaEsquerda.setPlayMode(PlayMode.LOOP_PINGPONG);
         }
         
-        public void movimento (float larguraDoMundo, float alturaDoMundo) {
+        public void movimento () {
             switch(tipoDeMovimento) {
                 case VAGAR:
-                    vagar(larguraDoMundo, alturaDoMundo);
+                    MudarDirecao();
                     break;
                 case FUGIR:
                     fugir();
@@ -200,77 +198,80 @@ public class ClickFindCat extends MiniGame {
             }
         }
         
-        public void vagar (float larguraDoMundo, float alturaDoMundo) {
-            Vector2 QuantoAndou = new Vector2();
-            float chance = (float) Math.random();
-            float passo = 5;
+        public void andar (float larguraDoMundo, float alturaDoMundo) {
+            float passo = 10;
             switch (direcao) {
                 case DIREITA:
-                    if (chance < 0.25) {
-                        direcao = Direcao.DIREITA;
-                        QuantoAndou.x = passo;
-                    } else if (chance < 0.5) {
-                        direcao = Direcao.CIMA;
-                        QuantoAndou.y = passo;
-                    } else if (chance < 0.75) {
-                        direcao = Direcao.BAIXO;
-                        QuantoAndou.y = -passo;
-                    } else {
-                        direcao = Direcao.ESQUERDA;
-                        QuantoAndou.x = -passo;
-                    }   break;
-                case ESQUERDA:
-                    if (chance < 0.25) {
-                        direcao = Direcao.ESQUERDA;
-                        QuantoAndou.x = -passo;
-                    } else if (chance < 0.5) {
-                        direcao = Direcao.BAIXO;
-                        QuantoAndou.y = -passo;
-                    } else if (chance < 0.75) {
-                        direcao = Direcao.CIMA;
-                        QuantoAndou.y = passo;
-                    } else {
-                        direcao = Direcao.DIREITA;
-                        QuantoAndou.x = passo;
-                    }   break;
-                case CIMA:
-                    if (chance < 0.25) {
-                        direcao = Direcao.CIMA;
-                        QuantoAndou.y = passo;
-                    } else if (chance < 0.5) {
-                        direcao = Direcao.ESQUERDA;
-                        QuantoAndou.x = -passo;
-                    } else if (chance < 0.75) {
-                        direcao = Direcao.DIREITA;
-                        QuantoAndou.x = passo;
-                    } else {
-                        direcao = Direcao.BAIXO;
-                        QuantoAndou.y = -passo;
-                    }   break;
-                case BAIXO:
-                    if (chance < 0.25) {
-                        direcao = Direcao.BAIXO;
-                        QuantoAndou.y = -passo;
-                    } else if (chance < 0.5) {
-                        direcao = Direcao.DIREITA;
-                        QuantoAndou.x = passo;
-                    } else if (chance < 0.75) {
-                        direcao = Direcao.ESQUERDA;
-                        QuantoAndou.x = -passo;
-                    } else {
-                        direcao = Direcao.CIMA;
-                        QuantoAndou.y = passo;
-                    }   break;
-                default:
+                    posicao.add(passo, 0);
                     break;
+                case ESQUERDA:
+                    posicao.add(-passo, 0);
+                    break;
+                case CIMA:
+                    posicao.add(0, passo);
+                    break;
+                case BAIXO:
+                    posicao.add(0, -passo);
+                    break;
+                    default:
+                        break;
+                    
             }
-            posicao.add(QuantoAndou);
-            
-            if (posicao.x < 0) {posicao.x = 0; direcao = Direcao.DIREITA;}
+             if (posicao.x < 0) {posicao.x = 0; direcao = Direcao.DIREITA;}
             else if (posicao.x > larguraDoMundo) {posicao.x = larguraDoMundo; direcao = Direcao.ESQUERDA; }
 
             if (posicao.y < 0) {posicao.y = 0; direcao = Direcao.CIMA;}
             else if (posicao.y > larguraDoMundo) posicao.y = larguraDoMundo; direcao = Direcao.BAIXO;
+        }
+        
+        public void MudarDirecao () {
+            float chance = (float) Math.random();
+            switch (direcao) {
+                case DIREITA:
+                    if (chance < 0.25) {
+                        direcao = Direcao.DIREITA;
+                    } else if (chance < 0.5) {
+                        direcao = Direcao.CIMA;
+                    } else if (chance < 0.75) {
+                        direcao = Direcao.BAIXO;
+                    } else {
+                        direcao = Direcao.ESQUERDA;
+                    }   break;
+                case ESQUERDA:
+                    if (chance < 0.25) {
+                        direcao = Direcao.ESQUERDA;
+                    } else if (chance < 0.5) {
+                        direcao = Direcao.BAIXO;
+                    } else if (chance < 0.75) {
+                        direcao = Direcao.CIMA;
+                    } else {
+                        direcao = Direcao.DIREITA;
+                    }   break;
+                case CIMA:
+                    if (chance < 0.25) {
+                        direcao = Direcao.CIMA;
+                    } else if (chance < 0.5) {
+                        direcao = Direcao.ESQUERDA;
+                    } else if (chance < 0.75) {
+                        direcao = Direcao.DIREITA;
+                    } else {
+                        direcao = Direcao.BAIXO;
+                    }   break;
+                case BAIXO:
+                    if (chance < 0.25) {
+                        direcao = Direcao.BAIXO;
+                    } else if (chance < 0.5) {
+                        direcao = Direcao.DIREITA;
+                    } else if (chance < 0.75) {
+                        direcao = Direcao.ESQUERDA;
+                    } else {
+                        direcao = Direcao.CIMA;
+                    }   break;
+                default:
+                    break;
+            }
+            
+           
         }
         
         public void fugir () {
