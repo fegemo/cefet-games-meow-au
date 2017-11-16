@@ -298,7 +298,7 @@ public class OverworldScreen extends BaseScreen {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
-                    fourthStage(true);
+                    lastStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
                     click1.play();
@@ -311,7 +311,7 @@ public class OverworldScreen extends BaseScreen {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
-                    lastStage(true);
+                    fourthStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
                     click1.play();
@@ -330,10 +330,10 @@ public class OverworldScreen extends BaseScreen {
                 thirdStage(false);
             } else if ("icon4".equals(hitActor.getName()) && currentStage >= 3) {
                 click1.play();
-                fourthStage(false);
+                lastStage(false);
             } else if ("icon5".equals(hitActor.getName()) && currentStage >= 4) {
                 click1.play();
-                lastStage(false);
+                fourthStage(false);
             } else if((("icon5".equals(hitActor.getName()) && currentStage<4 )|| ("icon4".equals(hitActor.getName())&& currentStage<3)||("icon3".equals(hitActor.getName())&& currentStage<2) || ("icon2".equals(hitActor.getName())&& currentStage<1))){
                 click2.play();
                 stop = false;
