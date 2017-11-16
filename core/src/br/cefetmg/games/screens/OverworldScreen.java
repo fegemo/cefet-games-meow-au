@@ -15,6 +15,7 @@ import br.cefetmg.games.minigames.factories.*;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -105,7 +106,13 @@ public class OverworldScreen extends BaseScreen {
         stage4.setName("stage4");
         stage5.setName("stage5");
         exit.setName("exit");
-
+        
+       // group.addActor(cadeados.get(0));
+       // group.addActor(cadeados.get(1));
+        //group.addActor(cadeados.get(2));
+        //group.addActor(cadeados.get(3));
+        //group.addActor(cadeados.get(4));
+        
         group.addActor(stage1);
         group.addActor(stage2);
         group.addActor(stage3);
@@ -122,7 +129,8 @@ public class OverworldScreen extends BaseScreen {
         group.addActor(icon5);
         group.addActor(menu);
         group.addActor(arrow);
-
+        
+        
         stage.addActor(group);
 
         map.setZIndex(2);
@@ -154,7 +162,7 @@ public class OverworldScreen extends BaseScreen {
         
         posicaoIcone[0]= new Vector2(775.29376f,176.95001f);
         posicaoIcone[1]= new Vector2(325.83545f, 453.82504f);
-        posicaoIcone[2]= new Vector2(570.648f, 545.2626f);
+        posicaoIcone[2]= new Vector2(570.648f-20, 545.2626f);
         posicaoIcone[3]= new Vector2(630.8559f, 316.95004f);
         posicaoIcone[4]= new Vector2(983.3172f, 320.38754f);
       
@@ -172,7 +180,7 @@ public class OverworldScreen extends BaseScreen {
         
         icon3.setScale(0.3f);
         icon3.setOrigin(0, 0);
-        icon3.setPosition(posicaoIcone[2].x,posicaoIcone[2].y);
+        icon3.setPosition(posicaoIcone[2].x+20,posicaoIcone[2].y);
         stage3.setScale(0.8f);
         stage3.setOrigin(0, 0);
         
@@ -200,7 +208,8 @@ public class OverworldScreen extends BaseScreen {
         stage.act(Gdx.graphics.getDeltaTime());
         int i =0;
         for (Image cadeado : cadeados) {
-            cadeado.setPosition(posicaoIcone[i].x,posicaoIcone[i].y);
+            cadeado.setPosition(posicaoIcone[i].x + cadeado.getImageHeight()/2,posicaoIcone[i].y + + cadeado.getImageWidth()/2);
+            cadeado.setScale(0.5f);
             i++;
         }
         
@@ -218,6 +227,7 @@ public class OverworldScreen extends BaseScreen {
             currentStage = Integer.parseInt(split[0]);
             score = Integer.parseInt(split[1]);
         }
+        currentStage =0;
     }
 
     @Override
@@ -325,7 +335,7 @@ public class OverworldScreen extends BaseScreen {
             } else if ("icon5".equals(hitActor.getName()) && currentStage >= 4) {
                 click1.play();
                 lastStage(false);
-            } else {
+            } else if( !("icon5".equals(hitActor.getName()) && currentStage >= 4) && !("icon4".equals(hitActor.getName()) && currentStage >= 3) || !("icon3".equals(hitActor.getName()) && currentStage >= 2) && !("icon2".equals(hitActor.getName()) && currentStage >= 1) && !("icon1".equals(hitActor.getName()))  ){
                 click2.play();
                 stop = false;
             }
@@ -352,8 +362,8 @@ public class OverworldScreen extends BaseScreen {
         }
         score += 2;
         if (currentStage == 0) currentStage = 1;
-        String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
-        file.writeString(stage, false);
+        String stagre = (String.valueOf(currentStage)+":"+String.valueOf(score));
+        file.writeString(stagre, false);
     }
 
     private void secondStage(boolean go) {
@@ -375,8 +385,8 @@ public class OverworldScreen extends BaseScreen {
         }
         score += 4;
         if (currentStage == 1) currentStage = 2;
-        String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
-        file.writeString(stage, false);
+        String stager = (String.valueOf(currentStage)+":"+String.valueOf(score));
+        file.writeString(stager, false);
     }
 
     private void thirdStage(boolean go) {
@@ -396,8 +406,8 @@ public class OverworldScreen extends BaseScreen {
         }
         score += 6;
         if (currentStage == 2) currentStage = 3;
-        String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
-        file.writeString(stage, false);
+        String stagre = (String.valueOf(currentStage)+":"+String.valueOf(score));
+        file.writeString(stagre, false);
     }
 
     private void fourthStage(boolean go) {
@@ -418,8 +428,8 @@ public class OverworldScreen extends BaseScreen {
         }
         score += 8;
         if (currentStage == 3) currentStage = 4;
-        String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
-        file.writeString(stage, false);
+        String stager = (String.valueOf(currentStage)+":"+String.valueOf(score));
+        file.writeString(stager, false);
     }
 
     private void lastStage(boolean go) {
@@ -440,15 +450,14 @@ public class OverworldScreen extends BaseScreen {
         }
         score += 10;
         if (currentStage == 4) currentStage = 5;
-        String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
-        file.writeString(stage, false);
+        String stager = (String.valueOf(currentStage)+":"+String.valueOf(score));
+        file.writeString(stager, false);
     }
     
     private void DesenharCadeados(){
         int i=0;
         for (Image cadeado : cadeados ) {
             if(i>currentStage){
-                cadeado.draw(batch,0);
                 cadeado.draw(batch,1);
             }
             i++;
@@ -529,9 +538,11 @@ public class OverworldScreen extends BaseScreen {
 
     @Override
     public void draw() {
+        stage.draw();
+        Batch batch = this.batch;
+	batch.setProjectionMatrix(camera.combined);
         batch.begin();
             DesenharCadeados();
-        stage.draw();
         batch.end();
     }
 
