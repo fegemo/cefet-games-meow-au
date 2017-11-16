@@ -32,7 +32,6 @@ public class OverworldScreen extends BaseScreen {
             icon4, stage4,
             icon5, stage5,
             exit, menu, play, water;
-    private CurrentStage unblockStage;
     private Music backgroundMusic;
     
     public OverworldScreen(Game game, BaseScreen previous) {
@@ -70,7 +69,6 @@ public class OverworldScreen extends BaseScreen {
         s3 = false;
         s4 = false;
         s5 = false;
-        unblockStage = CurrentStage.Stage1;
         click1 = assets.get("menu/click2.mp3", Sound.class);
         click2 = assets.get("menu/click3.mp3", Sound.class);
         backgroundMusic = assets.get("world/overworldtheme.mp3", Music.class);
@@ -233,7 +231,7 @@ public class OverworldScreen extends BaseScreen {
                     exit.setZIndex(0);
                     s1 = false;
                 }
-            } else if (s2 && unblockStage == CurrentStage.Stage2) {
+            } else if (s2) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
@@ -501,9 +499,5 @@ public class OverworldScreen extends BaseScreen {
         } else {
             hideStage(stage5);
         }
-    }
-    
-    enum CurrentStage {
-        Stage1, Stage2, Stage3, Stage4, Stage5;
     }
 }
