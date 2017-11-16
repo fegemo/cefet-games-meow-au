@@ -72,7 +72,6 @@ public class OverworldScreen extends BaseScreen {
     protected void assetsLoaded() {
         cadeados = new ArrayList<Image>();
         openStages = new boolean[5];
-        cadeados = new ArrayList<Image>();
         for(int i = 0; i < 5; i++) {
             openStages[i] = false;
         }
