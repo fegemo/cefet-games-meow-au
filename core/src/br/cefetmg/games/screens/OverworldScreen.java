@@ -65,10 +65,12 @@ public class OverworldScreen extends BaseScreen {
         assets.load("menu/click3.mp3", Sound.class);
         assets.load("world/overworldtheme.mp3", Music.class); 
         assets.load("world/overworldtheme.mp3", Music.class);
+
     }
 
     @Override
     protected void assetsLoaded() {
+        cadeados = new ArrayList<Image>();
         openStages = new boolean[5];
         cadeados = new ArrayList<Image>();
         for(int i = 0; i < 5; i++) {
@@ -426,7 +428,7 @@ public class OverworldScreen extends BaseScreen {
         int i=0;
         for (Image cadeado : cadeados ) {
             if(i<currentStage)
-                cadeado.draw(batch,0);
+                cadeado.draw(batch,1);
             i++;
         }
     }
@@ -506,6 +508,7 @@ public class OverworldScreen extends BaseScreen {
     @Override
     public void draw() {
         stage.draw();
+        DesenharCadeados();
     }
 
     @Override
