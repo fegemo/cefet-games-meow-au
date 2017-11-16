@@ -105,6 +105,7 @@ public class ClickFindCat extends MiniGame {
         } else if (rand.nextInt() % 4 == 1 && super.getState() == MiniGameState.PLAYER_SUCCEEDED) {
             happyMeawSound.play();
         }
+        rat.movimento(viewport.getWorldWidth(), viewport.getWorldHeight());
     }
 
     @Override
@@ -196,6 +197,8 @@ public class ClickFindCat extends MiniGame {
                 QuantoAndou.x = -Math.abs(randomBinomial());
             } else {
                 QuantoAndou.x = randomBinomial();
+                if (QuantoAndou.x > 0) direcao = Direcao.DIREITA;
+                else direcao = Direcao.ESQUERDA;
             }
             if (posicao.y <= 0) {
                 QuantoAndou.y = Math.abs(randomBinomial());
@@ -203,12 +206,16 @@ public class ClickFindCat extends MiniGame {
                 QuantoAndou.y = -Math.abs(randomBinomial());
             } else {
                 QuantoAndou.y = randomBinomial();
+                if (QuantoAndou.y > 0 && QuantoAndou.y > QuantoAndou.x) direcao = Direcao.CIMA;
+                else if (QuantoAndou.y < 0 && QuantoAndou.y < QuantoAndou.x) direcao = Direcao.BAIXO;
             }
+            QuantoAndou.scl(100);
             posicao.add(QuantoAndou);
             
-            if (posicao.x < 0) posicao.x = 0; direcao = Direcao.DIREITA;
-            else if (posicao.x > larguraDoMundo) posicao.x = larguraDoMundo; direcao = Direcao.ESQUERDA;
-            if (posicao.y < 0) posicao.y = 0; direcao = Direcao.CIMA;
+            if (posicao.x < 0) {posicao.x = 0; direcao = Direcao.DIREITA;}
+            else if (posicao.x > larguraDoMundo) {posicao.x = larguraDoMundo; direcao = Direcao.ESQUERDA; }
+
+            if (posicao.y < 0) {posicao.y = 0; direcao = Direcao.CIMA;}
             else if (posicao.y > larguraDoMundo) posicao.y = larguraDoMundo; direcao = Direcao.BAIXO;
         }
         
