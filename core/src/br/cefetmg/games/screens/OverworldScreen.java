@@ -245,7 +245,8 @@ public class OverworldScreen extends BaseScreen {
                 transitionScreen(new MenuScreen(super.game, this),
                         TransitionScreen.Effect.FADE_IN_OUT, 1f);
                 stop = true;
-                if ("play".equals(hitActor.getName())) {
+            } else if (openStages[0]){
+                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
                     firstStage(true);
@@ -256,7 +257,7 @@ public class OverworldScreen extends BaseScreen {
                     exit.setZIndex(0);
                     openStages[0] = false;
                 }
-            } else if (openStages[1]) {
+            }else if (openStages[1]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
