@@ -55,6 +55,7 @@ public class ClickFindCat extends MiniGame {
         initialCatScale = (float) viewport.getWorldHeight()/viewport.getScreenHeight();
         CatScaleX = initialCatScale*(float) viewport.getWorldWidth()/viewport.getScreenWidth();
         CatScaleY = initialCatScale*(float) viewport.getWorldHeight()/viewport.getScreenHeight();
+        
         catTexture = assets.get("ClickFindCat/gatinho-grande.png", Texture.class);
         ratTexture = assets.get("ClickFindCat/crav_rat.png", Texture.class);
         miraTexture = assets.get("ClickFindCat/target.png", Texture.class);
@@ -79,7 +80,6 @@ public class ClickFindCat extends MiniGame {
 
         catSprite = new Sprite(catTexture);
         catSprite.setPosition(posicaoInicial.x, posicaoInicial.y);
-        System.out.println("" +CatScaleX+" " + CatScaleY);
         System.out.println(difficulty+" "+initialCatScale +" " + CatScaleX + " " + CatScaleY);
         catSprite.setScale(CatScaleX, CatScaleY);
         
@@ -132,7 +132,6 @@ public class ClickFindCat extends MiniGame {
         catSprite.draw(batch);
         if (super.getState() == MiniGameState.PLAYER_FAILED || super.getState() == MiniGameState.PLAYER_SUCCEEDED) {
             //catSprite.draw(batch);
-            System.out.println("Achou achou");
             //System.out.println("Achou achou");
         }
          rat.render(batch,tempoDeAnimacao);
