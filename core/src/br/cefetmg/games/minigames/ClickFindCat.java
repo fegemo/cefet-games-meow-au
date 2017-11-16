@@ -52,9 +52,9 @@ public class ClickFindCat extends MiniGame {
         hipotenuzaDaTela = viewport.getScreenWidth() * viewport.getScreenWidth()
                 + viewport.getScreenHeight() * viewport.getScreenHeight();
         
-        initialCatScale = DifficultyCurve.LINEAR_NEGATIVE.getCurveValue(difficulty);
-        CatScaleX = initialCatScale*(float) Math.pow((double)(viewport.getWorldWidth()/1280),(double)initialCatScale);
-        CatScaleY = initialCatScale*(float) Math.pow((double)(viewport.getWorldHeight()/720),(double)initialCatScale);
+        initialCatScale = (float) viewport.getWorldHeight()/viewport.getScreenHeight();
+        CatScaleX = initialCatScale*(float) viewport.getWorldWidth()/viewport.getScreenWidth();
+        CatScaleY = initialCatScale*(float) viewport.getWorldHeight()/viewport.getScreenHeight();
         catTexture = assets.get("ClickFindCat/gatinho-grande.png", Texture.class);
         ratTexture = assets.get("ClickFindCat/crav_rat.png", Texture.class);
         miraTexture = assets.get("ClickFindCat/target.png", Texture.class);
