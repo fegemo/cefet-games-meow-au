@@ -261,24 +261,24 @@ public class ClickFindCat extends MiniGame {
                     }
                 }
             }
-            if (posicao.x < 0) {
-                posicao.x = 0;
+            if (posicao.x < 10) {
+                posicao.x = 50;
                 direcao = Direcao.DIREITA;
                 saiuDaTela();
             }
-            else if (posicao.x > larguraDoMundo) {
-                posicao.x = larguraDoMundo;
+            else if (posicao.x > larguraDoMundo-10) {
+                posicao.x = larguraDoMundo-50;
                 direcao = Direcao.ESQUERDA;
                 saiuDaTela();
             }
 
-            if (posicao.y < 0) {
-                posicao.y = 0;
+            if (posicao.y < 10) {
+                posicao.y = 50;
                 direcao = Direcao.CIMA;
                 saiuDaTela();
                 posicao.add(velocidade);
-            } else if (posicao.y > larguraDoMundo) {
-                posicao.y = larguraDoMundo;
+            } else if (posicao.y > larguraDoMundo-100) {
+                posicao.y = larguraDoMundo-50;
                 direcao = Direcao.BAIXO;
                 saiuDaTela();
                 posicao.add(velocidade);
@@ -304,8 +304,8 @@ public class ClickFindCat extends MiniGame {
             Vector2 Auxiliar = new Vector2(Steering.x,Steering.y);
             Auxiliar2.sub(alvo);
             Auxiliar.sub(alvo);
-            Auxiliar.scl(0.5f);
-            Auxiliar2.scl(0.5f);
+            Auxiliar.scl(0.25f);
+            Auxiliar2.scl(0.75f);
             velocidade = Auxiliar.add(Auxiliar2);
             //velocidade.scl(1/100);
             System.out.println("velocidade1 = "+velocidade.toString());
