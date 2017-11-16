@@ -52,7 +52,7 @@ public class ClickFindCat extends MiniGame {
         hipotenuzaDaTela = viewport.getScreenWidth() * viewport.getScreenWidth()
                 + viewport.getScreenHeight() * viewport.getScreenHeight();
         
-        initialCatScale = (float) viewport.getWorldHeight()/viewport.getScreenHeight();
+        initialCatScale = 0.4f * DifficultyCurve.LINEAR_NEGATIVE.getCurveValue(difficulty);
         CatScaleX = initialCatScale*(float) viewport.getWorldWidth()/viewport.getScreenWidth();
         CatScaleY = initialCatScale*(float) viewport.getWorldHeight()/viewport.getScreenHeight();
         
