@@ -14,6 +14,7 @@ import java.util.Arrays;
 import br.cefetmg.games.minigames.factories.*;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import java.util.HashSet;
 
 public class OverworldScreen extends BaseScreen {
@@ -31,7 +32,7 @@ public class OverworldScreen extends BaseScreen {
             icon4, stage4,
             icon5, stage5,
             exit, menu, play, water;
-
+    private int unblockStage;
     private Music backgroundMusic;
     
     public OverworldScreen(Game game, BaseScreen previous) {
@@ -175,6 +176,17 @@ public class OverworldScreen extends BaseScreen {
 
         stage.setViewport(viewport);
         stage.act(Gdx.graphics.getDeltaTime());
+       
+        // File Handle
+        FileHandle file = Gdx.files.local("data/myFile.txt");
+        System.out.println(file.path());
+        if (!file.exists()) {
+            file.writeString("TESTE", false);
+            
+        }else {
+            
+        }
+        
 
     }
 
@@ -488,5 +500,9 @@ public class OverworldScreen extends BaseScreen {
         } else {
             hideStage(stage5);
         }
+    }
+    
+    enum CurrentStage {
+        Stage1, Stage2, Stage3, Stage4, Stage5;
     }
 }
