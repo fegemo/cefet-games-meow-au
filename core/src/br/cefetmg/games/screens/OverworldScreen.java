@@ -154,35 +154,30 @@ public class OverworldScreen extends BaseScreen {
       
         icon1.setScale(0.2f);
         icon1.setOrigin(0, 0);
-        icon1.setPosition(775.29376f, 176.95001f);
         icon1.setPosition(posicaoIcone[0].x,posicaoIcone[0].y);
         stage1.setScale(0.8f);
         stage1.setOrigin(0, 0);
         
         icon2.setScale(0.9f);
         icon2.setOrigin(0, 0);
-        icon2.setPosition(325.83545f, 453.82504f);
         icon2.setPosition(posicaoIcone[1].x,posicaoIcone[1].y);
         stage2.setScale(0.8f);
         stage2.setOrigin(0, 0);
         
         icon3.setScale(0.3f);
         icon3.setOrigin(0, 0);
-        icon3.setPosition(570.648f, 545.2626f);
         icon3.setPosition(posicaoIcone[2].x,posicaoIcone[2].y);
         stage3.setScale(0.8f);
         stage3.setOrigin(0, 0);
         
         icon4.setScale(0.25f);
         icon4.setOrigin(0, 0);
-        icon4.setPosition(630.8559f, 316.95004f);
         icon4.setPosition(posicaoIcone[3].x,posicaoIcone[3].y);
         stage4.setScale(0.8f);
         stage4.setOrigin(0, 0);
         
         icon5.setScale(0.4f);
         icon5.setOrigin(0, 0);
-        icon5.setPosition(983.3172f, 320.38754f);
         icon5.setPosition(posicaoIcone[4].x,posicaoIcone[4].y);
         stage5.setScale(0.8f);
         stage5.setOrigin(0, 0);
@@ -219,7 +214,7 @@ public class OverworldScreen extends BaseScreen {
             currentStage = Integer.parseInt(split[0]);
             score = Integer.parseInt(split[1]);
         }
-        for(int i = 0; i <= currentStage; i++) {
+        for (i = 0; i <= currentStage; i++) {
             openStages[i] = true;
         }
     }
@@ -251,8 +246,6 @@ public class OverworldScreen extends BaseScreen {
                 transitionScreen(new MenuScreen(super.game, this),
                         TransitionScreen.Effect.FADE_IN_OUT, 1f);
                 stop = true;
-
-            } else if (openStages[0]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
@@ -427,7 +420,6 @@ public class OverworldScreen extends BaseScreen {
             ), 0.9f, 1), TransitionScreen.Effect.FADE_IN_OUT, 1f);
         }
     }
-
     
     private void DesenharCadeados(){
         int i=0;
