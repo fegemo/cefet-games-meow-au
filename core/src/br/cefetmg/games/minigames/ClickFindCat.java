@@ -1,5 +1,6 @@
 package br.cefetmg.games.minigames;
 
+import br.cefetmg.games.Config;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
@@ -34,6 +35,8 @@ public class ClickFindCat extends MiniGame {
     private Sound scaredMeawSound;
     private Sound happyMeawSound;
     private float initialCatScale;
+    private float CatScaleX;
+    private float CatScaleY;
     private float hipotenuzaDaTela;
     private float difficulty;
     private float tempoDeAnimacao;
@@ -48,7 +51,10 @@ public class ClickFindCat extends MiniGame {
         tempoDeAnimacao = 0;
         hipotenuzaDaTela = viewport.getScreenWidth() * viewport.getScreenWidth()
                 + viewport.getScreenHeight() * viewport.getScreenHeight();
-        initialCatScale = 0.5f * DifficultyCurve.LINEAR_NEGATIVE.getCurveValue(difficulty);
+        
+        initialCatScale = DifficultyCurve.LINEAR_NEGATIVE.getCurveValue(difficulty);
+        CatScaleX = initialCatScale*(float) Math.pow((double)(viewport.getWorldWidth()/1280),(double)initialCatScale);
+        CatScaleY = initialCatScale*(float) Math.pow((double)(viewport.getWorldHeight()/720),(double)initialCatScale);
         catTexture = assets.get("ClickFindCat/gatinho-grande.png", Texture.class);
         ratTexture = assets.get("ClickFindCat/crav_rat.png", Texture.class);
         miraTexture = assets.get("ClickFindCat/target.png", Texture.class);
@@ -73,8 +79,9 @@ public class ClickFindCat extends MiniGame {
 
         catSprite = new Sprite(catTexture);
         catSprite.setPosition(posicaoInicial.x, posicaoInicial.y);
-        catSprite.setScale(initialCatScale);
-
+        System.out.println("" +CatScaleX+" " + CatScaleY);
+        catSprite.setScale(CatScaleX, CatScaleY);
+        
     }
     
     public void initializeRat() {
@@ -121,8 +128,10 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     public void onDrawGame() {
+        catSprite.draw(batch);
         if (super.getState() == MiniGameState.PLAYER_FAILED || super.getState() == MiniGameState.PLAYER_SUCCEEDED) {
-            catSprite.draw(batch);
+            //catSprite.draw(batch);
+            System.out.println("Achou achou");
         }
          rat.render(batch,tempoDeAnimacao);
         //Desenha a Mira
