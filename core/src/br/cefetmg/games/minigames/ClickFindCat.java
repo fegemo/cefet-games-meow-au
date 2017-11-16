@@ -40,6 +40,8 @@ public class ClickFindCat extends MiniGame {
     private float hipotenuzaDaTela;
     private float difficulty;
     private float tempoDeAnimacao;
+    private boolean ratWasRunning;
+    private int ratRunning;
     
     public ClickFindCat(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
@@ -48,6 +50,8 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     protected void onStart() {
+        ratWasRunning=false;
+        ratRunning = 0;
         tempoDeAnimacao = 0;
         hipotenuzaDaTela = viewport.getScreenWidth() * viewport.getScreenWidth()
                 + viewport.getScreenHeight() * viewport.getScreenHeight();
@@ -86,9 +90,10 @@ public class ClickFindCat extends MiniGame {
     }
     
     public void initializeRat() {
-        rat = new Rat(ratTexture);
-        
-        
+        Vector2 posicaoInicial = new Vector2(MathUtils.random(0, viewport.getWorldWidth() - ratTexture.getWidth()),
+                MathUtils.random(0, viewport.getWorldHeight() - ratTexture.getHeight()));
+        Vector2 alvo = new Vector2(catSprite.getX(),catSprite.getY());
+        rat = new Rat(ratTexture,alvo,posicaoInicial);
     }
 
     @Override
@@ -103,7 +108,7 @@ public class ClickFindCat extends MiniGame {
                 float distancia = click.dst2(catSprite.getX(), catSprite.getY());
                 float intensidade = (float) Math.pow((1 - distancia / hipotenuzaDaTela), 4);
                 meawSound.play(intensidade);
-
+                ratWasRunning=true;
             }
 
         }
@@ -123,6 +128,18 @@ public class ClickFindCat extends MiniGame {
                 rat.movimento();
             }
         }, 0, 60);
+        
+        if(ratWasRunning){
+            rat.movimento();
+            rat.fuga(miraSprite.getX(),miraSprite.getY());
+            ratRunning++;
+            if(ratRunning==10)
+                ratWasRunning=false;
+        }else{
+            rat.vagabundo();
+            ratRunning=0;
+        }
+            
         rat.andar(viewport.getWorldWidth(), viewport.getWorldHeight());
         
     }
@@ -134,7 +151,7 @@ public class ClickFindCat extends MiniGame {
             //catSprite.draw(batch);
             //System.out.println("Achou achou");
         }
-         rat.render(batch,tempoDeAnimacao);
+        rat.render(batch,tempoDeAnimacao);
         //Desenha a Mira
         miraSprite.draw(batch);
 
@@ -159,10 +176,14 @@ public class ClickFindCat extends MiniGame {
         private final Animation<TextureRegion> andarParaEsquerda;
         private Vector2 posicao;
         private Direcao direcao;
-        private TipoDeMovimento tipoDeMovimento;
+        private Vector2 Steering;
+        private Vector2 velocidade;
+        public TipoDeMovimento tipoDeMovimento;
+        private Vector2 alvo;
         
-        public Rat (Texture SpriteSheet) {
-         posicao = new Vector2(0,0);
+        public Rat (Texture SpriteSheet,Vector2 alvo,Vector2 posicao) {
+         this.alvo = alvo;
+         this.posicao = posicao;
          direcao = Direcao.CIMA;
          tipoDeMovimento = TipoDeMovimento.VAGAR;
          quadrosDeAnimacao = TextureRegion.split (SpriteSheet,42,32);
@@ -195,6 +216,15 @@ public class ClickFindCat extends MiniGame {
         andarParaEsquerda.setPlayMode(PlayMode.LOOP_PINGPONG);
         }
         
+        public void fuga(float x, float y){
+            Steering= new Vector2(x,y);
+            tipoDeMovimento = TipoDeMovimento.FUGIR;
+        }
+        
+        public void vagabundo(){
+            tipoDeMovimento = TipoDeMovimento.VAGAR;
+        }
+        
         public void movimento () {
             switch(tipoDeMovimento) {
                 case VAGAR:
@@ -209,25 +239,35 @@ public class ClickFindCat extends MiniGame {
         }
         
         public void andar (float larguraDoMundo, float alturaDoMundo) {
-            float passo = 50;
-            switch (direcao) {
-                case DIREITA:
-                    posicao.add(passo, 0);
-                    break;
-                case ESQUERDA:
-                    posicao.add(-passo, 0);
-                    break;
-                case CIMA:
-                    posicao.add(0, passo);
-                    break;
-                case BAIXO:
-                    posicao.add(0, -passo);
-                    break;
-                    default:
-                        break;
-                    
+            float ande= randomBinomial();
+            float passo = 10 * randomBinomial();
+            if( tipoDeMovimento == tipoDeMovimento.FUGIR){
+                fugir();
+                System.out.println("velocidade"+velocidade.toString() + "posição" + posicao.toString());
+                posicao.add(velocidade);
+                System.out.println("posição + velocidade"+ posicao.toString());
             }
-             if (posicao.x < 0) {posicao.x = 0; direcao = Direcao.DIREITA;}
+            else{
+                if(ande > 0.25){
+                    switch (direcao) {
+                        case DIREITA:
+                            posicao.add(passo, 0);
+                            break;
+                        case ESQUERDA:
+                            posicao.add(-passo, 0);
+                            break;
+                        case CIMA:
+                            posicao.add(0, passo);
+                            break;
+                        case BAIXO:
+                            posicao.add(0, -passo);
+                            break;
+                            default:
+                                break;
+                    }
+                }
+            }
+            if (posicao.x < 0) {posicao.x = 0; direcao = Direcao.DIREITA;}
             else if (posicao.x > larguraDoMundo) {posicao.x = larguraDoMundo; direcao = Direcao.ESQUERDA; }
 
             if (posicao.y < 0) {posicao.y = 0; direcao = Direcao.CIMA;}
@@ -235,57 +275,27 @@ public class ClickFindCat extends MiniGame {
         }
         
         public void MudarDirecao () {
-            float chance = (float) Math.random();
-            switch (direcao) {
-                case DIREITA:
-                    if (chance < 0.25) {
-                        direcao = Direcao.DIREITA;
-                    } else if (chance < 0.5) {
-                        direcao = Direcao.CIMA;
-                    } else if (chance < 0.75) {
-                        direcao = Direcao.BAIXO;
-                    } else {
-                        direcao = Direcao.ESQUERDA;
-                    }   break;
-                case ESQUERDA:
-                    if (chance < 0.25) {
-                        direcao = Direcao.ESQUERDA;
-                    } else if (chance < 0.5) {
-                        direcao = Direcao.BAIXO;
-                    } else if (chance < 0.75) {
-                        direcao = Direcao.CIMA;
-                    } else {
-                        direcao = Direcao.DIREITA;
-                    }   break;
-                case CIMA:
-                    if (chance < 0.25) {
-                        direcao = Direcao.CIMA;
-                    } else if (chance < 0.5) {
-                        direcao = Direcao.ESQUERDA;
-                    } else if (chance < 0.75) {
-                        direcao = Direcao.DIREITA;
-                    } else {
-                        direcao = Direcao.BAIXO;
-                    }   break;
-                case BAIXO:
-                    if (chance < 0.25) {
-                        direcao = Direcao.BAIXO;
-                    } else if (chance < 0.5) {
-                        direcao = Direcao.DIREITA;
-                    } else if (chance < 0.75) {
-                        direcao = Direcao.ESQUERDA;
-                    } else {
-                        direcao = Direcao.CIMA;
-                    }   break;
-                default:
-                    break;
+            float chance = (float) randomBinomial();
+            if (chance < 0.25) {
+                direcao = Direcao.DIREITA;
+            } else if (chance < 0.5) {
+                direcao = Direcao.CIMA;
+            } else if (chance < 0.75) {
+                direcao = Direcao.BAIXO;
+            } else {
+                direcao = Direcao.ESQUERDA;
             }
-            
-           
         }
         
         public void fugir () {
-            
+            Vector2 Auxiliar = new Vector2(Steering.x,Steering.y);
+            velocidade = Auxiliar.sub(alvo);
+            //velocidade.scl(1/100);
+            System.out.println("velocidade1 = "+velocidade.toString());
+            velocidade.x *=(double) 1 /(double) 100;
+            velocidade.y *=(double) 1 /(double) 100;
+            System.out.println("velocidade 2= "+velocidade.toString());
+            //
         }
         
         public float randomBinomial() {
