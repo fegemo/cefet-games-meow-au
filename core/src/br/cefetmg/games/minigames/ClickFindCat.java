@@ -234,7 +234,7 @@ public class ClickFindCat extends MiniGame {
         
         public void andar (float larguraDoMundo, float alturaDoMundo) {
             float ande= randomBinomial();
-            float passo = 5;
+            float passo = 30 * randomBinomial();
             if( tipoDeMovimento == tipoDeMovimento.FUGIR){
                 fugir();
                 System.out.println("velocidade"+velocidade.toString() + "posição" + posicao.toString());
@@ -261,11 +261,29 @@ public class ClickFindCat extends MiniGame {
                     }
                 }
             }
-            if (posicao.x < 0) {posicao.x = 0; direcao = Direcao.DIREITA;}
-            else if (posicao.x > larguraDoMundo) {posicao.x = larguraDoMundo; direcao = Direcao.ESQUERDA; }
+            if (posicao.x < 0) {
+                posicao.x = 0;
+                direcao = Direcao.DIREITA;
+                saiuDaTela();
+            }
+            else if (posicao.x > larguraDoMundo) {
+                posicao.x = larguraDoMundo;
+                direcao = Direcao.ESQUERDA;
+                saiuDaTela();
+            }
 
-            if (posicao.y < 0) {posicao.y = 0; direcao = Direcao.CIMA;}
-            else if (posicao.y > larguraDoMundo) posicao.y = larguraDoMundo; direcao = Direcao.BAIXO;
+            if (posicao.y < 0) {
+                posicao.y = 0;
+                direcao = Direcao.CIMA;
+                saiuDaTela();
+                posicao.add(velocidade);
+            } else if (posicao.y > larguraDoMundo) {
+                posicao.y = larguraDoMundo;
+                direcao = Direcao.BAIXO;
+                saiuDaTela();
+                posicao.add(velocidade);
+            }
+            
         }
         
         public void MudarDirecao () {
@@ -284,15 +302,22 @@ public class ClickFindCat extends MiniGame {
         public void fugir () {
             Vector2 Auxiliar2 = new Vector2(posicao.x,posicao.y);
             Vector2 Auxiliar = new Vector2(Steering.x,Steering.y);
-             Auxiliar2.sub(alvo);
+            Auxiliar2.sub(alvo);
             Auxiliar.sub(alvo);
+            Auxiliar.scl(0.5f);
+            Auxiliar2.scl(0.5f);
             velocidade = Auxiliar.add(Auxiliar2);
             //velocidade.scl(1/100);
             System.out.println("velocidade1 = "+velocidade.toString());
-            velocidade.x *=(double) 1 /(double) 100;
-            velocidade.y *=(double) 1 /(double) 100;
+            velocidade.x *=(double) 1 /(double) 500;
+            velocidade.y *=(double) 1 /(double) 500;
             System.out.println("velocidade 2= "+velocidade.toString());
             //
+        }
+        public void saiuDaTela(){
+            Vector2 alvo1 = new Vector2(this.alvo.x,this.alvo.y);
+            Vector2 ajuda = new Vector2(posicao.x,posicao.y);
+            velocidade = ajuda.add(alvo1);
         }
         
         public float randomBinomial() {
