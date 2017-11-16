@@ -1,6 +1,7 @@
 package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
+import br.cefetmg.games.transition.TransitionScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -48,7 +50,8 @@ public abstract class BaseScreen extends ScreenAdapter {
     private BitmapFont messagesFont;
     private float deviceAspectRatioDivergenceFromDesired;
     private boolean wasJustDisposed = false;
-
+    private boolean assetsFinishedLoading = false;
+    
     /**
      * Cria uma instância de tela.
      * 
@@ -71,11 +74,11 @@ public abstract class BaseScreen extends ScreenAdapter {
 
         // fonte para mensagens
         FreeTypeFontLoaderParameter snackerComicParams = new FreeTypeFontLoaderParameter();
-        snackerComicParams.fontFileName = "fonts/snacker-comic.ttf";
+        snackerComicParams.fontFileName = "fonts/brainfish.ttf";
         snackerComicParams.fontParameters.size = 50;
         snackerComicParams.fontParameters.minFilter = Texture.TextureFilter.Linear;
         snackerComicParams.fontParameters.magFilter = Texture.TextureFilter.Linear;
-        assets.load("snacker-comic-50.ttf", BitmapFont.class, snackerComicParams);
+        assets.load("brainfish-50.ttf", BitmapFont.class, snackerComicParams);
 
         // fonte para a HUD
         assets.load("fonts/sawasdee-50.fnt", BitmapFont.class);
@@ -188,9 +191,12 @@ public abstract class BaseScreen extends ScreenAdapter {
     @Override
     public final void render(float dt) {
         if (assets.update()) {
-            if (messagesFont == null) {
-                messagesFont = assets.get("snacker-comic-50.ttf");
+            if (!assetsFinishedLoading) {
+                messagesFont = assets.get("brainfish-50.ttf");
+                assetsLoaded();
+                assetsFinishedLoading = true;
             }
+
             // chama função para gerenciar o input
             handleInput();
             
@@ -213,6 +219,16 @@ public abstract class BaseScreen extends ScreenAdapter {
             // desenha o conteúdo da tela
             draw();
         }
+    }
+    
+    public void transitionScreen(BaseScreen screen, TransitionScreen.Effect effect, float duration) {
+        TransitionScreen transitionScreen = TransitionScreen.getInstance(this, screen);
+        transitionScreen.execute(effect, duration);
+    }
+    
+    public void transitionGame(TransitionScreen.Effect effect, float duration, Timer.Task task) {
+        TransitionScreen transitionScreen = TransitionScreen.getInstance(this);
+        transitionScreen.execute(effect, duration, task);
     }
 
     /**
@@ -254,6 +270,17 @@ public abstract class BaseScreen extends ScreenAdapter {
      * Esta função deve ser usada em vez do método {@code show()}.
      */
     public abstract void appear();
+    
+    /**
+     * Executa ações assim que todos os assets foram carregados. Ela é chamada
+     * apenas uma vez, depois de appear(), assim que todos os assets foram 
+     * carregados.
+     * 
+     * Esta função pode ser usada para carregar os elementos do jogo que 
+     * dependem dos assets que foram carregados (eg, uma sprite precisa de uma
+     * textura).
+     */
+    protected abstract void assetsLoaded();
 
     /**
      * Executa as ações de limpeza e descarregamento de recursos e é chamada

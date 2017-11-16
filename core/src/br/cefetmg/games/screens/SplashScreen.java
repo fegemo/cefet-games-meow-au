@@ -1,6 +1,7 @@
 package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
+import br.cefetmg.games.transition.TransitionScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -48,7 +49,12 @@ public class SplashScreen extends BaseScreen {
                 super.viewport.getWorldWidth() / 2,
                 super.viewport.getWorldHeight() / 2);
     }
-    
+
+
+    @Override
+    protected void assetsLoaded() {
+    }
+   
     @Override
     public void cleanUp() {
         logo.getTexture().dispose();
@@ -58,7 +64,10 @@ public class SplashScreen extends BaseScreen {
      * Navega para a tela de Menu.
      */
     private void navigateToMenuScreen() {
-        game.setScreen(new MenuScreen(game, this));
+        transitionScreen(new MenuScreen(game, this), 
+                        TransitionScreen.Effect.FADE_IN_OUT, 0.5f);
+        
+        //game.setScreen(new MenuScreen(game, this));
     }
 
     /**
