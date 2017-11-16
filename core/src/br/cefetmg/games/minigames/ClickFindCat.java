@@ -8,7 +8,12 @@ import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import static com.badlogic.gdx.graphics.VertexAttribute.Position;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -19,9 +24,11 @@ import com.badlogic.gdx.math.Vector2;
 public class ClickFindCat extends MiniGame {
 
     private Texture catTexture;
+    private Texture ratTexture;
     private Texture miraTexture;
     private Sprite miraSprite;
     private Sprite catSprite;
+    private Rat rat;
     private Sound meawSound;
     private Sound scaredMeawSound;
     private Sound happyMeawSound;
@@ -40,7 +47,7 @@ public class ClickFindCat extends MiniGame {
                 + viewport.getScreenHeight() * viewport.getScreenHeight();
         initialCatScale = 0.5f * DifficultyCurve.LINEAR_NEGATIVE.getCurveValue(difficulty);
         catTexture = assets.get("ClickFindCat/gatinho-grande.png", Texture.class);
-
+        ratTexture = assets.get("ClickFindCat/crav_rat.png", Texture.class);
         miraTexture = assets.get("ClickFindCat/target.png", Texture.class);
         miraSprite = new Sprite(miraTexture);
         miraSprite.setScale(1.0f);
@@ -49,6 +56,7 @@ public class ClickFindCat extends MiniGame {
         scaredMeawSound = assets.get("ClickFindCat/ScaredCat.wav", Sound.class);
         happyMeawSound = assets.get("ClickFindCat/YAY.mp3", Sound.class);
         initializeCat();
+        initializeRat();
     }
 
     @Override
@@ -57,13 +65,19 @@ public class ClickFindCat extends MiniGame {
     }
 
     public void initializeCat() {
-        Vector2 posicaoInicial = new Vector2(MathUtils.random(0, viewport.getWorldWidth() - catTexture.getWidth() / 2),
-                MathUtils.random(0, viewport.getWorldHeight() - catTexture.getHeight() / 2));
+        Vector2 posicaoInicial = new Vector2(MathUtils.random(0, viewport.getWorldWidth() - catTexture.getWidth()),
+                MathUtils.random(0, viewport.getWorldHeight() - catTexture.getHeight()));
 
         catSprite = new Sprite(catTexture);
         catSprite.setPosition(posicaoInicial.x, posicaoInicial.y);
         catSprite.setScale(initialCatScale);
 
+    }
+    
+    public void initializeRat() {
+        rat = new Rat(ratTexture);
+        
+        
     }
 
     @Override
@@ -98,7 +112,7 @@ public class ClickFindCat extends MiniGame {
         if (super.getState() == MiniGameState.PLAYER_FAILED || super.getState() == MiniGameState.PLAYER_SUCCEEDED) {
             catSprite.draw(batch);
         }
-
+        rat.render(batch);
         //Desenha a Mira
         miraSprite.draw(batch);
 
@@ -113,5 +127,128 @@ public class ClickFindCat extends MiniGame {
     public boolean shouldHideMousePointer() {
         return true;
     }
-
+    
+    static class Rat {
+        
+        private final TextureRegion[][] quadrosDeAnimacao;
+        private final Animation<TextureRegion> andarParaFrente;
+        private final Animation<TextureRegion> andarParaTras;
+        private final Animation<TextureRegion> andarParaDireita;
+        private final Animation<TextureRegion> andarParaEsquerda;
+        private final float tempoDeAnimacao;
+        private Vector2 posicao;
+        private Direcao direcao;
+        private TipoDeMovimento tipoDeMovimento;
+        
+        public Rat (Texture SpriteSheet) {
+         posicao = new Vector2(0,0);
+         tempoDeAnimacao = 0;
+         direcao = Direcao.CIMA;
+         tipoDeMovimento = TipoDeMovimento.VAGAR;
+         quadrosDeAnimacao = TextureRegion.split (SpriteSheet,42,32);
+            System.out.println(+quadrosDeAnimacao.length);
+         andarParaTras = new Animation<TextureRegion>(0.1f, 
+        		quadrosDeAnimacao[0][0],
+        		quadrosDeAnimacao[0][1],
+        		quadrosDeAnimacao[0][2]);
+        andarParaTras.setPlayMode(PlayMode.LOOP_PINGPONG);
+        
+        andarParaFrente = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
+        		quadrosDeAnimacao[2][0],
+        		quadrosDeAnimacao[2][1],
+        		quadrosDeAnimacao[2][2]
+        });
+        andarParaFrente.setPlayMode(PlayMode.LOOP_PINGPONG);
+        
+        andarParaDireita = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
+        		quadrosDeAnimacao[1][0],
+        		quadrosDeAnimacao[1][1],
+        		quadrosDeAnimacao[1][2]
+        });
+        andarParaDireita.setPlayMode(PlayMode.LOOP_PINGPONG);
+        
+        andarParaEsquerda = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
+        		quadrosDeAnimacao[3][0],
+        		quadrosDeAnimacao[3][1],
+        		quadrosDeAnimacao[3][2]
+        });
+        andarParaEsquerda.setPlayMode(PlayMode.LOOP_PINGPONG);
+        }
+        
+        public void movimento (float larguraDoMundo, float alturaDoMundo) {
+            switch(tipoDeMovimento) {
+                case VAGAR:
+                    vagar(larguraDoMundo, alturaDoMundo);
+                    break;
+                case FUGIR:
+                    fugir();
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+        public void vagar (float larguraDoMundo, float alturaDoMundo) {
+            Vector2 QuantoAndou = new Vector2();
+            if (posicao.x <= 0) {
+                QuantoAndou.x = Math.abs(randomBinomial());
+            } else if (posicao.x >= larguraDoMundo) {
+                QuantoAndou.x = -Math.abs(randomBinomial());
+            } else {
+                QuantoAndou.x = randomBinomial();
+            }
+            if (posicao.y <= 0) {
+                QuantoAndou.y = Math.abs(randomBinomial());
+            } else if (posicao.y >= alturaDoMundo) {
+                QuantoAndou.y = -Math.abs(randomBinomial());
+            } else {
+                QuantoAndou.y = randomBinomial();
+            }
+            posicao.add(QuantoAndou);
+            
+            if (posicao.x < 0) posicao.x = 0; direcao = Direcao.DIREITA;
+            else if (posicao.x > larguraDoMundo) posicao.x = larguraDoMundo; direcao = Direcao.ESQUERDA;
+            if (posicao.y < 0) posicao.y = 0; direcao = Direcao.CIMA;
+            else if (posicao.y > larguraDoMundo) posicao.y = larguraDoMundo; direcao = Direcao.BAIXO;
+        }
+        
+        public void fugir () {
+            
+        }
+        
+        public float randomBinomial() {
+            return (float)(Math.random() - Math.random());
+        }
+        
+        public void render (SpriteBatch batch) {
+            switch (direcao) {
+                case CIMA:
+                    // Cima
+                    batch.draw((TextureRegion)andarParaFrente.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
+                    break;
+                case BAIXO:
+                    // Baixo
+                    batch.draw((TextureRegion)andarParaTras.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
+                    break;
+                case ESQUERDA:
+                    // Esquerda
+                    batch.draw((TextureRegion)andarParaEsquerda.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
+                    break;
+                case DIREITA:
+                    // Direita
+                    batch.draw((TextureRegion)andarParaDireita.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
+                    break;
+                default:
+                    break;
+            }
+        }
+        
+        static enum Direcao {
+            CIMA, BAIXO, ESQUERDA, DIREITA;
+        }
+        static enum TipoDeMovimento {
+            VAGAR, FUGIR;
+        }
+        
+    }
 }
