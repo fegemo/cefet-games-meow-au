@@ -121,7 +121,7 @@ public class ClickFindCat extends MiniGame {
             public void run () {
                 rat.movimento();
             }
-        }, 0, 100000);
+        }, 0, 60);
         rat.andar(viewport.getWorldWidth(), viewport.getWorldHeight());
         
     }
@@ -208,7 +208,7 @@ public class ClickFindCat extends MiniGame {
         }
         
         public void andar (float larguraDoMundo, float alturaDoMundo) {
-            float passo = 10;
+            float passo = 50;
             switch (direcao) {
                 case DIREITA:
                     posicao.add(passo, 0);
