@@ -309,8 +309,8 @@ public class ClickFindCat extends MiniGame {
             velocidade = Auxiliar.add(Auxiliar2);
             //velocidade.scl(1/100);
             System.out.println("velocidade1 = "+velocidade.toString());
-            velocidade.x *=(double) 1 /(double) 500;
-            velocidade.y *=(double) 1 /(double) 500;
+            velocidade.x *=(double) 1 /(double) 100;
+            velocidade.y *=(double) 1 /(double) 100;
             System.out.println("velocidade 2= "+velocidade.toString());
             //
         }
