@@ -32,7 +32,9 @@ public class SplashScreen extends BaseScreen {
      */
     
     private Sprite[] logo = new Sprite[MAX_FRAMES];
-    Music backgroundMusic;
+    private Music backgroundMusic;
+    private int currentFrame;
+    private float timeShowingCurrentFrame;
     
     /**
      * Cria uma nova tela de <em>splash</em>.
@@ -43,9 +45,6 @@ public class SplashScreen extends BaseScreen {
     public SplashScreen(Game game, BaseScreen previous) {
         super(game, previous);
     }
-
-    private int i;
-    private int timer = 0;
     
     /**
      * Configura parâmetros iniciais da tela.
@@ -59,13 +58,14 @@ public class SplashScreen extends BaseScreen {
             logo[i].getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
             logo[i].setCenter(super.viewport.getWorldWidth()/2, super.viewport.getWorldHeight()/2);
         }
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("splash/splash.mp3"));
-        backgroundMusic.play();
+        assets.load("splash/splash.mp3", Music.class);
     }
 
 
     @Override
     protected void assetsLoaded() {
+        backgroundMusic = assets.get("splash/splash.mp3", Music.class);
+        backgroundMusic.play();
     }
    
     @Override
@@ -108,10 +108,11 @@ public class SplashScreen extends BaseScreen {
                 >= Config.TIME_ON_SPLASH_SCREEN) {
             navigateToMenuScreen();
         }
-        if(i!=MAX_FRAMES-1 && timer%4==0) {
-            i++;
+        timeShowingCurrentFrame += dt;
+        if(currentFrame!=MAX_FRAMES-1 && timeShowingCurrentFrame > (2*0.0345)) {
+            currentFrame++;
+            timeShowingCurrentFrame -= (2*0.0345);
         }
-        timer++;
     }
 
     /**
@@ -120,7 +121,7 @@ public class SplashScreen extends BaseScreen {
     @Override
     public void draw() {
         batch.begin();
-        logo[i].draw(batch);
+        logo[currentFrame].draw(batch);
         batch.end();
     }
 }
