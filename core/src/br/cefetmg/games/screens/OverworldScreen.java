@@ -21,7 +21,7 @@ public class OverworldScreen extends BaseScreen {
 
     private Vector2 click;
     private Stage stage;
-    protected Sound click1;
+    protected Sound click1,click2;
     private boolean check = false;
     private boolean stop;
     private boolean s1, s2, s3, s4, s5;
@@ -59,6 +59,7 @@ public class OverworldScreen extends BaseScreen {
         play = new Image(new Texture(Gdx.files.internal("world/play.png")));
         water = new Image(new Texture(Gdx.files.internal("world/water.jpg")));
         assets.load("menu/click2.mp3", Sound.class);
+        assets.load("menu/click3.mp3", Sound.class);
         assets.load("world/overworldtheme.mp3", Music.class); 
     }
 
@@ -71,6 +72,7 @@ public class OverworldScreen extends BaseScreen {
         s5 = false;
         unblockStage = CurrentStage.Stage1;
         click1 = assets.get("menu/click2.mp3", Sound.class);
+        click2 = assets.get("menu/click3.mp3", Sound.class);
         backgroundMusic = assets.get("world/overworldtheme.mp3", Music.class);
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
@@ -211,7 +213,7 @@ public class OverworldScreen extends BaseScreen {
         Actor hitActor = stage.hit(arrow.getX(), arrow.getY() + arrow.getHeight() * arrow.getScaleY(), false);
 
         growEffect();
-
+        s1=s2=s3=s4=s5=false;
         if (Gdx.input.justTouched() && hitActor != null && !stop) {
             if ("menu".equals(hitActor.getName())) {
                 click1.play();
@@ -230,7 +232,6 @@ public class OverworldScreen extends BaseScreen {
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     s1 = false;
-
                 }
             } else if (s2 && unblockStage == CurrentStage.Stage2) {
                 if ("play".equals(hitActor.getName())) {
@@ -284,19 +285,19 @@ public class OverworldScreen extends BaseScreen {
                     s5 = false;
                 }
             } else if ("icon1".equals(hitActor.getName())) {
-                click1.play();
+                click2.play();
                 firstStage(false);
             } else if ("icon2".equals(hitActor.getName())) {
-                click1.play();
+                click2.play();
                 secondStage(false);
             } else if ("icon3".equals(hitActor.getName())) {
-                click1.play();
+                click2.play();
                 thirdStage(false);
             } else if ("icon4".equals(hitActor.getName())) {
-                click1.play();
+                click2.play();
                 lastStage(false);
             } else if ("icon5".equals(hitActor.getName())) {
-                click1.play();
+                click2.play();
                 fourthStage(false);
             } else {
                 stop = false;
