@@ -213,12 +213,9 @@ public class OverworldScreen extends BaseScreen {
             currentStage = Integer.parseInt(split[0]);
             score = Integer.parseInt(split[1]);
         }
-        for(int i = 1; i <= currentStage; i++) {
+        for(i = 1; i <= currentStage; i++) {
             openStages[i] = true;
         }
-        
-        
-
     }
 
     @Override
@@ -426,9 +423,8 @@ public class OverworldScreen extends BaseScreen {
     
     private void DesenharCadeados(){
         int i=0;
-        int controle =5;
         for (Image cadeado : cadeados ) {
-            if(i<controle)
+            if(i<currentStage)
                 cadeado.draw(batch,0);
             i++;
         }
