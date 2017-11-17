@@ -37,11 +37,12 @@ public class PlayingGamesScreen extends BaseScreen
     private boolean hasPreloaded;
     private final InputMultiplexer inputMultiplexer;
 
-    public PlayingGamesScreen(Game game, BaseScreen previous) {
+    public PlayingGamesScreen(Game game, BaseScreen previous, boolean isSurvival) {
         super(game, previous);
         state = PlayScreenState.PLAYING;
         lives = Config.MAX_LIVES;
-        sequencer = new InfiniteGameSequencer(new HashSet<MiniGameFactory>(
+        if(isSurvival){
+            sequencer = new InfiniteGameSequencer(new HashSet<MiniGameFactory>(
                 Arrays.asList(
                         // flávio
                         new ShootTheCariesFactory(),
@@ -79,7 +80,50 @@ public class PlayingGamesScreen extends BaseScreen
                         new TheFridgeGameFactory(),
                         new KillTheRatsFactory()
                 )
-        ), 0, 1, this, this);
+            ), 0, 1, this, this);
+        }
+        else{
+            sequencer = new GameSequencer(6, new HashSet<MiniGameFactory>(
+                Arrays.asList(
+                        // flávio
+                        new ShootTheCariesFactory(),
+                        new ShooTheTartarusFactory(),
+                        // gustavo henrique e rogenes
+                        new BasCATballFactory(),
+                        new RunningFactory(),
+                        // rafael e luis carlos
+                        new DodgeTheVeggiesFactory(),
+                        new CatchThatHomeworkFactory(),
+                        // adriel
+                        new UnderwaterCatFactory(),
+                        // arthur e pedro
+                        new DogBarksCatFleeFactory(),
+                        new ClickFindCatFactory(),
+                        // cassiano e gustavo jordão
+                        new TicCatDogFactory(),
+                        new JumpTheObstaclesFactory(),
+                        // luiza e pedro cordeiro
+                        new SpyFishFactory(),
+                        new PhantomCatFactory(),
+                        // gabriel e natália
+                        new MouseAttackFactory(),
+                        new JetRatFactory(),
+                        // emanoel e vinícius
+                        new HeadSoccerFactory(),
+                        new CatAvoiderFactory(),
+                        // joão e miguel
+                        new CannonCatFactory(),
+                        new MeowsicFactory(),
+                        // túlio
+                        new RainingCatsFactory(),
+                        new NinjaCatFactory(),
+                        //estevao e sarah//
+                        new TheFridgeGameFactory(),
+                        new KillTheRatsFactory()
+                )
+            ), 0, 1, this, this);
+        }
+        
         hud = new Hud(this, this);
         inputMultiplexer = new InputMultiplexer();
     }
