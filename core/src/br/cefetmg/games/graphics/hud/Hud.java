@@ -4,6 +4,8 @@ import br.cefetmg.games.Config;
 import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.sound.MySound;
+import br.cefetmg.sound.SoundManeger;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
@@ -49,12 +51,13 @@ public class Hud {
     private Button backMenuButton;
     private Button confirmButton;
     private Button unnconfirmedButton;
-    private Sound timerSound;
+    private Button soundButton;
+    private MySound timerSound;
     private Clock clock;
 
     private int currentLives;
     private boolean isPaused;
-
+    
     public Hud(BaseScreen screen, MiniGameStateObserver stateObserver) {
         this.screen = screen;
         this.stateObserver = stateObserver;
@@ -73,6 +76,11 @@ public class Hud {
         skin.add("unnconfirmed", screen.assets.get("hud/unnconfirmed-button.png",
                 Texture.class));
         skin.add("back-menu", screen.assets.get("hud/back-menu-button.png",
+                Texture.class));
+        
+        skin.add("noSound", screen.assets.get("hud/no-sound-button.png",
+                Texture.class));
+        skin.add("sound", screen.assets.get("hud/sound-button.png",
                 Texture.class));
         
         lifeTexture = screen.assets.get("hud/lifeTexture.png");
@@ -102,12 +110,34 @@ public class Hud {
                 if (isPaused) {
                     stateObserver.onGamePaused();
                     clock.pauseTicking();
+                    showSoundButton();
                 } else {
                     stateObserver.onGameResumed();
                     clock.resumeTicking();
+                    hideSoundButton();
                 }   
             }
         });
+        
+        
+        soundButton = new ImageButton(
+                skin.getDrawable("sound"),
+                skin.getDrawable("sound"),
+                skin.getDrawable("noSound")
+        );
+        soundButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                boolean sound = SoundManeger.getSound();
+                if( sound){
+                    SoundManeger.disableSounds();
+                }else{
+                    SoundManeger.enableSounds();
+                }
+            }
+        });
+        soundButton.setY(stage.getViewport().getWorldHeight() * 0.15f);
+        stage.addActor(soundButton);
         
         backMenuButton = new ImageButton(
                 skin.getDrawable("back-menu")
@@ -188,7 +218,7 @@ public class Hud {
             livesGroup.addActor(new LifeHeart(lifeTexture, explodeLifeTexture));
         }
 
-        timerSound = screen.assets.get("hud/tick-tock.mp3", Sound.class);
+        timerSound = new MySound(screen.assets.get("hud/tick-tock.mp3", Sound.class));
         clock = new Clock(clockTexture, timerSound);
 
         table.padBottom(10).row().expandX();
@@ -276,6 +306,14 @@ public class Hud {
         pauseButton.setVisible(false);
     }
 
+    public void showSoundButton() {
+        soundButton.setVisible(true);
+    }
+
+    public void hideSoundButton() {
+        soundButton.setVisible(false);
+    }
+    
     public void showMessage(String message) {
         centeredLabel.setText(message);
     }

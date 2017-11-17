@@ -16,8 +16,11 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.sound.MyMusic;
+import br.cefetmg.sound.MySound;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
+import com.badlogic.gdx.audio.Music;
 import java.util.Set;
 
 /**
@@ -34,10 +37,10 @@ public class PlayingGamesScreen extends BaseScreen
     private int lives;
     private boolean hasPreloaded;
     private final InputMultiplexer inputMultiplexer;
-    private Sound gameWonSound;
-    private Sound gameOverSound;
-    private Sound youLoseSound;
-    private Sound youWinSound;
+    private MySound gameWonSound;
+    private MySound gameOverSound;
+    private MySound youLoseSound;
+    private MySound youWinSound;
 
     public PlayingGamesScreen(Game game, BaseScreen previous, int nGames, Set<MiniGameFactory> games,
             float initialDifficulty, float finalDifficulty) {
@@ -66,6 +69,8 @@ public class PlayingGamesScreen extends BaseScreen
         assets.load("hud/back-menu-button.png", Texture.class, linearFilter);
         assets.load("hud/confirm-button.png", Texture.class, linearFilter);
         assets.load("hud/unnconfirmed-button.png", Texture.class, linearFilter);
+        assets.load("hud/no-sound-button.png", Texture.class, linearFilter);
+        assets.load("hud/sound-button.png", Texture.class, linearFilter);
         assets.load("sound/gamewon.mp3", Sound.class);
         assets.load("sound/gameover.wav", Sound.class);
         assets.load("sound/youwin.wav", Sound.class);
@@ -176,10 +181,10 @@ public class PlayingGamesScreen extends BaseScreen
                 advance();
             }
 
-            gameWonSound = assets.get("sound/gamewon.mp3");
-            gameOverSound = assets.get("sound/gameover.wav");
-            youLoseSound = assets.get("sound/youlose.wav");
-            youWinSound = assets.get("sound/youwin.wav");
+            gameWonSound =  new MySound((Sound)assets.get("sound/gamewon.mp3"));
+            gameOverSound = new MySound((Sound)assets.get("sound/gameover.wav"));
+            youLoseSound = new MySound((Sound)assets.get("sound/youlose.wav"));
+            youWinSound = new MySound((Sound)assets.get("sound/youwin.wav"));
 
             hasPreloaded = true;
         }

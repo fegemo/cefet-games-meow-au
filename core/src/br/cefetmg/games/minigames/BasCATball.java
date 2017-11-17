@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.sound.MySound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.HashMap;
@@ -21,10 +22,10 @@ import java.util.HashMap;
  */
 public class BasCATball extends MiniGame {
 
-    private Sound beat;
-    private Sound fail;
-    private Sound flyingdown;
-    private Sound doh;
+    private MySound beat;
+    private MySound fail;
+    private MySound flyingdown;
+    private MySound doh;
 
     private Sprite ball;
     private Sprite player;
@@ -118,10 +119,10 @@ public class BasCATball extends MiniGame {
         darkArrowLTexture = assets.get("bascatball/darkarrowL.png", Texture.class);
         darkArrowRTexture = assets.get("bascatball/darkarrowR.png", Texture.class);
         doraemonTexture = assets.get("bascatball/doraemon.png", Texture.class);
-        beat = assets.get("bascatball/beats.mp3", Sound.class);
-        fail = assets.get("bascatball/fail.mp3", Sound.class);
-        flyingdown = assets.get("bascatball/flyingdown.mp3", Sound.class);
-        doh = assets.get("bascatball/doh.mp3", Sound.class);
+        beat = new MySound(assets.get("bascatball/beats.mp3", Sound.class));
+        fail = new MySound(assets.get("bascatball/fail.mp3", Sound.class));
+        flyingdown = new MySound(assets.get("bascatball/flyingdown.mp3", Sound.class));
+        doh = new MySound(assets.get("bascatball/doh.mp3", Sound.class));
 
         lightArrowL = new Sprite(lightArrowLTexture);
         lightArrowL.setScale(0.3f, 0.6f);

@@ -12,6 +12,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import br.cefetmg.games.transition.TransitionScreen;
 import java.util.Arrays;
 import br.cefetmg.games.minigames.factories.*;
+import br.cefetmg.sound.MyMusic;
+import br.cefetmg.sound.MySound;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import java.util.HashSet;
@@ -20,7 +22,7 @@ public class OverworldScreen extends BaseScreen {
 
     private Vector2 click;
     private Stage stage;
-    protected Sound click1;
+    protected MySound click1;
     private boolean check = false;
     private boolean stop;
     private boolean s1, s2, s3, s4, s5;
@@ -32,7 +34,7 @@ public class OverworldScreen extends BaseScreen {
             icon5, stage5,
             exit, menu, play, water;
 
-    private Music backgroundMusic;
+    private MyMusic backgroundMusic;
     
     public OverworldScreen(Game game, BaseScreen previous) {
         super(game, previous);
@@ -68,8 +70,8 @@ public class OverworldScreen extends BaseScreen {
         s3 = false;
         s4 = false;
         s5 = false;
-        click1 = assets.get("menu/click2.mp3", Sound.class);
-        backgroundMusic = assets.get("world/overworldtheme.mp3", Music.class);
+        click1 = new MySound(assets.get("menu/click2.mp3", Sound.class));
+        backgroundMusic =  new MyMusic(assets.get("world/overworldtheme.mp3", Music.class));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
         stage = new Stage(new ScreenViewport());

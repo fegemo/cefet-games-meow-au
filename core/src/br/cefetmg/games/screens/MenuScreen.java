@@ -1,6 +1,8 @@
 package br.cefetmg.games.screens;
 
 import br.cefetmg.games.transition.TransitionScreen;
+import br.cefetmg.sound.MyMusic;
+import br.cefetmg.sound.MySound;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
@@ -40,11 +42,11 @@ public class MenuScreen extends BaseScreen {
     private Texture btnSurvival;
     private Texture btnBack;
     private Texture logo;
-    private Sound click1;
-    private Sound click2;
+    private MySound click1;
+    private MySound click2;
     private int selecionaModo = 0;
 
-    private Music musicaTema;
+    private MyMusic musicaTema;
 
     /**
      * Cria uma nova tela de menu.
@@ -97,12 +99,12 @@ public class MenuScreen extends BaseScreen {
         btnBack = assets.get("menu/button_voltar.png", Texture.class);
         logo = assets.get("menu/logo.png", Texture.class);
 
-        musicaTema = assets.get("menu/meowautheme.mp3", Music.class);
+        musicaTema =  new MyMusic(assets.get("menu/meowautheme.mp3", Music.class));
         musicaTema.setLooping(true);
         musicaTema.play();
 
-        click1 = assets.get("menu/click1.mp3", Sound.class);
-        click2 = assets.get("menu/click2.mp3", Sound.class);
+        click1 = new MySound(assets.get("menu/click1.mp3", Sound.class));
+        click2 = new MySound(assets.get("menu/click2.mp3", Sound.class));
     }
 
 

@@ -1,5 +1,6 @@
 package br.cefetmg.games.graphics.hud;
 
+import br.cefetmg.sound.MySound;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -24,10 +25,10 @@ class Clock extends Actor {
     private float timeTickingThisSecond;
     private boolean isTicking;
     private int ticksDone;
-    private final Sound timerSound;
+    private final MySound timerSound;
     private boolean isPaused;
 
-    Clock(Texture clockTexture, Sound timerSound) {
+    Clock(Texture clockTexture, MySound timerSound) {
         this.timerSound = timerSound;
 
         sprite = new AnimatedSprite(new Animation<TextureRegion>(0.2f, workFrames(clockTexture, 5, 7)));
