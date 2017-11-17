@@ -99,6 +99,7 @@ public class MenuScreen extends BaseScreen {
 
         musicaTema = assets.get("menu/meowautheme.mp3", Music.class);
         musicaTema.setLooping(true);
+        musicaTema.setVolume(0.4f);
         musicaTema.play();
 
         click1 = assets.get("menu/click1.mp3", Sound.class);

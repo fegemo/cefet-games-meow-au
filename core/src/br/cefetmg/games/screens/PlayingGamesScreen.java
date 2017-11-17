@@ -18,6 +18,7 @@ import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
+import com.badlogic.gdx.audio.Music;
 import java.util.Set;
 
 /**
@@ -38,6 +39,7 @@ public class PlayingGamesScreen extends BaseScreen
     private Sound gameOverSound;
     private Sound youLoseSound;
     private Sound youWinSound;
+     private Music intergames;
 
     public PlayingGamesScreen(Game game, BaseScreen previous, int nGames, Set<MiniGameFactory> games,
             float initialDifficulty, float finalDifficulty) {
@@ -70,6 +72,7 @@ public class PlayingGamesScreen extends BaseScreen
         assets.load("sound/gameover.wav", Sound.class);
         assets.load("sound/youwin.wav", Sound.class);
         assets.load("sound/youlose.wav", Sound.class);
+        assets.load("hud/intergames.wav", Music.class);
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
     
@@ -214,6 +217,8 @@ public class PlayingGamesScreen extends BaseScreen
                 hud.showGameInstructions(currentGame.getInstructions());
                 hud.startInitialCountdown();
                 hud.showPauseButton();
+                intergames = assets.get("hud/intergames.wav", Music.class);
+                intergames.play();
                 break;
 
             case PLAYING:
