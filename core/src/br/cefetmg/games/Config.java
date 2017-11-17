@@ -50,7 +50,7 @@ public class Config {
     /**
      * Tempo em que a tela de splash fica sendo mostrada.
      */
-    public static final long TIME_ON_SPLASH_SCREEN = 5000;
+    public static final long TIME_ON_SPLASH_SCREEN = 4500;
 
     /**
      * Número de vidas do jogador.
