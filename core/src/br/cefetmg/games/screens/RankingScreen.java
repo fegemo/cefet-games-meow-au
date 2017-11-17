@@ -3,12 +3,10 @@ package br.cefetmg.games.screens;
 import br.cefetmg.games.transition.TransitionScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import java.util.Map;
 
 /**
  *
@@ -18,22 +16,21 @@ public class RankingScreen extends BaseScreen{
 
     private String testString;
     private String scoreKeeper;
-    
     private String name,fileContent;
+    private String rightQuantityKeeper;
     
     private TextureRegion background;
     private TextureRegion pointer;
     private TextureRegion backspace;
     private TextureRegion enter;
     private TextureRegion space;
-    
-    
+    private TextureRegion board;
     
     private letter[][] letters = new letter [3][10];
     
+    private boolean fileExists;
     private boolean writingScore,showingScore;
     
-    //dados do objeto da classe letter
     private float bottomX,bottomY,letterWidth,letterHeight;
     private float pointerX,pointerY,pointerSize;
     private float distBetweenLetters,distFromBoard;
@@ -44,35 +41,27 @@ public class RankingScreen extends BaseScreen{
     private Vector2 backspaceBottom,backspaceSize;
     private Vector2 spaceBottom,spaceSize;
     private Vector2 enterBottom,enterSize;
+    private Vector2 boardBottom,boardSize;
     
     private FileHandle file;
-    private boolean fileExists;
+    
+    private int maxRankingQuantity;
 
-    
-   
     public RankingScreen(Game game, BaseScreen previous, int phase) {
-   
-    /*
-        constroi classe para salvar e mostrar o ranking atualizado
-        (chamado quando ocorre gameover)
-    
-    */
-        
         super(game, previous);
         this.phaseNumber = phase;
-        this.init();
+        this.initFromGameOver();
     }
     
     
     
     public RankingScreen(Game game, BaseScreen previous){
-    
-    /*
-        constroi  classe para mostrar o ranking somente e nao gravar nada
-        (chamado pelo menu principal)
-    */
-        
         super(game, previous);
+        initFromMenuScreen();
+        
+    }
+    
+    private void initFromMenuScreen(){
         file = Gdx.files.local("localRanking.txt");
         fileExists = Gdx.files.local("localRanking.txt").exists();
         if(!fileExists){
@@ -83,11 +72,20 @@ public class RankingScreen extends BaseScreen{
         testString = "";
         scoreKeeper = "";
         name = "";
+        rightQuantityKeeper = "";
         writingScore = false;
         showingScore = true;
+        maxRankingQuantity = 10;
+        boardBottom = new Vector2(viewport.getWorldWidth()*0.25f,viewport.getWorldHeight()*0.08f);
+        boardSize = new Vector2(viewport.getWorldWidth()*0.5f,viewport.getWorldHeight()*0.775f);
+        pointerX = viewport.getWorldWidth()/2;
+        pointerY = viewport.getWorldHeight()/2;
+        pointerSize = letterWidth*0.5f;
+        
     }
     
-    private void init(){
+    private void initFromGameOver(){
+        
         name = "";
         distFromBoard = viewport.getWorldWidth()/7;
         bottomX = distFromBoard;
@@ -107,10 +105,15 @@ public class RankingScreen extends BaseScreen{
         fileLenght = file.length();
         writingScore = true;
         showingScore = false;
+        maxRankingQuantity = 10;
+        boardBottom = new Vector2(viewport.getWorldWidth()*0.25f,viewport.getWorldHeight()*0.08f);
+        boardSize = new Vector2(viewport.getWorldWidth()*0.5f,viewport.getWorldHeight()*0.775f);
+        
     }
     
     public int rankingQuantity(){
         int quantity=0;
+        fileLenght = file.length();
         if(file.length()>0){
             for(i=0;i<fileLenght;i++){
                 if(fileContent.charAt(i)=='\n'){
@@ -128,20 +131,18 @@ public class RankingScreen extends BaseScreen{
         j=0;
         testString = "";
         scoreKeeper = "";
+        fileLenght = file.length();
         if(rankingQuantity()>0){
-            
             while(j < fileLenght){
-                
                 testString = ""+fileContent.charAt(j);
                 j++;
-                
                 while(fileContent.charAt(j)!='\n'){
                         testString += fileContent.charAt(j);
                         j++;
                 }
                 testString = testString+'\n';
                
-                converter = ""+testString.charAt(0);
+                converter = ""+testString.charAt(testString.length()-2);
                 
                 if(phaseNumber >= Integer.parseInt(converter) && !alreadyGreater){
                     if("".equals(scoreKeeper)){
@@ -161,15 +162,12 @@ public class RankingScreen extends BaseScreen{
                         scoreKeeper += testString;
                     }
                 }
-                
                 j++;
-                
             }
             if(!alreadyGreater){
                 scoreKeeper += name;
                 alreadyGreater=true;
             }
-            
             file.writeString(scoreKeeper, false);
             fileContent = file.readString();
         }
@@ -179,29 +177,29 @@ public class RankingScreen extends BaseScreen{
         }
     }
     
-    /*public void removeExtra(){
+    public void removeExtra(){
         int cont=0;
-        i=0;
-        testString="";
-        
-        if(rankingQuantity()>2){
+        rightQuantityKeeper = "";
+        fileLenght = file.length();
+        if(rankingQuantity()>maxRankingQuantity){
+            i=0;
+            rightQuantityKeeper=""+fileContent.charAt(i);
+            i++;
             while(true){
-                
-                testString+=fileContent.charAt(i);
-                
+                rightQuantityKeeper+=fileContent.charAt(i);
                 if(fileContent.charAt(i)=='\n'){
                     cont++;
                 }
-                if(cont==2){
-                    file.writeString(testString, false);
+                if(cont==maxRankingQuantity){
+                    file.writeString(rightQuantityKeeper, false);
+                    fileContent = "";
                     fileContent = file.readString();
                     break;
                 }              
                 i++;
             }
         }
-        
-    }*/
+    }
     
     public boolean collider(Vector2 bottom, Vector2 size, Vector2 click){
         return (click.x>bottom.x && click.x<(bottom.x+size.x)) &&
@@ -212,12 +210,13 @@ public class RankingScreen extends BaseScreen{
     @Override
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
-        background = new TextureRegion(new Texture("ranking-background.jpg"));
+        background = new TextureRegion(new Texture("end4.png"));
         pointer = new TextureRegion(new Texture("pointer.png"));
-        
-        
+        board = new TextureRegion(new Texture("rectangle.png"));
+
         //auxChar define qual é  o asset carregado, qual a letra do teclado
         //comeca em a e vai selecionando as proximas letras automaticamente
+        
         char auxChar = 'a';
         
         for(i=0;i<3;i++){
@@ -263,18 +262,20 @@ public class RankingScreen extends BaseScreen{
 
     @Override
     public void handleInput() {
+        
         int exitFor=0;
         click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);
         
         if(Gdx.input.justTouched()){
             if(writingScore){
+                
                 for(i=0;i<3;i++){
                     for(j=0;j<10;j++){
                         if(i==2 && j==6){
                             break;
                         }
-                        if(collider(letters[i][j].bottom,letters[i][j].size,click)){
+                        if(collider(letters[i][j].bottom,letters[i][j].size,click) && name.length()<10){
                             name=name+letters[i][j].symbol;
                             exitFor=1;
                             break;
@@ -294,29 +295,23 @@ public class RankingScreen extends BaseScreen{
                     name=name+" ";
                 }
                 else if(collider(enterBottom,enterSize,click)){
-                    do{
-                        name=phaseNumber+" -> "+name+'\n';
-                        if(name.trim().isEmpty()){
-                            drawCenterAlignedText("Nome não pode estar vazio!", viewport.getWorldHeight() * 0.5f);
+                    
+                    if(!name.trim().equals("")){
+                        for(i=0;i<=10;i++){
+                            if(i==name.length()){
+                                name+=" ";
+                            }
                         }
-                    }while(name.trim().isEmpty());
-                    
-                    writingScore=false;
-                    showingScore=true;
-                    /*
-                    
-                    ordena o arquivo e escreve o nome que foi inserido
-                    na posicao correta
-                    
-                    */
-                    
-                    insert();
-                    //removeExtra();
-                    
+                        name=name+"   "+phaseNumber+'\n';
+                        writingScore=false;
+                        showingScore=true;
+                        insert();
+                        removeExtra();
+                    }
                 }
-
             }
             else if(showingScore){
+                Gdx.input.setCursorCatched(false);
                 transitionScreen(new MenuScreen(super.game, this),
                 TransitionScreen.Effect.FADE_IN_OUT, 1f);
             }
@@ -326,10 +321,14 @@ public class RankingScreen extends BaseScreen{
 
     @Override
     public void update(float dt) {
-          pointerX = click.x-pointerSize/2;
-          pointerY = click.y-pointerSize/2;
+        if(writingScore){
+            Gdx.input.setCursorCatched(true);
+        }
+        pointerX = click.x-pointerSize/2;
+        pointerY = click.y-pointerSize/2;
     }
 
+    
     @Override
     public void draw() {
         batch.begin();
@@ -337,9 +336,9 @@ public class RankingScreen extends BaseScreen{
                 viewport.getWorldWidth(),
                 viewport.getWorldHeight());
         if(writingScore){
-            drawCenterAlignedText("YOUR SCORE:  "+phaseNumber+"", viewport.getWorldHeight() * 0.85f);
             
-            drawCenterAlignedText("ENTER YOUR NAME:  "+name+"", viewport.getWorldHeight() * 0.75f);
+            drawCenterAlignedText("YOUR SCORE:  "+phaseNumber+"", viewport.getWorldHeight() * 0.91f);
+            drawCenterAlignedText("ENTER YOUR NAME:  "+name+"", viewport.getWorldHeight() * 0.84f);
             for(i=0;i<3;i++){
                 for(j=0;j<10;j++){
                     if(i==2 && j==6){
@@ -351,14 +350,13 @@ public class RankingScreen extends BaseScreen{
             batch.draw(backspace,backspaceBottom.x,backspaceBottom.y,backspaceSize.x,backspaceSize.y);
             batch.draw(space,spaceBottom.x,spaceBottom.y,spaceSize.x,spaceSize.y);
             batch.draw(enter,enterBottom.x,enterBottom.y,enterSize.x,enterSize.y);
-        
+            batch.draw(pointer, pointerX, pointerY,pointerSize,pointerSize);
         }
         else if(showingScore){
-            drawCenterAlignedText("RANKING! ", viewport.getWorldHeight()*0.90f);
+            batch.draw(board, boardBottom.x, boardBottom.y, boardSize.x, boardSize.y);
+            drawCenterAlignedText("      Name:           Score:     ", viewport.getWorldHeight()*0.90f);
             drawCenterAlignedText(fileContent, viewport.getWorldHeight()*0.80f);
         }
-     
-        
             batch.end();
     }
     
