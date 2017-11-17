@@ -35,7 +35,7 @@ public class OverworldScreen extends BaseScreen {
             icon4, stage4,
             icon5, stage5,
             exit, menu, play, water;
-    private ArrayList<Image> cadeados;
+    private ArrayList<Image> locks;
     private boolean desenhaMeio=true;
     private Music backgroundMusic;
     private int currentStage;
@@ -54,8 +54,8 @@ public class OverworldScreen extends BaseScreen {
         stage1 = new Image(new Texture(Gdx.files.internal("world/stage1.png")));
         stage2 = new Image(new Texture(Gdx.files.internal("world/stage2.png")));
         stage3 = new Image(new Texture(Gdx.files.internal("world/stage3.png")));
-        stage5 = new Image(new Texture(Gdx.files.internal("world/stage4.png")));
-        stage4 = new Image(new Texture(Gdx.files.internal("world/stage5.png")));
+        stage4 = new Image(new Texture(Gdx.files.internal("world/stage4.png")));
+        stage5 = new Image(new Texture(Gdx.files.internal("world/stage5.png")));
         exit = new Image(new Texture(Gdx.files.internal("world/menu.png")));
         icon2 = new Image(new Texture(Gdx.files.internal("world/icon2.png")));
         icon3 = new Image(new Texture(Gdx.files.internal("world/icon3.png")));
@@ -64,24 +64,22 @@ public class OverworldScreen extends BaseScreen {
         menu = new Image(new Texture(Gdx.files.internal("world/menu.png")));
         play = new Image(new Texture(Gdx.files.internal("world/play.png")));
         water = new Image(new Texture(Gdx.files.internal("world/water.jpg")));
-        file = Gdx.files.local("data/ProgressFile.txt");
+        file = Gdx.files.local("data/progress-file.txt");
         assets.load("menu/click2.mp3", Sound.class);
         assets.load("menu/click3.mp3", Sound.class);
         assets.load("world/overworldtheme.mp3", Music.class); 
         assets.load("world/overworldtheme.mp3", Music.class);
-        
-
     }
 
     @Override
     protected void assetsLoaded() {
-        cadeados = new ArrayList<Image>();
+        locks = new ArrayList<Image>();
         openStages = new boolean[5];
         for(int i = 0; i < 5; i++) {
             openStages[i] = false;
         }
         for (int i = 0; i < 5; i++) {
-            cadeados.add(new Image(new Texture(Gdx.files.internal("world/cadeado.png"))));
+            locks.add(new Image(new Texture(Gdx.files.internal("world/cadeado.png"))));
         }
         bool1 = true;
         desenhaMeio = true;
@@ -209,7 +207,7 @@ public class OverworldScreen extends BaseScreen {
         stage.setViewport(viewport);
         stage.act(Gdx.graphics.getDeltaTime());
         int i =0;
-        for (Image cadeado : cadeados) {
+        for (Image cadeado : locks) {
             cadeado.setPosition(posicaoIcone[i].x + cadeado.getImageHeight()/2,posicaoIcone[i].y + + cadeado.getImageWidth()/2);
             cadeado.setScale(0.5f);
             i++;
@@ -217,14 +215,13 @@ public class OverworldScreen extends BaseScreen {
         
         // File Handle
         // Read and Create Progress File
-        System.out.println(file.path());
         if (!file.exists()) {
             file.writeString("0:", false);
             file.writeString("0", true);
             currentStage = 0;
             score = 0;
         }else {
-            String arquivo = new String(file.readString());
+            String arquivo = file.readString();
             String[] split = arquivo.split(":");
             currentStage = Integer.parseInt(split[0]);
             score = Integer.parseInt(split[1]);
@@ -465,16 +462,17 @@ public class OverworldScreen extends BaseScreen {
         }
     }
     
-    private void DesenharCadeados(){
+    private void drawLocks(){
         int i=0;
-        for (Image cadeado : cadeados ) {
+        for (Image lock : locks ) {
             if(i>currentStage){
                if(i==3){
-                    if(desenhaMeio)
-                        cadeado.draw(batch,1);
+                    if(desenhaMeio) {
+                        lock.draw(batch,1);
+                    }
                }
                else
-                cadeado.draw(batch,1);  
+                lock.draw(batch,1);  
             }
             i++;
         }
@@ -555,10 +553,9 @@ public class OverworldScreen extends BaseScreen {
     @Override
     public void draw() {
         stage.draw();
-        Batch batch = this.batch;
 	batch.setProjectionMatrix(camera.combined);
         batch.begin();
-            DesenharCadeados();
+            drawLocks();
         batch.end();
     }
 
