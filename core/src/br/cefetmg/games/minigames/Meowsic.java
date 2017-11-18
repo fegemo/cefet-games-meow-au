@@ -18,6 +18,7 @@ public class Meowsic extends MiniGame {
     private Texture background;
     private Sound song1, song2, song3, song4, song5, fail;
     private Music music1, music2, music3, music4, music5;
+    private Music chosenMusic;
     private Texture cat;
     private Texture sheet;
     private Texture note1, note2, note3, note4, note5;
@@ -72,16 +73,19 @@ public class Meowsic extends MiniGame {
         }
         
         //Seleciona música de acordo com a velocidade
-        if(velocidade < 2.7)
-            music1.play();
-        else if (velocidade <3.0)
-            music2.play();
-        else if (velocidade <3.8)
-            music3.play();
-        else if (velocidade <4.6)
-            music4.play();
-        else 
-            music5.play();
+        if(velocidade < 2.7) {
+            chosenMusic = music1;
+        } else if (velocidade < 3.0) {
+            chosenMusic = music2;
+        } else if (velocidade < 3.8) {
+            chosenMusic = music3;
+        } else if (velocidade < 4.6) {
+            chosenMusic = music4;
+        } else {
+            chosenMusic = music5;
+        }
+        
+        chosenMusic.play();
     }
 
     @Override
@@ -109,7 +113,16 @@ public class Meowsic extends MiniGame {
             }
         }
     }
-
+    
+    @Override
+    public void onGamePaused(boolean justPaused){
+       if (justPaused){
+           chosenMusic.pause();
+       } else {
+           chosenMusic.play();
+       }
+    }
+    
     @Override
     public void onDrawGame() {
         // Desenha cenário
@@ -129,11 +142,7 @@ public class Meowsic extends MiniGame {
         if (somaErros >= 6) {
             errorCounter = 1;
             super.challengeFailed();
-            music1.stop();
-            music2.stop();
-            music3.stop();
-            music4.stop();
-            music5.stop();
+            chosenMusic.stop();
             fail.play();
         }
 
@@ -222,5 +231,4 @@ public class Meowsic extends MiniGame {
     public boolean shouldHideMousePointer() {
         return true;
     }
-
 }

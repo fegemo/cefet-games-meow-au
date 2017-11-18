@@ -14,13 +14,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
-import java.util.Arrays;
-import java.util.HashSet;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -36,94 +37,66 @@ public class PlayingGamesScreen extends BaseScreen
     private int lives;
     private boolean hasPreloaded;
     private final InputMultiplexer inputMultiplexer;
+    private Sound gameWonSound;
+    private Sound gameOverSound;
+    private Sound youLoseSound;
+    private Sound youWinSound;
 
-    public PlayingGamesScreen(Game game, BaseScreen previous, boolean isSurvival) {
+    public PlayingGamesScreen(Game game, BaseScreen previous) {
         super(game, previous);
         state = PlayScreenState.PLAYING;
         lives = Config.MAX_LIVES;
-        if(isSurvival){
-            sequencer = new InfiniteGameSequencer(new HashSet<MiniGameFactory>(
-                Arrays.asList(
-                        // flávio
-                        new ShootTheCariesFactory(),
-                        new ShooTheTartarusFactory(),
-                        // gustavo henrique e rogenes
-                        new BasCATballFactory(),
-                        new RunningFactory(),
-                        // rafael e luis carlos
-                        new DodgeTheVeggiesFactory(),
-                        new CatchThatHomeworkFactory(),
-                        // adriel
-                        new UnderwaterCatFactory(),
-                        // arthur e pedro
-                        new DogBarksCatFleeFactory(),
-                        new ClickFindCatFactory(),
-                        // cassiano e gustavo jordão
-                        new TicCatDogFactory(),
-                        new JumpTheObstaclesFactory(),
-                        // luiza e pedro cordeiro
-                        new SpyFishFactory(),
-                        new PhantomCatFactory(),
-                        // gabriel e natália
-                        new MouseAttackFactory(),
-                        new JetRatFactory(),
-                        // emanoel e vinícius
-                        new HeadSoccerFactory(),
-                        new CatAvoiderFactory(),
-                        // joão e miguel
-                        new CannonCatFactory(),
-                        new MeowsicFactory(),
-                        // túlio
-                        new RainingCatsFactory(),
-                        new NinjaCatFactory(),
-                        //estevao e sarah//
-                        new TheFridgeGameFactory(),
-                        new KillTheRatsFactory()
-                )
-            ), 0, 1, this, this);
-        }
-        else{
-            sequencer = new GameSequencer(6, new HashSet<MiniGameFactory>(
-                Arrays.asList(
-                        // flávio
-                        new ShootTheCariesFactory(),
-                        new ShooTheTartarusFactory(),
-                        // gustavo henrique e rogenes
-                        new BasCATballFactory(),
-                        new RunningFactory(),
-                        // rafael e luis carlos
-                        new DodgeTheVeggiesFactory(),
-                        new CatchThatHomeworkFactory(),
-                        // adriel
-                        new UnderwaterCatFactory(),
-                        // arthur e pedro
-                        new DogBarksCatFleeFactory(),
-                        new ClickFindCatFactory(),
-                        // cassiano e gustavo jordão
-                        new TicCatDogFactory(),
-                        new JumpTheObstaclesFactory(),
-                        // luiza e pedro cordeiro
-                        new SpyFishFactory(),
-                        new PhantomCatFactory(),
-                        // gabriel e natália
-                        new MouseAttackFactory(),
-                        new JetRatFactory(),
-                        // emanoel e vinícius
-                        new HeadSoccerFactory(),
-                        new CatAvoiderFactory(),
-                        // joão e miguel
-                        new CannonCatFactory(),
-                        new MeowsicFactory(),
-                        // túlio
-                        new RainingCatsFactory(),
-                        new NinjaCatFactory(),
-                        //estevao e sarah//
-                        new TheFridgeGameFactory(),
-                        new KillTheRatsFactory()
-                )
-            ), 0, 1, this, this);
-        }
+        sequencer = new InfiniteGameSequencer(new HashSet<MiniGameFactory>(
+            Arrays.asList(
+                    // flávio
+                    //new ShootTheCariesFactory(),
+                    //new ShooTheTartarusFactory(),
+                    // gustavo henrique e rogenes
+                    new BasCATballFactory(),
+                    new RunningFactory(),
+                    // rafael e luis carlos
+                    new DodgeTheVeggiesFactory(),
+                    new CatchThatHomeworkFactory(),
+                    // adriel
+                    new UnderwaterCatFactory(),
+                    // arthur e pedro
+                    new DogBarksCatFleeFactory(),
+                    new ClickFindCatFactory(),
+                    // cassiano e gustavo jordão
+                    new TicCatDogFactory(),
+                    new JumpTheObstaclesFactory(),
+                    // luiza e pedro cordeiro
+                    new SpyFishFactory(),
+                    new PhantomCatFactory(),
+                    // gabriel e natália
+                    new MouseAttackFactory(),
+                    new JetRatFactory(),
+                    // emanoel e vinícius
+                    new HeadSoccerFactory(),
+                    new CatAvoiderFactory(),
+                    // joão e miguel
+                    new CannonCatFactory(),
+                    new MeowsicFactory(),
+                    // túlio
+                    new RainingCatsFactory(),
+                    new NinjaCatFactory(),
+                    //estevao e sarah//
+                    new TheFridgeGameFactory(),
+                    new KillTheRatsFactory()
+            )
+        ), 0, 1, this, this);
         
+        hud = new Hud(this, this);
+        inputMultiplexer = new InputMultiplexer();
+    }
+    
+    public PlayingGamesScreen(Game game, BaseScreen previous, int nGames, Set<MiniGameFactory> games,
+            float initialDifficulty, float finalDifficulty) {
+        super(game, previous);
+        state = PlayScreenState.PLAYING;
+        lives = Config.MAX_LIVES;
+        sequencer = new GameSequencer(nGames, games, initialDifficulty, finalDifficulty, this, this);
+
         hud = new Hud(this, this);
         inputMultiplexer = new InputMultiplexer();
     }
@@ -142,7 +115,18 @@ public class PlayingGamesScreen extends BaseScreen
         assets.load("hud/explodeLifeTexture.png", Texture.class, linearFilter);
         assets.load("hud/clock.png", Texture.class, linearFilter);
         assets.load("hud/tick-tock.mp3", Sound.class);
+        assets.load("hud/back-menu-button.png", Texture.class, linearFilter);
+        assets.load("hud/confirm-button.png", Texture.class, linearFilter);
+        assets.load("hud/unnconfirmed-button.png", Texture.class, linearFilter);
+        assets.load("sound/gamewon.mp3", Sound.class);
+        assets.load("sound/gameover.wav", Sound.class);
+        assets.load("sound/youwin.wav", Sound.class);
+        assets.load("sound/youlose.wav", Sound.class);
         Gdx.input.setInputProcessor(inputMultiplexer);
+    }
+    
+    @Override
+    protected void assetsLoaded() {
     }
 
     @Override
@@ -167,7 +151,7 @@ public class PlayingGamesScreen extends BaseScreen
                 }
                 else if(sequencer instanceof GameSequencer){
                     // volta para o menu principal
-                    transitionScreen(new MenuScreen(super.game, this),
+                 transitionScreen(new OverworldScreen(super.game, this),
                         TransitionScreen.Effect.FADE_IN_OUT, 1f);
                 //super.game.setScreen(new MenuScreen(super.game, this));
                 }
@@ -211,27 +195,31 @@ public class PlayingGamesScreen extends BaseScreen
         // vidas
         else {
             // mostra mensagem de vitória
+            gameWonSound.play();
             this.transitionTo(PlayScreenState.FINISHED_WON);
         }
     }
 
     private void loadNextGame() {
         if (currentGame == null) {
-            // carrega o novo jogo (pede ao sequenciador o próximo)
+            // carrega o primeiro jogo (pede ao sequenciador o próximo)
             currentGame = sequencer.nextGame();
             currentGame.start();
+
+            // atualiza o número de sequência do jogo atual na HUD
+            hud.setGameIndex(sequencer.getGameNumber());
         } else {
             transitionGame(TransitionScreen.Effect.FADE_IN_OUT, 0.5f, new Task() {
                 @Override
                 public void run() {
                     currentGame = sequencer.nextGame();
                     currentGame.start();
+
+                    // atualiza o número de sequência do jogo atual na HUD
+                    hud.setGameIndex(sequencer.getGameNumber());
                 }
             });
         }
-
-        // atualiza o número de sequência do jogo atual na HUD
-        hud.setGameIndex(sequencer.getGameNumber());
     }
 
     private void drawEndGame() {
@@ -246,6 +234,11 @@ public class PlayingGamesScreen extends BaseScreen
             if (state == PlayScreenState.PLAYING && currentGame == null) {
                 advance();
             }
+
+            gameWonSound = assets.get("sound/gamewon.mp3");
+            gameOverSound = assets.get("sound/gameover.wav");
+            youLoseSound = assets.get("sound/youlose.wav");
+            youWinSound = assets.get("sound/youwin.wav");
 
             hasPreloaded = true;
         }
@@ -265,7 +258,9 @@ public class PlayingGamesScreen extends BaseScreen
             case FINISHED_GAME_OVER:
                 Gdx.input.setCursorCatched(false);
                 break;
-
+            case BACK_MENU:
+                super.game.setScreen(new MenuScreen(super.game, this));
+                break;
         }
         this.state = newState;
     }
@@ -293,6 +288,7 @@ public class PlayingGamesScreen extends BaseScreen
                 if (sequencer.hasNextGame()) {
                     Gdx.input.setCursorCatched(false);
                 }
+                youWinSound.play();
             // deixa passar para próximo caso (esta foi
             // uma decisão consciente =)
 
@@ -301,6 +297,12 @@ public class PlayingGamesScreen extends BaseScreen
                 hud.showMessage(state == MiniGameState.PLAYER_FAILED ? "Falhou!" : "Conseguiu!");
                 if (state == MiniGameState.PLAYER_FAILED) {
                     loseLife();
+
+                    if (lives == 0) {
+                        gameOverSound.play();
+                    } else {
+                        youLoseSound.play();
+                    }
                 }
 
                 inputMultiplexer.removeProcessor(currentGame.getInputProcessor());
@@ -315,6 +317,8 @@ public class PlayingGamesScreen extends BaseScreen
                 Gdx.input.setCursorCatched(false);
                 hud.cancelEndingTimer();
                 break;
+            case BACK_MENU:
+                transitionTo(PlayScreenState.BACK_MENU);
         }
     }
 
@@ -340,7 +344,7 @@ public class PlayingGamesScreen extends BaseScreen
             inputMultiplexer.addProcessor(currentGame.getInputProcessor());
         }
     }
-
+    
     @Override
     public void showMessage(String strMessage) {
         hud.showMessage(strMessage);
@@ -350,6 +354,7 @@ public class PlayingGamesScreen extends BaseScreen
     enum PlayScreenState {
         PLAYING,
         FINISHED_GAME_OVER,
-        FINISHED_WON
+        FINISHED_WON,
+        BACK_MENU
     }
 }

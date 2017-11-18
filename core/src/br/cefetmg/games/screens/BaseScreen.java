@@ -50,7 +50,8 @@ public abstract class BaseScreen extends ScreenAdapter {
     private BitmapFont messagesFont;
     private float deviceAspectRatioDivergenceFromDesired;
     private boolean wasJustDisposed = false;
-
+    private boolean assetsFinishedLoading = false;
+    
     /**
      * Cria uma instância de tela.
      * 
@@ -77,8 +78,8 @@ public abstract class BaseScreen extends ScreenAdapter {
         snackerComicParams.fontParameters.size = 50;
         snackerComicParams.fontParameters.minFilter = Texture.TextureFilter.Linear;
         snackerComicParams.fontParameters.magFilter = Texture.TextureFilter.Linear;
-       // assets.load("brainfish-50.ttf", BitmapFont.class, snackerComicParams);
-        assets.load("wickerman.ttf",BitmapFont.class, snackerComicParams);
+        assets.load("brainfish-50.ttf", BitmapFont.class, snackerComicParams);
+        //assets.load("wickerman.ttf",BitmapFont.class, snackerComicParams);
 
         // fonte para a HUD
         assets.load("fonts/sawasdee-50.fnt", BitmapFont.class);
@@ -191,10 +192,12 @@ public abstract class BaseScreen extends ScreenAdapter {
     @Override
     public final void render(float dt) {
         if (assets.update()) {
-            if (messagesFont == null) {
-                messagesFont = assets.get("wickerman.ttf");
-                
+            if (!assetsFinishedLoading) {
+                messagesFont = assets.get("brainfish-50.ttf");
+                assetsLoaded();
+                assetsFinishedLoading = true;
             }
+
             // chama função para gerenciar o input
             handleInput();
             
@@ -268,6 +271,17 @@ public abstract class BaseScreen extends ScreenAdapter {
      * Esta função deve ser usada em vez do método {@code show()}.
      */
     public abstract void appear();
+    
+    /**
+     * Executa ações assim que todos os assets foram carregados. Ela é chamada
+     * apenas uma vez, depois de appear(), assim que todos os assets foram 
+     * carregados.
+     * 
+     * Esta função pode ser usada para carregar os elementos do jogo que 
+     * dependem dos assets que foram carregados (eg, uma sprite precisa de uma
+     * textura).
+     */
+    protected abstract void assetsLoaded();
 
     /**
      * Executa as ações de limpeza e descarregamento de recursos e é chamada

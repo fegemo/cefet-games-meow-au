@@ -361,6 +361,11 @@ public class RankingScreen extends BaseScreen{
         
             batch.end();
     }
+
+    @Override
+    protected void assetsLoaded() {
+        
+    }
     
     private class letter{
     

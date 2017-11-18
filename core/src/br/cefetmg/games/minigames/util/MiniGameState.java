@@ -13,5 +13,7 @@ public enum MiniGameState {
     /** Fim do minigame com vitória do jogador. */
     PLAYER_SUCCEEDED,
     /** Fim do minigame com derrota do jogador. */
-    PLAYER_FAILED
+    PLAYER_FAILED,
+    /** Fim do minigame com a desistencia do jogador. */
+    BACK_MENU
 }
