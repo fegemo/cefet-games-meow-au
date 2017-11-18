@@ -167,6 +167,7 @@ public class Hud {
         confirmButton.setX(stage.getViewport().getWorldWidth()  * 0.75f);
         unnconfirmedButton.setX(stage.getViewport().getWorldWidth()  * 0.25f);
         stage.addActor(backMenuButton);
+        stage.addActor(backGameButton);
         stage.addActor(confirmButton);
         stage.addActor(unnconfirmedButton);
         
