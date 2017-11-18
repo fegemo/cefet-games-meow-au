@@ -160,7 +160,13 @@ public class Hud {
         
         currentLives = Config.MAX_LIVES;
 
-        centeredLabel = new Label("", new LabelStyle(screen.assets.get("brainfish-50.ttf", BitmapFont.class), Color.BLACK));
+        mask = new Image(screen.assets.get("hud/gray-mask.png", Texture.class));
+        mask.setBounds(0, 0, stage.getWidth(), stage.getHeight());
+        mask.setVisible(false);
+        mask.setTouchable(Touchable.disabled);
+        stage.addActor(mask);
+
+        centeredLabel = new Label("", new LabelStyle(screen.assets.get("Cartoonish.ttf", BitmapFont.class), Color.BLACK));
         centeredLabel.setWrap(true);
         centeredLabel.setAlignment(Align.center);
         centeredLabel.setWidth(stage.getViewport().getWorldWidth());
