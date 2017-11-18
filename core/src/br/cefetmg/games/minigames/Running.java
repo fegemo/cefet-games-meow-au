@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.audio.Sound;
 
 /**
@@ -38,10 +39,10 @@ public class Running extends MiniGame {
     private Array<Sprite> boneArray;
     private Array<Sprite> kitArray;
     //sons
-    private Sound pickupWoolSound;
-    private Sound pickupKitSound;
-    private Sound finalSound;
-    private Sound loseSound;
+    private MySound pickupWoolSound;
+    private MySound pickupKitSound;
+    private MySound finalSound;
+    private MySound loseSound;
     private float catSpeed;
     //constantes de velocidade
     private static final float CAT_SPEED_CONSTANT = (float) 0.25;
@@ -83,14 +84,14 @@ public class Running extends MiniGame {
         kitTexture = assets.get(
                 "running/kit.png", Texture.class);
 
-        pickupWoolSound = assets.get(
-                "running/pickup_wool.wav", Sound.class);
-        pickupKitSound = assets.get(
-                "running/pickup_kit.wav", Sound.class);
-        finalSound = assets.get(
-                "running/final.wav", Sound.class);
-        loseSound = assets.get(
-                "running/lose.wav", Sound.class);
+        pickupWoolSound = new MySound(assets.get(
+                "running/pickup_wool.wav", Sound.class));
+        pickupKitSound = new MySound(assets.get(
+                "running/pickup_kit.wav", Sound.class));
+        finalSound = new MySound(assets.get(
+                "running/final.wav", Sound.class));
+        loseSound = new MySound(assets.get(
+                "running/lose.wav", Sound.class));
         setPositions(false);
     }
 

@@ -14,6 +14,8 @@ import br.cefetmg.games.screens.BaseScreen;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MyMusic;
+import br.cefetmg.games.sound.MySound;
 
 import java.util.Random;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
@@ -21,8 +23,8 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 public class TheFridgeGame extends MiniGame {
 
     private Random generator;
-    private Music backgroundSound;
-    private Sound whistleUp, whistleDown, crash, clap;
+    private MyMusic backgroundSound;
+    private MySound whistleUp, whistleDown, crash, clap;
     private Texture[] foodTexture, buttonsTexture;
     private Object[][] food;
     private Object[] shelfs;
@@ -472,11 +474,11 @@ public class TheFridgeGame extends MiniGame {
             this.buttonsTexture[i - 1] = assets.get("the-fridge-game/button" + aux + ".png", Texture.class);
         }
         //sounds//
-        backgroundSound = assets.get("the-fridge-game/city-shopping.mp3", Music.class);
-        whistleUp = assets.get("the-fridge-game/whistle-up.mp3", Sound.class);
-        whistleDown = assets.get("the-fridge-game/whistle-down.mp3", Sound.class);
-        crash = assets.get("the-fridge-game/crash.mp3", Sound.class);
-        clap = assets.get("the-fridge-game/clap.mp3", Sound.class);
+        backgroundSound =  new MyMusic(assets.get("the-fridge-game/city-shopping.mp3", Music.class));
+        whistleUp =new MySound( assets.get("the-fridge-game/whistle-up.mp3", Sound.class));
+        whistleDown = new MySound(assets.get("the-fridge-game/whistle-down.mp3", Sound.class));
+        crash = new MySound(assets.get("the-fridge-game/crash.mp3", Sound.class));
+        clap =new MySound( assets.get("the-fridge-game/clap.mp3", Sound.class));
         //objects//
         generator = new Random();
         background = new Object(new Vector2(0, 0), viewport.getWorldWidth(), viewport.getWorldHeight(),

@@ -1,6 +1,6 @@
 package br.cefetmg.games.graphics.hud;
 
-import com.badlogic.gdx.audio.Sound;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -18,16 +18,14 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 class Clock extends Actor {
 
     private final AnimatedSprite sprite;
-    private static final int FRAME_WIDTH = 50;
-    private static final int FRAME_HEIGHT = 50;
     private static final int TOTAL_TICKS = 3;
     private float timeTickingThisSecond;
     private boolean isTicking;
     private int ticksDone;
-    private final Sound timerSound;
+    private final MySound timerSound;
     private boolean isPaused;
 
-    Clock(Texture clockTexture, Sound timerSound) {
+    Clock(Texture clockTexture, MySound timerSound) {
         this.timerSound = timerSound;
 
         sprite = new AnimatedSprite(new Animation<TextureRegion>(0.2f, workFrames(clockTexture, 5, 7)));

@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -57,10 +58,10 @@ public class NinjaCat extends MiniGame {
     private Texture killZombie;
     private Texture catPose;
 
-    private Sound intro;
-    private Sound ken1, ken2;
-    private Sound gosound;
-    private Sound dzsound, dzsound1;
+    private MySound intro;
+    private MySound ken1, ken2;
+    private MySound gosound;
+    private MySound dzsound, dzsound1;
 
     public NinjaCat(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -91,12 +92,12 @@ public class NinjaCat extends MiniGame {
         texhit1 = assets.get("ninja-cat/hit1.png", Texture.class);
         catPose = assets.get("ninja-cat/intro.png", Texture.class);
 
-        intro = assets.get("ninja-cat/Intro.mp3", Sound.class);
-        ken1 = assets.get("ninja-cat/ken1.mp3", Sound.class);
-        ken2 = assets.get("ninja-cat/ken2.mp3", Sound.class);
-        gosound = assets.get("ninja-cat/GameOver.mp3", Sound.class);
-        dzsound = assets.get("ninja-cat/zombie.mp3", Sound.class);
-        dzsound1 = assets.get("ninja-cat/zombie1.mp3", Sound.class);
+        intro = new MySound(assets.get("ninja-cat/Intro.mp3", Sound.class));
+        ken1 = new MySound(assets.get("ninja-cat/ken1.mp3", Sound.class));
+        ken2 = new MySound(assets.get("ninja-cat/ken2.mp3", Sound.class));
+        gosound = new MySound(assets.get("ninja-cat/GameOver.mp3", Sound.class));
+        dzsound = new MySound(assets.get("ninja-cat/zombie.mp3", Sound.class));
+        dzsound1 = new MySound(assets.get("ninja-cat/zombie1.mp3", Sound.class));
 
         arrow = new Sprite(arrowTexture);
         arrow.setScale(0.08f);

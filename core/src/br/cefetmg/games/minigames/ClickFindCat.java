@@ -6,6 +6,7 @@ import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -30,10 +31,13 @@ public class ClickFindCat extends MiniGame {
     private Texture miraTexture;
     private Sprite miraSprite;
     private Sprite catSprite;
+
+    private MySound meawSound;
+    private MySound scaredMeawSound;
+    private MySound happyMeawSound;
+
     private Rat rat;
-    private Sound meawSound;
-    private Sound scaredMeawSound;
-    private Sound happyMeawSound;
+
     private float initialCatScale;
     private float CatScaleX;
     private float CatScaleY;
@@ -66,9 +70,9 @@ public class ClickFindCat extends MiniGame {
         miraSprite = new Sprite(miraTexture);
         miraSprite.setScale(1.0f);
         miraSprite.setOriginCenter();
-        meawSound = assets.get("ClickFindCat/cat-meow.wav", Sound.class);
-        scaredMeawSound = assets.get("ClickFindCat/ScaredCat.wav", Sound.class);
-        happyMeawSound = assets.get("ClickFindCat/YAY.mp3", Sound.class);
+        meawSound = new MySound(assets.get("ClickFindCat/cat-meow.wav", Sound.class));
+        scaredMeawSound = new MySound(assets.get("ClickFindCat/ScaredCat.wav", Sound.class));
+        happyMeawSound = new MySound(assets.get("ClickFindCat/YAY.mp3", Sound.class));
         initializeCat();
         initializeRat();
     }

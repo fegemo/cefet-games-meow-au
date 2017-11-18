@@ -15,6 +15,7 @@ import java.util.HashMap;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.math.Circle;
 
 public class JumpTheObstacles extends MiniGame {
@@ -23,8 +24,8 @@ public class JumpTheObstacles extends MiniGame {
     private Dog dog;
     private Texture obstaclesTexture;
     private Texture backgroundTexture;
-    private Array<Sound> obstaclesAppearingSound;
-    private Sound jumpSound;
+    private Array<MySound> obstaclesAppearingSound;
+    private MySound jumpSound;
     private Array<Obstacle> enemies;
 
     // variáveis do desafio - variam com a dificuldade do minigame
@@ -48,14 +49,14 @@ public class JumpTheObstacles extends MiniGame {
                 "jump-the-obstacles/obstacles.png", Texture.class);
         backgroundTexture = assets.get(
                 "jump-the-obstacles/background.png", Texture.class);
-        obstaclesAppearingSound = new Array<Sound>(3);
-        obstaclesAppearingSound.addAll(assets.get(
-                "jump-the-obstacles/appearing1.wav", Sound.class),
-                assets.get(
-                        "jump-the-obstacles/appearing2.wav", Sound.class),
-                assets.get(
-                        "jump-the-obstacles/appearing3.wav", Sound.class));
-        jumpSound = assets.get("jump-the-obstacles/29-extra-life-balloon.mp3", Sound.class);
+        obstaclesAppearingSound = new Array<MySound>(3);
+        obstaclesAppearingSound.addAll(new MySound(assets.get(
+                "jump-the-obstacles/appearing1.wav", Sound.class)),
+                new MySound(assets.get(
+                        "jump-the-obstacles/appearing2.wav", Sound.class)),
+                new MySound(assets.get(
+                        "jump-the-obstacles/appearing3.wav", Sound.class)));
+        jumpSound = new MySound(assets.get("jump-the-obstacles/29-extra-life-balloon.mp3", Sound.class));
         enemies = new Array<Obstacle>();
 
         timer.scheduleTask(new Task() {
@@ -79,7 +80,7 @@ public class JumpTheObstacles extends MiniGame {
         enemies.add(enemy);
 
         // toca um efeito sonoro
-        Sound sound = obstaclesAppearingSound.random();
+        MySound sound = obstaclesAppearingSound.random();
         long id = sound.play(0.5f);
         sound.setPan(id, cannonballPosition.x < viewport.getWorldWidth()
                 ? -1 : 1, 1);
@@ -261,7 +262,7 @@ public class JumpTheObstacles extends MiniGame {
                 force.y = -2*SPEED/(TOTAL_JUMPING_TIME/Gdx.graphics.getDeltaTime());
                 
                 // toca um efeito sonoro
-                Sound sound = jumpSound;
+                MySound sound = jumpSound;
                 long id = sound.play(0.5f);
                 sound.setPan(id, dog.getX(), 0.25f);
                 startAnimation("jumping");

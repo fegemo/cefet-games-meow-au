@@ -4,6 +4,8 @@ import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.sound.MyMusic;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
@@ -29,9 +31,9 @@ public class UnderwaterCat extends MiniGame {
     private float spawnInterval;
     private int totalFish;
     private Texture background;
-    private Music backgroundMusic;
-    private Music swimmingAmbientSound;
-    private Sound gotFishSound;
+    private MyMusic backgroundMusic;
+    private MyMusic swimmingAmbientSound;
+    private MySound gotFishSound;
 
     Animation<TextureRegion> swimmingAnimation;
     private Array<Fish> toCapture;
@@ -57,9 +59,9 @@ public class UnderwaterCat extends MiniGame {
 
     @Override
     protected void onStart() {
-        backgroundMusic = assets.get("underwater-cat/water.mp3", Music.class);
-        swimmingAmbientSound = assets.get("underwater-cat/swim.wav", Music.class);
-        gotFishSound = assets.get("underwater-cat/eat.wav", Sound.class);
+        backgroundMusic = new MyMusic(assets.get("underwater-cat/water.mp3", Music.class));
+        swimmingAmbientSound =  new MyMusic(assets.get("underwater-cat/swim.wav", Music.class));
+        gotFishSound = new MySound(assets.get("underwater-cat/eat.wav", Sound.class));
         swimCatTexture = assets.get(
                 "underwater-cat/swimcatspritesheet.png", Texture.class);
         fish1Texture = assets.get(

@@ -4,6 +4,7 @@ import br.cefetmg.games.Config;
 import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
@@ -34,6 +35,7 @@ public class Hud {
     private final BaseScreen screen;
     private final MiniGameStateObserver stateObserver;
     private final Stage stage;
+    private SoundIcon soundIcon;
     private Skin skin;
     private Table table;
     private Label centeredLabel;
@@ -50,12 +52,12 @@ public class Hud {
     private Button backGameButton;
     private Button confirmButton;
     private Button unnconfirmedButton;
-    private Sound timerSound;
+    private MySound timerSound;
     private Clock clock;
 
     private int currentLives;
     private boolean isPaused;
-
+    
     public Hud(BaseScreen screen, MiniGameStateObserver stateObserver) {
         this.screen = screen;
         this.stateObserver = stateObserver;
@@ -77,7 +79,7 @@ public class Hud {
                 Texture.class));
         skin.add("back-game", screen.assets.get("hud/back-game-button.png",
                 Texture.class));
-        
+
         lifeTexture = screen.assets.get("hud/lifeTexture.png");
         explodeLifeTexture = screen.assets.get("hud/explodeLifeTexture.png");
         
@@ -89,6 +91,8 @@ public class Hud {
         mask.setVisible(false);
         mask.setTouchable(Touchable.disabled);
         stage.addActor(mask);
+        soundIcon = new SoundIcon();
+        soundIcon.create(stage);
 
 
         pauseButton = new ImageButton(
@@ -106,9 +110,11 @@ public class Hud {
                 if (isPaused) {
                     stateObserver.onGamePaused();
                     clock.pauseTicking();
+                    SoundIcon.showSoundButton();
                 } else {
                     stateObserver.onGameResumed();
                     clock.resumeTicking();
+                    SoundIcon.hideSoundButton();
                 }   
             }
         });
@@ -128,6 +134,7 @@ public class Hud {
                 isPaused = !isPaused;
             }
         });
+                
         backMenuButton = new ImageButton(
                 skin.getDrawable("back-menu")
         );
@@ -212,7 +219,7 @@ public class Hud {
             livesGroup.addActor(new LifeHeart(lifeTexture, explodeLifeTexture));
         }
 
-        timerSound = screen.assets.get("hud/tick-tock.mp3", Sound.class);
+        timerSound = new MySound(screen.assets.get("hud/tick-tock.mp3", Sound.class));
         clock = new Clock(clockTexture, timerSound);
 
         table.padBottom(10).row().expandX();
@@ -299,7 +306,7 @@ public class Hud {
     public void hidePauseButton() {
         pauseButton.setVisible(false);
     }
-
+    
     public void showMessage(String message) {
         centeredLabel.setText(message);
     }

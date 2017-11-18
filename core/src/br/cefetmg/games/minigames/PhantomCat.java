@@ -4,9 +4,9 @@ import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.sound.MyMusic;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -27,8 +27,8 @@ public class PhantomCat extends MiniGame {
     private Texture catsTexture;
     private Texture targetTexture;
     private Texture fundoTexture;
-    private Sound dieCat;
-    private Music fundo;
+    private MySound dieCat;
+    private MyMusic fundo;
     private int enemiesKilled;
     private int spawnedEnemies;
     private float initialEnemyScale;
@@ -54,8 +54,8 @@ public class PhantomCat extends MiniGame {
                 "phantom-cat/target.png", Texture.class);
         fundoTexture = assets.get(
                 "phantom-cat/fundo.jpg", Texture.class);
-        dieCat = Gdx.audio.newSound(Gdx.files.internal("phantom-cat/cat.mp3"));
-        fundo = Gdx.audio.newMusic(Gdx.files.internal("phantom-cat/fundo.mp3"));
+        dieCat = new MySound( Gdx.audio.newSound(Gdx.files.internal("phantom-cat/cat.mp3")));
+        fundo =  new MyMusic(Gdx.audio.newMusic(Gdx.files.internal("phantom-cat/fundo.mp3")));
         fundo.play();
         fundo.setVolume(.2f);
         target = new Sprite(targetTexture);

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MySound;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -57,8 +58,8 @@ public class TicCatDog extends MiniGame {
     private Texture catSquareTexture; //Quadrado com um gato no centro 
     private Texture dogSquareTexture; //Quadrado com um cachorro no centro
     private Sprite mouseArrowSprite;
-    private Sound catMeowingSound;
-    private Sound dogBarkingSound;
+    private MySound catMeowingSound;
+    private MySound dogBarkingSound;
 
     private Sprite[][] ticTacToeSprites; //Sprites que compõe os quadrados do jogo da velha
     private int[][] ticCatDogMatrix; //Matriz que armazena estado atual de cada quadrado
@@ -95,8 +96,8 @@ public class TicCatDog extends MiniGame {
         mouseArrowSprite = new Sprite(assets.get(
                 "tic-cat-dog/mouse-arrow.png", Texture.class));
 
-        catMeowingSound = assets.get("tic-cat-dog/cat-meowing.wav", Sound.class);
-        dogBarkingSound = assets.get("tic-cat-dog/dog-barking.wav", Sound.class);
+        catMeowingSound = new MySound(assets.get("tic-cat-dog/cat-meowing.wav", Sound.class));
+        dogBarkingSound = new MySound(assets.get("tic-cat-dog/dog-barking.wav", Sound.class));
         
         squareHeight = viewport.getWorldHeight() / 5;
         squareWidth = viewport.getWorldWidth() / 5;

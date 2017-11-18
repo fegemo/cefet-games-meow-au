@@ -22,6 +22,7 @@ import java.util.Random;
 
 import static br.cefetmg.games.Config.WORLD_HEIGHT;
 import static br.cefetmg.games.Config.WORLD_WIDTH;
+import br.cefetmg.games.sound.MySound;
 
 public class JetRat extends MiniGame {
 
@@ -39,7 +40,7 @@ public class JetRat extends MiniGame {
     private float posX, posY;
     int srcX, troca;
     float aceleracao, velocidade;
-    private Sound meon;
+    private MySound meon;
     int cont;
     int difficulty;
     
@@ -60,7 +61,7 @@ public class JetRat extends MiniGame {
         bg1 = assets.get("jet-rat/background.png", Texture.class);
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         tubeTexture = assets.get("jet-rat/tube.png", Texture.class);
-        meon = assets.get("jet-rat/meon.mp3", Sound.class);
+        meon = new MySound(assets.get("jet-rat/meon.mp3", Sound.class));
         mouse = new Calopsita(mouseTexture);
         mouse.setScale(0.5f);
         screenHeight = Gdx.graphics.getHeight();
