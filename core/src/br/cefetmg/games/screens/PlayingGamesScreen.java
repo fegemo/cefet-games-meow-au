@@ -3,6 +3,7 @@ package br.cefetmg.games.screens;
 import br.cefetmg.games.Config;
 import br.cefetmg.games.transition.TransitionScreen;
 import br.cefetmg.games.graphics.hud.Hud;
+import br.cefetmg.games.graphics.hud.SoundIcon;
 import br.cefetmg.games.logic.chooser.BaseGameSequencer;
 import br.cefetmg.games.logic.chooser.GameSequencer;
 import br.cefetmg.games.minigames.MiniGame;
@@ -16,6 +17,8 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.sound.MyMusic;
+import br.cefetmg.sound.MySound;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.audio.Music;
@@ -35,11 +38,11 @@ public class PlayingGamesScreen extends BaseScreen
     private int lives;
     private boolean hasPreloaded;
     private final InputMultiplexer inputMultiplexer;
-    private Sound gameWonSound;
-    private Sound gameOverSound;
-    private Sound youLoseSound;
-    private Sound youWinSound;
-     private Music intergames;
+    private MySound gameWonSound;
+    private MySound gameOverSound;
+    private MySound youLoseSound;
+    private MySound youWinSound;
+    private MyMusic intergames;
 
     public PlayingGamesScreen(Game game, BaseScreen previous, int nGames, Set<MiniGameFactory> games,
             float initialDifficulty, float finalDifficulty) {
@@ -181,10 +184,10 @@ public class PlayingGamesScreen extends BaseScreen
                 advance();
             }
 
-            gameWonSound = assets.get("sound/gamewon.mp3");
-            gameOverSound = assets.get("sound/gameover.wav");
-            youLoseSound = assets.get("sound/youlose.wav");
-            youWinSound = assets.get("sound/youwin.wav");
+            gameWonSound =  new MySound(assets.get("sound/gamewon.mp3", Sound.class));
+            gameOverSound = new MySound(assets.get("sound/gameover.wav", Sound.class));
+            youLoseSound = new MySound(assets.get("sound/youlose.wav", Sound.class));
+            youWinSound = new MySound(assets.get("sound/youwin.wav", Sound.class));
 
             hasPreloaded = true;
         }
@@ -219,8 +222,9 @@ public class PlayingGamesScreen extends BaseScreen
                 hud.showGameInstructions(currentGame.getInstructions());
                 hud.startInitialCountdown();
                 hud.showPauseButton();
-                intergames = assets.get("hud/intergames.wav", Music.class);
+                intergames = new MyMusic(assets.get("hud/intergames.wav", Music.class));
                 intergames.play();
+                SoundIcon.hideSoundButton();
                 break;
 
             case PLAYING:
@@ -266,6 +270,7 @@ public class PlayingGamesScreen extends BaseScreen
                 hud.cancelEndingTimer();
                 break;
             case BACK_MENU:
+                 SoundIcon.showSoundButton();
                 transitionTo(PlayScreenState.BACK_MENU);
         }
     }

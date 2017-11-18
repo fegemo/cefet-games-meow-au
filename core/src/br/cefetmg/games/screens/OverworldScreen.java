@@ -1,5 +1,6 @@
 package br.cefetmg.games.screens;
 
+import br.cefetmg.games.graphics.hud.SoundIcon;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,6 +13,9 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import br.cefetmg.games.transition.TransitionScreen;
 import java.util.Arrays;
 import br.cefetmg.games.minigames.factories.*;
+import br.cefetmg.sound.MyMusic;
+import br.cefetmg.sound.MySound;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
@@ -23,7 +27,9 @@ public class OverworldScreen extends BaseScreen {
 
     private Vector2 click;
     private Stage stage;
-    protected Sound click1,click2;
+
+    protected MySound click1,click2;
+
     private boolean check = false;
     private boolean stop,bool1=false;
     private Vector2[] posicaoIcone;
@@ -35,14 +41,19 @@ public class OverworldScreen extends BaseScreen {
             icon4, stage4,
             icon5, stage5,
             exit, menu, play, water;
+    
+    private final InputMultiplexer inputMultiplexer;
+    
     private ArrayList<Image> locks;
     private boolean desenhaMeio=true;
-    private Music backgroundMusic;
+    private MyMusic backgroundMusic;
     private int currentStage;
     private int score;
     FileHandle file;
+
     public OverworldScreen(Game game, BaseScreen previous) {
         super(game, previous);
+        inputMultiplexer = new InputMultiplexer();
     }
 
     @Override
@@ -66,6 +77,9 @@ public class OverworldScreen extends BaseScreen {
         water = new Image(new Texture(Gdx.files.internal("world/water.jpg")));
         file = Gdx.files.local("data/progress-file.txt");
         assets.load("menu/click2.mp3", Sound.class);
+
+        
+        Gdx.input.setInputProcessor(inputMultiplexer);
         assets.load("menu/click3.mp3", Sound.class);
         assets.load("world/overworldtheme.mp3", Music.class); 
         assets.load("world/overworldtheme.mp3", Music.class);
@@ -83,9 +97,9 @@ public class OverworldScreen extends BaseScreen {
         }
         bool1 = true;
         desenhaMeio = true;
-        click1 = assets.get("menu/click2.mp3", Sound.class);
-        click2 = assets.get("menu/click3.mp3", Sound.class);
-        backgroundMusic = assets.get("world/overworldtheme.mp3", Music.class);
+        click1 = new MySound(assets.get("menu/click2.mp3", Sound.class));
+        click2 = new MySound(assets.get("menu/click3.mp3", Sound.class));
+        backgroundMusic = new MyMusic(assets.get("world/overworldtheme.mp3", Music.class));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
         stage = new Stage(new ScreenViewport());
@@ -107,12 +121,6 @@ public class OverworldScreen extends BaseScreen {
         stage5.setName("stage5");
         exit.setName("exit");
         
-       // group.addActor(cadeados.get(0));
-       // group.addActor(cadeados.get(1));
-        //group.addActor(cadeados.get(2));
-        //group.addActor(cadeados.get(3));
-        //group.addActor(cadeados.get(4));
-        
         group.addActor(stage1);
         group.addActor(stage2);
         group.addActor(stage3);
@@ -129,8 +137,7 @@ public class OverworldScreen extends BaseScreen {
         group.addActor(icon5);
         group.addActor(menu);
         group.addActor(arrow);
-        
-        
+                
         stage.addActor(group);
 
         map.setZIndex(2);
@@ -206,6 +213,13 @@ public class OverworldScreen extends BaseScreen {
 
         stage.setViewport(viewport);
         stage.act(Gdx.graphics.getDeltaTime());
+
+
+        SoundIcon soundIcon = new SoundIcon();
+        soundIcon.create(stage);
+        
+        inputMultiplexer.addProcessor(soundIcon.getInputProcessor());
+
         int i =0;
         for (Image cadeado : locks) {
             cadeado.setPosition(posicaoIcone[i].x + cadeado.getImageHeight()/2,posicaoIcone[i].y + + cadeado.getImageWidth()/2);
@@ -226,6 +240,7 @@ public class OverworldScreen extends BaseScreen {
             currentStage = Integer.parseInt(split[0]);
             score = Integer.parseInt(split[1]);
         }
+
     }
 
     @Override
@@ -586,5 +601,6 @@ public class OverworldScreen extends BaseScreen {
         } else {
             hideStage(stage5);
         }
+        stage.act(dt);
     }
 }
