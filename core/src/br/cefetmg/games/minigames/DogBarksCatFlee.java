@@ -5,6 +5,7 @@ import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,9 +30,9 @@ public class DogBarksCatFlee extends MiniGame {
     private Texture dogTextureWalking;
     private Animation<TextureRegion> dogWalking;
     private Animation<TextureRegion> dogBarking;
-    private Sound barkSound;
-    private Sound meawSound;
-    private Sound whiningSound;
+    private MySound barkSound;
+    private MySound meawSound;
+    private MySound whiningSound;
     private Texture catTexture;
     private Texture catTexture2;
     private Cat enemy;
@@ -98,9 +99,9 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     protected void onStart() {
         tempoDeAnimacao = 0;
-        whiningSound = assets.get("DogBarksCatFlee/dog-whining-sound.mp3", Sound.class);
+        whiningSound = new MySound(assets.get("DogBarksCatFlee/dog-whining-sound.mp3", Sound.class));
         deadTexture = assets.get("DogBarksCatFlee/kitten1-alt_4.png", Texture.class);
-        barkSound = assets.get("DogBarksCatFlee/BarkSound.wav", Sound.class);
+        barkSound = new MySound( assets.get("DogBarksCatFlee/BarkSound.wav", Sound.class));
         dogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
         dogTexture = assets.get("DogBarksCatFlee/dog_spritesheet.png", Texture.class);
         dogTextureWalking = assets.get("DogBarksCatFlee/spritesheet2.png", Texture.class);
@@ -121,7 +122,7 @@ public class DogBarksCatFlee extends MiniGame {
         dogWalking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         catTexture2 = assets.get("DogBarksCatFlee/kitten1-alt_3.png", Texture.class);
         catTexture = assets.get("DogBarksCatFlee/kitten1-alt.png", Texture.class);
-        meawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
+        meawSound = new MySound(assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class));
 
         tileTexture[0] = assets.get("DogBarksCatFlee/tile0.png", Texture.class);
         tileTexture[1] = assets.get("DogBarksCatFlee/tile1.png", Texture.class);

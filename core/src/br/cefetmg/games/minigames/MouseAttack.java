@@ -5,6 +5,7 @@ import static br.cefetmg.games.Config.WORLD_WIDTH;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -41,8 +42,8 @@ public class MouseAttack extends MiniGame {
     private int enemiesKilled;
     private int spawnedEnemies;
 
-    private Sound shootSound;
-    private Sound monsterDieSound;
+    private MySound shootSound;
+    private MySound monsterDieSound;
 
     private float initialEnemyScale;
     private int totalEnemies;
@@ -74,10 +75,10 @@ public class MouseAttack extends MiniGame {
                 "mouse-attack/target.png", Texture.class);
         projectileTexture = assets.get(
                 "mouse-attack/projetil.png", Texture.class);
-        shootSound = assets.get(
-                "mouse-attack/shoot-sound.mp3", Sound.class);
-        monsterDieSound = assets.get(
-                "mouse-attack/monster-dying.mp3", Sound.class);
+        shootSound = new MySound(assets.get(
+                "mouse-attack/shoot-sound.mp3", Sound.class));
+        monsterDieSound = new MySound(assets.get(
+                "mouse-attack/monster-dying.mp3", Sound.class));
 
         target = new Sprite(targetTexture);
         target.setOriginCenter();

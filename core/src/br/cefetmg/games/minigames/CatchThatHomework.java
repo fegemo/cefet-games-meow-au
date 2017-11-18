@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ public class CatchThatHomework extends MiniGame {
     private Cat cat;
     private Texture homeworkTexture;
     private Array<Homework> homeworks;
-    private Sound backgroundMusic;
+    private MySound backgroundMusic;
     private float speedMultiplier;
     private Texture backgroundImage;
 
@@ -38,7 +39,7 @@ public class CatchThatHomework extends MiniGame {
     protected void onStart() {
         catSpritesheet = assets.get("catch-that-homework/cat-spritesheet.png", Texture.class);
         homeworkTexture = assets.get("catch-that-homework/homework.png", Texture.class);
-        backgroundMusic = assets.get("catch-that-homework/bensound-sexy.mp3", Sound.class);
+        backgroundMusic = new MySound(assets.get("catch-that-homework/bensound-sexy.mp3", Sound.class));
         backgroundImage = assets.get("catch-that-homework/valley.png", Texture.class);
 
         cat = new Cat(catSpritesheet, 200);

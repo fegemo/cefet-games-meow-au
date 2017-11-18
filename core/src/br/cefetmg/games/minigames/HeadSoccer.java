@@ -20,6 +20,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Timer.Task;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MyMusic;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -64,7 +65,7 @@ public class HeadSoccer extends MiniGame {
     private Rectangle bot_Rect;
     
     private boolean isOver;
-    protected Music backgroundMusic;
+    protected MyMusic backgroundMusic;
 
     public HeadSoccer(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -149,7 +150,7 @@ public class HeadSoccer extends MiniGame {
         goalCrossLeft = new Obstacle(obstacleTexture, new Vector2(0, 284), 150, height);
         rightGoal = new Obstacle(obstacleTexture, new Vector2(1184, floorBall), width, 190);
         goalCrossRight = new Obstacle(obstacleTexture, new Vector2(1141, 284), 150, height);
-        backgroundMusic = assets.get("head-soccer/soccer.mp3", Music.class);
+        backgroundMusic =  new MyMusic(assets.get("head-soccer/soccer.mp3", Music.class));
     }
 
     private void finilizeGame() {

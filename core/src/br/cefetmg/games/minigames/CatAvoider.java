@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MyMusic;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -39,8 +41,8 @@ public class CatAvoider extends MiniGame {
 
     private AnimatedSprite catMovingUpR, catMovingUpL, catMovingDownR, catMovingDownL;
     private AnimatedSprite catMovingLeft, catMovingRight;
-    private static Music backgroundMusic;
-    private static Sound impact;
+    private static MyMusic backgroundMusic;
+    private static MySound impact;
     
     private final Wool wool = new Wool();
     private final Cat cat = new Cat();
@@ -149,11 +151,11 @@ public class CatAvoider extends MiniGame {
         wool.sprite = new Sprite(wool.texture);
         wool.sprite.setSize(50, 50);
 
-        backgroundMusic = assets.get("avoider/ninja_theme.mp3", Music.class);
+        backgroundMusic =  new MyMusic(assets.get("avoider/ninja_theme.mp3", Music.class));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
 
-        impact = assets.get("avoider/impact.mp3", Sound.class);
+        impact = new MySound(assets.get("avoider/impact.mp3", Sound.class));
     }
     
     

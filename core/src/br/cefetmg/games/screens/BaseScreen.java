@@ -47,7 +47,7 @@ public abstract class BaseScreen extends ScreenAdapter {
     public Viewport viewport;
     public Rectangle visibleWorldBounds;
     public final AssetManager assets;
-    BitmapFont messagesFont;
+    private BitmapFont messagesFont;
     private float deviceAspectRatioDivergenceFromDesired;
     private boolean wasJustDisposed = false;
     private boolean assetsFinishedLoading = false;
@@ -78,8 +78,7 @@ public abstract class BaseScreen extends ScreenAdapter {
         snackerComicParams.fontParameters.size = 50;
         snackerComicParams.fontParameters.minFilter = Texture.TextureFilter.Linear;
         snackerComicParams.fontParameters.magFilter = Texture.TextureFilter.Linear;
-       // assets.load("brainfish-50.ttf", BitmapFont.class, snackerComicParams);
-        assets.load("Cartoonish.ttf",BitmapFont.class, snackerComicParams);
+        assets.load("Cartoonish.ttf", BitmapFont.class, snackerComicParams);
 
         // fonte para a HUD
         assets.load("fonts/sawasdee-50.fnt", BitmapFont.class);
@@ -192,10 +191,10 @@ public abstract class BaseScreen extends ScreenAdapter {
     @Override
     public final void render(float dt) {
         if (assets.update()) {
-
-            if (messagesFont == null) {
+            if (!assetsFinishedLoading) {
                 messagesFont = assets.get("Cartoonish.ttf");
-                
+                assetsLoaded();
+                assetsFinishedLoading = true;
             }
 
             // chama função para gerenciar o input

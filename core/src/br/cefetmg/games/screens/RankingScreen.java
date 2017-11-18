@@ -62,8 +62,8 @@ public class RankingScreen extends BaseScreen{
     }
     
     private void initFromMenuScreen(){
-        file = Gdx.files.local("localRanking.txt");
-        fileExists = Gdx.files.local("localRanking.txt").exists();
+        file = Gdx.files.local("data/localRanking.txt");
+        fileExists = Gdx.files.local("data/localRanking.txt").exists();
         if(!fileExists){
             file.writeString("", false);
         }
@@ -96,8 +96,8 @@ public class RankingScreen extends BaseScreen{
         pointerX = viewport.getWorldWidth()/2;
         pointerY = viewport.getWorldHeight()/2;
         pointerSize = letterWidth*0.5f;
-        file = Gdx.files.local("localRanking.txt");
-        fileExists = Gdx.files.local("localRanking.txt").exists();
+        file = Gdx.files.local("data/localRanking.txt");
+        fileExists = Gdx.files.local("data/localRanking.txt").exists();
         if(!fileExists){
             file.writeString("", false);
         }

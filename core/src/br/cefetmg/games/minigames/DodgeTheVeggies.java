@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -27,7 +28,7 @@ public class DodgeTheVeggies extends MiniGame {
     private Texture faintedCatTexture;
     private Array<Veggie> veggies;
     private Array<Texture> veggieTextures;
-    private Sound backgroundMusic;
+    private MySound backgroundMusic;
     private float speedMultiplier;
     private float spawnIntervalMultiplier;
     private final float spawnInterval = 1;
@@ -57,7 +58,7 @@ public class DodgeTheVeggies extends MiniGame {
             assets.get("dodge-the-veggies/onion.png", Texture.class),
             assets.get("dodge-the-veggies/tomato.png", Texture.class),
             assets.get("dodge-the-veggies/potato.png", Texture.class));
-        backgroundMusic = assets.get("dodge-the-veggies/bensound-jazzcomedy.mp3", Sound.class);
+        backgroundMusic = new MySound(assets.get("dodge-the-veggies/bensound-jazzcomedy.mp3", Sound.class));
 
         cat = new Cat(catSpritesheet, 200);
         cat.setCenter(

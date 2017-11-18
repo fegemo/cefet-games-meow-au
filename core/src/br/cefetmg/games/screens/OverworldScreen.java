@@ -1,21 +1,23 @@
 package br.cefetmg.games.screens;
 
+import br.cefetmg.games.graphics.hud.SoundIcon;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import br.cefetmg.games.transition.TransitionScreen;
 import java.util.Arrays;
 import br.cefetmg.games.minigames.factories.*;
+import br.cefetmg.games.sound.MyMusic;
+import br.cefetmg.games.sound.MySound;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -23,33 +25,39 @@ public class OverworldScreen extends BaseScreen {
 
     private Vector2 click;
     private Stage stage;
-    protected Sound click1,click2;
+
+    protected MySound click1,click2;
+
     private boolean check = false;
     private boolean stop,bool1=false;
     private Vector2[] posicaoIcone;
     private boolean[] openStages;
-    private Image map, arrow,
+    private Image map,
             icon1, stage1,
             icon2, stage2,
             icon3, stage3,
             icon4, stage4,
             icon5, stage5,
             exit, menu, play, water;
+    
+    private final InputMultiplexer inputMultiplexer;
+    
     private ArrayList<Image> locks;
     private boolean desenhaMeio=true;
-    private Music backgroundMusic;
+    private MyMusic backgroundMusic;
     private int currentStage;
     private int score;
     FileHandle file;
+
     public OverworldScreen(Game game, BaseScreen previous) {
         super(game, previous);
+        inputMultiplexer = new InputMultiplexer();
     }
 
     @Override
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         map = new Image(new Texture(Gdx.files.internal("world/desert.png")));
-        arrow = new Image(new Texture(Gdx.files.internal("world/arrow.png")));
         icon1 = new Image(new Texture(Gdx.files.internal("world/icon1.png")));
         stage1 = new Image(new Texture(Gdx.files.internal("world/stage1.png")));
         stage2 = new Image(new Texture(Gdx.files.internal("world/stage2.png")));
@@ -66,6 +74,9 @@ public class OverworldScreen extends BaseScreen {
         water = new Image(new Texture(Gdx.files.internal("world/water.jpg")));
         file = Gdx.files.local("data/progress-file.txt");
         assets.load("menu/click2.mp3", Sound.class);
+
+        
+        Gdx.input.setInputProcessor(inputMultiplexer);
         assets.load("menu/click3.mp3", Sound.class);
         assets.load("world/overworldtheme.mp3", Music.class); 
         assets.load("world/overworldtheme.mp3", Music.class);
@@ -83,18 +94,16 @@ public class OverworldScreen extends BaseScreen {
         }
         bool1 = true;
         desenhaMeio = true;
-        click1 = assets.get("menu/click2.mp3", Sound.class);
-        click2 = assets.get("menu/click3.mp3", Sound.class);
-        backgroundMusic = assets.get("world/overworldtheme.mp3", Music.class);
+        click1 = new MySound(assets.get("menu/click2.mp3", Sound.class));
+        click2 = new MySound(assets.get("menu/click3.mp3", Sound.class));
+        backgroundMusic = new MyMusic(assets.get("world/overworldtheme.mp3", Music.class));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
         stage = new Stage(new ScreenViewport());
-        Group group = new Group();
         map.setName("map");
         water.setName("water");
         play.setName("play");
         menu.setName("menu");
-        arrow.setName("arrow");
         icon1.setName("icon1");
         icon2.setName("icon2");
         icon3.setName("icon3");
@@ -107,31 +116,24 @@ public class OverworldScreen extends BaseScreen {
         stage5.setName("stage5");
         exit.setName("exit");
         
-       // group.addActor(cadeados.get(0));
-       // group.addActor(cadeados.get(1));
-        //group.addActor(cadeados.get(2));
-        //group.addActor(cadeados.get(3));
-        //group.addActor(cadeados.get(4));
-        
-        group.addActor(stage1);
-        group.addActor(stage2);
-        group.addActor(stage3);
-        group.addActor(stage4);
-        group.addActor(stage5);
-        group.addActor(play);
-        group.addActor(exit);
-        group.addActor(water);
-        group.addActor(map);
-        group.addActor(icon1);
-        group.addActor(icon2);
-        group.addActor(icon3);
-        group.addActor(icon4);
-        group.addActor(icon5);
-        group.addActor(menu);
-        group.addActor(arrow);
-        
-        
-        stage.addActor(group);
+        stage.addActor(stage1);
+        stage.addActor(stage2);
+        stage.addActor(stage3);
+        stage.addActor(stage4);
+        stage.addActor(stage5);
+        stage.addActor(play);
+        stage.addActor(exit);
+        stage.addActor(water);
+        stage.addActor(map);
+        stage.addActor(icon1);
+        stage.addActor(icon2);
+        stage.addActor(icon3);
+        stage.addActor(icon4);
+        stage.addActor(icon5);
+        stage.addActor(menu);
+
+        SoundIcon soundIcon = new SoundIcon();
+        soundIcon.create(stage);
 
         map.setZIndex(2);
         water.setZIndex(1);
@@ -142,7 +144,6 @@ public class OverworldScreen extends BaseScreen {
         stage5.setZIndex(0);
         play.setZIndex(0);
         exit.setZIndex(0);
-        arrow.setZIndex(20);
 
         map.setOrigin(0, 0);
         map.setScale(viewport.getWorldWidth() / map.getWidth(), viewport.getWorldHeight() / map.getHeight());
@@ -196,16 +197,16 @@ public class OverworldScreen extends BaseScreen {
         stage5.setScale(0.8f);
         stage5.setOrigin(0, 0);
         
-        arrow.setScale(0.08f);
-        arrow.setOrigin(0, 0);
-        arrow.setPosition(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2);
-
         menu.setScale(.8f);
         menu.setOrigin(0, 0);
         menu.setPosition(0, 0);
 
         stage.setViewport(viewport);
         stage.act(Gdx.graphics.getDeltaTime());
+
+        
+        inputMultiplexer.addProcessor(soundIcon.getInputProcessor());
+
         int i =0;
         for (Image cadeado : locks) {
             cadeado.setPosition(posicaoIcone[i].x + cadeado.getImageHeight()/2,posicaoIcone[i].y + + cadeado.getImageWidth()/2);
@@ -226,6 +227,7 @@ public class OverworldScreen extends BaseScreen {
             currentStage = Integer.parseInt(split[0]);
             score = Integer.parseInt(split[1]);
         }
+
     }
 
     @Override
@@ -236,19 +238,12 @@ public class OverworldScreen extends BaseScreen {
 
     @Override
     public void handleInput() {
-        Gdx.input.setCursorCatched(true);
-
         click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);
 
-        if (!stop) {
-            arrow.setPosition(click.x - arrow.getWidth() / 2 * arrow.getScaleX(), click.y - arrow.getHeight() / 2 * arrow.getScaleY());
-        }
-
-        arrow.setZIndex(0);
-        Actor hitActor = stage.hit(arrow.getX(), arrow.getY() + arrow.getHeight() * arrow.getScaleY(), false);
+        Actor hitActor = stage.hit(click.x, click.y, false);
         
-        growEffect();
+        growEffect(click);
         if (Gdx.input.justTouched() && hitActor != null && !stop) {
             if ("menu".equals(hitActor.getName())) {
                 click1.play();
@@ -348,7 +343,6 @@ public class OverworldScreen extends BaseScreen {
             }else{
             }
         }
-        arrow.setZIndex(20);
     }
 
    private void firstStage(boolean go) {
@@ -478,8 +472,8 @@ public class OverworldScreen extends BaseScreen {
         }
     }
     
-    private void growEffect() {
-        Actor hitActor = stage.hit(arrow.getX(), arrow.getY() + arrow.getHeight() * arrow.getScaleY(), false);
+    private void growEffect(Vector2 click) {
+        Actor hitActor = stage.hit(click.x, click.y, false);
         if (!stop && hitActor != null && !openStages[1] && !openStages[2] && !openStages[3] && !openStages[0] && !openStages[4]) {
             if ("icon1".equals(hitActor.getName())) {
                 if (check) {
@@ -539,7 +533,6 @@ public class OverworldScreen extends BaseScreen {
         } else {
             exit.setZIndex(19);
             play.setZIndex(19);
-            arrow.setZIndex(20);
         }
     }
 
@@ -586,5 +579,6 @@ public class OverworldScreen extends BaseScreen {
         } else {
             hideStage(stage5);
         }
+        stage.act(dt);
     }
 }
