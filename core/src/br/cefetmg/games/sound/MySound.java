@@ -1,12 +1,13 @@
 package br.cefetmg.games.sound;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  *
  * @author Luiza
  */
-public class MySound implements AudioResource {
+public class MySound implements AudioResource, Disposable {
 
     private final Sound sound;
     private long soundId;
@@ -91,6 +92,7 @@ public class MySound implements AudioResource {
         sound.resume();
     }
 
+    @Override
     public void dispose() {
         sound.dispose();
     }

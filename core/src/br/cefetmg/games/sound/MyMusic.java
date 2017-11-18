@@ -1,12 +1,13 @@
 package br.cefetmg.games.sound;
 
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  *
  * @author Luiza
  */
-public class MyMusic implements AudioResource {
+public class MyMusic implements AudioResource, Disposable {
 
     private final Music music;
     private float desiredVolume;
@@ -60,6 +61,7 @@ public class MyMusic implements AudioResource {
         music.setVolume(desiredVolume);
     }
 
+    @Override
     public void dispose() {
         music.dispose();
     }
