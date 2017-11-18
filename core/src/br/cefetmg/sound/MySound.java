@@ -59,51 +59,67 @@ public class MySound implements AudioResource{
     }
     
     public long play(float volume, float pitch, float pan) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        SoundManeger.add(this);
+        if(SoundManeger.getSound()){
+            soundId=current.play(volume,pitch,pan);
+        }else{
+            soundId=current.play(0.0f,pitch,pan);
+        }
+        return soundId;
     }
 
     public long loop() {
-        return current.loop();
+        if(SoundManeger.getSound()){
+            return current.loop();
+        }else{
+            return current.loop(0.0f);
+        }
     }
-
+    
     public long loop(float volume) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(SoundManeger.getSound()){
+            return current.loop(volume);
+        }else{
+            return current.loop(0.0f);
+        }
     }
-
     public long loop(float volume, float pitch, float pan) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(SoundManeger.getSound()){
+            return current.loop(volume,pitch,pan);
+        }else{
+            return current.loop(0.0f,pitch, pan);
+        }
     }
-
     public void resume() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        current.resume();
     }
 
     public void dispose() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        current.dispose();
     }
 
-    public void stop(long soundId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void pause(long soundId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void resume(long soundId) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void setLooping(long soundId, boolean looping) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void setPitch(long soundId, float pitch) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public void setVolume(long soundId, float volume) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    public void stop(long soundId) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+//
+//    public void pause(long soundId) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+//    
+//    public void resume(long soundId) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//}
+//
+//    public void setLooping(long soundId, boolean looping) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+//
+//    public void setPitch(long soundId, float pitch) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+//
+//    public void setVolume(long soundId, float volume) {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
     
 }

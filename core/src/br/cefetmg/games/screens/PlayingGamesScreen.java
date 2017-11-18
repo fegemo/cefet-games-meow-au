@@ -3,6 +3,7 @@ package br.cefetmg.games.screens;
 import br.cefetmg.games.Config;
 import br.cefetmg.games.transition.TransitionScreen;
 import br.cefetmg.games.graphics.hud.Hud;
+import br.cefetmg.games.graphics.hud.SoundIcon;
 import br.cefetmg.games.logic.chooser.BaseGameSequencer;
 import br.cefetmg.games.logic.chooser.GameSequencer;
 import br.cefetmg.games.minigames.MiniGame;
@@ -69,8 +70,7 @@ public class PlayingGamesScreen extends BaseScreen
         assets.load("hud/back-menu-button.png", Texture.class, linearFilter);
         assets.load("hud/confirm-button.png", Texture.class, linearFilter);
         assets.load("hud/unnconfirmed-button.png", Texture.class, linearFilter);
-        assets.load("hud/no-sound-button.png", Texture.class, linearFilter);
-        assets.load("hud/sound-button.png", Texture.class, linearFilter);
+        
         assets.load("sound/gamewon.mp3", Sound.class);
         assets.load("sound/gameover.wav", Sound.class);
         assets.load("sound/youwin.wav", Sound.class);
@@ -219,6 +219,7 @@ public class PlayingGamesScreen extends BaseScreen
                 hud.showGameInstructions(currentGame.getInstructions());
                 hud.startInitialCountdown();
                 hud.showPauseButton();
+                SoundIcon.hideSoundButton();
                 break;
 
             case PLAYING:
@@ -264,6 +265,7 @@ public class PlayingGamesScreen extends BaseScreen
                 hud.cancelEndingTimer();
                 break;
             case BACK_MENU:
+                 SoundIcon.showSoundButton();
                 transitionTo(PlayScreenState.BACK_MENU);
         }
     }

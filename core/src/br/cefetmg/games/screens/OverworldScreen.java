@@ -1,5 +1,6 @@
 package br.cefetmg.games.screens;
 
+import br.cefetmg.games.graphics.hud.SoundIcon;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import br.cefetmg.games.minigames.factories.*;
 import br.cefetmg.sound.MyMusic;
 import br.cefetmg.sound.MySound;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import java.util.HashSet;
@@ -36,8 +38,11 @@ public class OverworldScreen extends BaseScreen {
 
     private MyMusic backgroundMusic;
     
+    private final InputMultiplexer inputMultiplexer;
+    
     public OverworldScreen(Game game, BaseScreen previous) {
         super(game, previous);
+        inputMultiplexer = new InputMultiplexer();
     }
 
     @Override
@@ -60,7 +65,9 @@ public class OverworldScreen extends BaseScreen {
         play = new Image(new Texture(Gdx.files.internal("world/play.png")));
         water = new Image(new Texture(Gdx.files.internal("world/water.jpg")));
         assets.load("menu/click2.mp3", Sound.class);
-        assets.load("world/overworldtheme.mp3", Music.class); 
+        assets.load("world/overworldtheme.mp3", Music.class);
+        
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
@@ -178,6 +185,10 @@ public class OverworldScreen extends BaseScreen {
         stage.setViewport(viewport);
         stage.act(Gdx.graphics.getDeltaTime());
 
+        SoundIcon soundIcon = new SoundIcon();
+        soundIcon.create(stage);
+        
+        inputMultiplexer.addProcessor(soundIcon.getInputProcessor());
     }
 
     @Override
@@ -490,5 +501,6 @@ public class OverworldScreen extends BaseScreen {
         } else {
             hideStage(stage5);
         }
+        stage.act(dt);
     }
 }

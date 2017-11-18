@@ -11,6 +11,7 @@ import br.cefetmg.sound.SoundManeger;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -23,29 +24,23 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
  * @author Alberto
  */
 public class SoundIcon {
-    private Button soundButton;
-    
-    private BaseScreen screen;
+    private static Button soundButton;
+    private boolean inicializado;
     private Stage stage;
     private Skin skin;
-    
-    public SoundIcon(BaseScreen screen) {
-        this.screen = screen;
-        stage = new Stage(screen.viewport, screen.batch);
+
+    public SoundIcon() {
+        this.inicializado=false;
     }
     
-    public void upgrade(BaseScreen screen) {
-        this.screen = screen;
-        stage = new Stage(screen.viewport, screen.batch);
-    }
     
-    public void create() {
+    
+    public void create(Texture noSound, Texture sound, Stage stage) {
+        
         skin = new Skin(Gdx.files.internal("hud/uiskin.json"));
         
-        skin.add("noSound", screen.assets.get("hud/no-sound-button.png",
-                Texture.class));
-        skin.add("sound", screen.assets.get("hud/sound-button.png",
-                Texture.class));
+        skin.add("noSound", noSound);
+        skin.add("sound", sound);
    
         
         soundButton = new ImageButton(
@@ -53,6 +48,7 @@ public class SoundIcon {
                 skin.getDrawable("sound"),
                 skin.getDrawable("noSound")
         );
+        
         soundButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -64,30 +60,39 @@ public class SoundIcon {
                 }
             }
         });
+        this.inicializado=true;
         soundButton.setY(stage.getViewport().getWorldHeight() * 0.15f);
         stage.addActor(soundButton);
-        
+        this.stage=stage;
     }
     
-    public void showSoundButton() {
+    public void create(Stage stage) {
+        soundButton.setY(stage.getViewport().getWorldHeight() * 0.15f);
+        stage.addActor(soundButton);
+        this.stage=stage;
+    }
+    
+    public static void showSoundButton() {
         soundButton.setVisible(true);
     }
 
-    public void hideSoundButton() {
+    public static void hideSoundButton() {
         soundButton.setVisible(false);
     }
     
+    public InputProcessor getInputProcessor() {
+        return stage;
+    }
+
+    public boolean isInicializado() {
+        return inicializado;
+    }
+    
     public void update(float dt) {
-        stage.act(dt);
+            stage.act(dt);
     }
 
     public void draw() {
         stage.draw();
     }
-
-    public InputProcessor getInputProcessor() {
-        return stage;
-    }
-
-
 }
