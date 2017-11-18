@@ -2,8 +2,8 @@ package br.cefetmg.games.screens;
 
 import br.cefetmg.games.graphics.hud.SoundIcon;
 import br.cefetmg.games.transition.TransitionScreen;
-import br.cefetmg.sound.MyMusic;
-import br.cefetmg.sound.MySound;
+import br.cefetmg.games.sound.MyMusic;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;

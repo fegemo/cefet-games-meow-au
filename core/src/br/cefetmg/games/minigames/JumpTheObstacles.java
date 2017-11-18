@@ -15,7 +15,7 @@ import java.util.HashMap;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
-import br.cefetmg.sound.MySound;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.math.Circle;
 
 public class JumpTheObstacles extends MiniGame {

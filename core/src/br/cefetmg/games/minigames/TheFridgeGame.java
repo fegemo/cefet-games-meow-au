@@ -14,8 +14,8 @@ import br.cefetmg.games.screens.BaseScreen;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
-import br.cefetmg.sound.MyMusic;
-import br.cefetmg.sound.MySound;
+import br.cefetmg.games.sound.MyMusic;
+import br.cefetmg.games.sound.MySound;
 
 import java.util.Random;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;

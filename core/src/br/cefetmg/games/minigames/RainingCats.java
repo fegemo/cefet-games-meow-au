@@ -11,8 +11,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Timer.Task;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
-import br.cefetmg.sound.MyMusic;
-import br.cefetmg.sound.MySound;
+import br.cefetmg.games.sound.MyMusic;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.audio.Music;
 
 public class RainingCats extends MiniGame {

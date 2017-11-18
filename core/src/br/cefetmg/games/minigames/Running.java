@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
-import br.cefetmg.sound.MySound;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.audio.Sound;
 
 /**

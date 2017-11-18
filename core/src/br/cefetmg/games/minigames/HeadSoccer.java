@@ -20,7 +20,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Timer.Task;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
-import br.cefetmg.sound.MyMusic;
+import br.cefetmg.games.sound.MyMusic;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

@@ -22,7 +22,7 @@ import java.util.Random;
 
 import static br.cefetmg.games.Config.WORLD_HEIGHT;
 import static br.cefetmg.games.Config.WORLD_WIDTH;
-import br.cefetmg.sound.MySound;
+import br.cefetmg.games.sound.MySound;
 
 public class JetRat extends MiniGame {
 

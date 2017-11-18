@@ -1,15 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package br.cefetmg.sound;
+package br.cefetmg.games.sound;
+
 import com.badlogic.gdx.audio.Sound;
+
 /**
  *
- * @author Alberto
+ * @author Luiza
  */
-public class MySound implements AudioResource{
+public class MySound implements AudioResource {
 
     private final Sound current;
     private long soundId;
@@ -17,79 +14,79 @@ public class MySound implements AudioResource{
     public MySound(Sound current) {
         this.current = current;
     }
-       
-    public long play(){
-        SoundManeger sm = new SoundManeger();
-        SoundManeger.add(this);
-        if(SoundManeger.getSound()){
-            soundId=current.play();
-        }else{
-            soundId=current.play(0.0f);
+
+    public long play() {
+        SoundManager.getInstance().addActiveSound(this);
+        if (SoundManager.getInstance().isAudioEnabled()) {
+            soundId = current.play();
+        } else {
+            soundId = current.play(0.0f);
         }
         return soundId;
-    }
-    
-    public long play(float volume){
-        SoundManeger.add(this);
-        if(SoundManeger.getSound()){
-            soundId=current.play(volume);
-        }else{
-            soundId=current.play(0.0f);
-        }
-        return soundId;
-    }
-    
-    public void pause(){
-        current.pause();
-    }
-    
-    public void stop(){
-        current.stop();
-        SoundManeger.remove(this);
-        
     }
 
-    public void setPan(long id, float pan,float vol){
-        current.setPan(id,pan, vol);
+    public long play(float volume) {
+        SoundManager.getInstance().addActiveSound(this);
+        if (SoundManager.getInstance().isAudioEnabled()) {
+            soundId = current.play(volume);
+        } else {
+            soundId = current.play(0.0f);
+        }
+        return soundId;
     }
-    
+
+    public void pause() {
+        current.pause();
+    }
+
+    public void stop() {
+        current.stop();
+        SoundManager.getInstance().removeActiveSound(this);
+    }
+
+    public void setPan(long id, float pan, float vol) {
+        current.setPan(id, pan, vol);
+    }
+
     @Override
     public void setVolume(float vol) {
         current.setVolume(soundId, vol);
     }
-    
+
     public long play(float volume, float pitch, float pan) {
-        SoundManeger.add(this);
-        if(SoundManeger.getSound()){
-            soundId=current.play(volume,pitch,pan);
-        }else{
-            soundId=current.play(0.0f,pitch,pan);
+        SoundManager.getInstance().addActiveSound(this);
+        if (SoundManager.getInstance().isAudioEnabled()) {
+            soundId = current.play(volume, pitch, pan);
+        } else {
+            soundId = current.play(0.0f, pitch, pan);
         }
         return soundId;
     }
 
     public long loop() {
-        if(SoundManeger.getSound()){
+        if (SoundManager.getInstance().isAudioEnabled()) {
             return current.loop();
-        }else{
+        } else {
             return current.loop(0.0f);
         }
     }
-    
+
     public long loop(float volume) {
-        if(SoundManeger.getSound()){
+        if (SoundManager.getInstance().isAudioEnabled()) {
             return current.loop(volume);
-        }else{
+        } else {
             return current.loop(0.0f);
         }
     }
+
     public long loop(float volume, float pitch, float pan) {
-        if(SoundManeger.getSound()){
-            return current.loop(volume,pitch,pan);
-        }else{
-            return current.loop(0.0f,pitch, pan);
+        if (SoundManager.getInstance().isAudioEnabled()) {
+            return current.loop(volume, pitch, pan);
+        } else {
+            return current.loop(0.0f, pitch, pan);
         }
     }
+
     public void resume() {
         current.resume();
     }
@@ -121,5 +118,4 @@ public class MySound implements AudioResource{
 //    public void setVolume(long soundId, float volume) {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //    }
-    
 }
