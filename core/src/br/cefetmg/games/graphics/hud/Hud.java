@@ -82,6 +82,14 @@ public class Hud {
         explodeLifeTexture = screen.assets.get("hud/explodeLifeTexture.png");
         
         clockTexture = screen.assets.get("hud/clock.png");
+        
+        
+        mask = new Image(screen.assets.get("hud/gray-mask.png", Texture.class));
+        mask.setBounds(0, 0, stage.getWidth(), stage.getHeight());
+        mask.setVisible(false);
+        mask.setTouchable(Touchable.disabled);
+        stage.addActor(mask);
+
 
         pauseButton = new ImageButton(
                 skin.getDrawable("unpause"),
@@ -114,6 +122,7 @@ public class Hud {
             public void changed(ChangeEvent event, Actor actor) {
                 backGameButton.setVisible(false);
                 backMenuButton.setVisible(false);
+                mask.setVisible(false);
                 stateObserver.onGameResumed();
                 clock.resumeTicking();
                 isPaused = !isPaused;
@@ -127,6 +136,7 @@ public class Hud {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 backMenuButton.setVisible(false);
+                backGameButton.setVisible(false);
                 hidePauseButton();
                 showMessage("Ao voltar para o menu inicial seu progresso sera perdido\n Deseja confimar operacao?");
                 confirmButton.setVisible(true);
@@ -155,6 +165,7 @@ public class Hud {
                 unnconfirmedButton.setVisible(false);
                 confirmButton.setVisible(false);
                 backMenuButton.setVisible(true);
+                backGameButton.setVisible(true);
                 showPauseButton();
             }
         });
@@ -172,12 +183,6 @@ public class Hud {
         stage.addActor(unnconfirmedButton);
         
         currentLives = Config.MAX_LIVES;
-
-        mask = new Image(screen.assets.get("hud/gray-mask.png", Texture.class));
-        mask.setBounds(0, 0, stage.getWidth(), stage.getHeight());
-        mask.setVisible(false);
-        mask.setTouchable(Touchable.disabled);
-        stage.addActor(mask);
 
         centeredLabel = new Label("", new LabelStyle(screen.assets.get("brainfish-50.ttf", BitmapFont.class), Color.BLACK));
         centeredLabel.setWrap(true);
