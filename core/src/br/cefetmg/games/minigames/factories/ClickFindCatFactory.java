@@ -27,6 +27,9 @@ public class ClickFindCatFactory implements MiniGameFactory {
             {
                 put("ClickFindCat/gatinho-grande.png", Texture.class);
                 put("ClickFindCat/target.png", Texture.class);
+                //Imagem Disponível em
+                //http://i.imgur.com/8McJ3ce.png
+                put("ClickFindCat/crav_rat.png", Texture.class);
                 //Audio Disponivel em:
                 //https://freesound.org/people/tuberatanka/sounds/110011/
                 put("ClickFindCat/cat-meow.wav", Sound.class);
