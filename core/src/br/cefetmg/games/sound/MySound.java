@@ -8,91 +8,107 @@ import com.badlogic.gdx.audio.Sound;
  */
 public class MySound implements AudioResource {
 
-    private final Sound current;
+    private final Sound sound;
     private long soundId;
+    private float desiredVolume;
 
-    public MySound(Sound current) {
-        this.current = current;
+    public MySound(Sound sound) {
+        this.sound = sound;
+        this.desiredVolume = 1.0f;
     }
 
     public long play() {
         SoundManager.getInstance().addActiveSound(this);
         if (SoundManager.getInstance().isAudioEnabled()) {
-            soundId = current.play();
+            soundId = sound.play();
         } else {
-            soundId = current.play(0.0f);
+            soundId = sound.play(0.0f);
         }
         return soundId;
     }
 
     public long play(float volume) {
+        desiredVolume = volume;
         SoundManager.getInstance().addActiveSound(this);
         if (SoundManager.getInstance().isAudioEnabled()) {
-            soundId = current.play(volume);
+            soundId = sound.play(volume);
         } else {
-            soundId = current.play(0.0f);
+            soundId = sound.play(0.0f);
         }
         return soundId;
     }
 
     public void pause() {
-        current.pause();
+        sound.pause();
     }
 
     public void stop() {
-        current.stop();
+        sound.stop();
         SoundManager.getInstance().removeActiveSound(this);
     }
 
     public void setPan(long id, float pan, float vol) {
-        current.setPan(id, pan, vol);
-    }
-
-    @Override
-    public void setVolume(float vol) {
-        current.setVolume(soundId, vol);
+        sound.setPan(id, pan, vol);
     }
 
     public long play(float volume, float pitch, float pan) {
+        desiredVolume = volume;
         SoundManager.getInstance().addActiveSound(this);
         if (SoundManager.getInstance().isAudioEnabled()) {
-            soundId = current.play(volume, pitch, pan);
+            soundId = sound.play(volume, pitch, pan);
         } else {
-            soundId = current.play(0.0f, pitch, pan);
+            soundId = sound.play(0.0f, pitch, pan);
         }
         return soundId;
     }
 
     public long loop() {
         if (SoundManager.getInstance().isAudioEnabled()) {
-            return current.loop();
+            return sound.loop();
         } else {
-            return current.loop(0.0f);
+            return sound.loop(0.0f);
         }
     }
 
     public long loop(float volume) {
+        desiredVolume = volume;
         if (SoundManager.getInstance().isAudioEnabled()) {
-            return current.loop(volume);
+            return sound.loop(volume);
         } else {
-            return current.loop(0.0f);
+            return sound.loop(0.0f);
         }
     }
 
     public long loop(float volume, float pitch, float pan) {
         if (SoundManager.getInstance().isAudioEnabled()) {
-            return current.loop(volume, pitch, pan);
+            return sound.loop(volume, pitch, pan);
         } else {
-            return current.loop(0.0f, pitch, pan);
+            return sound.loop(0.0f, pitch, pan);
         }
     }
 
     public void resume() {
-        current.resume();
+        sound.resume();
     }
 
     public void dispose() {
-        current.dispose();
+        sound.dispose();
+    }
+    
+    @Override
+    public void setVolume(float vol) {
+        desiredVolume = vol;
+        sound.setVolume(soundId, vol);
+    }
+
+    @Override
+    public void suppressVolume() {
+        sound.setVolume(soundId, 0);
+    }
+    
+    @Override
+    public void restoreVolume() {
+        sound.setVolume(soundId, desiredVolume);
     }
 
 //    public void stop(long soundId) {

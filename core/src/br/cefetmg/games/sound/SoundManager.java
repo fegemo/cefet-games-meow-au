@@ -37,14 +37,14 @@ public class SoundManager {
     public void disableSounds() {
         audioEnabled = false;
         for (AudioResource audio : audios) {
-            audio.setVolume(0.0f);
+            audio.suppressVolume();
         }
     }
 
     public void enableSounds() {
         audioEnabled = true;
         for (AudioResource audio : audios) {
-            audio.setVolume(1.0f);
+            audio.restoreVolume();
         }
     }
 

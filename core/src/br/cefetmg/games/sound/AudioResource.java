@@ -1,18 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.cefetmg.games.sound;
-
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 
 /**
  *
- * @author Alberto
+ * @author Luiza
  */
-public interface AudioResource{
+public interface AudioResource {
+
     void setVolume(float vol);
 
+    void suppressVolume();
+
+    void restoreVolume();
 }
