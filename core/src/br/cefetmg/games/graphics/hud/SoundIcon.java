@@ -33,8 +33,6 @@ public class SoundIcon {
         this.inicializado=false;
     }
     
-    
-    
     public void create(Texture noSound, Texture sound, Stage stage) {
         
         skin = new Skin(Gdx.files.internal("hud/uiskin.json"));
