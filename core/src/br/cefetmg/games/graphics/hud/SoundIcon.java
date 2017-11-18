@@ -38,6 +38,7 @@ public class SoundIcon {
                 skin.getDrawable("sound"),
                 skin.getDrawable("noSound")
         );
+        soundButton.setChecked(!SoundManager.getInstance().isAudioEnabled());
 
         soundButton.addListener(new ChangeListener() {
             @Override
@@ -57,6 +58,7 @@ public class SoundIcon {
     }
 
     public void create(Stage stage) {
+        soundButton.setChecked(!SoundManager.getInstance().isAudioEnabled());
         soundButton.setY(stage.getViewport().getWorldHeight() * 0.15f);
         stage.addActor(soundButton);
         this.stage = stage;

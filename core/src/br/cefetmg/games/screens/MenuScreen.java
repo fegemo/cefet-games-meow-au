@@ -95,7 +95,7 @@ public class MenuScreen extends BaseScreen {
         
         assets.load("hud/no-sound-button.png", Texture.class, linearFilter);
         assets.load("hud/sound-button.png", Texture.class, linearFilter);
-        soundIcon=new SoundIcon();
+        soundIcon = new SoundIcon();
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
    
@@ -111,25 +111,23 @@ public class MenuScreen extends BaseScreen {
         btnBack = assets.get("menu/button_voltar.png", Texture.class);
         logo = assets.get("menu/logo.png", Texture.class);
 
-        musicaTema =  new MyMusic(assets.get("menu/meowautheme.mp3", Music.class));
+        musicaTema = new MyMusic(assets.get("menu/meowautheme.mp3", Music.class));
         musicaTema.setLooping(true);
         musicaTema.setVolume(0.4f);
         musicaTema.play();
 
         click1 = new MySound(assets.get("menu/click1.mp3", Sound.class));
         click2 = new MySound(assets.get("menu/click2.mp3", Sound.class));
-        if(!soundIcon.isInicializado()){
+        if (!soundIcon.isInicializado()) {
             soundIcon.create(
                     assets.get("hud/no-sound-button.png",Texture.class),
                     assets.get("hud/sound-button.png",   Texture.class),
                     new Stage(this.viewport, this.batch)
             );
-        }else {
+        } else {
             soundIcon.create(new Stage(this.viewport, this.batch));
         }
         inputMultiplexer.addProcessor(soundIcon.getInputProcessor());
-        
-        
     }
 
 
