@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -19,7 +18,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -34,7 +32,7 @@ public class OverworldScreen extends BaseScreen {
     private boolean stop,bool1=false;
     private Vector2[] posicaoIcone;
     private boolean[] openStages;
-    private Image map, arrow,
+    private Image map,
             icon1, stage1,
             icon2, stage2,
             icon3, stage3,
@@ -60,7 +58,6 @@ public class OverworldScreen extends BaseScreen {
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         map = new Image(new Texture(Gdx.files.internal("world/desert.png")));
-        arrow = new Image(new Texture(Gdx.files.internal("world/arrow.png")));
         icon1 = new Image(new Texture(Gdx.files.internal("world/icon1.png")));
         stage1 = new Image(new Texture(Gdx.files.internal("world/stage1.png")));
         stage2 = new Image(new Texture(Gdx.files.internal("world/stage2.png")));
@@ -103,12 +100,10 @@ public class OverworldScreen extends BaseScreen {
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
         stage = new Stage(new ScreenViewport());
-        Group group = new Group();
         map.setName("map");
         water.setName("water");
         play.setName("play");
         menu.setName("menu");
-        arrow.setName("arrow");
         icon1.setName("icon1");
         icon2.setName("icon2");
         icon3.setName("icon3");
@@ -121,24 +116,24 @@ public class OverworldScreen extends BaseScreen {
         stage5.setName("stage5");
         exit.setName("exit");
         
-        group.addActor(stage1);
-        group.addActor(stage2);
-        group.addActor(stage3);
-        group.addActor(stage4);
-        group.addActor(stage5);
-        group.addActor(play);
-        group.addActor(exit);
-        group.addActor(water);
-        group.addActor(map);
-        group.addActor(icon1);
-        group.addActor(icon2);
-        group.addActor(icon3);
-        group.addActor(icon4);
-        group.addActor(icon5);
-        group.addActor(menu);
-        group.addActor(arrow);
-                
-        stage.addActor(group);
+        stage.addActor(stage1);
+        stage.addActor(stage2);
+        stage.addActor(stage3);
+        stage.addActor(stage4);
+        stage.addActor(stage5);
+        stage.addActor(play);
+        stage.addActor(exit);
+        stage.addActor(water);
+        stage.addActor(map);
+        stage.addActor(icon1);
+        stage.addActor(icon2);
+        stage.addActor(icon3);
+        stage.addActor(icon4);
+        stage.addActor(icon5);
+        stage.addActor(menu);
+
+        SoundIcon soundIcon = new SoundIcon();
+        soundIcon.create(stage);
 
         map.setZIndex(2);
         water.setZIndex(1);
@@ -149,7 +144,6 @@ public class OverworldScreen extends BaseScreen {
         stage5.setZIndex(0);
         play.setZIndex(0);
         exit.setZIndex(0);
-        arrow.setZIndex(20);
 
         map.setOrigin(0, 0);
         map.setScale(viewport.getWorldWidth() / map.getWidth(), viewport.getWorldHeight() / map.getHeight());
@@ -203,10 +197,6 @@ public class OverworldScreen extends BaseScreen {
         stage5.setScale(0.8f);
         stage5.setOrigin(0, 0);
         
-        arrow.setScale(0.08f);
-        arrow.setOrigin(0, 0);
-        arrow.setPosition(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2);
-
         menu.setScale(.8f);
         menu.setOrigin(0, 0);
         menu.setPosition(0, 0);
@@ -214,9 +204,6 @@ public class OverworldScreen extends BaseScreen {
         stage.setViewport(viewport);
         stage.act(Gdx.graphics.getDeltaTime());
 
-
-        SoundIcon soundIcon = new SoundIcon();
-        soundIcon.create(stage);
         
         inputMultiplexer.addProcessor(soundIcon.getInputProcessor());
 
@@ -251,19 +238,12 @@ public class OverworldScreen extends BaseScreen {
 
     @Override
     public void handleInput() {
-        Gdx.input.setCursorCatched(true);
-
         click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);
 
-        if (!stop) {
-            arrow.setPosition(click.x - arrow.getWidth() / 2 * arrow.getScaleX(), click.y - arrow.getHeight() / 2 * arrow.getScaleY());
-        }
-
-        arrow.setZIndex(0);
-        Actor hitActor = stage.hit(arrow.getX(), arrow.getY() + arrow.getHeight() * arrow.getScaleY(), false);
+        Actor hitActor = stage.hit(click.x, click.y, false);
         
-        growEffect();
+        growEffect(click);
         if (Gdx.input.justTouched() && hitActor != null && !stop) {
             if ("menu".equals(hitActor.getName())) {
                 click1.play();
@@ -363,7 +343,6 @@ public class OverworldScreen extends BaseScreen {
             }else{
             }
         }
-        arrow.setZIndex(20);
     }
 
    private void firstStage(boolean go) {
@@ -493,8 +472,8 @@ public class OverworldScreen extends BaseScreen {
         }
     }
     
-    private void growEffect() {
-        Actor hitActor = stage.hit(arrow.getX(), arrow.getY() + arrow.getHeight() * arrow.getScaleY(), false);
+    private void growEffect(Vector2 click) {
+        Actor hitActor = stage.hit(click.x, click.y, false);
         if (!stop && hitActor != null && !openStages[1] && !openStages[2] && !openStages[3] && !openStages[0] && !openStages[4]) {
             if ("icon1".equals(hitActor.getName())) {
                 if (check) {
@@ -554,7 +533,6 @@ public class OverworldScreen extends BaseScreen {
         } else {
             exit.setZIndex(19);
             play.setZIndex(19);
-            arrow.setZIndex(20);
         }
     }
 
