@@ -47,6 +47,7 @@ public class Hud {
     private Image mask;
     private Button pauseButton;
     private Button backMenuButton;
+    private Button backGameButton;
     private Button confirmButton;
     private Button unnconfirmedButton;
     private Sound timerSound;
@@ -74,6 +75,8 @@ public class Hud {
                 Texture.class));
         skin.add("back-menu", screen.assets.get("hud/back-menu-button.png",
                 Texture.class));
+        skin.add("back-game", screen.assets.get("hud/back-game-button.png",
+                Texture.class));
         
         lifeTexture = screen.assets.get("hud/lifeTexture.png");
         explodeLifeTexture = screen.assets.get("hud/explodeLifeTexture.png");
@@ -99,6 +102,7 @@ public class Hud {
                 isPaused = !isPaused;
                 mask.setVisible(isPaused);
                 backMenuButton.setVisible(isPaused);
+                backGameButton.setVisible(isPaused);
                 if (isPaused) {
                     stateObserver.onGamePaused();
                     clock.pauseTicking();
@@ -109,6 +113,21 @@ public class Hud {
             }
         });
         
+        backGameButton = new ImageButton(
+                skin.getDrawable("back-game")
+        );
+        backGameButton.setVisible(false);
+        backGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                backGameButton.setVisible(false);
+                backMenuButton.setVisible(false);
+                mask.setVisible(false);
+                stateObserver.onGameResumed();
+                clock.resumeTicking();
+                isPaused = !isPaused;
+            }
+        });
         backMenuButton = new ImageButton(
                 skin.getDrawable("back-menu")
         );
@@ -117,6 +136,7 @@ public class Hud {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 backMenuButton.setVisible(false);
+                backGameButton.setVisible(false);
                 hidePauseButton();
                 showMessage("Ao voltar para o menu inicial seu progresso sera perdido\n Deseja confimar operacao?");
                 confirmButton.setVisible(true);
@@ -145,16 +165,20 @@ public class Hud {
                 unnconfirmedButton.setVisible(false);
                 confirmButton.setVisible(false);
                 backMenuButton.setVisible(true);
+                backGameButton.setVisible(true);
                 showPauseButton();
             }
         });
         backMenuButton.setX(stage.getViewport().getWorldWidth() * 0.50f-backMenuButton.getWidth()/2);
         backMenuButton.setY(stage.getViewport().getWorldHeight() * 0.55f);
+        backGameButton.setX(stage.getViewport().getWorldWidth() * 0.50f-backMenuButton.getWidth()/2);
+        backGameButton.setY(stage.getViewport().getWorldHeight() * 0.35f);
         confirmButton.setY(stage.getViewport().getWorldHeight() * 0.50f);
         unnconfirmedButton.setY(stage.getViewport().getWorldHeight() * 0.50f);
         confirmButton.setX(stage.getViewport().getWorldWidth()  * 0.75f);
         unnconfirmedButton.setX(stage.getViewport().getWorldWidth()  * 0.25f);
         stage.addActor(backMenuButton);
+        stage.addActor(backGameButton);
         stage.addActor(confirmButton);
         stage.addActor(unnconfirmedButton);
         

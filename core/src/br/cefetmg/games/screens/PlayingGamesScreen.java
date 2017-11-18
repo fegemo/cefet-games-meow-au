@@ -64,10 +64,12 @@ public class PlayingGamesScreen extends BaseScreen
         assets.load("hud/lifeTexture.png", Texture.class, linearFilter);
         assets.load("hud/explodeLifeTexture.png", Texture.class, linearFilter);
         assets.load("hud/clock.png", Texture.class, linearFilter);
-        assets.load("hud/tick-tock.mp3", Sound.class);
+
         assets.load("hud/back-menu-button.png", Texture.class, linearFilter);
+        assets.load("hud/back-game-button.png", Texture.class, linearFilter);
         assets.load("hud/confirm-button.png", Texture.class, linearFilter);
         assets.load("hud/unnconfirmed-button.png", Texture.class, linearFilter);
+        assets.load("hud/tick-tock.mp3", Sound.class);
         assets.load("sound/gamewon.mp3", Sound.class);
         assets.load("sound/gameover.wav", Sound.class);
         assets.load("sound/youwin.wav", Sound.class);
