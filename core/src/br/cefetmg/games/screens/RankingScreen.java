@@ -326,8 +326,8 @@ public class RankingScreen extends BaseScreen {
                 viewport.getWorldHeight());
         if (writingScore) {
 
-            drawCenterAlignedText("YOUR SCORE:  " + phaseNumber + "", viewport.getWorldHeight() * 0.91f);
-            drawCenterAlignedText("ENTER YOUR NAME:  " + name + "", viewport.getWorldHeight() * 0.84f);
+            drawCenterAlignedText("Sua pontuação:  " + phaseNumber + "", viewport.getWorldHeight() * 0.91f);
+            drawCenterAlignedText("Coloque seu nome:  " + name + "", viewport.getWorldHeight() * 0.84f);
             for (i = 0; i < 3; i++) {
                 for (j = 0; j < 10; j++) {
                     if (i == 2 && j == 6) {
@@ -342,7 +342,7 @@ public class RankingScreen extends BaseScreen {
             batch.draw(pointer, pointerX, pointerY, pointerSize, pointerSize);
         } else if (showingScore) {
             batch.draw(board, boardBottom.x, boardBottom.y, boardSize.x, boardSize.y);
-            drawCenterAlignedText("      Name:           Score:     ", viewport.getWorldHeight() * 0.90f);
+            drawCenterAlignedText("      Nome:           Pontos:     ", viewport.getWorldHeight() * 0.90f);
             drawCenterAlignedText(fileContent, viewport.getWorldHeight() * 0.80f);
         }
         batch.end();
