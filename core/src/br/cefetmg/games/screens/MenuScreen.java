@@ -156,7 +156,9 @@ public class MenuScreen extends BaseScreen {
                     
                     CHAMADA DA TELA DE RANKING
                     
-                     */
+                    */
+                    transitionScreen(new RankingScreen(super.game, this),
+                    TransitionScreen.Effect.FADE_IN_OUT, 1f);
 
                     click2.play();
                 }
@@ -176,7 +178,7 @@ public class MenuScreen extends BaseScreen {
                 if (playBounds.contains(clickPosition.x, clickPosition.y)) {
                     //CHAMADA DO MODO NORMAL
                     click2.play();
-                    navigateToMicroGameScreen();
+                    navigateToMicroGameScreen(false);
                 }
                 if (rankingBounds.contains(clickPosition.x, clickPosition.y)) {
                     /*
@@ -185,6 +187,7 @@ public class MenuScreen extends BaseScreen {
                     
                      */
                     click2.play();
+                    navigateToMicroGameScreen(true);
                 }
                 if (creditsBounds.contains(clickPosition.x, clickPosition.y)) {
                     //Volta para os botões
@@ -244,9 +247,15 @@ public class MenuScreen extends BaseScreen {
     /**
      * Navega para a tela de jogo.
      */
-    private void navigateToMicroGameScreen() {
-         transitionScreen(new OverworldScreen(super.game, this),
+    private void navigateToMicroGameScreen(boolean isSurvival) {
+        if(isSurvival){
+            transitionScreen(new PlayingGamesScreen(super.game, this),
+                            TransitionScreen.Effect.FADE_IN_OUT, 1f);
+        }
+        else{
+            transitionScreen(new OverworldScreen(super.game, this),
                         TransitionScreen.Effect.FADE_IN_OUT, 1f);
+        }    
     }
 
     /**

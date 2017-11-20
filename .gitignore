@@ -70,3 +70,6 @@ build/
 .DS_Store
 Thumbs.db
 
+
+# meow au specific
+localRanking.txt

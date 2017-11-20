@@ -73,15 +73,15 @@ public abstract class BaseScreen extends ScreenAdapter {
 
 
         // fonte para mensagens
-        FreeTypeFontLoaderParameter snackerComicParams = new FreeTypeFontLoaderParameter();
-        snackerComicParams.fontFileName = "fonts/brainfish.ttf";
-        snackerComicParams.fontParameters.size = 50;
-        snackerComicParams.fontParameters.minFilter = Texture.TextureFilter.Linear;
-        snackerComicParams.fontParameters.magFilter = Texture.TextureFilter.Linear;
-        assets.load("brainfish-50.ttf", BitmapFont.class, snackerComicParams);
-
-        // fonte para a HUD
-        assets.load("fonts/sawasdee-50.fnt", BitmapFont.class);
+        FreeTypeFontLoaderParameter messagesFontParams = new FreeTypeFontLoaderParameter();
+        messagesFontParams.fontFileName = "fonts/snaphand-v1-free.ttf";
+        messagesFontParams.fontParameters.color = Color.WHITE;
+        messagesFontParams.fontParameters.size = 50;
+        messagesFontParams.fontParameters.minFilter = Texture.TextureFilter.Linear;
+        messagesFontParams.fontParameters.magFilter = Texture.TextureFilter.Linear;
+        messagesFontParams.fontParameters.borderWidth = 2;
+        messagesFontParams.fontParameters.borderColor = Color.BLACK;
+        assets.load("snaphand-v1-free.ttf", BitmapFont.class, messagesFontParams);
     }
     
     /**
@@ -192,7 +192,8 @@ public abstract class BaseScreen extends ScreenAdapter {
     public final void render(float dt) {
         if (assets.update()) {
             if (!assetsFinishedLoading) {
-                messagesFont = assets.get("brainfish-50.ttf");
+                messagesFont = assets.get("snaphand-v1-free.ttf");
+                messagesFont.getData().markupEnabled = true;
                 assetsLoaded();
                 assetsFinishedLoading = true;
             }
@@ -241,7 +242,7 @@ public abstract class BaseScreen extends ScreenAdapter {
      */
     public void drawCenterAlignedText(String text, float y) {
         final float horizontalPadding = 0.05f;
-        messagesFont.setColor(Color.BLACK);
+        messagesFont.setColor(Color.WHITE);
 
         final float worldWidth = this.viewport.getWorldWidth();
         messagesFont.draw(
