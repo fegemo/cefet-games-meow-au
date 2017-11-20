@@ -4,7 +4,9 @@ import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -32,6 +34,11 @@ public class CannonCat extends MiniGame {
     public final static int NUMBER_OF_CATS = 8;
     private ObjectMap<Direction, Texture> cannonTextures;
 
+    private MySound backgroundMusic;
+
+    public final int CHALLENGE_FAILED = 0,
+            CHALLENGE_SOLVED = 1;
+
     public CannonCat(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
     }
@@ -53,6 +60,9 @@ public class CannonCat extends MiniGame {
         cannonTextures.put(Direction.NORTH, assets.get("cannon-cat/cannon_up.png", Texture.class));
         cannonTextures.put(Direction.NORTH_EAST, assets.get("cannon-cat/cannon_up+right.png", Texture.class));
 
+        backgroundMusic = new MySound(assets.get("cannon-cat/background-music.mp3", Sound.class));
+        backgroundMusic.loop();
+
         for (int i = 0; i < NUMBER_OF_CATS; i++) {
             cat_x[i] = (int) (200 * Math.cos((i * Math.PI) / 4)) + 1280 / 2;
             cat_y[i] = (int) ((-1) * 200 * Math.sin((i * Math.PI) / 4)) + 720 / 2;
@@ -65,6 +75,16 @@ public class CannonCat extends MiniGame {
         remainingCats = NUMBER_OF_CATS;
     }
 
+    private void challengeFinished(int challengeResult) {
+        backgroundMusic.stop();
+                    
+        if (challengeResult == CHALLENGE_FAILED) {
+            super.challengeFailed();
+        } else if (challengeResult == CHALLENGE_SOLVED) {
+            super.challengeSolved();
+        }
+    }
+
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         //velocidade = 1+3*difficulty;
@@ -74,7 +94,6 @@ public class CannonCat extends MiniGame {
     @Override
     public void onHandlePlayingInput() {
         if (Gdx.input.justTouched()) {
-
             if (remainingShots > 0) {
                 remainingShots--;
                 if (cat_x[cannonDirectionIndex] != 0) {
@@ -82,12 +101,12 @@ public class CannonCat extends MiniGame {
                     remainingCats--;
                 }
                 if (remainingCats == 0) {
-                    super.challengeSolved();
+                    challengeFinished(CHALLENGE_SOLVED);
                 } else if (remainingShots == 0) {
-                    super.challengeFailed();
+                    challengeFinished(CHALLENGE_FAILED);
                 }
             } else {
-                super.challengeFailed();
+                challengeFinished(CHALLENGE_FAILED);
             }
 
             cookie_x[remainingShots] = -500;
