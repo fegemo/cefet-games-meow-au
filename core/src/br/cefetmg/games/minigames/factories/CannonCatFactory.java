@@ -4,6 +4,7 @@ import br.cefetmg.games.minigames.CannonCat;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.screens.BaseScreen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +27,7 @@ public class CannonCatFactory implements MiniGameFactory {
                 put("cannon-cat/cannon_up+right.png", Texture.class);
                 put("cannon-cat/cannon_up.png", Texture.class);
                 put("cannon-cat/cannon_up+left.png", Texture.class);
-
+                put("cannon-cat/background-music.mp3", Sound.class);
             }
         };
     }
