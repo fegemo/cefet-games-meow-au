@@ -54,13 +54,6 @@ public class SoundIcon {
         stage.addActor(soundButton);
     }
 
-//    public void create(Stage stage) {
-//        soundButton.setChecked(!SoundManager.getInstance().isAudioEnabled());
-//        soundButton.setY(stage.getViewport().getWorldHeight() * 0.15f);
-//        stage.addActor(soundButton);
-//        this.stage = stage;
-//    }
-
     public void show() {
         soundButton.setVisible(true);
     }
