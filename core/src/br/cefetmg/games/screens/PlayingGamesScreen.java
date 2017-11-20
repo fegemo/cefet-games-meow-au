@@ -53,9 +53,6 @@ public class PlayingGamesScreen extends BaseScreen
         lives = Config.MAX_LIVES;
         sequencer = new InfiniteGameSequencer(new HashSet<MiniGameFactory>(
             Arrays.asList(
-                    // flávio
-                    //new ShootTheCariesFactory(),
-                    //new ShooTheTartarusFactory(),
                     // gustavo henrique e rogenes
                     new BasCATballFactory(),
                     new RunningFactory(),
@@ -85,7 +82,7 @@ public class PlayingGamesScreen extends BaseScreen
                     // túlio
                     new RainingCatsFactory(),
                     new NinjaCatFactory(),
-                    //estevao e sarah//
+                    //estevao e sarah
                     new TheFridgeGameFactory(),
                     new KillTheRatsFactory()
             )
@@ -161,7 +158,6 @@ public class PlayingGamesScreen extends BaseScreen
                     // volta para o menu principal
                  transitionScreen(new OverworldScreen(super.game, this),
                         TransitionScreen.Effect.FADE_IN_OUT, 1f);
-                //super.game.setScreen(new MenuScreen(super.game, this));
                 }
             }
         }

@@ -145,7 +145,7 @@ public class Hud {
                 backMenuButton.setVisible(false);
                 backGameButton.setVisible(false);
                 hidePauseButton();
-                showMessage("Ao voltar para o menu inicial seu progresso sera perdido\n Deseja confimar operacao?");
+                showMessage("Ao voltar para o menu inicial seu progresso sera perdido\nDeseja continuar?");
                 confirmButton.setVisible(true);
                 unnconfirmedButton.setVisible(true);
             }

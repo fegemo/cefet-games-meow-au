@@ -35,7 +35,7 @@ public class MenuScreen extends BaseScreen {
     public static final int LOGO_Y = 360;
     public static final int LOGO_WIDTH = 960;
     public static final int LOGO_HEIGHT = 386;
-    
+
     private SoundIcon soundIcon;
 
     private TextureRegion background;
@@ -52,8 +52,9 @@ public class MenuScreen extends BaseScreen {
     private int selecionaModo = 0;
 
     private MyMusic musicaTema;
-    
+
     private final InputMultiplexer inputMultiplexer;
+
     /**
      * Cria uma nova tela de menu.
      *
@@ -92,13 +93,13 @@ public class MenuScreen extends BaseScreen {
 
         assets.load("menu/click1.mp3", Sound.class);
         assets.load("menu/click2.mp3", Sound.class);
-        
+
         assets.load("hud/no-sound-button.png", Texture.class, linearFilter);
         assets.load("hud/sound-button.png", Texture.class, linearFilter);
         soundIcon = new SoundIcon();
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
-   
+
     @Override
     protected void assetsLoaded() {
         background = new TextureRegion(assets.get("menu/menu-background.png", Texture.class));
@@ -120,8 +121,8 @@ public class MenuScreen extends BaseScreen {
         click2 = new MySound(assets.get("menu/click2.mp3", Sound.class));
         if (!soundIcon.isInicializado()) {
             soundIcon.create(
-                    assets.get("hud/no-sound-button.png",Texture.class),
-                    assets.get("hud/sound-button.png",   Texture.class),
+                    assets.get("hud/no-sound-button.png", Texture.class),
+                    assets.get("hud/sound-button.png", Texture.class),
                     new Stage(this.viewport, this.batch)
             );
         } else {
@@ -129,7 +130,6 @@ public class MenuScreen extends BaseScreen {
         }
         inputMultiplexer.addProcessor(soundIcon.getInputProcessor());
     }
-
 
     /**
      * Recebe <em>input</em> do jogador.
@@ -152,13 +152,8 @@ public class MenuScreen extends BaseScreen {
                     click2.play();
                 }
                 if (rankingBounds.contains(clickPosition.x, clickPosition.y)) {
-                    /*
-                    
-                    CHAMADA DA TELA DE RANKING
-                    
-                    */
                     transitionScreen(new RankingScreen(super.game, this),
-                    TransitionScreen.Effect.FADE_IN_OUT, 1f);
+                            TransitionScreen.Effect.FADE_IN_OUT, 1f);
 
                     click2.play();
                 }
@@ -176,16 +171,10 @@ public class MenuScreen extends BaseScreen {
                 }
             } else {
                 if (playBounds.contains(clickPosition.x, clickPosition.y)) {
-                    //CHAMADA DO MODO NORMAL
                     click2.play();
                     navigateToMicroGameScreen(false);
                 }
                 if (rankingBounds.contains(clickPosition.x, clickPosition.y)) {
-                    /*
-                    
-                    CHAMADA DO MODO SURVIVAL
-                    
-                     */
                     click2.play();
                     navigateToMicroGameScreen(true);
                 }
@@ -240,7 +229,7 @@ public class MenuScreen extends BaseScreen {
         }
 
         batch.end();
-        
+
         soundIcon.draw();
     }
 
@@ -248,14 +237,13 @@ public class MenuScreen extends BaseScreen {
      * Navega para a tela de jogo.
      */
     private void navigateToMicroGameScreen(boolean isSurvival) {
-        if(isSurvival){
+        if (isSurvival) {
             transitionScreen(new PlayingGamesScreen(super.game, this),
-                            TransitionScreen.Effect.FADE_IN_OUT, 1f);
-        }
-        else{
+                    TransitionScreen.Effect.FADE_IN_OUT, 1f);
+        } else {
             transitionScreen(new OverworldScreen(super.game, this),
-                        TransitionScreen.Effect.FADE_IN_OUT, 1f);
-        }    
+                    TransitionScreen.Effect.FADE_IN_OUT, 1f);
+        }
     }
 
     /**
