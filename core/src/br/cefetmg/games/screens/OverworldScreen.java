@@ -8,14 +8,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import br.cefetmg.games.transition.TransitionScreen;
 import java.util.Arrays;
 import br.cefetmg.games.minigames.factories.*;
 import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
@@ -25,6 +23,7 @@ import java.util.HashSet;
 
 public class OverworldScreen extends BaseScreen {
 
+    private static final int NUMBER_OF_LEVELS = 5;
     private Vector2 click;
     private Stage stage;
 
@@ -64,44 +63,55 @@ public class OverworldScreen extends BaseScreen {
         linearFilter.minFilter = Texture.TextureFilter.Linear;
         linearFilter.magFilter = Texture.TextureFilter.Linear;
         
-        map = new Image(new Texture(Gdx.files.internal("world/desert.png")));
-        icon1 = new Image(new Texture(Gdx.files.internal("world/icon1.png")));
-        stage1 = new Image(new Texture(Gdx.files.internal("world/stage1.png")));
-        stage2 = new Image(new Texture(Gdx.files.internal("world/stage2.png")));
-        stage3 = new Image(new Texture(Gdx.files.internal("world/stage3.png")));
-        stage4 = new Image(new Texture(Gdx.files.internal("world/stage4.png")));
-        stage5 = new Image(new Texture(Gdx.files.internal("world/stage5.png")));
-        exit = new Image(new Texture(Gdx.files.internal("world/menu.png")));
-        icon2 = new Image(new Texture(Gdx.files.internal("world/icon2.png")));
-        icon3 = new Image(new Texture(Gdx.files.internal("world/icon3.png")));
-        icon4 = new Image(new Texture(Gdx.files.internal("world/icon4.png")));
-        icon5 = new Image(new Texture(Gdx.files.internal("world/icon5.png")));
-        menu = new Image(new Texture(Gdx.files.internal("world/menu.png")));
-        play = new Image(new Texture(Gdx.files.internal("world/play.png")));
-        water = new Image(new Texture(Gdx.files.internal("world/water.jpg")));
-        file = Gdx.files.local("data/progress-file.txt");
-        assets.load("menu/click2.mp3", Sound.class);
-
-        
+        assets.load("world/desert.png", Texture.class, linearFilter);
+        assets.load("world/menu.png", Texture.class, linearFilter);
+        assets.load("world/play.png", Texture.class, linearFilter);
+        assets.load("world/water.jpg", Texture.class, linearFilter);
+        assets.load("world/cadeado.png", Texture.class, linearFilter);
+        for (int i = 0; i < NUMBER_OF_LEVELS; i++) {
+            String stageFile = String.format("world/stage%d.png", i + 1);
+            String iconFile = String.format("world/icon%d.png", i + 1);
+            assets.load(stageFile, Texture.class, linearFilter);
+            assets.load(iconFile, Texture.class, linearFilter);
+        }
         assets.load("hud/no-sound-button.png", Texture.class, linearFilter);
         assets.load("hud/sound-button.png", Texture.class, linearFilter);
-        
-        Gdx.input.setInputProcessor(inputMultiplexer);
+
+        assets.load("menu/click2.mp3", Sound.class);
         assets.load("menu/click3.mp3", Sound.class);
         assets.load("world/overworldtheme.mp3", Music.class); 
-        assets.load("world/overworldtheme.mp3", Music.class);
+
+        file = Gdx.files.local("data/progress-file.txt");
+
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override
     protected void assetsLoaded() {
         locks = new ArrayList<Image>();
-        openStages = new boolean[5];
-        for(int i = 0; i < 5; i++) {
+        openStages = new boolean[NUMBER_OF_LEVELS];
+        for(int i = 0; i < NUMBER_OF_LEVELS; i++) {
             openStages[i] = false;
+            locks.add(new Image(assets.get("world/cadeado.png", Texture.class)));
         }
-        for (int i = 0; i < 5; i++) {
-            locks.add(new Image(new Texture(Gdx.files.internal("world/cadeado.png"))));
-        }
+        
+        map = new Image(assets.get("world/desert.png", Texture.class));
+        stage1 = new Image(assets.get("world/stage1.png", Texture.class));
+        stage2 = new Image(assets.get("world/stage2.png", Texture.class));
+        stage3 = new Image(assets.get("world/stage3.png", Texture.class));
+        stage4 = new Image(assets.get("world/stage4.png", Texture.class));
+        stage5 = new Image(assets.get("world/stage5.png", Texture.class));
+        icon1 = new Image(assets.get("world/icon1.png", Texture.class));
+        icon2 = new Image(assets.get("world/icon2.png", Texture.class));
+        icon3 = new Image(assets.get("world/icon3.png", Texture.class));
+        icon4 = new Image(assets.get("world/icon4.png", Texture.class));
+        icon5 = new Image(assets.get("world/icon5.png", Texture.class));
+        exit = new Image(assets.get("world/menu.png", Texture.class));
+        menu = new Image(assets.get("world/menu.png", Texture.class));
+        play = new Image(assets.get("world/play.png", Texture.class));
+        water = new Image(assets.get("world/water.jpg", Texture.class));
+
+        
         bool1 = true;
         desenhaMeio = true;
         click1 = new MySound(assets.get("menu/click2.mp3", Sound.class));
@@ -109,6 +119,7 @@ public class OverworldScreen extends BaseScreen {
         backgroundMusic = new MyMusic(assets.get("world/overworldtheme.mp3", Music.class));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
+        
         stage = new Stage(viewport, batch);
         map.setName("map");
         water.setName("water");
@@ -171,7 +182,7 @@ public class OverworldScreen extends BaseScreen {
         exit.setOrigin(0, 0);
         exit.setPosition(viewport.getWorldWidth() / 2 - 225, viewport.getWorldHeight() / 2 - 100);
         
-        posicaoIcone = new Vector2[5];
+        posicaoIcone = new Vector2[NUMBER_OF_LEVELS];
         
         posicaoIcone[0]= new Vector2(775.29376f,176.95001f);
         posicaoIcone[1]= new Vector2(325.83545f, 453.82504f);
