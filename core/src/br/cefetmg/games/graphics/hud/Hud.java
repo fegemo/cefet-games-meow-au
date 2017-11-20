@@ -191,7 +191,7 @@ public class Hud {
         
         currentLives = Config.MAX_LIVES;
 
-        centeredLabel = new Label("", new LabelStyle(screen.assets.get("Cartoonish.ttf", BitmapFont.class), Color.BLACK));
+        centeredLabel = new Label("", new LabelStyle(screen.assets.get("snaphand-v1-free.ttf", BitmapFont.class), Color.WHITE));
         centeredLabel.setWrap(true);
         centeredLabel.setAlignment(Align.center);
         centeredLabel.setWidth(stage.getViewport().getWorldWidth());
@@ -211,8 +211,8 @@ public class Hud {
         table.setFillParent(true);
 
         sequenceIndexLabel = new Label(
-                String.format("%03d", 1), new LabelStyle(
-                screen.assets.get("fonts/sawasdee-50.fnt", BitmapFont.class), Color.ORANGE));
+                String.format("%d", 1), new LabelStyle(
+                screen.assets.get("snaphand-v1-free.ttf", BitmapFont.class), Color.WHITE));
 
         livesGroup = new HorizontalGroup();
         for (int i = 0; i < Config.MAX_LIVES; i++) {
@@ -251,7 +251,7 @@ public class Hud {
     }
 
     public void setGameIndex(int index) {
-        sequenceIndexLabel.setText(String.format("%03d", index));
+        sequenceIndexLabel.setText(String.format("%d", index));
     }
 
     public void setLives(int lives) {
