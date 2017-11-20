@@ -20,6 +20,7 @@ public class SoundIcon {
     private Button soundButton;
     private final Stage stage;
     private Skin skin;
+    private static final float MARGIN_LEFT = 8f;
 
     public SoundIcon(Stage stage) {
         this.stage = stage;
@@ -51,6 +52,7 @@ public class SoundIcon {
             }
         });
         soundButton.setY(stage.getViewport().getWorldHeight() * 0.15f);
+        soundButton.setX(MARGIN_LEFT);
         stage.addActor(soundButton);
     }
 

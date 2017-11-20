@@ -77,7 +77,8 @@ public class LoadingScreen {
         private static final int TOTAL_SEGMENTS = 300;
         private static final float START_ANGLE = 90;
         private static final float INITIAL_RADIUS = 15;
-        private static final float RADIUS_VARIATION = 1.5f;
+        private static final float RADIUS_VARIATION = 0.75f;
+        private static final float MARGIN = 4f;
         private float totalAngle = 360;
         private float radius = INITIAL_RADIUS;
         private final ShapeRenderer shapes;
@@ -104,8 +105,8 @@ public class LoadingScreen {
             shapes.begin(ShapeRenderer.ShapeType.Filled);
             shapes.setColor(super.getColor());
             shapes.arc(
-                    INITIAL_RADIUS + RADIUS_VARIATION,
-                    INITIAL_RADIUS + RADIUS_VARIATION,
+                    MARGIN + INITIAL_RADIUS + RADIUS_VARIATION,
+                    MARGIN + INITIAL_RADIUS + RADIUS_VARIATION,
                     radius,
                     START_ANGLE,
                     totalAngle * percentageComplete,
@@ -114,8 +115,8 @@ public class LoadingScreen {
             shapes.begin(ShapeRenderer.ShapeType.Line);
             shapes.setColor(Color.GRAY);
             shapes.circle(
-                    INITIAL_RADIUS + RADIUS_VARIATION,
-                    INITIAL_RADIUS + RADIUS_VARIATION,
+                    MARGIN + INITIAL_RADIUS + RADIUS_VARIATION,
+                    MARGIN + INITIAL_RADIUS + RADIUS_VARIATION,
                     radius, TOTAL_SEGMENTS);
             shapes.end();
             batch.begin();

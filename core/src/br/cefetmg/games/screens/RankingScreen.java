@@ -304,7 +304,7 @@ public class RankingScreen extends BaseScreen {
             } else if (showingScore) {
                 Gdx.input.setCursorCatched(false);
                 transitionScreen(new MenuScreen(super.game, this),
-                        TransitionScreen.Effect.FADE_IN_OUT, 1f);
+                        TransitionScreen.Effect.FADE_IN_OUT, 0.4f);
             }
         }
     }

@@ -86,7 +86,7 @@ public class SplashScreen extends BaseScreen {
      */
     private void navigateToMenuScreen() {
         transitionScreen(new MenuScreen(game, this),
-                TransitionScreen.Effect.FADE_IN_OUT, 0.5f);
+                TransitionScreen.Effect.FADE_IN_OUT, 0.4f);
     }
 
     /**

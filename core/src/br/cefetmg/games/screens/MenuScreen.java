@@ -143,7 +143,7 @@ public class MenuScreen extends BaseScreen {
                 }
                 if (rankingBounds.contains(clickPosition.x, clickPosition.y)) {
                     transitionScreen(new RankingScreen(super.game, this),
-                            TransitionScreen.Effect.FADE_IN_OUT, 1f);
+                            TransitionScreen.Effect.FADE_IN_OUT, 0.3f);
 
                     click2.play();
                 }
@@ -229,10 +229,10 @@ public class MenuScreen extends BaseScreen {
     private void navigateToMicroGameScreen(boolean isSurvival) {
         if (isSurvival) {
             transitionScreen(new PlayingGamesScreen(super.game, this),
-                    TransitionScreen.Effect.FADE_IN_OUT, 1f);
+                    TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
         } else {
             transitionScreen(new OverworldScreen(super.game, this),
-                    TransitionScreen.Effect.FADE_IN_OUT, 1f);
+                    TransitionScreen.Effect.FADE_IN_OUT, 0.4f);
         }
     }
 

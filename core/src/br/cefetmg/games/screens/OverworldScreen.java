@@ -271,7 +271,7 @@ public class OverworldScreen extends BaseScreen {
             if ("menu".equals(hitActor.getName())) {
                 click1.play();
                 transitionScreen(new MenuScreen(super.game, this),
-                        TransitionScreen.Effect.FADE_IN_OUT, 1f);
+                        TransitionScreen.Effect.FADE_IN_OUT, 0.5f);
                 stop = true;
             } else if (openStages[0]){
                  if ("play".equals(hitActor.getName())) {
@@ -381,8 +381,7 @@ public class OverworldScreen extends BaseScreen {
                             new BasCATballFactory(),
                             new RunningFactory()
                     )
-            ), .1f, .2f), TransitionScreen.Effect.FADE_IN_OUT,
-                    1f);
+            ), .1f, .2f), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += 2;
             if (currentStage == 0) currentStage = 1;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
@@ -406,7 +405,7 @@ public class OverworldScreen extends BaseScreen {
                             new DogBarksCatFleeFactory(),
                             new ClickFindCatFactory()
                     )
-            ), .3f, .4f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
+            ), .3f, .4f), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += 4;
             if (currentStage == 1) currentStage = 2;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
@@ -427,7 +426,7 @@ public class OverworldScreen extends BaseScreen {
                             new SpyFishFactory(),
                             new PhantomCatFactory()
                     )
-            ), .5f, .6f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
+            ), .5f, .6f), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += 6;
             if (currentStage == 2) currentStage = 3;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
@@ -449,7 +448,7 @@ public class OverworldScreen extends BaseScreen {
                             new HeadSoccerFactory(),
                             new CatAvoiderFactory()
                     )
-            ), .7f, .8f), TransitionScreen.Effect.FADE_IN_OUT, 1f);
+            ), .7f, .8f), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += 8;
             if (currentStage == 3) currentStage = 4;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
@@ -471,7 +470,7 @@ public class OverworldScreen extends BaseScreen {
                             //estevao e sarah//
                             new KillTheRatsFactory()
                     )
-            ), 0.9f, 1), TransitionScreen.Effect.FADE_IN_OUT, 1f);
+            ), 0.9f, 1), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += 10;
             if (currentStage == 4) currentStage = 5;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));

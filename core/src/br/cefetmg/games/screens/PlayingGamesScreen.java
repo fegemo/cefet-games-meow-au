@@ -51,46 +51,46 @@ public class PlayingGamesScreen extends BaseScreen
         state = PlayScreenState.PLAYING;
         lives = Config.MAX_LIVES;
         sequencer = new InfiniteGameSequencer(new HashSet<MiniGameFactory>(
-            Arrays.asList(
-                    // gustavo henrique e rogenes
-                    new BasCATballFactory(),
-                    new RunningFactory(),
-                    // rafael e luis carlos
-                    new DodgeTheVeggiesFactory(),
-                    new CatchThatHomeworkFactory(),
-                    // adriel
-                    new UnderwaterCatFactory(),
-                    // arthur e pedro
-                    new DogBarksCatFleeFactory(),
-                    new ClickFindCatFactory(),
-                    // cassiano e gustavo jordão
-                    new TicCatDogFactory(),
-                    new JumpTheObstaclesFactory(),
-                    // luiza e pedro cordeiro
-                    new SpyFishFactory(),
-                    new PhantomCatFactory(),
-                    // gabriel e natália
-                    new MouseAttackFactory(),
-                    new JetRatFactory(),
-                    // emanoel e vinícius
-                    new HeadSoccerFactory(),
-                    new CatAvoiderFactory(),
-                    // joão e miguel
-                    new CannonCatFactory(),
-                    new MeowsicFactory(),
-                    // túlio
-                    new RainingCatsFactory(),
-                    new NinjaCatFactory(),
-                    //estevao e sarah
-                    new TheFridgeGameFactory(),
-                    new KillTheRatsFactory()
-            )
+                Arrays.asList(
+                        // gustavo henrique e rogenes
+                        new BasCATballFactory(),
+                        new RunningFactory(),
+                        // rafael e luis carlos
+                        new DodgeTheVeggiesFactory(),
+                        new CatchThatHomeworkFactory(),
+                        // adriel
+                        new UnderwaterCatFactory(),
+                        // arthur e pedro
+                        new DogBarksCatFleeFactory(),
+                        new ClickFindCatFactory(),
+                        // cassiano e gustavo jordão
+                        new TicCatDogFactory(),
+                        new JumpTheObstaclesFactory(),
+                        // luiza e pedro cordeiro
+                        new SpyFishFactory(),
+                        new PhantomCatFactory(),
+                        // gabriel e natália
+                        new MouseAttackFactory(),
+                        new JetRatFactory(),
+                        // emanoel e vinícius
+                        new HeadSoccerFactory(),
+                        new CatAvoiderFactory(),
+                        // joão e miguel
+                        new CannonCatFactory(),
+                        new MeowsicFactory(),
+                        // túlio
+                        new RainingCatsFactory(),
+                        new NinjaCatFactory(),
+                        //estevao e sarah
+                        new TheFridgeGameFactory(),
+                        new KillTheRatsFactory()
+                )
         ), 0, 1, this, this);
-        
+
         hud = new Hud(this, this);
         inputMultiplexer = new InputMultiplexer();
     }
-    
+
     public PlayingGamesScreen(Game game, BaseScreen previous, int nGames, Set<MiniGameFactory> games,
             float initialDifficulty, float finalDifficulty) {
         super(game, previous);
@@ -132,7 +132,7 @@ public class PlayingGamesScreen extends BaseScreen
 
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
-    
+
     @Override
     protected void assetsLoaded() {
     }
@@ -156,14 +156,13 @@ public class PlayingGamesScreen extends BaseScreen
                 if (sequencer instanceof InfiniteGameSequencer) {
                     transitionScreen(
                             new RankingScreen(
-                                    super.game,this,sequencer.getGameNumber()),
-                            TransitionScreen.Effect.FADE_IN_OUT, 1f);
-                    
-                }
-                else if(sequencer instanceof GameSequencer) {
-                // volta para o menu principal
-                 transitionScreen(new OverworldScreen(super.game, this),
-                        TransitionScreen.Effect.FADE_IN_OUT, 1f);
+                                    super.game, this, sequencer.getGameNumber()),
+                            TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
+
+                } else if (sequencer instanceof GameSequencer) {
+                    // volta para o menu principal
+                    transitionScreen(new OverworldScreen(super.game, this),
+                            TransitionScreen.Effect.FADE_IN_OUT, 0.5f);
                 }
             }
         }
@@ -219,7 +218,7 @@ public class PlayingGamesScreen extends BaseScreen
             // atualiza o número de sequência do jogo atual na HUD
             hud.setGameIndex(sequencer.getGameNumber());
         } else {
-            transitionGame(TransitionScreen.Effect.FADE_IN_OUT, 0.5f, new Task() {
+            transitionGame(TransitionScreen.Effect.FADE_IN_OUT, 0.3f, new Task() {
                 @Override
                 public void run() {
                     currentGame = sequencer.nextGame();
@@ -245,7 +244,7 @@ public class PlayingGamesScreen extends BaseScreen
                 advance();
             }
 
-            gameWonSound =  new MySound(assets.get("sound/gamewon.mp3", Sound.class));
+            gameWonSound = new MySound(assets.get("sound/gamewon.mp3", Sound.class));
             gameOverSound = new MySound(assets.get("sound/gameover.wav", Sound.class));
             youLoseSound = new MySound(assets.get("sound/youlose.wav", Sound.class));
             youWinSound = new MySound(assets.get("sound/youwin.wav", Sound.class));
@@ -358,7 +357,7 @@ public class PlayingGamesScreen extends BaseScreen
             inputMultiplexer.addProcessor(currentGame.getInputProcessor());
         }
     }
-    
+
     @Override
     public void showMessage(String strMessage) {
         hud.showMessage(strMessage);
