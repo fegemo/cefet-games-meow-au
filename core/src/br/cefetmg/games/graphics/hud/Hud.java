@@ -91,8 +91,10 @@ public class Hud {
         mask.setVisible(false);
         mask.setTouchable(Touchable.disabled);
         stage.addActor(mask);
-        soundIcon = new SoundIcon();
-        soundIcon.create(stage);
+        soundIcon = new SoundIcon(stage);
+        soundIcon.create(
+                    screen.assets.get("hud/no-sound-button.png", Texture.class),
+                    screen.assets.get("hud/sound-button.png", Texture.class));
 
 
         pauseButton = new ImageButton(
@@ -110,11 +112,11 @@ public class Hud {
                 if (isPaused) {
                     stateObserver.onGamePaused();
                     clock.pauseTicking();
-                    SoundIcon.showSoundButton();
+                    soundIcon.show();
                 } else {
                     stateObserver.onGameResumed();
                     clock.resumeTicking();
-                    SoundIcon.hideSoundButton();
+                    soundIcon.hide();
                 }   
             }
         });
@@ -313,5 +315,13 @@ public class Hud {
     
     public void hideMessage() {
         centeredLabel.setText("");
+    }
+    
+    public void hideSoundsButton() {
+        soundIcon.hide();
+    }
+
+    public void showSoundsButton() {
+        soundIcon.show();
     }
 }

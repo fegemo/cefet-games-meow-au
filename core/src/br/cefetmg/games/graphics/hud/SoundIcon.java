@@ -13,20 +13,19 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 /**
  *
- * @author Alberto
+ * @author Luiza
  */
 public class SoundIcon {
 
-    private static Button soundButton;
-    private boolean inicializado;
-    private Stage stage;
+    private Button soundButton;
+    private final Stage stage;
     private Skin skin;
 
-    public SoundIcon() {
-        this.inicializado = false;
+    public SoundIcon(Stage stage) {
+        this.stage = stage;
     }
 
-    public void create(Texture noSound, Texture sound, Stage stage) {
+    public void create(Texture noSound, Texture sound) {
 
         skin = new Skin(Gdx.files.internal("hud/uiskin.json"));
 
@@ -51,33 +50,27 @@ public class SoundIcon {
                 }
             }
         });
-        this.inicializado = true;
         soundButton.setY(stage.getViewport().getWorldHeight() * 0.15f);
         stage.addActor(soundButton);
-        this.stage = stage;
     }
 
-    public void create(Stage stage) {
-        soundButton.setChecked(!SoundManager.getInstance().isAudioEnabled());
-        soundButton.setY(stage.getViewport().getWorldHeight() * 0.15f);
-        stage.addActor(soundButton);
-        this.stage = stage;
-    }
+//    public void create(Stage stage) {
+//        soundButton.setChecked(!SoundManager.getInstance().isAudioEnabled());
+//        soundButton.setY(stage.getViewport().getWorldHeight() * 0.15f);
+//        stage.addActor(soundButton);
+//        this.stage = stage;
+//    }
 
-    public static void showSoundButton() {
+    public void show() {
         soundButton.setVisible(true);
     }
 
-    public static void hideSoundButton() {
+    public void hide() {
         soundButton.setVisible(false);
     }
 
     public InputProcessor getInputProcessor() {
         return stage;
-    }
-
-    public boolean isInicializado() {
-        return inicializado;
     }
 
     public void update(float dt) {

@@ -3,7 +3,6 @@ package br.cefetmg.games.screens;
 import br.cefetmg.games.Config;
 import br.cefetmg.games.transition.TransitionScreen;
 import br.cefetmg.games.graphics.hud.Hud;
-import br.cefetmg.games.graphics.hud.SoundIcon;
 import br.cefetmg.games.logic.chooser.BaseGameSequencer;
 import br.cefetmg.games.logic.chooser.GameSequencer;
 import br.cefetmg.games.logic.chooser.InfiniteGameSequencer;
@@ -127,6 +126,10 @@ public class PlayingGamesScreen extends BaseScreen
         assets.load("sound/youwin.wav", Sound.class);
         assets.load("sound/youlose.wav", Sound.class);
         assets.load("hud/intergames.wav", Music.class);
+
+        assets.load("hud/no-sound-button.png", Texture.class, linearFilter);
+        assets.load("hud/sound-button.png", Texture.class, linearFilter);
+
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
     
@@ -150,12 +153,15 @@ public class PlayingGamesScreen extends BaseScreen
         if (state == PlayScreenState.FINISHED_WON
                 || state == PlayScreenState.FINISHED_GAME_OVER) {
             if (Gdx.input.justTouched()) {
-                if(sequencer instanceof InfiniteGameSequencer){
-                    super.game.setScreen(new RankingScreen(super.game,this,sequencer.getGameNumber()));
+                if (sequencer instanceof InfiniteGameSequencer) {
+                    transitionScreen(
+                            new RankingScreen(
+                                    super.game,this,sequencer.getGameNumber()),
+                            TransitionScreen.Effect.FADE_IN_OUT, 1f);
                     
                 }
-                else if(sequencer instanceof GameSequencer){
-                    // volta para o menu principal
+                else if(sequencer instanceof GameSequencer) {
+                // volta para o menu principal
                  transitionScreen(new OverworldScreen(super.game, this),
                         TransitionScreen.Effect.FADE_IN_OUT, 1f);
                 }
@@ -279,7 +285,7 @@ public class PlayingGamesScreen extends BaseScreen
                 hud.showPauseButton();
                 intergames = new MyMusic(assets.get("hud/intergames.wav", Music.class));
                 intergames.play();
-                SoundIcon.hideSoundButton();
+                hud.hideSoundsButton();
                 break;
 
             case PLAYING:
@@ -325,7 +331,7 @@ public class PlayingGamesScreen extends BaseScreen
                 hud.cancelEndingTimer();
                 break;
             case BACK_MENU:
-                 SoundIcon.showSoundButton();
+                hud.showSoundsButton();
                 transitionTo(PlayScreenState.BACK_MENU);
         }
     }

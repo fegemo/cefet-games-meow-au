@@ -15,6 +15,8 @@ import br.cefetmg.games.minigames.factories.*;
 import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
@@ -57,6 +59,11 @@ public class OverworldScreen extends BaseScreen {
     @Override
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
+        
+        TextureParameter linearFilter = new TextureParameter();
+        linearFilter.minFilter = Texture.TextureFilter.Linear;
+        linearFilter.magFilter = Texture.TextureFilter.Linear;
+        
         map = new Image(new Texture(Gdx.files.internal("world/desert.png")));
         icon1 = new Image(new Texture(Gdx.files.internal("world/icon1.png")));
         stage1 = new Image(new Texture(Gdx.files.internal("world/stage1.png")));
@@ -75,6 +82,9 @@ public class OverworldScreen extends BaseScreen {
         file = Gdx.files.local("data/progress-file.txt");
         assets.load("menu/click2.mp3", Sound.class);
 
+        
+        assets.load("hud/no-sound-button.png", Texture.class, linearFilter);
+        assets.load("hud/sound-button.png", Texture.class, linearFilter);
         
         Gdx.input.setInputProcessor(inputMultiplexer);
         assets.load("menu/click3.mp3", Sound.class);
@@ -99,7 +109,7 @@ public class OverworldScreen extends BaseScreen {
         backgroundMusic = new MyMusic(assets.get("world/overworldtheme.mp3", Music.class));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(viewport, batch);
         map.setName("map");
         water.setName("water");
         play.setName("play");
@@ -132,8 +142,10 @@ public class OverworldScreen extends BaseScreen {
         stage.addActor(icon5);
         stage.addActor(menu);
 
-        SoundIcon soundIcon = new SoundIcon();
-        soundIcon.create(stage);
+        SoundIcon soundIcon = new SoundIcon(stage);
+        soundIcon.create(
+                    assets.get("hud/no-sound-button.png", Texture.class),
+                    assets.get("hud/sound-button.png", Texture.class));
 
         map.setZIndex(2);
         water.setZIndex(1);

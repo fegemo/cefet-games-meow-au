@@ -53,8 +53,6 @@ public class MenuScreen extends BaseScreen {
 
     private MyMusic musicaTema;
 
-    private final InputMultiplexer inputMultiplexer;
-
     /**
      * Cria uma nova tela de menu.
      *
@@ -63,7 +61,6 @@ public class MenuScreen extends BaseScreen {
      */
     public MenuScreen(Game game, BaseScreen previous) {
         super(game, previous);
-        inputMultiplexer = new InputMultiplexer();
     }
 
     /**
@@ -96,8 +93,7 @@ public class MenuScreen extends BaseScreen {
 
         assets.load("hud/no-sound-button.png", Texture.class, linearFilter);
         assets.load("hud/sound-button.png", Texture.class, linearFilter);
-        soundIcon = new SoundIcon();
-        Gdx.input.setInputProcessor(inputMultiplexer);
+        soundIcon = new SoundIcon(new Stage(viewport, batch));
     }
 
     @Override
@@ -119,16 +115,10 @@ public class MenuScreen extends BaseScreen {
 
         click1 = new MySound(assets.get("menu/click1.mp3", Sound.class));
         click2 = new MySound(assets.get("menu/click2.mp3", Sound.class));
-        if (!soundIcon.isInicializado()) {
-            soundIcon.create(
+        soundIcon.create(
                     assets.get("hud/no-sound-button.png", Texture.class),
-                    assets.get("hud/sound-button.png", Texture.class),
-                    new Stage(this.viewport, this.batch)
-            );
-        } else {
-            soundIcon.create(new Stage(this.viewport, this.batch));
-        }
-        inputMultiplexer.addProcessor(soundIcon.getInputProcessor());
+                    assets.get("hud/sound-button.png", Texture.class));
+        Gdx.input.setInputProcessor(soundIcon.getInputProcessor());
     }
 
     /**
