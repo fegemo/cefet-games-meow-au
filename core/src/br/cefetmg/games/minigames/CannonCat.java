@@ -8,7 +8,9 @@ import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
+import java.util.ArrayList;
 
 /**
  * @author Kael
@@ -35,6 +37,7 @@ public class CannonCat extends MiniGame {
     private ObjectMap<Direction, Texture> cannonTextures;
 
     private MySound backgroundMusic;
+    private static ArrayList<Projectile> projectiles;
 
     public final int CHALLENGE_FAILED = 0,
             CHALLENGE_SOLVED = 1;
@@ -62,6 +65,8 @@ public class CannonCat extends MiniGame {
 
         backgroundMusic = new MySound(assets.get("cannon-cat/background-music.mp3", Sound.class));
         backgroundMusic.loop();
+        
+        projectiles = new ArrayList<Projectile>();
 
         for (int i = 0; i < NUMBER_OF_CATS; i++) {
             cat_x[i] = (int) (200 * Math.cos((i * Math.PI) / 4)) + 1280 / 2;
@@ -94,8 +99,10 @@ public class CannonCat extends MiniGame {
     @Override
     public void onHandlePlayingInput() {
         if (Gdx.input.justTouched()) {
-            if (remainingShots > 0) {
-                remainingShots--;
+            if (remainingShots-- > 0) {
+                //Dispara-se um projétil
+                projectiles.add(new Projectile(center_x, center_y, cat_x[cannonDirectionIndex], cat_y[cannonDirectionIndex]));
+                
                 if (cat_x[cannonDirectionIndex] != 0) {
                     cat_x[cannonDirectionIndex] = 0;
                     remainingCats--;
@@ -121,6 +128,8 @@ public class CannonCat extends MiniGame {
             cannonDirectionIndex++;
             cannonDirectionIndex = cannonDirectionIndex % NUMBER_OF_CATS;
         }
+        
+        Projectile.updateProjectilesList(projectiles);
     }
 
     @Override
@@ -132,6 +141,11 @@ public class CannonCat extends MiniGame {
         for (int i = 0; i < MAX_AMMO; i++) {
             batch.draw(cookie, cookie_x[i], cookie_y[i]);
         }
+        for (int i = 0; i < projectiles.size(); i++) {
+            Vector2 projectile = projectiles.get(i).updateCurrentPosition();
+            batch.draw(cookie, projectile.x, projectile.y);
+        }
+        
         //Desenham as posições do canhão de maneira a girar no sentido horário
         Direction currentDirection = Direction.valueOf(cannonDirectionIndex);
         batch.draw(cannonTextures.get(currentDirection), center_x, center_y);
@@ -177,6 +191,51 @@ public class CannonCat extends MiniGame {
                 }
             }
             return found;
+        }
+    }
+    
+    public static class Projectile {
+        private Vector2 currentPosition;
+        private Vector2 finalPosition;
+        
+        private static final float MINIMUM_LENGTH = 0.01f;
+        private static final float PROJECTILE_SPEED_SCALE = 2f;
+        
+        public Projectile(int xStart, int yStart, int xFinal, int yFinal) {
+            currentPosition = new Vector2(xStart, yStart);
+            finalPosition = new Vector2(xFinal, yFinal);
+            System.out.println(xStart + " " + yStart + " " + xFinal + " " + yFinal);
+        }
+        
+        public Vector2 getCurrentPosition() {
+            return currentPosition;
+        }
+        
+        public Vector2 getFinalPosition() {
+            return finalPosition;
+        }
+        
+        public Vector2 updateCurrentPosition() {
+            //Direção do projétil
+            Vector2 direction = (new Vector2(finalPosition)).sub(currentPosition).nor();
+
+            //Projétil caminha em direção ao destino
+            currentPosition.mulAdd(direction, PROJECTILE_SPEED_SCALE);
+            
+            return currentPosition;
+        }
+        
+        public static void updateProjectilesList(ArrayList<Projectile> projectiles) {
+            for(int i = 0; i < projectiles.size(); i++) {
+                //Pega a posição atual e a posição destino do projétil i
+                Vector2 currentPosition = projectiles.get(i).getCurrentPosition();
+                Vector2 finalPosition = projectiles.get(i).getFinalPosition();
+                
+                //O tiro passou do gato
+                Vector2 resultant = (new Vector2(currentPosition)).sub(finalPosition);
+                if(resultant.len() <= MINIMUM_LENGTH)
+                    projectiles.remove(i);
+            }
         }
     }
 }
