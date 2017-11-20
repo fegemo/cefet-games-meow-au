@@ -38,7 +38,7 @@ public class JetRat extends MiniGame {
     private float screenHeight;
     private float posX, posY;
     int srcX, troca;
-    float aceleracao, velocidade;
+    float velocidade,contador;
     private Sound meon;
 
     public JetRat(BaseScreen screen,
@@ -74,6 +74,7 @@ public class JetRat extends MiniGame {
         }, 0, (float) Math.random() + 0.7f);
         srcX = 0;
         velocidade = -1 * WORLD_HEIGHT * 0.0005f;
+        contador=0;
         meon.play(0.2f);
     }
 
@@ -129,21 +130,26 @@ public class JetRat extends MiniGame {
         }
         mouse.update(dt);
         srcX += 5;
-        if (aceleracao > -1 * WORLD_HEIGHT * 0.00009f);
+        /*if (aceleracao > -1 * WORLD_HEIGHT * 0.00009f);
         aceleracao -= WORLD_HEIGHT * 0.00005f; //gravidade
-
+        */
         if (posY < screenHeight + 2) {
-            posY -= velocidade + aceleracao;//2.5; 1;
+           // posY -= velocidade ;//2.5; 1;
+            posY  += WORLD_HEIGHT * 0.005f;
+
         }
         if (posX > screenWidth / 2 - 16) {
             posX -= 0.5;
         }
         if (Gdx.input.justTouched()) {
-            aceleracao += WORLD_HEIGHT * 0.002f;
-            posY -= WORLD_HEIGHT * 0.07;
-            posX += 2;
+            contador=15;
+           // posY -= WORLD_HEIGHT * 0.07;
+            posX += 0.5;
         }
-
+        if(contador>0){
+           posY -= WORLD_HEIGHT * 0.01;
+           contador--;
+        }
         // atualiza os inimigos (quadro de animação + colisão com dentes)
         for (int i = 0; i < this.enemies.size; i++) {
             Tube tube = this.enemies.get(i);
@@ -220,7 +226,11 @@ public class JetRat extends MiniGame {
         private static final int FRAME_WIDTH = 220;
         private static final int FRAME_HEIGHT = 390;
         private int size;
+        private int state;
 
+        public Tube() {
+            super(null, null);
+        }
         public Tube(final Texture tubesSpritesheet) {
 
             super(new HashMap<String, Animation>() {
@@ -231,7 +241,7 @@ public class JetRat extends MiniGame {
                     Animation sleep = new Animation(0.1f,
                             frames[0][0]);
                     Animation acordado = new Animation(0.1f,
-                            frames[0][1]);
+                            frames[0][1]);  
                     sleep.setPlayMode(Animation.PlayMode.NORMAL);
                     put("walking", sleep);
                     put("acordado", acordado);

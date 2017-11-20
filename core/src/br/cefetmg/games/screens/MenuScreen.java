@@ -126,10 +126,12 @@ public class MenuScreen extends BaseScreen {
                 }
                 if (creditsBounds.contains(clickPosition.x, clickPosition.y)) {
                     /*
-                    
+                                        
+
                     CHAMADA DA TELA DE CRÉDITOS
                     
                      */
+                    navigateToCredits();
                     click2.play();
                 }
                 if (exitBounds.contains(clickPosition.x, clickPosition.y)) {
@@ -213,7 +215,10 @@ public class MenuScreen extends BaseScreen {
     private void navigateToMicroGameScreen() {
         game.setScreen(new PlayingGamesScreen(game, this));
     }
+    private void navigateToCredits(){
+        game.setScreen(new CreditsScreen(game, this));
 
+    }
     /**
      * Libera os recursos necessários para esta tela.
      */
