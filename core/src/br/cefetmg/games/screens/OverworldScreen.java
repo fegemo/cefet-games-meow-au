@@ -1,5 +1,6 @@
 package br.cefetmg.games.screens;
 
+import br.cefetmg.games.Config;
 import br.cefetmg.games.graphics.hud.SoundIcon;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -32,7 +33,7 @@ public class OverworldScreen extends BaseScreen {
     private boolean check = false;
     private boolean stop,bool1=false;
     private Vector2[] posicaoIcone;
-    private boolean[] openStages;
+    private boolean[] openLevels;
     private Image map,
             icon1, stage1,
             icon2, stage2,
@@ -81,7 +82,7 @@ public class OverworldScreen extends BaseScreen {
         assets.load("menu/click3.mp3", Sound.class);
         assets.load("world/overworldtheme.mp3", Music.class); 
 
-        file = Gdx.files.local("data/progress-file.txt");
+        file = Gdx.files.local(Config.PROGRESS_LOCAL_FILE);
 
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
@@ -89,9 +90,9 @@ public class OverworldScreen extends BaseScreen {
     @Override
     protected void assetsLoaded() {
         locks = new ArrayList<Image>();
-        openStages = new boolean[NUMBER_OF_LEVELS];
-        for(int i = 0; i < NUMBER_OF_LEVELS; i++) {
-            openStages[i] = false;
+        openLevels = new boolean[NUMBER_OF_LEVELS];
+        for (int i = 0; i < NUMBER_OF_LEVELS; i++) {
+            openLevels[i] = false;
             locks.add(new Image(assets.get("world/cadeado.png", Texture.class)));
         }
         
@@ -273,7 +274,7 @@ public class OverworldScreen extends BaseScreen {
                 transitionScreen(new MenuScreen(super.game, this),
                         TransitionScreen.Effect.FADE_IN_OUT, 0.5f);
                 stop = true;
-            } else if (openStages[0]){
+            } else if (openLevels[0]){
                  if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
@@ -284,10 +285,10 @@ public class OverworldScreen extends BaseScreen {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
-                    openStages[0] = false;
+                    openLevels[0] = false;
                     desenhaMeio=true;
                 }
-            }else if (openStages[1]) {
+            }else if (openLevels[1]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
@@ -298,10 +299,10 @@ public class OverworldScreen extends BaseScreen {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
-                    openStages[1] = false;
+                    openLevels[1] = false;
                     desenhaMeio=true;
                 }
-            } else if (openStages[2]) {
+            } else if (openLevels[2]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
@@ -312,10 +313,10 @@ public class OverworldScreen extends BaseScreen {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
-                    openStages[2] = false;
+                    openLevels[2] = false;
                     desenhaMeio=true;
                 }
-            } else if (openStages[3]) {
+            } else if (openLevels[3]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
@@ -326,10 +327,10 @@ public class OverworldScreen extends BaseScreen {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
-                    openStages[3] = false;
+                    openLevels[3] = false;
                     desenhaMeio=true;
                 }
-            } else if (openStages[4]) {
+            } else if (openLevels[4]) {
                 if ("play".equals(hitActor.getName())) {
                     
                     stop = true;
@@ -342,7 +343,7 @@ public class OverworldScreen extends BaseScreen {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
-                    openStages[4] = false;
+                    openLevels[4] = false;
                     desenhaMeio=true;
                 }
             } else if ("icon1".equals(hitActor.getName())) {
@@ -369,7 +370,7 @@ public class OverworldScreen extends BaseScreen {
     }
 
    private void firstStage(boolean go) {
-        openStages[0] = true;
+        openLevels[0] = true;
         stage1.setZIndex(18);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
@@ -391,7 +392,7 @@ public class OverworldScreen extends BaseScreen {
     }
 
     private void secondStage(boolean go) {
-        openStages[1] = true;
+        openLevels[1] = true;
         stage2.setZIndex(18);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
@@ -414,7 +415,7 @@ public class OverworldScreen extends BaseScreen {
     }
 
     private void thirdStage(boolean go) {
-        openStages[2] = true;
+        openLevels[2] = true;
         stage3.setZIndex(18);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
@@ -435,7 +436,7 @@ public class OverworldScreen extends BaseScreen {
     }
 
     private void fourthStage(boolean go) {
-        openStages[3] = true;
+        openLevels[3] = true;
         stage4.setZIndex(18);
         if (go) {
             stage4.setZIndex(stage4.getZIndex() + 7);
@@ -457,7 +458,7 @@ public class OverworldScreen extends BaseScreen {
     }
 
     private void lastStage(boolean go) {
-        openStages[4] = true;
+        openLevels[4] = true;
         stage5.setZIndex(18);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
@@ -496,7 +497,7 @@ public class OverworldScreen extends BaseScreen {
     
     private void growEffect(Vector2 click) {
         Actor hitActor = stage.hit(click.x, click.y, false);
-        if (!stop && hitActor != null && !openStages[1] && !openStages[2] && !openStages[3] && !openStages[0] && !openStages[4]) {
+        if (!stop && hitActor != null && !openLevels[1] && !openLevels[2] && !openLevels[3] && !openLevels[0] && !openLevels[4]) {
             if ("icon1".equals(hitActor.getName())) {
                 if (check) {
                     icon1.setScale(.28f);
@@ -576,27 +577,27 @@ public class OverworldScreen extends BaseScreen {
 
     @Override
     public void update(float dt) {
-        if (openStages[0]) {
+        if (openLevels[0]) {
             showStage(stage1);
         } else {
             hideStage(stage1);
         }
-        if (openStages[1]) {
+        if (openLevels[1]) {
             showStage(stage2);
         } else {
             hideStage(stage2);
         }
-        if (openStages[2]) {
+        if (openLevels[2]) {
             showStage(stage3);
         } else {
             hideStage(stage3);
         }
-        if (openStages[3]) {
+        if (openLevels[3]) {
             showStage(stage4);
         } else {
             hideStage(stage4);
         }
-        if (openStages[4]) {
+        if (openLevels[4]) {
             showStage(stage5);
         } else {
             hideStage(stage5);

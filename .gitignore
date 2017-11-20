@@ -72,4 +72,6 @@ Thumbs.db
 
 
 # meow au specific
-localRanking.txt
+progress-file.txt
+local-ranking.txt
+

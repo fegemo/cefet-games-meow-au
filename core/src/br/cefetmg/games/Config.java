@@ -68,4 +68,13 @@ public class Config {
      */
     public static final float MINIGAME_COUNTDOWN_ON_HUD_BEGIN_AT = 3f;
 
+    /**
+     * Caminho do arquivo que salva o ranking local.
+     */
+    public static final String RANKING_LOCAL_FILE = "data/local-ranking.txt";
+    
+    /**
+     * Caminho do arquivo que salva o progresso do jogador localmente.
+     */
+    public static final String PROGRESS_LOCAL_FILE = "data/progress-file.txt";
 }

@@ -1,5 +1,6 @@
 package br.cefetmg.games.screens;
 
+import br.cefetmg.games.Config;
 import br.cefetmg.games.transition.TransitionScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -28,7 +29,6 @@ public class RankingScreen extends BaseScreen {
 
     private final Letter[][] letters;
 
-    private boolean fileExists;
     private boolean writingScore, showingScore;
 
     private float bottomX, bottomY, letterWidth, letterHeight;
@@ -62,9 +62,8 @@ public class RankingScreen extends BaseScreen {
     }
 
     private void initFromMenuScreen() {
-        file = Gdx.files.local("data/localRanking.txt");
-        fileExists = Gdx.files.local("data/localRanking.txt").exists();
-        if (!fileExists) {
+        file = Gdx.files.local(Config.RANKING_LOCAL_FILE);
+        if (!file.exists()) {
             file.writeString("", false);
         }
         fileContent = file.readString();
@@ -96,9 +95,8 @@ public class RankingScreen extends BaseScreen {
         pointerX = viewport.getWorldWidth() / 2;
         pointerY = viewport.getWorldHeight() / 2;
         pointerSize = letterWidth * 0.5f;
-        file = Gdx.files.local("data/localRanking.txt");
-        fileExists = Gdx.files.local("data/localRanking.txt").exists();
-        if (!fileExists) {
+        file = Gdx.files.local(Config.RANKING_LOCAL_FILE);
+        if (!file.exists()) {
             file.writeString("", false);
         }
         fileContent = file.readString();
