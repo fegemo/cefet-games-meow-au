@@ -47,18 +47,18 @@ public class CreditsScreen extends BaseScreen{
         //init font
         background = new TextureRegion(new Texture("menu/menu-background.png"));
         snackerComicParams= new FreeTypeFontLoaderParameter();
-        snackerComicParams.fontFileName = "fonts/DejaVuSans-Bold.ttf";
+        snackerComicParams.fontFileName = "fonts/orangejuice.ttf";
         snackerComicParams.fontParameters.size = 55;
         snackerComicParams.fontParameters.minFilter = Texture.TextureFilter.Linear;
         snackerComicParams.fontParameters.magFilter = Texture.TextureFilter.Linear;
         snackerComicParams2= new FreeTypeFontLoaderParameter();
-        snackerComicParams2.fontFileName = "fonts/DejaVuSans-Bold.ttf";
+        snackerComicParams2.fontFileName = "fonts/orangejuice.ttf";
         snackerComicParams2.fontParameters.size = 65;
         snackerComicParams2.fontParameters.minFilter = Texture.TextureFilter.Linear;
         snackerComicParams2.fontParameters.magFilter = Texture.TextureFilter.Linear;
-        assets.load("DejaVuSans-Bold1.ttf", BitmapFont.class, snackerComicParams);
-        assets.load("DejaVuSans-Bold2.ttf", BitmapFont.class, snackerComicParams2);
-        //init text
+        assets.load("orangejuice.ttf", BitmapFont.class, snackerComicParams);
+        assets.load("orangejuice.ttf", BitmapFont.class, snackerComicParams2);
+
         lines = new ArrayList<String>();
         linePos = new ArrayList<Vector2>();
         float aux=0;
@@ -108,10 +108,10 @@ public class CreditsScreen extends BaseScreen{
     @Override
     public void draw() {
 
-             font = assets.get("DejaVuSans-Bold1.ttf");
-             font.setColor(Color.BLACK);
-             bigfont = assets.get("DejaVuSans-Bold2.ttf");
-             bigfont.setColor(Color.BLACK);
+             font = assets.get("orangejuice.ttf");
+             font.setColor(Color.DARK_GRAY);
+             bigfont = assets.get("orangejuice.ttf");
+             bigfont.setColor(Color.DARK_GRAY);
 
 
              batch.begin();
@@ -121,17 +121,14 @@ public class CreditsScreen extends BaseScreen{
              for ( int i=0; i<(lines.size()-1);i++){
                     if(!lines.get(i).equals("")){
                     if(lines.get(i).charAt(0)=='-'){
-                      /*  
-                        assets.load("Roboto-Black.ttf", BitmapFont.class, snackerComicParams);
-                        font = assets.get("Roboto-Black.ttf");*/
-                        
                         bigfont.draw(batch, lines.get(i).substring(1, lines.get(i).length()), linePos.get(i).x, linePos.get(i).y);
-                     /* snackerComicParams.fontParameters.size = 25;
-                        assets.load("Roboto-Black.ttf", BitmapFont.class, snackerComicParams);
-                        font = assets.get("Roboto-Black.ttf");*/
-
+                        bigfont.setColor(Color.DARK_GRAY);
                     }else{
-                        font.draw(batch, lines.get(i), linePos.get(i).x, linePos.get(i).y);
+                        //font.draw(batch, lines.get(i), linePos.get(i).x, linePos.get(i).y);
+                        font.draw(batch, lines.get(i), linePos.get(i).x, linePos.get(i).y, viewport.getWorldWidth()/4, 1, false);
+                        font.setColor(Color.DARK_GRAY);
+               
+                       
                         
                     }
                  }
