@@ -3,6 +3,7 @@ package br.cefetmg.games.minigames;
 import static br.cefetmg.games.Config.*;
 import static br.cefetmg.games.minigames.CatAvoider.*;
 import static br.cefetmg.games.minigames.HeadSoccer.Player.convertToRad;
+import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
@@ -46,6 +47,9 @@ public class CatAvoider extends MiniGame {
     
     private final Wool wool = new Wool();
     private final Cat cat = new Cat();
+    
+    private final int MIN_DIFFICULTY = 1;
+    private final int MAX_DIFFICULTY = 5;
 
     public CatAvoider(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -169,9 +173,8 @@ public class CatAvoider extends MiniGame {
     }
 
     @Override
-    protected void configureDifficultyParameters(float difficulty) {
-
-        cat.speed = cat.speed + getCurveValue(cat.speed);
+     protected void configureDifficultyParameters(float difficulty) {
+        cat.speed = cat.speed + DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, MIN_DIFFICULTY, MAX_DIFFICULTY);
     }
 
     @Override
