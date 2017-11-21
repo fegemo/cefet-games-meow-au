@@ -4,10 +4,12 @@ import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.math.Vector3;
 import java.util.ArrayList;
 import java.util.Iterator;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -29,6 +31,10 @@ public class SpyFish extends MiniGame {
     private Texture texturaFundo;
     private Texture texturaMemoCard;
 
+    //sons
+    private MySound somPegarCartao;
+    private MySound somMudarAlvo;
+        
     private ArrayList<MemoryChip> chips;
 
     //elementos de logica
@@ -49,6 +55,10 @@ public class SpyFish extends MiniGame {
         this.texturaFish = assets.get("spy-fish/fish.png", Texture.class);
         this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
         this.texturaFundo = assets.get("spy-fish/ocean.png", Texture.class);
+        
+        this.somPegarCartao = new MySound(assets.get("spy-fish/smw_kick.wav", Sound.class));
+        this.somMudarAlvo = new MySound(assets.get("spy-fish/smw_fireball.wav", Sound.class));
+        
         chips = new ArrayList<MemoryChip>();
         for (int i = 0; i < this.maxChips; i++) {
             chips.add(new MemoryChip(texturaMemoCard, this.chipMaxSpeed));
@@ -71,6 +81,10 @@ public class SpyFish extends MiniGame {
         // move o peixe
         this.fish.updateAccordingToTheMouse(
                 getMousePosInGameWorld().x, getMousePosInGameWorld().y);
+        
+        if (Gdx.input.isTouched() || Gdx.input.justTouched()) {
+            this.somMudarAlvo.play(1.0f);
+        }
     }
 
     @Override
@@ -83,6 +97,9 @@ public class SpyFish extends MiniGame {
                 //se o peixe pegar um cartão de memoria
                 chipsTaken++;
                 iterator.remove();
+                // toca um efeito sonoro
+                this.somPegarCartao.play(1.0f);
+                
                 if (chipsTaken >= this.numberOfChipsToTake) {
                     super.challengeSolved();
                 }
