@@ -8,6 +8,8 @@ import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
 import java.util.ArrayList;
@@ -22,8 +24,6 @@ public class CannonCat extends MiniGame {
     public int cannonDirectionIndex = 0;
     public int remainingShots;
     private int remainingCats;
-    public int[] cat_x = new int[NUMBER_OF_CATS];
-    public int[] cat_y = new int[NUMBER_OF_CATS];
     public int[] cookie_x = new int[MAX_AMMO];
     public int[] cookie_y = new int[MAX_AMMO];
     public int center_x = 1200 / 2;
@@ -37,8 +37,11 @@ public class CannonCat extends MiniGame {
     private ObjectMap<Direction, Texture> cannonTextures;
 
     private MySound backgroundMusic;
+    private static ArrayList<Cat> cats;
     private static ArrayList<Projectile> projectiles;
 
+    private static final float CAT_SPEED_SCALE = 2f,
+            PROJECTILE_SPEED_SCALE = 2f;
     public final int CHALLENGE_FAILED = 0,
             CHALLENGE_SOLVED = 1;
 
@@ -65,13 +68,17 @@ public class CannonCat extends MiniGame {
 
         backgroundMusic = new MySound(assets.get("cannon-cat/background-music.mp3", Sound.class));
         backgroundMusic.loop();
-        
+
+        cats = new ArrayList<Cat>();
         projectiles = new ArrayList<Projectile>();
 
         for (int i = 0; i < NUMBER_OF_CATS; i++) {
-            cat_x[i] = (int) (200 * Math.cos((i * Math.PI) / 4)) + 1280 / 2;
-            cat_y[i] = (int) ((-1) * 200 * Math.sin((i * Math.PI) / 4)) + 720 / 2;
+            Vector2 startPoint = new Vector2((int) (200 * Math.cos((i * Math.PI) / 4)) + 1280 / 2, (int) ((-1) * 200 * Math.sin((i * Math.PI) / 4)) + 720 / 2);
+            Vector2 finalPoint = new Vector2(0, i * 2 * cat.getHeight());
+
+            cats.add(new Cat(new Sprite(cat), startPoint, finalPoint));
         }
+
         for (int i = 0; i < MAX_AMMO; i++) {
             cookie_x[i] = 300;
             cookie_y[i] = 200 + (-1) * i * 20;
@@ -82,12 +89,16 @@ public class CannonCat extends MiniGame {
 
     private void challengeFinished(int challengeResult) {
         backgroundMusic.stop();
-                    
+
         if (challengeResult == CHALLENGE_FAILED) {
             super.challengeFailed();
         } else if (challengeResult == CHALLENGE_SOLVED) {
             super.challengeSolved();
         }
+    }
+
+    private void checkColision() {
+
     }
 
     @Override
@@ -100,13 +111,18 @@ public class CannonCat extends MiniGame {
     public void onHandlePlayingInput() {
         if (Gdx.input.justTouched()) {
             if (remainingShots-- > 0) {
+
                 //Dispara-se um projétil
-                projectiles.add(new Projectile(center_x, center_y, cat_x[cannonDirectionIndex], cat_y[cannonDirectionIndex]));
-                
-                if (cat_x[cannonDirectionIndex] != 0) {
+                Vector2 startPoint = new Vector2(center_x, center_y);
+                Vector2 finalPoint = new Vector2(cats.get(cannonDirectionIndex).getX(), cats.get(cannonDirectionIndex).getY());
+                projectiles.add(new Projectile(new Sprite(cookie), startPoint, finalPoint));
+
+                checkColision();
+
+                /*if (cat_x[cannonDirectionIndex] != 0) {
                     cat_x[cannonDirectionIndex] = 0;
                     remainingCats--;
-                }
+                }*/
                 if (remainingCats == 0) {
                     challengeFinished(CHALLENGE_SOLVED);
                 } else if (remainingShots == 0) {
@@ -128,27 +144,45 @@ public class CannonCat extends MiniGame {
             cannonDirectionIndex++;
             cannonDirectionIndex = cannonDirectionIndex % NUMBER_OF_CATS;
         }
-        
-        Projectile.updateProjectilesList(projectiles);
+
+        updateCatsAndProjectilesLists();
     }
 
     @Override
     public void onDrawGame() {
         batch.draw(background, 0, 0);
-        for (int i = 0; i < NUMBER_OF_CATS; i++) {
-            batch.draw(cat, cat_x[i], cat_y[i]);
+        for (int i = 0; i < cats.size(); i++) {
+            cats.get(i).draw(batch);
         }
         for (int i = 0; i < MAX_AMMO; i++) {
             batch.draw(cookie, cookie_x[i], cookie_y[i]);
         }
         for (int i = 0; i < projectiles.size(); i++) {
-            Vector2 projectile = projectiles.get(i).updateCurrentPosition();
-            batch.draw(cookie, projectile.x, projectile.y);
+            projectiles.get(i).draw(batch);
         }
-        
+
         //Desenham as posições do canhão de maneira a girar no sentido horário
         Direction currentDirection = Direction.valueOf(cannonDirectionIndex);
         batch.draw(cannonTextures.get(currentDirection), center_x, center_y);
+    }
+
+    public void updateCatsAndProjectilesLists() {
+        for (int i = 0; i < cats.size(); i++) {
+            for (int j = 0; j < projectiles.size(); j++) {
+                //Move-se o projétil
+                projectiles.get(j).updateCurrentPosition(PROJECTILE_SPEED_SCALE);
+                
+                //Averigua colisão
+                if (cats.get(i).getState() == Cat.START_STATE) {
+                    if (cats.get(i).getSprite().getBoundingRectangle().overlaps(projectiles.get(j).getSprite().getBoundingRectangle())) {
+                        cats.get(i).setState(Cat.MOVING_STATE);
+                        projectiles.remove(j);
+                    }
+                }
+            }
+            //Move-se o gato se este estiver em movimento
+            cats.get(i).updateCurrentPosition(CAT_SPEED_SCALE);
+        }
     }
 
     @Override
@@ -192,50 +226,88 @@ public class CannonCat extends MiniGame {
             }
             return found;
         }
-    }
-    
-    public static class Projectile {
+    };
+
+    public static class Object {
+
         private Vector2 currentPosition;
         private Vector2 finalPosition;
-        
-        private static final float MINIMUM_LENGTH = 0.01f;
-        private static final float PROJECTILE_SPEED_SCALE = 2f;
-        
-        public Projectile(int xStart, int yStart, int xFinal, int yFinal) {
-            currentPosition = new Vector2(xStart, yStart);
-            finalPosition = new Vector2(xFinal, yFinal);
-            System.out.println(xStart + " " + yStart + " " + xFinal + " " + yFinal);
+        private Sprite sprite;
+
+        public Object(Sprite sprite, Vector2 startPoint, Vector2 finalPoint) {
+            this.sprite = sprite;
+            currentPosition = new Vector2(startPoint);
+            finalPosition = new Vector2(finalPoint);
+
+            this.sprite.setPosition(currentPosition.x, currentPosition.y);
         }
-        
+
+        public void draw(SpriteBatch batch) {
+            batch.draw(sprite, currentPosition.x, currentPosition.y);
+        }
+
         public Vector2 getCurrentPosition() {
             return currentPosition;
         }
-        
+
         public Vector2 getFinalPosition() {
             return finalPosition;
         }
-        
-        public Vector2 updateCurrentPosition() {
+
+        public Sprite getSprite() {
+            return sprite;
+        }
+
+        public float getX() {
+            return currentPosition.x;
+        }
+
+        public float getY() {
+            return currentPosition.y;
+        }
+
+        public void updateCurrentPosition(float speed) {
             //Direção do projétil
             Vector2 direction = (new Vector2(finalPosition)).sub(currentPosition).nor();
 
             //Projétil caminha em direção ao destino
-            currentPosition.mulAdd(direction, PROJECTILE_SPEED_SCALE);
-            
-            return currentPosition;
+            currentPosition.mulAdd(direction, speed);
+            this.sprite.setPosition(currentPosition.x, currentPosition.y);
+
         }
-        
-        public static void updateProjectilesList(ArrayList<Projectile> projectiles) {
-            for(int i = 0; i < projectiles.size(); i++) {
-                //Pega a posição atual e a posição destino do projétil i
-                Vector2 currentPosition = projectiles.get(i).getCurrentPosition();
-                Vector2 finalPosition = projectiles.get(i).getFinalPosition();
-                
-                //O tiro passou do gato
-                Vector2 resultant = (new Vector2(currentPosition)).sub(finalPosition);
-                if(resultant.len() <= MINIMUM_LENGTH)
-                    projectiles.remove(i);
+    };
+
+    public static class Projectile extends Object {
+
+        public Projectile(Sprite sprite, Vector2 startPoint, Vector2 finalPoint) {
+            super(sprite, startPoint, finalPoint);
+        }
+    };
+
+    public static class Cat extends Object {
+
+        public static final int START_STATE = 0,
+                MOVING_STATE = 1,
+                FINAL_STATE = 2;
+
+        private int state = START_STATE;
+
+        public Cat(Sprite sprite, Vector2 startPoint, Vector2 finalPoint) {
+            super(sprite, startPoint, finalPoint);
+        }
+
+        public int getState() {
+            return state;
+        }
+
+        public void setState(int state) {
+            this.state = state;
+        }
+
+        public void updateCurrentPosition(float speed) {
+            if (this.state == MOVING_STATE) {
+                super.updateCurrentPosition(speed);
             }
         }
-    }
+    };
 }
