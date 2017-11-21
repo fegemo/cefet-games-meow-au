@@ -1,4 +1,4 @@
-Colaboradores:
+COLABORADORES:
 
 Adriel Augusto
 Andre Brait
@@ -14,11 +14,10 @@ Luiza dos Anjos
 Arthur Abeilice
 Miguel Rodrigues
 Natalia Natsumy
-Padro Belisario
+Pedro Belisario
 Pedro Henrique
 Rafael Barbosa
 Rogenes Reis
 Sarah Rodrigues
-Tulio
+Tulio Santos
 Vinicius Henrique
-
