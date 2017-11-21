@@ -27,12 +27,15 @@ import java.util.List;
 
 public class CreditsScreen extends BaseScreen{
     private BitmapFont font;
+    private BitmapFont bigfont;
     private List<String> lines; 
     private List<Vector2> linePos;
     static int SPACING = 50;
     FreeTypeFontGenerator generator;
     private TextureRegion background;
-
+    FreeTypeFontLoaderParameter snackerComicParams ;
+   FreeTypeFontLoaderParameter snackerComicParams2 ;
+    int bigword;
     public CreditsScreen(Game game, BaseScreen previous) {
         super(game, previous);
         
@@ -42,14 +45,19 @@ public class CreditsScreen extends BaseScreen{
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         //init font
-        background = new TextureRegion(new Texture("creditsScreen/credits-background.jpg"));
-        FreeTypeFontLoaderParameter snackerComicParams = new FreeTypeFontLoaderParameter();
-        snackerComicParams.fontFileName = "fonts/sawasdee-50.fnt";
-        snackerComicParams.fontParameters.size = 50;
+        background = new TextureRegion(new Texture("menu/menu-background.png"));
+        snackerComicParams= new FreeTypeFontLoaderParameter();
+        snackerComicParams.fontFileName = "fonts/DejaVuSans-Bold.ttf";
+        snackerComicParams.fontParameters.size = 55;
         snackerComicParams.fontParameters.minFilter = Texture.TextureFilter.Linear;
         snackerComicParams.fontParameters.magFilter = Texture.TextureFilter.Linear;
-        assets.load("snacker-comic-50.ttf", BitmapFont.class, snackerComicParams);
-        
+        snackerComicParams2= new FreeTypeFontLoaderParameter();
+        snackerComicParams2.fontFileName = "fonts/DejaVuSans-Bold.ttf";
+        snackerComicParams2.fontParameters.size = 65;
+        snackerComicParams2.fontParameters.minFilter = Texture.TextureFilter.Linear;
+        snackerComicParams2.fontParameters.magFilter = Texture.TextureFilter.Linear;
+        assets.load("DejaVuSans-Bold1.ttf", BitmapFont.class, snackerComicParams);
+        assets.load("DejaVuSans-Bold2.ttf", BitmapFont.class, snackerComicParams2);
         //init text
         lines = new ArrayList<String>();
         linePos = new ArrayList<Vector2>();
@@ -60,10 +68,12 @@ public class CreditsScreen extends BaseScreen{
                 
                 while ((line = br.readLine()) != null) {
                     lines.add(line);
-                    linePos.add(new Vector2((float) (Gdx.graphics.getWidth()*0.5),aux));
+                    linePos.add(new Vector2((float) (Gdx.graphics.getWidth()*0.55),aux));
+                 
                     aux-=SPACING;
                 }
                 br.close();
+                
     } 
     catch(Exception e)
     {
@@ -86,25 +96,43 @@ public class CreditsScreen extends BaseScreen{
        
 
         for ( int i=0; i<lines.size();i++){
-            linePos.get(i).y+=2;
+            linePos.get(i).y+=1.5;
         }
 
-        if(linePos.get(lines.size()-1).y>Gdx.graphics.getHeight()+lines.size()*SPACING){
+        if(linePos.get(lines.size()-1).y>Gdx.graphics.getHeight()+lines.size()*(SPACING-1)){
                game.setScreen(new MenuScreen(game, this));
         }
     }
 
+    
     @Override
     public void draw() {
-             font = assets.get("snacker-comic-50.ttf");
-             font.setColor(Color.GREEN);
+             font = assets.get("DejaVuSans-Bold1.ttf");
+             font.setColor(Color.BLACK);
+             bigfont = assets.get("DejaVuSans-Bold2.ttf");
+             bigfont.setColor(Color.BLACK);
+
              batch.begin();
              batch.draw(background, 0, 0,
              viewport.getWorldWidth(),
              viewport.getWorldHeight());
-             for ( int i=0; i<lines.size();i++){
-             //    if(lines.get(i).getChars(0, i, dst, i))
-                   font.draw(batch, lines.get(i), linePos.get(i).x, linePos.get(i).y);
+             for ( int i=0; i<(lines.size()-1);i++){
+                    if(!lines.get(i).equals("")){
+                    if(lines.get(i).charAt(0)=='-'){
+                      /*  
+                        assets.load("Roboto-Black.ttf", BitmapFont.class, snackerComicParams);
+                        font = assets.get("Roboto-Black.ttf");*/
+                        
+                        bigfont.draw(batch, lines.get(i).substring(1, lines.get(i).length()), linePos.get(i).x, linePos.get(i).y);
+                     /* snackerComicParams.fontParameters.size = 25;
+                        assets.load("Roboto-Black.ttf", BitmapFont.class, snackerComicParams);
+                        font = assets.get("Roboto-Black.ttf");*/
+
+                    }else{
+                        font.draw(batch, lines.get(i), linePos.get(i).x, linePos.get(i).y);
+                        
+                    }
+                 }
              }
              batch.end();
     }
