@@ -97,7 +97,7 @@ public class CreditsScreen extends BaseScreen{
     @Override
     public void draw() {
              font = assets.get("snacker-comic-50.ttf");
-             font.setColor(Color.GREEN);
+             font.setColor(Color.CYAN);
              batch.begin();
              batch.draw(background, 0, 0,
              viewport.getWorldWidth(),
