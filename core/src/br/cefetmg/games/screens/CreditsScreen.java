@@ -30,7 +30,7 @@ public class CreditsScreen extends BaseScreen{
     private BitmapFont bigfont;
     private List<String> lines; 
     private List<Vector2> linePos;
-    static int SPACING = 50;
+    static int SPACING = 60;
     FreeTypeFontGenerator generator;
     private TextureRegion background;
     FreeTypeFontLoaderParameter snackerComicParams ;
@@ -99,7 +99,7 @@ public class CreditsScreen extends BaseScreen{
             linePos.get(i).y+=1.5;
         }
 
-        if(linePos.get(lines.size()-1).y>Gdx.graphics.getHeight()+lines.size()*(SPACING-1)){
+        if(linePos.get(lines.size()-1).y>Gdx.graphics.getHeight()+lines.size()*6){
                game.setScreen(new MenuScreen(game, this));
         }
     }
@@ -107,10 +107,12 @@ public class CreditsScreen extends BaseScreen{
     
     @Override
     public void draw() {
+
              font = assets.get("DejaVuSans-Bold1.ttf");
              font.setColor(Color.BLACK);
              bigfont = assets.get("DejaVuSans-Bold2.ttf");
              bigfont.setColor(Color.BLACK);
+
 
              batch.begin();
              batch.draw(background, 0, 0,
