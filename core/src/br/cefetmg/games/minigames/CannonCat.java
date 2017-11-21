@@ -10,6 +10,8 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
 import java.util.ArrayList;
@@ -40,7 +42,7 @@ public class CannonCat extends MiniGame {
     private static ArrayList<Cat> cats;
     private static ArrayList<Projectile> projectiles;
 
-    private static final float CAT_SPEED_SCALE = 2f,
+    private static final float CAT_SPEED_SCALE = 4f,
             PROJECTILE_SPEED_SCALE = 2f;
     public final int CHALLENGE_FAILED = 0,
             CHALLENGE_SOLVED = 1;
@@ -74,7 +76,12 @@ public class CannonCat extends MiniGame {
 
         for (int i = 0; i < NUMBER_OF_CATS; i++) {
             Vector2 startPoint = new Vector2((int) (200 * Math.cos((i * Math.PI) / 4)) + 1280 / 2, (int) ((-1) * 200 * Math.sin((i * Math.PI) / 4)) + 720 / 2);
-            Vector2 finalPoint = new Vector2(0, i * 2 * cat.getHeight());
+            Vector2 finalPoint;
+            
+            if (i < NUMBER_OF_CATS/2)
+                finalPoint = new Vector2(0, i * 2 * cat.getHeight());
+            else
+                finalPoint = new Vector2(viewport.getScreenWidth() - cat.getWidth(), (i - NUMBER_OF_CATS/2) * 2 * cat.getHeight());
 
             cats.add(new Cat(new Sprite(cat), startPoint, finalPoint));
         }
@@ -96,11 +103,7 @@ public class CannonCat extends MiniGame {
             super.challengeSolved();
         }
     }
-
-    private void checkColision() {
-
-    }
-
+    
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         //velocidade = 1+3*difficulty;
@@ -111,23 +114,10 @@ public class CannonCat extends MiniGame {
     public void onHandlePlayingInput() {
         if (Gdx.input.justTouched()) {
             if (remainingShots-- > 0) {
-
                 //Dispara-se um projétil
                 Vector2 startPoint = new Vector2(center_x, center_y);
                 Vector2 finalPoint = new Vector2(cats.get(cannonDirectionIndex).getX(), cats.get(cannonDirectionIndex).getY());
                 projectiles.add(new Projectile(new Sprite(cookie), startPoint, finalPoint));
-
-                checkColision();
-
-                /*if (cat_x[cannonDirectionIndex] != 0) {
-                    cat_x[cannonDirectionIndex] = 0;
-                    remainingCats--;
-                }*/
-                if (remainingCats == 0) {
-                    challengeFinished(CHALLENGE_SOLVED);
-                } else if (remainingShots == 0) {
-                    challengeFinished(CHALLENGE_FAILED);
-                }
             } else {
                 challengeFinished(CHALLENGE_FAILED);
             }
@@ -146,6 +136,12 @@ public class CannonCat extends MiniGame {
         }
 
         updateCatsAndProjectilesLists();
+        
+        if (Cat.howManyStartStates(cats) == 0) {
+            challengeFinished(CHALLENGE_SOLVED);
+        } else if (remainingShots == 0) {
+            challengeFinished(CHALLENGE_FAILED);
+        }
     }
 
     @Override
@@ -233,13 +229,19 @@ public class CannonCat extends MiniGame {
         private Vector2 currentPosition;
         private Vector2 finalPosition;
         private Sprite sprite;
+        
+        private final float CIRCLE_RADIUS = 2f;
+        
+        private Circle finalPointLimitCircle;
 
         public Object(Sprite sprite, Vector2 startPoint, Vector2 finalPoint) {
             this.sprite = sprite;
             currentPosition = new Vector2(startPoint);
             finalPosition = new Vector2(finalPoint);
+            finalPointLimitCircle = new Circle();
 
             this.sprite.setPosition(currentPosition.x, currentPosition.y);
+            finalPointLimitCircle.set(finalPosition.x, finalPosition.y, CIRCLE_RADIUS);
         }
 
         public void draw(SpriteBatch batch) {
@@ -272,9 +274,37 @@ public class CannonCat extends MiniGame {
 
             //Projétil caminha em direção ao destino
             currentPosition.mulAdd(direction, speed);
-            this.sprite.setPosition(currentPosition.x, currentPosition.y);
-
+            sprite.setPosition(currentPosition.x, currentPosition.y);
+            
+            if(rectAndCircleOverlap(sprite.getBoundingRectangle(), finalPointLimitCircle)) {
+                currentPosition.set(finalPosition);
+            }
         }
+        
+        /**
+        * Verifica se um círculo e um retângulo colidem.
+        * @param c círculo
+        * @param r retângulo
+        * @return true se há colisão, false caso contrário
+        */
+       public static final boolean rectAndCircleOverlap(Rectangle r, Circle c) {
+           //Vetor que liga os centros das figuras geométricas
+           Vector2 vectorConnectingCenters = new Vector2((r.x + r.width/2) - c.x, (r.y + r.height/2) - c.y);
+           //Vector interno ao retângulo, paralelo ao eixo Y e de comprimento ALTURA/2
+           Vector2 vectorYAxisRectangle = new Vector2(0, (r.y + r.height) - (r.y + r.height/2));
+
+           //Distância unidimensional entre as coordenadas Y do retângulo e do círculo
+           float distanceYBetweenCenters = (new Vector2(0, (r.y + r.height/2) - c.y)).len();
+
+           //Limita-se o tamanho do vetor 'vectorYAxisRectangle' garantindo que ele está dentro do retângulo & 
+           //não ultrapassa a altura em relação ao centro do círculo
+           Vector2 vectorClampedY = vectorYAxisRectangle.clamp(0, Math.min(distanceYBetweenCenters, r.height/2));
+
+           //Se houver colisão, a subtração de vetores abaixo resultará em um vetor paralelo ao eixo X
+           if(vectorConnectingCenters.sub(vectorClampedY).len() <= r.height/2 + c.radius) return true; //Utliza-se altura pois o retângulo do tiro está em pé
+
+           return false;
+       }
     };
 
     public static class Projectile extends Object {
@@ -298,6 +328,17 @@ public class CannonCat extends MiniGame {
 
         public int getState() {
             return state;
+        }
+        
+        public static int howManyStartStates(ArrayList<Cat> cats) {
+            int startState = 0;
+            
+            for(int i = 0; i < cats.size(); i++) {
+                if(cats.get(i).getState() == START_STATE)
+                    startState++;
+            }
+            
+            return startState;
         }
 
         public void setState(int state) {
