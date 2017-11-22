@@ -81,7 +81,7 @@ public class CannonCat extends MiniGame {
             if (i < NUMBER_OF_CATS / 2) {
                 finalPoint = new Vector2(0, i * 2 * cat.getHeight());
             } else {
-                finalPoint = new Vector2(viewport.getScreenWidth() - cat.getWidth(), (i - NUMBER_OF_CATS / 2) * 2 * cat.getHeight());
+                finalPoint = new Vector2(viewport.getWorldWidth()- cat.getWidth(), (i - NUMBER_OF_CATS / 2) * 2 * cat.getHeight());
             }
 
             cats.add(new Cat(new Sprite(cat), startPoint, finalPoint));
