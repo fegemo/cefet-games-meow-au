@@ -348,20 +348,6 @@ public class MouseAttack extends MiniGame {
                 this.getAnimation().setPlayMode(Animation.PlayMode.NORMAL);
                 
             }
-                
-            
-            /*if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
-                Gdx.input.setInputProcessor(new InputAdapter() {
-                    @Override
-                    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                        if (button == Buttons.LEFT) {
-                            cat.changeAnimation();
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-            }*/
         }
     }
 
