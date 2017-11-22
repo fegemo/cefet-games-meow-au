@@ -5,6 +5,7 @@ import static br.cefetmg.games.Config.WORLD_WIDTH;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
+import br.cefetmg.games.sound.MySound;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
@@ -44,8 +45,8 @@ public class MouseAttack extends MiniGame {
     private int enemiesKilled;
     private int spawnedEnemies;
 
-    private Sound shootSound;
-    private Sound monsterDieSound;
+    private MySound shootSound;
+    private MySound monsterDieSound;
 
     private float initialEnemyScale;
     private int totalEnemies;
@@ -77,10 +78,10 @@ public class MouseAttack extends MiniGame {
                 "mouse-attack/target.png", Texture.class);
         projectileTexture = assets.get(
                 "mouse-attack/projetil.png", Texture.class);
-        shootSound = assets.get(
-                "mouse-attack/shoot-sound.mp3", Sound.class);
-        monsterDieSound = assets.get(
-                "mouse-attack/monster-dying.mp3", Sound.class);
+        shootSound = new MySound(assets.get(
+                "mouse-attack/shoot-sound.mp3", Sound.class));
+        monsterDieSound = new MySound(assets.get(
+                 "mouse-attack/monster-dying.mp3", Sound.class));
 
         target = new Sprite(targetTexture);
         target.setOriginCenter();
@@ -407,13 +408,10 @@ public class MouseAttack extends MiniGame {
         }
 
         public void update(float deltaTime) {
+            super.update(deltaTime);
             position.add(velocity.x * deltaTime, velocity.y * deltaTime);
-            //projeSprite.setPosition(position.x+100, position.y+100);
         }
 
-        /*public void setPosition(float x, float y) {
-            //projeSprite.setPosition(x, y);
-        }*/
 
     }
 
