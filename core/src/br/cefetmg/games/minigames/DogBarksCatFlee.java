@@ -5,6 +5,7 @@ import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,10 +30,11 @@ public class DogBarksCatFlee extends MiniGame {
     private Texture dogTextureWalking;
     private Animation<TextureRegion> dogWalking;
     private Animation<TextureRegion> dogBarking;
-    private Sound barkSound;
-    private Sound meawSound;
-    private Sound whiningSound;
+    private MySound barkSound;
+    private MySound meawSound;
+    private MySound whiningSound;
     private Texture catTexture;
+    private Texture catTexture2;
     private Cat enemy;
     private Array<Tiles> tilesVector;
     private Vector2 posicaoInicial;
@@ -40,12 +42,14 @@ public class DogBarksCatFlee extends MiniGame {
     private float spawnInterval;
     private float tempoDeAnimacao;
     private int morreu = 0;
+    private float difficulty;
     public float telaAnda = 3.5f;
     public int contadorLatidos = 0;
     public boolean consegueOuvir = false;
 
     public DogBarksCatFlee(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
+        this.difficulty = difficulty;
     }
 
     private void tilesDraw() {
@@ -81,10 +85,13 @@ public class DogBarksCatFlee extends MiniGame {
     }
 
     private void catDraw() {
-        if (!enemy.isVivo()) {
-            batch.draw(enemy.getTexture(), enemy.getPosition().x, enemy.getPosition().y);
-        }
-        if (enemy.isVivo() && morreu < 10) {
+        if (!enemy.isVivo()){
+            if(player.barkCounter < enemy.getScareThreshold()/2 ){
+                batch.draw(enemy.getTexture(), enemy.getPosition().x, enemy.getPosition().y);
+            }else{
+                batch.draw(catTexture2,enemy.getPosition().x,enemy.getPosition().y);
+            }
+        }else{
             batch.draw(deadTexture, enemy.oldPos.x, enemy.oldPos.y);
         }
     }
@@ -92,9 +99,9 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     protected void onStart() {
         tempoDeAnimacao = 0;
-        whiningSound = assets.get("DogBarksCatFlee/dog-whining-sound.mp3", Sound.class);
-        deadTexture = assets.get("DogBarksCatFlee/kitten1-alt_3.png", Texture.class);
-        barkSound = assets.get("DogBarksCatFlee/BarkSound.wav", Sound.class);
+        whiningSound = new MySound(assets.get("DogBarksCatFlee/dog-whining-sound.mp3", Sound.class));
+        deadTexture = assets.get("DogBarksCatFlee/kitten1-alt_4.png", Texture.class);
+        barkSound = new MySound( assets.get("DogBarksCatFlee/BarkSound.wav", Sound.class));
         dogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
         dogTexture = assets.get("DogBarksCatFlee/dog_spritesheet.png", Texture.class);
         dogTextureWalking = assets.get("DogBarksCatFlee/spritesheet2.png", Texture.class);
@@ -113,8 +120,9 @@ public class DogBarksCatFlee extends MiniGame {
                 quadrosDeAnimacao2[0][4]);
         dogBarking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         dogWalking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        catTexture2 = assets.get("DogBarksCatFlee/kitten1-alt_3.png", Texture.class);
         catTexture = assets.get("DogBarksCatFlee/kitten1-alt.png", Texture.class);
-        meawSound = assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class);
+        meawSound = new MySound(assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class));
 
         tileTexture[0] = assets.get("DogBarksCatFlee/tile0.png", Texture.class);
         tileTexture[1] = assets.get("DogBarksCatFlee/tile1.png", Texture.class);
@@ -152,14 +160,14 @@ public class DogBarksCatFlee extends MiniGame {
 
     private void initializeCat() {
         TextureRegion[][] textureCat = TextureRegion.split(catTexture, catTexture.getWidth(), catTexture.getHeight());
-        enemy = new Cat((int) ((float) scareThreshold() * DifficultyCurve.S.getCurveValueBetween(spawnInterval, 5f, 1f)), posicaoInicial, textureCat[0][0]);
-        enemy.setQuantidadeVidas(spawnInterval);
+        enemy = new Cat(scareThreshold(difficulty), posicaoInicial, textureCat[0][0]);
+        enemy.setQuantidadeVidas(1);
         enemy.setPosition(enemy.getInitialPosition());
         enemy.spawn();
     }
 
-    private int scareThreshold() {
-        return MathUtils.random(1, 5);
+    private int scareThreshold(float difficulty) {
+        return (int) DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 3, 20);
     }
 
     @Override
@@ -229,7 +237,8 @@ public class DogBarksCatFlee extends MiniGame {
         public boolean mostrarGatoMorto = false;
         public Vector2 oldPos;
         public boolean visivel = true;
-
+        public Texture texturaResabiado1;
+        
         // Construtor do Jogo DogBarksCatFlee
         public Cat(int scaredThreshold, Vector2 position, TextureRegion textureCat) {
             super(position, textureCat);
@@ -259,7 +268,7 @@ public class DogBarksCatFlee extends MiniGame {
             this.morto = true;  
             oldPos = this.getPosition();
             mostrarGatoMorto = !mostrarGatoMorto;
-            setPosition(new Vector2(POSICAO_INICIAL_GATO_X, POSICAO_INICIAL_GATO_Y));
+            //setPosition(new Vector2(POSICAO_INICIAL_GATO_X, POSICAO_INICIAL_GATO_Y));
         }
 
         public boolean isVivo() {
@@ -271,7 +280,7 @@ public class DogBarksCatFlee extends MiniGame {
         }
 
         public void setQuantidadeVidas(float variavelControleDificuldade) {
-            this.quantidadeVidas = (int) (MathUtils.ceil(variavelControleDificuldade * 8));
+            this.quantidadeVidas = 1;//(int) (MathUtils.ceil(variavelControleDificuldade * 8));
         }
 
         public boolean shouldTriggerFleeAction(int barkCounter) {
@@ -301,7 +310,7 @@ public class DogBarksCatFlee extends MiniGame {
         }
 
         public TextureRegion getBarkingAnimationFrame(float dt) {
-            return ((TextureRegion) animacaoLatindo.getKeyFrame(dt));
+            return ((TextureRegion) animacaoLatindo.getKeyFrame(0.93f));
         }
 
         public TextureRegion getWalkingAnimationFrame(float dt) {

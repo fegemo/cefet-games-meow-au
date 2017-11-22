@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MySound;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
@@ -23,7 +25,7 @@ public class NinjaCat extends MiniGame {
 
     private float spawnInterval;
     private float speed;
-    private final float catSpeed = 24f;
+    private float catSpeed;
 
     private Sprite backGround;
     private Sprite arrow;
@@ -56,10 +58,10 @@ public class NinjaCat extends MiniGame {
     private Texture killZombie;
     private Texture catPose;
 
-    private Sound intro;
-    private Sound ken1, ken2;
-    private Sound gosound;
-    private Sound dzsound, dzsound1;
+    private MySound intro;
+    private MySound ken1, ken2;
+    private MySound gosound;
+    private MySound dzsound, dzsound1;
 
     public NinjaCat(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -70,7 +72,7 @@ public class NinjaCat extends MiniGame {
     @Override
     protected void onStart() {
 
-        bgTexture = assets.get("ninja-cat/bg1.jpg", Texture.class);
+        bgTexture = assets.get("ninja-cat/bg1.png", Texture.class);
         arrowTexture = assets.get("ninja-cat/arrow.png", Texture.class);
         zombieTex = assets.get("ninja-cat/zombie.png", Texture.class);
         zombieflipTex = assets.get("ninja-cat/zombieflip.png", Texture.class);
@@ -90,19 +92,19 @@ public class NinjaCat extends MiniGame {
         texhit1 = assets.get("ninja-cat/hit1.png", Texture.class);
         catPose = assets.get("ninja-cat/intro.png", Texture.class);
 
-        intro = assets.get("ninja-cat/Intro.mp3", Sound.class);
-        ken1 = assets.get("ninja-cat/ken1.mp3", Sound.class);
-        ken2 = assets.get("ninja-cat/ken2.mp3", Sound.class);
-        gosound = assets.get("ninja-cat/GameOver.mp3", Sound.class);
-        dzsound = assets.get("ninja-cat/zombie.mp3", Sound.class);
-        dzsound1 = assets.get("ninja-cat/zombie1.mp3", Sound.class);
+        intro = new MySound(assets.get("ninja-cat/Intro.mp3", Sound.class));
+        ken1 = new MySound(assets.get("ninja-cat/ken1.mp3", Sound.class));
+        ken2 = new MySound(assets.get("ninja-cat/ken2.mp3", Sound.class));
+        gosound = new MySound(assets.get("ninja-cat/GameOver.mp3", Sound.class));
+        dzsound = new MySound(assets.get("ninja-cat/zombie.mp3", Sound.class));
+        dzsound1 = new MySound(assets.get("ninja-cat/zombie1.mp3", Sound.class));
 
         arrow = new Sprite(arrowTexture);
         arrow.setScale(0.08f);
         arrow.setOrigin(0, 0);
         arrow.setPosition(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2);
 
-        backGround = new Sprite(bgTexture);
+        backGround = new BackGround(bgTexture);
         backGround.setOrigin(0, 0);
         backGround.setScale(viewport.getWorldWidth() / backGround.getWidth(), viewport.getWorldHeight() / backGround.getHeight());
         backGround.setPosition(0, 0);
@@ -147,7 +149,7 @@ public class NinjaCat extends MiniGame {
 
     private void spawnZombies() {
         Zombie zomb;
-        if (rand.nextInt() % 2 == 0) {
+        if (spawnedZombies % 2 == 0) {
             zomb = new Zombie(zombieTex);
             zomb.setCenter(0, 0);
             zomb.setScale(2.25f);
@@ -167,8 +169,9 @@ public class NinjaCat extends MiniGame {
         this.speed = DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 2, 6);
         this.spawnInterval = DifficultyCurve.S_NEGATIVE
-                .getCurveValueBetween(difficulty, 1.5f, 2.5f);
-        this.totalZombies = (int) Math.ceil(maxDuration / spawnInterval) - 3;
+                .getCurveValueBetween(difficulty, .65f, 2.5f);
+        this.totalZombies = (int) Math.ceil(maxDuration / spawnInterval) + 8;
+        this.catSpeed = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 24, 33);
     }
 
     @Override
@@ -195,8 +198,7 @@ public class NinjaCat extends MiniGame {
                 cat.flipFrames(true, false);
                 right = false;
             }
-
-            if (Gdx.input.justTouched() && !rampage && !gameover) {
+            if (!rampage && !gameover) {
                 for (Zombie zomb : zombies) {
                     if (zomb.getBoundingRectangle().overlaps(arrow.getBoundingRectangle())) {
                         rampage = true;
@@ -208,6 +210,30 @@ public class NinjaCat extends MiniGame {
                             right = false;
                         }
                         break;
+                    }
+                }
+                if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT) && !rampage) {
+                    for (Zombie zomb : zombies) {
+                        if (zomb.getX() > cat.getX()) {
+
+                            rampage = true;
+                            if (!right) {
+                                right = true;
+                            }
+                            break;
+
+                        }
+                    }
+                } else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT) && !rampage) {
+                    for (Zombie zomb : zombies) {
+                        if (zomb.getX() < cat.getX()) {
+
+                            rampage = true;
+                            if (right) {
+                                right = false;
+                            }
+                            break;
+                        }
                     }
                 }
             }
@@ -259,6 +285,33 @@ public class NinjaCat extends MiniGame {
                         frames[0][11]
 
                     });
+                }
+            }));
+            super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
+            super.setAutoUpdate(true);
+
+        }
+    }
+
+    class BackGround extends AnimatedSprite {
+
+        static final int FRAME_WIDTH = 768;
+        static final int FRAME_HEIGHT = 368;
+
+        BackGround(final Texture bgTexture) {
+            super(new Animation(.25f, new Array<TextureRegion>() {
+                {
+                    TextureRegion[][] frames = TextureRegion.split(
+                            bgTexture, FRAME_WIDTH, FRAME_HEIGHT);
+                    super.addAll(new TextureRegion[]{
+                        frames[0][0],
+                        frames[0][1],
+                        frames[0][2],
+                        frames[0][3],
+                        frames[0][4],
+                        frames[0][5],
+                        frames[0][6],
+                        frames[0][7],});
                 }
             }));
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
@@ -448,19 +501,20 @@ public class NinjaCat extends MiniGame {
                 for (Zombie zomb : zombies) {
                     if (zomb.getBoundingRectangle().overlaps(cat.getBoundingRectangle())) {
                         if (rand.nextInt() % 2 == 0) {
-                            dzsound.play(.035f);
+                            dzsound.play(.017f);
                         } else {
-                            dzsound1.play(.035f);
+                            dzsound1.play(.017f);
                         }
                         rampage = false;
                         if (rand.nextInt() % 2 == 0) {
-                            ken1.play(.1f);
+                            ken1.play(.05f);
                         } else {
-                            ken2.play(.1f);
+                            ken2.play(.05f);
                         }
 
                         if (hit) {
                             setCat(atk1);
+
                         } else {
                             setCat(atk);
                         }
@@ -491,6 +545,8 @@ public class NinjaCat extends MiniGame {
                 } else {
                     zomb.setPosition(zomb.getX() - speed, zomb.getY());
                 }
+                zomb.setScale(.75f);
+                cat.setScale(1f);
                 if (zomb.getBoundingRectangle().overlaps(cat.getBoundingRectangle()) && !rampage) {
                     gosound.play();
                     gameover = true;
@@ -503,6 +559,9 @@ public class NinjaCat extends MiniGame {
                     }
                     zombies.removeValue(zomb, true);
                 }
+                cat.setScale(1.5f);
+                zomb.setScale(2.25f);
+
             }
         }
     }

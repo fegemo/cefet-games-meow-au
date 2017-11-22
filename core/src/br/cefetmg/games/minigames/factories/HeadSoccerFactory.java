@@ -5,6 +5,7 @@ import br.cefetmg.games.minigames.HeadSoccer;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
+import com.badlogic.gdx.audio.Music;
 import java.util.Map;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 
@@ -39,6 +40,7 @@ public class HeadSoccerFactory implements MiniGameFactory {
                 put("head-soccer/bottomL.png", Texture.class);
                 put("head-soccer/bottomJ.png", Texture.class);
                 put("head-soccer/bottomK.png", Texture.class);
+                put("head-soccer/soccer.mp3",Music.class);
             }
         };
     }

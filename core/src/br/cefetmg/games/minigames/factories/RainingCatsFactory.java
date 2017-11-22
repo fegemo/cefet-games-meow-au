@@ -8,6 +8,7 @@ import com.badlogic.gdx.audio.Sound;
 import java.util.HashMap;
 import java.util.Map;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import com.badlogic.gdx.audio.Music;
 
 public class RainingCatsFactory implements MiniGameFactory {
 
@@ -28,7 +29,7 @@ public class RainingCatsFactory implements MiniGameFactory {
                 put("raining-cats/sakamoto2.jpg", Texture.class);
                 put("raining-cats/arrow.png", Texture.class);
 
-                put("raining-cats/music.mp3", Sound.class);
+                put("raining-cats/music.mp3", Music.class);
                 put("raining-cats/Pop.mp3", Sound.class);
 
             }

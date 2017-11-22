@@ -4,6 +4,7 @@ import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.SpyFish;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.screens.BaseScreen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +27,9 @@ public class SpyFishFactory implements MiniGameFactory {
             {
                 put("spy-fish/fish.png", Texture.class);
                 put("spy-fish/card.png", Texture.class);
-                put("spy-fish/ocean.jpeg", Texture.class);
+                put("spy-fish/ocean.png", Texture.class);
+                put("spy-fish/smw_fireball.wav", Sound.class);
+                put("spy-fish/smw_kick.wav", Sound.class);
             }
         };
     }

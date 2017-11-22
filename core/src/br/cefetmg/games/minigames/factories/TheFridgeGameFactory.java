@@ -9,6 +9,7 @@ import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.TheFridgeGame;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.screens.BaseScreen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public class TheFridgeGameFactory implements MiniGameFactory{
                 put("the-fridge-game/cat.png",Texture.class);  
                 put("the-fridge-game/fish.png",Texture.class);  
                 put("the-fridge-game/penguin.png",Texture.class);    
-                put("the-fridge-game/city-shopping.mp3", Sound.class);   
+                put("the-fridge-game/city-shopping.mp3", Music.class);   
                 put("the-fridge-game/whistle-up.mp3", Sound.class);   
                 put("the-fridge-game/whistle-down.mp3", Sound.class);  
                 put("the-fridge-game/crash.mp3", Sound.class);    

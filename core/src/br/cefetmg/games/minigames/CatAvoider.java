@@ -3,6 +3,7 @@ package br.cefetmg.games.minigames;
 import static br.cefetmg.games.Config.*;
 import static br.cefetmg.games.minigames.CatAvoider.*;
 import static br.cefetmg.games.minigames.HeadSoccer.Player.convertToRad;
+import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
@@ -12,7 +13,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MyMusic;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
@@ -38,10 +42,14 @@ public class CatAvoider extends MiniGame {
 
     private AnimatedSprite catMovingUpR, catMovingUpL, catMovingDownR, catMovingDownL;
     private AnimatedSprite catMovingLeft, catMovingRight;
-    private static Music backgroundMusic, impact;
-
+    private static MyMusic backgroundMusic;
+    private static MySound impact;
+    
     private final Wool wool = new Wool();
     private final Cat cat = new Cat();
+    
+    private final float MIN_DIFFICULTY = 18f;
+    private final float MAX_DIFFICULTY = 42f;
 
     public CatAvoider(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -147,11 +155,17 @@ public class CatAvoider extends MiniGame {
         wool.sprite = new Sprite(wool.texture);
         wool.sprite.setSize(50, 50);
 
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("avoider/ninja_theme.mp3"));
+        backgroundMusic =  new MyMusic(assets.get("avoider/ninja_theme.mp3", Music.class));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
 
-        impact = Gdx.audio.newMusic(Gdx.files.internal("avoider/impact.mp3"));
+        impact = new MySound(assets.get("avoider/impact.mp3", Sound.class));
+    }
+    
+    
+    @Override
+    public void onEnd(){
+        backgroundMusic.stop();
     }
 
     public float getCurveValue(float value) {
@@ -159,9 +173,9 @@ public class CatAvoider extends MiniGame {
     }
 
     @Override
-    protected void configureDifficultyParameters(float difficulty) {
-
-        cat.speed = cat.speed + getCurveValue(cat.speed);
+     protected void configureDifficultyParameters(float difficulty) {
+        System.out.println("difficulty = " + difficulty);
+        cat.speed = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, MIN_DIFFICULTY, MAX_DIFFICULTY);
     }
 
     @Override
@@ -321,11 +335,7 @@ public class CatAvoider extends MiniGame {
             v1 = new Vector2(c1.x, c1.y);
             v2 = new Vector2(c2.x, c2.y);
             double distance2 = v1.dst2(v2);
-            if (distance2 > ((c1.radius + c2.radius) * (c1.radius + c2.radius))) {
-                return false;
-            } else {
-                return true;
-            }
+            return distance2 <= ((c1.radius + c2.radius) * (c1.radius + c2.radius));
         }
 
         /**
@@ -341,11 +351,7 @@ public class CatAvoider extends MiniGame {
             float r1XMin = r1.x, r1XMax = r1.x + r1.width, r1YMin = r1.y, r1YMax = r1.y + r1.height;
             float r2XMin = r2.x, r2XMax = r2.x + r2.width, r2YMin = r2.y, r2YMax = r2.y + r2.height;
 
-            if ((r1XMax >= r2XMin && r1XMin <= r2XMax) && (r1YMax >= r2YMin && r1YMin <= r2YMax)) {
-                return true;
-            } else {
-                return false;
-            }
+            return (r1XMax >= r2XMin && r1XMin <= r2XMax) && (r1YMax >= r2YMin && r1YMin <= r2YMax);
         }
 
         static final Vector2 rectCircleOverlap(Rectangle r1, Circle c1) {
@@ -428,7 +434,7 @@ public class CatAvoider extends MiniGame {
         private Rectangle rect;//rectangle to enclose the cat and treat the collision
         private Texture texture;//texture for the non playable character ninja cat
         private Sprite sprite;//sprite of the non non playable character ninja cat
-        private float speed = 40;//variable used to set the cat ninja speed
+        private float speed = 20;//variable used to set the cat ninja speed
         private final float delta = 5;//variable used to set the delta of displacement of the cat ninja in the screen per period of time
         private CatMoveType moveType; //variable to set the type of moviment of the cat (jump or random)
         private int state;//variable to indicate the type of moviment of the cat (jump or random)

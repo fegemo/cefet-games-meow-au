@@ -22,6 +22,7 @@ import java.util.Random;
 
 import static br.cefetmg.games.Config.WORLD_HEIGHT;
 import static br.cefetmg.games.Config.WORLD_WIDTH;
+import br.cefetmg.games.sound.MySound;
 
 public class JetRat extends MiniGame {
 
@@ -38,24 +39,31 @@ public class JetRat extends MiniGame {
     private float screenHeight;
     private float posX, posY;
     int srcX, troca;
-    float velocidade,contador;
-    private Sound meon;
-
+<<<<<<< master
+    float aceleracao, velocidade;
+    private MySound meon;
+    int cont;
+    int difficulty;
+    
+>>>>>>> master
     public JetRat(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
+         
         super(screen, observer, difficulty, 10f,
                 TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
+             
     }
 
     @Override
     protected void onStart() {
+ 
         troca = 0;
         mouseTexture = assets.get("jet-rat/jatmouse.png", Texture.class);
         cattubeTexture = assets.get("jet-rat/tubecat.png", Texture.class);
         bg1 = assets.get("jet-rat/background.png", Texture.class);
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         tubeTexture = assets.get("jet-rat/tube.png", Texture.class);
-        meon = assets.get("jet-rat/meon.mp3", Sound.class);
+        meon = new MySound(assets.get("jet-rat/meon.mp3", Sound.class));
         mouse = new Calopsita(mouseTexture);
         mouse.setScale(0.5f);
         screenHeight = Gdx.graphics.getHeight();
@@ -73,8 +81,9 @@ public class JetRat extends MiniGame {
 
         }, 0, (float) Math.random() + 0.7f);
         srcX = 0;
-        velocidade = -1 * WORLD_HEIGHT * 0.0005f;
-        contador=0;
+<<<<<<< master
+        velocidade = -1 * WORLD_HEIGHT * 0.004f;
+>>>>>>> master
         meon.play(0.2f);
     }
 
@@ -84,13 +93,18 @@ public class JetRat extends MiniGame {
 
         Vector2 tubeGoal = new Vector2(-screenWidth, Ddwown);
         Vector2 tubePosition = new Vector2();
-
+        int dist=(int) (150-(150-this.minimumEnemySpeed));
+        
         Vector2 tubeSpeed = tubeGoal
                 .sub(tubePosition)
                 .nor()
-                .scl(this.minimumEnemySpeed);
+                .scl(dist);
         Tube enemy = new Tube(cattubeTexture);
-        enemy.setSize(new Random().nextInt(4));
+        //int size = (int) Math.ceil(DifficultyCurve.LINEAR
+       //         .getCurveValueBetween(difficulty, 0, 4))*10;
+        
+     //   System.out.println("Diff "+size );
+        enemy.setSize(new Random().nextInt(this.difficulty)+3);
 
         enemy.setPosition(WORLD_WIDTH, 60 * enemy.getSize());
         enemy.setSpeed(tubeSpeed);
@@ -100,9 +114,11 @@ public class JetRat extends MiniGame {
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         this.minimumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 120, 220);
+                .getCurveValueBetween(difficulty, 120, 150);
+        this.difficulty = (int) (Math.ceil(DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 1, 4))-1);
     }
-
+    
     @Override
     public void onHandlePlayingInput() {
 
@@ -128,28 +144,33 @@ public class JetRat extends MiniGame {
         if (this.getState().equals(MiniGameState.PLAYER_SUCCEEDED)) {
             meon.stop();
         }
+        if(this.isPaused()==true)
+           meon.pause();
+       
         mouse.update(dt);
         srcX += 5;
-        /*if (aceleracao > -1 * WORLD_HEIGHT * 0.00009f);
-        aceleracao -= WORLD_HEIGHT * 0.00005f; //gravidade
-        */
+<<<<<<< master
         if (posY < screenHeight + 2) {
-           // posY -= velocidade ;//2.5; 1;
-            posY  += WORLD_HEIGHT * 0.005f;
-
+            posY -= velocidade ;
+        }else{
+            super.challengeFailed();
+            meon.stop();
+>>>>>>> master
         }
         if (posX > screenWidth / 2 - 16) {
             posX -= 0.5;
         }
         if (Gdx.input.justTouched()) {
-            contador=15;
-           // posY -= WORLD_HEIGHT * 0.07;
-            posX += 0.5;
+<<<<<<< master
+            cont=10;
+            posX += 2;
         }
-        if(contador>0){
-           posY -= WORLD_HEIGHT * 0.01;
-           contador--;
+        
+        if(cont>0){
+            cont--;
+            posY -= WORLD_HEIGHT * 0.012;
         }
+>>>>>>> master
         // atualiza os inimigos (quadro de animação + colisão com dentes)
         for (int i = 0; i < this.enemies.size; i++) {
             Tube tube = this.enemies.get(i);
@@ -160,8 +181,10 @@ public class JetRat extends MiniGame {
             super.challengeFailed();
             meon.stop();
         }
+     
     }
-
+   
+    
     @Override
     public void onDrawGame() {
         batch.draw(bg1, 0, 0, srcX, 0, WORLD_WIDTH, WORLD_HEIGHT);
@@ -184,8 +207,9 @@ public class JetRat extends MiniGame {
 
     @Override
     public boolean shouldHideMousePointer() {
-        return true;
+        return false;
     }
+    public 
 
     class Calopsita extends AnimatedSprite {
 
@@ -224,7 +248,7 @@ public class JetRat extends MiniGame {
         private Vector2 speed;
 
         private static final int FRAME_WIDTH = 220;
-        private static final int FRAME_HEIGHT = 390;
+        private static final int FRAME_HEIGHT = 305;
         private int size;
         private int state;
 

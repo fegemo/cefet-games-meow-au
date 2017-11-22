@@ -20,6 +20,7 @@ import java.util.HashMap;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MySound;
 
 /**
  *
@@ -31,8 +32,8 @@ public class ShooTheTartarus extends MiniGame {
     private ToothBrush toothBrush;
     private Texture tartarusTexture;
     private Texture toothTexture;
-    private Array<Sound> tartarusAppearingSound;
-    private Sound toothBreakingSound;
+    private Array<MySound> tartarusAppearingSound;
+    private MySound toothBreakingSound;
     private Array<Tartarus> enemies;
     private Array<Tooth> teeth;
     private int numberOfBrokenTeeth;
@@ -59,15 +60,15 @@ public class ShooTheTartarus extends MiniGame {
                 "shoo-the-tartarus/tartarus-spritesheet.png", Texture.class);
         toothTexture = assets.get(
                 "shoo-the-tartarus/tooth.png", Texture.class);
-        tartarusAppearingSound = new Array<Sound>(3);
-        tartarusAppearingSound.addAll(assets.get(
-                "shoo-the-tartarus/appearing1.wav", Sound.class),
-                assets.get(
-                        "shoo-the-tartarus/appearing2.wav", Sound.class),
-                assets.get(
-                        "shoo-the-tartarus/appearing3.wav", Sound.class));
-        toothBreakingSound = assets.get(
-                "shoo-the-tartarus/tooth-breaking.wav", Sound.class);
+        tartarusAppearingSound = new Array<MySound>(3);
+        tartarusAppearingSound.addAll(new MySound(assets.get(
+                "shoo-the-tartarus/appearing1.wav", Sound.class)),
+                new MySound(assets.get(
+                        "shoo-the-tartarus/appearing2.wav", Sound.class)),
+                new MySound(assets.get(
+                        "shoo-the-tartarus/appearing3.wav", Sound.class)));
+        toothBreakingSound = new MySound(assets.get(
+                "shoo-the-tartarus/tooth-breaking.wav", Sound.class));
         enemies = new Array<Tartarus>();
         teeth = new Array<Tooth>();
         numberOfBrokenTeeth = 0;
@@ -174,7 +175,7 @@ public class ShooTheTartarus extends MiniGame {
         enemies.add(enemy);
         
         // toca um efeito sonoro
-        Sound sound = tartarusAppearingSound.random();
+        MySound sound = tartarusAppearingSound.random();
         long id = sound.play(0.5f);
         sound.setPan(id, tartarusPosition.x < viewport.getWorldWidth()
                 ? -1 : 1, 1);

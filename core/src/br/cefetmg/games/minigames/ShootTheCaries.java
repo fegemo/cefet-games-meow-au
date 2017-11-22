@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MySound;
 
 /**
  *
@@ -23,8 +24,8 @@ public class ShootTheCaries extends MiniGame {
     private Sprite target;
     private Texture cariesTexture;
     private Texture targetTexture;
-    private Sound cariesAppearingSound;
-    private Sound cariesDyingSound;
+    private MySound cariesAppearingSound;
+    private MySound cariesDyingSound;
     private int enemiesKilled;
     private int spawnedEnemies;
 
@@ -46,10 +47,10 @@ public class ShootTheCaries extends MiniGame {
                 "shoot-the-caries/caries.png", Texture.class);
         targetTexture = assets.get(
                 "shoot-the-caries/target.png", Texture.class);
-        cariesAppearingSound = assets.get(
-                "shoot-the-caries/caries1.mp3", Sound.class);
-        cariesDyingSound = assets.get(
-                "shoot-the-caries/caries2.mp3", Sound.class);
+        cariesAppearingSound = new MySound(assets.get(
+                "shoot-the-caries/caries1.mp3", Sound.class));
+        cariesDyingSound = new MySound(assets.get(
+                "shoot-the-caries/caries2.mp3", Sound.class));
         target = new Sprite(targetTexture);
         target.setOriginCenter();
         enemiesKilled = 0;

@@ -6,7 +6,10 @@ import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.sound.MySound;
+import br.cefetmg.games.sound.MyMusic;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,11 +40,11 @@ public class KillTheRats extends MiniGame {
     private Texture primaryWeapon_Texture;
     private Texture secondaryWeapon_Texture;
     
-    private Sound levelSound;
-    private Sound ratsSound;
-    private Sound bombSound;
-    private Sound ratSound;
-    private Sound fireSound;
+    private MyMusic levelSound;
+    private MyMusic ratsSound;
+    private MySound bombSound;
+    private MySound ratSound;
+    private MySound fireSound;
     
     private SwapButton swapButton;
     private Background background;
@@ -82,11 +85,11 @@ public class KillTheRats extends MiniGame {
         primaryWeapon_Texture = assets.get("kill-the-rats/primary_weapon.png", Texture.class);
         secondaryWeapon_Texture = assets.get("kill-the-rats/secondary_weapon.png", Texture.class);
         
-        levelSound = assets.get("kill-the-rats/JerryFive.mp3", Sound.class);
-        ratsSound = assets.get("kill-the-rats/Rats_Ambience.mp3", Sound.class);
-        ratSound = assets.get("kill-the-rats/rat.mp3", Sound.class);
-        fireSound = assets.get("kill-the-rats/pistol_silenced_walther.mp3", Sound.class);
-        bombSound = assets.get("kill-the-rats/bomb.mp3", Sound.class);
+        levelSound = new MyMusic(assets.get("kill-the-rats/JerryFive.mp3", Music.class));
+        ratsSound = new MyMusic(assets.get("kill-the-rats/Rats_Ambience.mp3", Music.class));
+        ratSound = new MySound(assets.get("kill-the-rats/rat.mp3", Sound.class));
+        fireSound = new MySound(assets.get("kill-the-rats/pistol_silenced_walther.mp3", Sound.class));
+        bombSound = new MySound(assets.get("kill-the-rats/bomb.mp3", Sound.class));
         
         init();
         initSwapButton();
@@ -109,7 +112,8 @@ public class KillTheRats extends MiniGame {
         stopAllSounds = false;
         changeWeapon = false;
         
-        levelSound.play(0.8f);
+        levelSound.play();
+        levelSound.setVolume(0.8f);
         ratsSound.play();
     }
     
@@ -160,6 +164,8 @@ public class KillTheRats extends MiniGame {
     
     @Override
     protected void configureDifficultyParameters(float difficulty) {
+        /*
+        // Valores antigos para os parâmetros de dificuldade
         this.maxNumRats = (int) DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 100, 250);
         this.minimumEnemySpeed = DifficultyCurve.LINEAR
@@ -168,6 +174,17 @@ public class KillTheRats extends MiniGame {
                 .getCurveValueBetween(difficulty, 4, 7);
         this.percentIgnoreRats = DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 0.75f, 0.3f);
+        */
+        
+        // Valores atualizados para os parâmetros de dificuldade
+        this.maxNumRats = (int) DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 80, 160);
+        this.minimumEnemySpeed = DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 2, 6);
+        this.maximumEnemySpeed = DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 4, 7);
+        this.percentIgnoreRats = DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 0.5f, 0.8f);
     }
     
     @Override
@@ -239,7 +256,7 @@ public class KillTheRats extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Ataque os Ratos";
+        return "Não deixe muitos ratos passarem";
     }
 
     @Override
@@ -438,7 +455,7 @@ public class KillTheRats extends MiniGame {
         static final int ROWS = 6;
         static final int COLS = 8;
 
-        private final Sound sound;
+        private final MySound sound;
         private Color defaultColor;
         private Vector2 direction;
         private float speed;
@@ -454,7 +471,7 @@ public class KillTheRats extends MiniGame {
         private boolean surroundPlayer;
         private boolean explodeMode;
         
-        public Rat(final Texture ratsSpriteSheet, Sound s) {
+        public Rat(final Texture ratsSpriteSheet, MySound s) {
             super(new HashMap<String, Animation>() {
                 {
                     TextureRegion[][] frames = TextureRegion
@@ -685,7 +702,7 @@ public class KillTheRats extends MiniGame {
         static final float EXPLODE_DURATION = 1.0f;
         static final float ARC_HEIGHT = 100.0f;
         
-        private Sound sound;
+        private MySound sound;
         private float fireInterval;
         private float speed;
         private float offset;

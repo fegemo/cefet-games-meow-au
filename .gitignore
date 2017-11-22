@@ -70,3 +70,8 @@ build/
 .DS_Store
 Thumbs.db
 
+
+# meow au specific
+progress-file.txt
+local-ranking.txt
+

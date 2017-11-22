@@ -11,6 +11,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Timer.Task;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MyMusic;
+import br.cefetmg.games.sound.MySound;
+import com.badlogic.gdx.audio.Music;
 
 public class RainingCats extends MiniGame {
 
@@ -26,8 +29,8 @@ public class RainingCats extends MiniGame {
     private boolean jump;
     private float gravity;
 
-    private Sound music;
-    private Sound pop;
+    private MyMusic music;
+    private MySound pop;
 
     private Texture playerTexture;
     private Texture arrowTexture;
@@ -54,8 +57,8 @@ public class RainingCats extends MiniGame {
         sakamoto2 = assets.get("raining-cats/sakamoto1.png", Texture.class);
         arrowTexture = assets.get("raining-cats/arrow.png", Texture.class);
 
-        music = assets.get("raining-cats/music.mp3", Sound.class);
-        pop = assets.get("raining-cats/Pop.mp3", Sound.class);
+        music =  new MyMusic(assets.get("raining-cats/music.mp3", Music.class));
+        pop = new MySound(assets.get("raining-cats/Pop.mp3", Sound.class));
 
         arrow = new Sprite(arrowTexture);
         arrow.setScale(0.08f);
@@ -70,8 +73,9 @@ public class RainingCats extends MiniGame {
         player = new Sprite(playerTexture);
         player.setScale(0.4f);
         player.setOrigin(0, 0);
-        player.setPosition(viewport.getWorldWidth() * 0.2f, 0);
-        music.play(.3f);
+        player.setPosition(viewport.getWorldWidth() * 0.2f, viewport.getWorldHeight() * .1f);
+        music.play();
+        music.setVolume(.4f);
         scheduleCatsSpawn();
 
     }
@@ -111,9 +115,9 @@ public class RainingCats extends MiniGame {
     protected void configureDifficultyParameters(float difficulty) {
 
         this.speed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 3, 8);
+                .getCurveValueBetween(difficulty, 2.5f, 7);
         this.spawnInterval = DifficultyCurve.S_NEGATIVE
-                .getCurveValueBetween(difficulty, 0.5f, 1.5f);
+                .getCurveValueBetween(difficulty, 0.5f, 2f);
         this.totalCats = (int) Math.ceil(maxDuration / spawnInterval) - 3;
 
     }
@@ -167,8 +171,8 @@ public class RainingCats extends MiniGame {
             ground = false;
             gravity -= 1.7;
             player.setY(player.getY() + gravity);
-            if (player.getY() < 0) {
-                player.setY(0);
+            if (player.getY() < viewport.getWorldHeight() * .1f) {
+                player.setY(viewport.getWorldHeight() * .1f);
                 jump = false;
                 ground = true;
             }

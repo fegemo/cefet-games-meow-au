@@ -4,6 +4,8 @@ import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.sound.MyMusic;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.utils.Array;
@@ -16,6 +18,7 @@ import com.badlogic.gdx.math.Vector3;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.math.Rectangle;
 
 /**
  *
@@ -24,12 +27,15 @@ import com.badlogic.gdx.utils.Timer;
 public class UnderwaterCat extends MiniGame {
 
     private float minimumEnemySpeed;
+    private float maximumEnemySpeed;
     private float spawnInterval;
+    private int totalFish;
     private Texture background;
-    private Music underwaterBackgroundMusic;
-    private Music swimmingAmbientSound;
-    private Sound gotFishSound;
+    private MyMusic backgroundMusic;
+    private MyMusic swimmingAmbientSound;
+    private MySound gotFishSound;
 
+    Animation<TextureRegion> swimmingAnimation;
     private Array<Fish> toCapture;
     private Array<Spiky> enemies;
     private Texture swimCatTexture;
@@ -37,10 +43,13 @@ public class UnderwaterCat extends MiniGame {
     private Texture fish2Texture;
     private Texture fish3Texture;
     private Texture spikyTexture;
-    private TheCat mainCharacter;
+    TheCat mainCharacter;
+
+    private boolean isOver;
 
     private int numberEaten = 0;
     private int fishToEat;
+    private float time = 0;
 
     public UnderwaterCat(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -50,9 +59,9 @@ public class UnderwaterCat extends MiniGame {
 
     @Override
     protected void onStart() {
-        underwaterBackgroundMusic = assets.get("underwater-cat/water.mp3", Music.class);
-        swimmingAmbientSound = assets.get("underwater-cat/swim.wav", Music.class);
-        gotFishSound = assets.get("underwater-cat/eat.wav", Sound.class);
+        backgroundMusic = new MyMusic(assets.get("underwater-cat/water.mp3", Music.class));
+        swimmingAmbientSound =  new MyMusic(assets.get("underwater-cat/swim.wav", Music.class));
+        gotFishSound = new MySound(assets.get("underwater-cat/eat.wav", Sound.class));
         swimCatTexture = assets.get(
                 "underwater-cat/swimcatspritesheet.png", Texture.class);
         fish1Texture = assets.get(
@@ -71,6 +80,8 @@ public class UnderwaterCat extends MiniGame {
         background = assets.get(
                 "underwater-cat/background.bmp", Texture.class);
         numberEaten = 0;
+        isOver = false;
+        this.time = 0;
         initializeFish(fishToEat);
         timer.scheduleTask(new Timer.Task() {
             @Override
@@ -84,10 +95,12 @@ public class UnderwaterCat extends MiniGame {
     protected void configureDifficultyParameters(float difficulty) {
         this.minimumEnemySpeed = DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 120, 220);
+        this.maximumEnemySpeed = DifficultyCurve.LINEAR
+                .getCurveValueBetween(difficulty, 240, 340);
         this.spawnInterval = DifficultyCurve.LINEAR_NEGATIVE
                 .getCurveValueBetween(difficulty, 0.25f, 1.5f);
         this.fishToEat = (int) Math.ceil(DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 5, 2)) + 1;
+                .getCurveValueBetween(difficulty, 2, 5)) + 1;
     }
 
     @Override
@@ -102,8 +115,8 @@ public class UnderwaterCat extends MiniGame {
 
     @Override
     public void onDrawGame() {
-        underwaterBackgroundMusic.setLooping(true);
-        underwaterBackgroundMusic.play();
+        backgroundMusic.setLooping(true);
+        backgroundMusic.play();
 
         batch.draw(background, 0, 0,
                 viewport.getWorldWidth(),
@@ -117,6 +130,12 @@ public class UnderwaterCat extends MiniGame {
         mainCharacter.draw(batch);
         swimmingAmbientSound.setLooping(true);
         swimmingAmbientSound.play();
+
+        if (isOver) {
+            backgroundMusic.stop();
+            swimmingAmbientSound.stop();
+        }
+
     }
 
     @Override
@@ -143,8 +162,12 @@ public class UnderwaterCat extends MiniGame {
         for (int i = 0; i < this.enemies.size; i++) {
             Spiky s = this.enemies.get(i);
             s.update(dt);
+            Rectangle bounds = mainCharacter.getBoundingRectangle();
+            bounds.setHeight(bounds.getHeight() - 50);
+            bounds.setWidth(bounds.getWidth() - 70);
             if (s.getBoundingRectangle()
-                    .overlaps(mainCharacter.getBoundingRectangle())) {
+                    .overlaps(bounds)) {
+                isOver = true;
                 super.challengeFailed();
             }
         }
@@ -154,8 +177,16 @@ public class UnderwaterCat extends MiniGame {
         numberEaten++;
         gotFishSound.play();
         if (numberEaten == fishToEat) {
+            isOver = true;
             super.challengeSolved();
         }
+    }
+
+    @Override
+    protected void onEnd() {
+        isOver = true;
+        backgroundMusic.stop();
+        swimmingAmbientSound.stop();
     }
 
     @Override
@@ -187,6 +218,7 @@ public class UnderwaterCat extends MiniGame {
 
     private void initializeFish(int qtdePeixes) {
         int tipoPeixe = 1;
+        Vector3 posicao = new Vector3();
         for (int i = 0; i <= qtdePeixes; i++) {
             switch (tipoPeixe) {
                 case 1:
@@ -208,6 +240,7 @@ public class UnderwaterCat extends MiniGame {
     }
 
     private void createFish(Texture spritesFish, int tipo) {
+
         Fish fish;
         if (tipo == 1) {
             fish = new Fish(spritesFish, 6, 8);
@@ -225,8 +258,9 @@ public class UnderwaterCat extends MiniGame {
     }
 
     private void createFishAux(Fish fish) {
-        float randomWidth = MathUtils.random(viewport.getWorldWidth(), 0);
-        float randomHeight = MathUtils.random(viewport.getWorldHeight(), 0);
+        Vector3 posicao = new Vector3();
+        float randomWidth = MathUtils.random(viewport.getWorldWidth() - 200, 200);
+        float randomHeight = MathUtils.random(viewport.getWorldHeight() - 200, 200);
 
         fish.setCenter(randomWidth, randomHeight);
         this.toCapture.add(fish);

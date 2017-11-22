@@ -34,16 +34,12 @@ public abstract class MiniGame {
     protected final Timer timer;
     private boolean isPaused;
 
-//    private final BitmapFont messagesFont;
     private boolean challengeSolved;
     private MiniGameStateObserver stateObserver;
     private long timeWhenPausedLastTime;
     private InputProcessor miniGameInputProcessor;
     private float difficulty;
 
-//    public MiniGame(AssetManager assets, Viewport viewport, float difficulty,
-//            float maxDuration, TimeoutBehavior endOfGameSituation, 
-//            final MiniGameStateObserver observer) {
     public MiniGame(BaseScreen screen, MiniGameStateObserver observer,
             float difficulty, float maxDuration, 
             TimeoutBehavior endOfGameSituation) {
@@ -54,7 +50,6 @@ public abstract class MiniGame {
                     + ".");
         }
 
-//        this.screen = screen;
         this.assets = screen.assets;
         this.viewport = screen.viewport;
         this.batch = screen.batch;
@@ -64,10 +59,6 @@ public abstract class MiniGame {
         this.timeSpentPlaying = 0;
         this.timeSpentOnInstructions = 0;
         this.stateObserver = observer;
-//        this.messagesFont = this.screen.assets.get("fonts/sawasdee-50.fnt");
-//        this.messagesFont.getRegion().getTexture().setFilter(
-//                Texture.TextureFilter.Linear,
-//                Texture.TextureFilter.Linear);
         this.rand = new Random();
         this.timer = new Timer();
         this.timer.stop();
@@ -99,6 +90,10 @@ public abstract class MiniGame {
 
         // libera o cursor do mouse
         Gdx.input.setCursorCatched(false);
+        
+        if (state == MiniGameState.PLAYING) {
+            onGamePaused(isPaused);
+        }
     }
 
     public final void resume() {
@@ -113,6 +108,7 @@ public abstract class MiniGame {
         // ou do final do jogo), oculta novamente o cursor
         if (state == MiniGameState.PLAYING) {
             Gdx.input.setCursorCatched(shouldHideMousePointer());
+            onGamePaused(isPaused);
         }
 
     }
@@ -143,13 +139,6 @@ public abstract class MiniGame {
                 break;
         }
     }
-
-//    protected void drawMessage(String message, float scale) {
-//        messagesFont.setColor(Color.BLACK);
-//        this.screen.drawCenterAlignedText(message, scale,
-//                this.screen.viewport.getWorldHeight() / 2);
-//    }
-//
 
     public final void draw() {
         switch (this.state) {
@@ -231,6 +220,16 @@ public abstract class MiniGame {
     protected void onEnd() {
         
     }
+    
+    /**
+     * É chamado pelo próprio MiniGame quando ele é pausado/resumido pelo 
+     * jogador. Pode ser usado para interromper/retomar a música de fundo, por
+     * exemplo.
+     * @param justPaused acabou de pausar (true) ou resumir (false).
+     */
+    protected void onGamePaused(boolean justPaused) {
+
+    }
 
     /**
      * Configura os parâmetros de dificuldade do jogo como, por exemplo,
@@ -276,5 +275,4 @@ public abstract class MiniGame {
      * ou não.
      */
     public abstract boolean shouldHideMousePointer();
-
 }

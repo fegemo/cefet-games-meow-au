@@ -50,7 +50,7 @@ public class Config {
     /**
      * Tempo em que a tela de splash fica sendo mostrada.
      */
-    public static final long TIME_ON_SPLASH_SCREEN = 3750;
+    public static final long TIME_ON_SPLASH_SCREEN = 4500;
 
     /**
      * Número de vidas do jogador.
@@ -68,4 +68,13 @@ public class Config {
      */
     public static final float MINIGAME_COUNTDOWN_ON_HUD_BEGIN_AT = 3f;
 
+    /**
+     * Caminho do arquivo que salva o ranking local.
+     */
+    public static final String RANKING_LOCAL_FILE = "data/local-ranking.txt";
+    
+    /**
+     * Caminho do arquivo que salva o progresso do jogador localmente.
+     */
+    public static final String PROGRESS_LOCAL_FILE = "data/progress-file.txt";
 }

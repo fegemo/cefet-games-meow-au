@@ -1,8 +1,10 @@
 package br.cefetmg.games.graphics.hud;
 
 import br.cefetmg.games.Config;
+import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
@@ -33,6 +35,7 @@ public class Hud {
     private final BaseScreen screen;
     private final MiniGameStateObserver stateObserver;
     private final Stage stage;
+    private SoundIcon soundIcon;
     private Skin skin;
     private Table table;
     private Label centeredLabel;
@@ -41,15 +44,20 @@ public class Hud {
 
     private Countdown countdown;
     private Texture lifeTexture;
+    private Texture explodeLifeTexture;
     private Texture clockTexture;
     private Image mask;
     private Button pauseButton;
-    private Sound timerSound;
+    private Button backMenuButton;
+    private Button backGameButton;
+    private Button confirmButton;
+    private Button unnconfirmedButton;
+    private MySound timerSound;
     private Clock clock;
 
     private int currentLives;
     private boolean isPaused;
-
+    
     public Hud(BaseScreen screen, MiniGameStateObserver stateObserver) {
         this.screen = screen;
         this.stateObserver = stateObserver;
@@ -62,8 +70,32 @@ public class Hud {
                 Texture.class));
         skin.add("pause", screen.assets.get("hud/pause-button.png",
                 Texture.class));
-        lifeTexture = screen.assets.get("hud/lives.png");
+
+        skin.add("confirm", screen.assets.get("hud/confirm-button.png",
+                Texture.class));
+        skin.add("unnconfirmed", screen.assets.get("hud/unnconfirmed-button.png",
+                Texture.class));
+        skin.add("back-menu", screen.assets.get("hud/back-menu-button.png",
+                Texture.class));
+        skin.add("back-game", screen.assets.get("hud/back-game-button.png",
+                Texture.class));
+
+        lifeTexture = screen.assets.get("hud/lifeTexture.png");
+        explodeLifeTexture = screen.assets.get("hud/explodeLifeTexture.png");
+        
         clockTexture = screen.assets.get("hud/clock.png");
+        
+        
+        mask = new Image(screen.assets.get("hud/gray-mask.png", Texture.class));
+        mask.setBounds(0, 0, stage.getWidth(), stage.getHeight());
+        mask.setVisible(false);
+        mask.setTouchable(Touchable.disabled);
+        stage.addActor(mask);
+        soundIcon = new SoundIcon(stage);
+        soundIcon.create(
+                    screen.assets.get("hud/no-sound-button.png", Texture.class),
+                    screen.assets.get("hud/sound-button.png", Texture.class));
+
 
         pauseButton = new ImageButton(
                 skin.getDrawable("unpause"),
@@ -75,39 +107,104 @@ public class Hud {
             public void changed(ChangeEvent event, Actor actor) {
                 isPaused = !isPaused;
                 mask.setVisible(isPaused);
+                backMenuButton.setVisible(isPaused);
+                backGameButton.setVisible(isPaused);
                 if (isPaused) {
                     stateObserver.onGamePaused();
                     clock.pauseTicking();
+                    soundIcon.show();
                 } else {
                     stateObserver.onGameResumed();
                     clock.resumeTicking();
-                }
-                
+                    soundIcon.hide();
+                }   
             }
-
         });
-
-        currentLives = Config.MAX_LIVES;
         
-        mask = new Image(screen.assets.get("hud/gray-mask.png", Texture.class));
-        mask.setBounds(0, 0, stage.getWidth(), stage.getHeight());
-        mask.setVisible(false);
-        mask.setTouchable(Touchable.disabled);
-        stage.addActor(mask);
+        backGameButton = new ImageButton(
+                skin.getDrawable("back-game")
+        );
+        backGameButton.setVisible(false);
+        backGameButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                backGameButton.setVisible(false);
+                backMenuButton.setVisible(false);
+                mask.setVisible(false);
+                stateObserver.onGameResumed();
+                clock.resumeTicking();
+                isPaused = !isPaused;
+            }
+        });
+                
+        backMenuButton = new ImageButton(
+                skin.getDrawable("back-menu")
+        );
+        backMenuButton.setVisible(false);
+        backMenuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                backMenuButton.setVisible(false);
+                backGameButton.setVisible(false);
+                hidePauseButton();
+                showMessage("Ao voltar para o menu inicial seu progresso sera perdido\nDeseja continuar?");
+                confirmButton.setVisible(true);
+                unnconfirmedButton.setVisible(true);
+            }
+        });
+        
+        confirmButton = new ImageButton(
+                skin.getDrawable("confirm")
+        );
+        confirmButton.setVisible(false);
+        confirmButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                stateObserver.onStateChanged(MiniGameState.BACK_MENU);
+            }
+        });
+        unnconfirmedButton = new ImageButton(
+                skin.getDrawable("unnconfirmed")
+        );
+        unnconfirmedButton.setVisible(false);
+        unnconfirmedButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                hideMessage();
+                unnconfirmedButton.setVisible(false);
+                confirmButton.setVisible(false);
+                backMenuButton.setVisible(true);
+                backGameButton.setVisible(true);
+                showPauseButton();
+            }
+        });
+        backMenuButton.setX(stage.getViewport().getWorldWidth() * 0.50f-backMenuButton.getWidth()/2);
+        backMenuButton.setY(stage.getViewport().getWorldHeight() * 0.55f);
+        backGameButton.setX(stage.getViewport().getWorldWidth() * 0.50f-backMenuButton.getWidth()/2);
+        backGameButton.setY(stage.getViewport().getWorldHeight() * 0.35f);
+        confirmButton.setY(stage.getViewport().getWorldHeight() * 0.50f);
+        unnconfirmedButton.setY(stage.getViewport().getWorldHeight() * 0.50f);
+        confirmButton.setX(stage.getViewport().getWorldWidth()  * 0.75f);
+        unnconfirmedButton.setX(stage.getViewport().getWorldWidth()  * 0.25f);
+        stage.addActor(backMenuButton);
+        stage.addActor(backGameButton);
+        stage.addActor(confirmButton);
+        stage.addActor(unnconfirmedButton);
+        
+        currentLives = Config.MAX_LIVES;
 
-        centeredLabel = new Label("", new LabelStyle(screen.assets.get("snacker-comic-50.ttf", BitmapFont.class), Color.BLACK));
+        centeredLabel = new Label("", new LabelStyle(screen.assets.get("snaphand-v1-free.ttf", BitmapFont.class), Color.WHITE));
         centeredLabel.setWrap(true);
         centeredLabel.setAlignment(Align.center);
         centeredLabel.setWidth(stage.getViewport().getWorldWidth());
         centeredLabel.setY(stage.getViewport().getWorldHeight() * 0.75f);
         stage.addActor(centeredLabel);
-        
+
         countdown = new Countdown(screen.assets.get("hud/countdown.png", Texture.class));
         countdown.setAlign(Align.center);
         countdown.setOrigin(Align.center);
-        countdown.setPosition(stage.getViewport().getWorldWidth()/2, stage.getViewport().getWorldHeight()/2, Align.center);
+        countdown.setPosition(stage.getViewport().getWorldWidth() / 2, stage.getViewport().getWorldHeight() / 2, Align.center);
         stage.addActor(countdown);
-        
 
         // faz a parte de baixo da HUD com um "layout de tabela":
         // https://github.com/libgdx/libgdx/wiki/Table
@@ -116,16 +213,15 @@ public class Hud {
         table.setFillParent(true);
 
         sequenceIndexLabel = new Label(
-                String.format("%03d", 1), new LabelStyle(
-                        screen.assets.get("fonts/sawasdee-50.fnt", BitmapFont.class)
-                        , Color.ORANGE));
+                String.format("%d", 1), new LabelStyle(
+                screen.assets.get("snaphand-v1-free.ttf", BitmapFont.class), Color.WHITE));
 
         livesGroup = new HorizontalGroup();
         for (int i = 0; i < Config.MAX_LIVES; i++) {
-            livesGroup.addActor(new LifeHeart(lifeTexture));
+            livesGroup.addActor(new LifeHeart(lifeTexture, explodeLifeTexture));
         }
 
-        timerSound = screen.assets.get("hud/tick-tock.mp3", Sound.class);
+        timerSound = new MySound(screen.assets.get("hud/tick-tock.mp3", Sound.class));
         clock = new Clock(clockTexture, timerSound);
 
         table.padBottom(10).row().expandX();
@@ -135,11 +231,9 @@ public class Hud {
         table.add(livesGroup).uniformX();
         table.add().uniformX();
         table.add(sequenceIndexLabel).uniformX();
-        
-        
+
         // DESCOMENTE a linha abaixo para ver as bordas da tabela
         //table.debug();
-
         stage.addActor(table);
 
     }
@@ -159,7 +253,7 @@ public class Hud {
     }
 
     public void setGameIndex(int index) {
-        sequenceIndexLabel.setText(String.format("%03d", index));
+        sequenceIndexLabel.setText(String.format("%d", index));
     }
 
     public void setLives(int lives) {
@@ -214,9 +308,20 @@ public class Hud {
     public void hidePauseButton() {
         pauseButton.setVisible(false);
     }
-
+    
     public void showMessage(String message) {
         centeredLabel.setText(message);
     }
+    
+    public void hideMessage() {
+        centeredLabel.setText("");
+    }
+    
+    public void hideSoundsButton() {
+        soundIcon.hide();
+    }
 
+    public void showSoundsButton() {
+        soundIcon.show();
+    }
 }

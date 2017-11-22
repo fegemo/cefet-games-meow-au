@@ -64,8 +64,16 @@ public class GameSequencer extends BaseGameSequencer {
     }
 
     private void determineGameSequence() {
+        int lastIndex = -1; // garante que o primeiro sorteio não será igual a lastIndex
+        
         for (int i = 0; i < numberOfGames; i++) {
-            indexSequence[i] = MathUtils.random(availableGames.size() - 1);
+            int index = MathUtils.random(availableGames.size() - 1);
+            if (index != lastIndex) { // garante que o último ínidce sorteado não irá repetir
+                indexSequence[i] = index;
+                lastIndex = (availableGames.size() == 1) ? -1 : index;
+            } else {
+                i--;
+            }
         }
     }
 

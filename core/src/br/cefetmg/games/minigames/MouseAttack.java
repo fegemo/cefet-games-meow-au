@@ -2,10 +2,10 @@ package br.cefetmg.games.minigames;
 
 import static br.cefetmg.games.Config.WORLD_HEIGHT;
 import static br.cefetmg.games.Config.WORLD_WIDTH;
-import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,8 +14,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
-import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.Random;
@@ -44,8 +42,8 @@ public class MouseAttack extends MiniGame {
     private int enemiesKilled;
     private int spawnedEnemies;
 
-    private Sound shootSound;
-    private Sound monsterDieSound;
+    private MySound shootSound;
+    private MySound monsterDieSound;
 
     private float initialEnemyScale;
     private int totalEnemies;
@@ -77,10 +75,10 @@ public class MouseAttack extends MiniGame {
                 "mouse-attack/target.png", Texture.class);
         projectileTexture = assets.get(
                 "mouse-attack/projetil.png", Texture.class);
-        shootSound = assets.get(
-                "mouse-attack/shoot-sound.mp3", Sound.class);
-        monsterDieSound = assets.get(
-                "mouse-attack/monster-dying.mp3", Sound.class);
+        shootSound = new MySound(assets.get(
+                "mouse-attack/shoot-sound.mp3", Sound.class));
+        monsterDieSound = new MySound(assets.get(
+                "mouse-attack/monster-dying.mp3", Sound.class));
 
         target = new Sprite(targetTexture);
         target.setOriginCenter();
@@ -343,22 +341,7 @@ public class MouseAttack extends MiniGame {
                 animate=false;
                 this.setAnimation(parado);
                 this.getAnimation().setPlayMode(Animation.PlayMode.NORMAL);
-                
             }
-                
-            
-            /*if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
-                Gdx.input.setInputProcessor(new InputAdapter() {
-                    @Override
-                    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                        if (button == Buttons.LEFT) {
-                            cat.changeAnimation();
-                            return true;
-                        }
-                        return false;
-                    }
-                });
-            }*/
         }
     }
 
@@ -404,14 +387,11 @@ public class MouseAttack extends MiniGame {
             velocity.set(targetX - position.x, targetY - position.y).nor().scl(maxVelocity);
         }
 
+        @Override
         public void update(float deltaTime) {
+            super.update(deltaTime);
             position.add(velocity.x * deltaTime, velocity.y * deltaTime);
-            //projeSprite.setPosition(position.x+100, position.y+100);
         }
-
-        /*public void setPosition(float x, float y) {
-            //projeSprite.setPosition(x, y);
-        }*/
 
     }
 

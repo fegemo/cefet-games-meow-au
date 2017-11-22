@@ -21,7 +21,7 @@ public class NinjaCatFactory implements MiniGameFactory {
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
             {
-                put("ninja-cat/bg1.jpg", Texture.class);
+                put("ninja-cat/bg1.png", Texture.class);
                 put("ninja-cat/arrow.png", Texture.class);
                 put("ninja-cat/atk.png", Texture.class);
                 put("ninja-cat/atk1.png", Texture.class);
@@ -31,7 +31,6 @@ public class NinjaCatFactory implements MiniGameFactory {
                 put("ninja-cat/zombieflip.png", Texture.class);
                 put("ninja-cat/zombie2.png", Texture.class);
                 put("ninja-cat/cat1.png", Texture.class);
-                put("ninja-cat/bg1.jpg", Texture.class);
                 put("ninja-cat/d1.png", Texture.class);
                 put("ninja-cat/d2.png", Texture.class);
                 put("ninja-cat/d3.png", Texture.class);
