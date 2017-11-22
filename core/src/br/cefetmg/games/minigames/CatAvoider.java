@@ -48,8 +48,8 @@ public class CatAvoider extends MiniGame {
     private final Wool wool = new Wool();
     private final Cat cat = new Cat();
     
-    private final int MIN_DIFFICULTY = 1;
-    private final int MAX_DIFFICULTY = 5;
+    private final float MIN_DIFFICULTY = 18f;
+    private final float MAX_DIFFICULTY = 42f;
 
     public CatAvoider(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -174,7 +174,8 @@ public class CatAvoider extends MiniGame {
 
     @Override
      protected void configureDifficultyParameters(float difficulty) {
-        cat.speed = cat.speed + DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, MIN_DIFFICULTY, MAX_DIFFICULTY);
+        System.out.println("difficulty = " + difficulty);
+        cat.speed = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, MIN_DIFFICULTY, MAX_DIFFICULTY);
     }
 
     @Override
@@ -334,11 +335,7 @@ public class CatAvoider extends MiniGame {
             v1 = new Vector2(c1.x, c1.y);
             v2 = new Vector2(c2.x, c2.y);
             double distance2 = v1.dst2(v2);
-            if (distance2 > ((c1.radius + c2.radius) * (c1.radius + c2.radius))) {
-                return false;
-            } else {
-                return true;
-            }
+            return distance2 <= ((c1.radius + c2.radius) * (c1.radius + c2.radius));
         }
 
         /**
@@ -354,11 +351,7 @@ public class CatAvoider extends MiniGame {
             float r1XMin = r1.x, r1XMax = r1.x + r1.width, r1YMin = r1.y, r1YMax = r1.y + r1.height;
             float r2XMin = r2.x, r2XMax = r2.x + r2.width, r2YMin = r2.y, r2YMax = r2.y + r2.height;
 
-            if ((r1XMax >= r2XMin && r1XMin <= r2XMax) && (r1YMax >= r2YMin && r1YMin <= r2YMax)) {
-                return true;
-            } else {
-                return false;
-            }
+            return (r1XMax >= r2XMin && r1XMin <= r2XMax) && (r1YMax >= r2YMin && r1YMin <= r2YMax);
         }
 
         static final Vector2 rectCircleOverlap(Rectangle r1, Circle c1) {
@@ -441,7 +434,7 @@ public class CatAvoider extends MiniGame {
         private Rectangle rect;//rectangle to enclose the cat and treat the collision
         private Texture texture;//texture for the non playable character ninja cat
         private Sprite sprite;//sprite of the non non playable character ninja cat
-        private float speed = 40;//variable used to set the cat ninja speed
+        private float speed = 20;//variable used to set the cat ninja speed
         private final float delta = 5;//variable used to set the delta of displacement of the cat ninja in the screen per period of time
         private CatMoveType moveType; //variable to set the type of moviment of the cat (jump or random)
         private int state;//variable to indicate the type of moviment of the cat (jump or random)
