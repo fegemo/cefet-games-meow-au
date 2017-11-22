@@ -149,10 +149,12 @@ public class MenuScreen extends BaseScreen {
                 }
                 if (creditsBounds.contains(clickPosition.x, clickPosition.y)) {
                     /*
-                    
+                                        
+
                     CHAMADA DA TELA DE CRÉDITOS
                     
                      */
+                    navigateToCredits();
                     click2.play();
                 }
                 if (exitBounds.contains(clickPosition.x, clickPosition.y)) {
@@ -235,7 +237,10 @@ public class MenuScreen extends BaseScreen {
                     TransitionScreen.Effect.FADE_IN_OUT, 0.4f);
         }
     }
+    private void navigateToCredits(){
+        game.setScreen(new CreditsScreen(game, this));
 
+    }
     /**
      * Libera os recursos necessários para esta tela.
      */

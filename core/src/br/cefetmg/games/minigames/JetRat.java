@@ -39,11 +39,13 @@ public class JetRat extends MiniGame {
     private float screenHeight;
     private float posX, posY;
     int srcX, troca;
+<<<<<<< master
     float aceleracao, velocidade;
     private MySound meon;
     int cont;
     int difficulty;
     
+>>>>>>> master
     public JetRat(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
          
@@ -79,7 +81,9 @@ public class JetRat extends MiniGame {
 
         }, 0, (float) Math.random() + 0.7f);
         srcX = 0;
+<<<<<<< master
         velocidade = -1 * WORLD_HEIGHT * 0.004f;
+>>>>>>> master
         meon.play(0.2f);
     }
 
@@ -145,17 +149,19 @@ public class JetRat extends MiniGame {
        
         mouse.update(dt);
         srcX += 5;
-
+<<<<<<< master
         if (posY < screenHeight + 2) {
             posY -= velocidade ;
         }else{
             super.challengeFailed();
             meon.stop();
+>>>>>>> master
         }
         if (posX > screenWidth / 2 - 16) {
             posX -= 0.5;
         }
         if (Gdx.input.justTouched()) {
+<<<<<<< master
             cont=10;
             posX += 2;
         }
@@ -164,6 +170,7 @@ public class JetRat extends MiniGame {
             cont--;
             posY -= WORLD_HEIGHT * 0.012;
         }
+>>>>>>> master
         // atualiza os inimigos (quadro de animação + colisão com dentes)
         for (int i = 0; i < this.enemies.size; i++) {
             Tube tube = this.enemies.get(i);
@@ -243,7 +250,11 @@ public class JetRat extends MiniGame {
         private static final int FRAME_WIDTH = 220;
         private static final int FRAME_HEIGHT = 305;
         private int size;
+        private int state;
 
+        public Tube() {
+            super(null, null);
+        }
         public Tube(final Texture tubesSpritesheet) {
 
             super(new HashMap<String, Animation>() {
@@ -254,7 +265,7 @@ public class JetRat extends MiniGame {
                     Animation sleep = new Animation(0.1f,
                             frames[0][0]);
                     Animation acordado = new Animation(0.1f,
-                            frames[0][1]);
+                            frames[0][1]);  
                     sleep.setPlayMode(Animation.PlayMode.NORMAL);
                     put("walking", sleep);
                     put("acordado", acordado);
