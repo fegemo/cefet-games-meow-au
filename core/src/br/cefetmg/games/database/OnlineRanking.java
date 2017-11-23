@@ -24,7 +24,7 @@ public class OnlineRanking {
 	public static void connect() {
 		if (!isInitialized()) {
 			try {
-				Path configPath = Paths.get(".").resolve("service-account.json");
+				Path configPath = Paths.get("./data").resolve("service-account.json");
 				FileInputStream serviceAccount = new FileInputStream(configPath.toFile());
 				FirebaseOptions options = new FirebaseOptions.Builder()
 						.setCredentials(GoogleCredentials.fromStream(serviceAccount)).setDatabaseUrl(DATABASE_URL)
