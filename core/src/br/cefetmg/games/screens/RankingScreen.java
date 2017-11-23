@@ -48,8 +48,6 @@ public class RankingScreen extends BaseScreen {
 
     private FileHandle file;
 
-    private int maxRankingQuantity;
-
     public RankingScreen(Game game, BaseScreen previous, int phase) {
         super(game, previous);
         this.letters = new Letter[3][10];
@@ -77,7 +75,6 @@ public class RankingScreen extends BaseScreen {
         rightQuantityKeeper = "";
         writingScore = false;
         showingScore = true;
-        maxRankingQuantity = 10;
         boardBottom = new Vector2(viewport.getWorldWidth() * 0.25f, viewport.getWorldHeight() * 0.08f);
         boardSize = new Vector2(viewport.getWorldWidth() * 0.5f, viewport.getWorldHeight() * 0.775f);
         pointerX = viewport.getWorldWidth() / 2;
@@ -106,7 +103,6 @@ public class RankingScreen extends BaseScreen {
         fileLenght = file.length();
         writingScore = true;
         showingScore = false;
-        maxRankingQuantity = 10;
         boardBottom = new Vector2(viewport.getWorldWidth() * 0.25f, viewport.getWorldHeight() * 0.08f);
         boardSize = new Vector2(viewport.getWorldWidth() * 0.5f, viewport.getWorldHeight() * 0.775f);
 
@@ -178,7 +174,7 @@ public class RankingScreen extends BaseScreen {
         int cont = 0;
         rightQuantityKeeper = "";
         fileLenght = file.length();
-        if (rankingQuantity() > maxRankingQuantity) {
+        if (rankingQuantity() > OnlineRanking.SIZE_LIMIT) {
             i = 0;
             rightQuantityKeeper = "" + fileContent.charAt(i);
             i++;
@@ -187,7 +183,7 @@ public class RankingScreen extends BaseScreen {
                 if (fileContent.charAt(i) == '\n') {
                     cont++;
                 }
-                if (cont == maxRankingQuantity) {
+                if (cont == OnlineRanking.SIZE_LIMIT) {
                     file.writeString(rightQuantityKeeper, false);
                     fileContent = "";
                     fileContent = file.readString();
