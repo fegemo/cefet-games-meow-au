@@ -40,11 +40,21 @@ public class CannonCat extends MiniGame {
     private static ArrayList<Projectile> projectiles;
     private static ArrayList<Vector2> catsStartPoints;
 
-    private static final float CAT_SPEED_SCALE = 4f,
-            PROJECTILE_SPEED_SCALE = 2f;
+    private static final float CAT_SPEED_SCALE = 5f,
+            PROJECTILE_SPEED_SCALE = 6f;
     public final int CHALLENGE_FAILED = 0,
             CHALLENGE_SOLVED = 1;
     public double TEMPO_MUDANCA_DIRECAO_CANHAO;
+    
+    private static final Vector2 
+        CANNON_EAST_END_POINT = new Vector2(65, 50),
+        CANNON_SOUTHEAST_END_POINT = new Vector2(55, 40),
+        CANNON_SOUTH_END_POINT = new Vector2(55, 0),
+        CANNON_SOUTHWEST_END_POINT = new Vector2(20, 20),
+        CANNON_WEST_END_POINT = new Vector2(20, 50),
+        CANNON_NORTHWEST_END_POINT = new Vector2(35, 75),
+        CANNON_NORTH_END_POINT = new Vector2(45, 82),
+        CANNON_NORTHEAST_END_POINT = new Vector2(55, 75);
 
     public CannonCat(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
@@ -127,9 +137,10 @@ public class CannonCat extends MiniGame {
         if (Gdx.input.justTouched()) {
             if (remainingShots-- > 0) {
                 //Dispara-se um projétil
-                Vector2 startPoint = new Vector2(center_x, center_y);
+                Vector2 origin = new Vector2(center_x, center_y);
+                Vector2 startPoint = Direction.getEndPoint(cannonDirectionIndex);
                 Vector2 finalPoint = new Vector2(catsStartPoints.get(cannonDirectionIndex));
-                projectiles.add(new Projectile(new Sprite(cookie), startPoint, finalPoint));
+                projectiles.add(new Projectile(new Sprite(cookie), origin.add(new Vector2(startPoint)), finalPoint));
             } else if (projectiles.size() == 0){
                 challengeFinished(CHALLENGE_FAILED);
             }
@@ -174,6 +185,10 @@ public class CannonCat extends MiniGame {
         //Desenham as posições do canhão de maneira a girar no sentido horário
         Direction currentDirection = Direction.valueOf(cannonDirectionIndex);
         batch.draw(cannonTextures.get(currentDirection), center_x, center_y);
+    }
+    
+    public void onEnd() {
+        backgroundMusic.stop();
     }
 
     public void updateCatsAndProjectilesLists() {
@@ -261,13 +276,34 @@ public class CannonCat extends MiniGame {
             }
             return found;
         }
+        
+        public static Vector2 getEndPoint(int index) {
+            switch(index) {
+                case 0:
+                    return CANNON_EAST_END_POINT;
+                case 1:
+                    return CANNON_SOUTHEAST_END_POINT;
+                case 2:
+                    return CANNON_SOUTH_END_POINT;
+                case 3:
+                    return CANNON_SOUTHWEST_END_POINT;
+                case 4:
+                    return CANNON_WEST_END_POINT;
+                case 5:
+                    return CANNON_NORTHWEST_END_POINT;
+                case 6:
+                    return CANNON_NORTH_END_POINT;
+                default:
+                    return CANNON_NORTHEAST_END_POINT;
+            }
+        }
     };
 
     public static class Object {
 
-        private Vector2 currentPosition;
-        private Vector2 finalPosition;
-        private Sprite sprite;
+        protected Vector2 currentPosition;
+        protected Vector2 finalPosition;
+        protected Sprite sprite;
 
         private final float CIRCLE_RADIUS = 1.5f;
 
@@ -351,9 +387,17 @@ public class CannonCat extends MiniGame {
     };
 
     public static class Projectile extends Object {
+        
+        public static final int COOKIE_WIDTH = 50,
+                COOKIE_HEIGHT = 50;
 
         public Projectile(Sprite sprite, Vector2 startPoint, Vector2 finalPoint) {
             super(sprite, startPoint, finalPoint);
+            this.sprite.setSize(COOKIE_WIDTH, COOKIE_HEIGHT);
+        }
+
+        public void draw(SpriteBatch batch) {
+            batch.draw(sprite, currentPosition.x, currentPosition.y, COOKIE_WIDTH, COOKIE_HEIGHT);
         }
     };
 
