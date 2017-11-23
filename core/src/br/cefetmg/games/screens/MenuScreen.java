@@ -6,7 +6,6 @@ import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;

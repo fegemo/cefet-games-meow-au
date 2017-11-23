@@ -1,5 +1,6 @@
 package br.cefetmg.games;
 
+import br.cefetmg.games.database.OnlineRanking;
 import br.cefetmg.games.screens.SplashScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -19,6 +20,7 @@ public class MeowAuGame extends Game {
 
     @Override
     public void create() {
+    	OnlineRanking.connect();
         this.setScreen(new SplashScreen(this, null));
     }
 

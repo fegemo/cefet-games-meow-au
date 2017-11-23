@@ -1,6 +1,7 @@
 package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
+import br.cefetmg.games.database.OnlineRanking;
 import br.cefetmg.games.transition.TransitionScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -26,6 +27,8 @@ public class RankingScreen extends BaseScreen {
     private TextureRegion enter;
     private TextureRegion space;
     private TextureRegion board;
+    private TextureRegion onlineIcon;
+    private TextureRegion offlineIcon;
 
     private final Letter[][] letters;
 
@@ -206,6 +209,8 @@ public class RankingScreen extends BaseScreen {
         background = new TextureRegion(new Texture("end4.png"));
         pointer = new TextureRegion(new Texture("pointer.png"));
         board = new TextureRegion(new Texture("rectangle.png"));
+        onlineIcon = new TextureRegion(new Texture("online-icon.png"));
+        offlineIcon = new TextureRegion(new Texture("offline-icon.png"));
 
         //auxChar define qual é  o asset carregado, qual a letra do teclado
         //comeca em a e vai selecionando as proximas letras automaticamente
@@ -322,6 +327,9 @@ public class RankingScreen extends BaseScreen {
         batch.draw(background, 0, 0,
                 viewport.getWorldWidth(),
                 viewport.getWorldHeight());
+        float connectedIconSize = viewport.getWorldWidth() * 0.05f;
+		batch.draw(OnlineRanking.isOnline() ? onlineIcon : offlineIcon,
+				viewport.getWorldWidth() - connectedIconSize - 2.0f, 2.0f, connectedIconSize, connectedIconSize);
         if (writingScore) {
 
             drawCenterAlignedText("Sua pontuação:  " + phaseNumber + "", viewport.getWorldHeight() * 0.91f);
