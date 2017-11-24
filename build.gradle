@@ -44,6 +44,7 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
     	compile "com.google.firebase:firebase-admin:$firebaseDesktop"
+        compile group: 'org.slf4j', name: 'slf4j-nop', version: '1.7.25'
     }
 }
 
