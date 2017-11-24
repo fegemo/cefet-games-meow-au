@@ -153,6 +153,12 @@ public class RankingScreen extends BaseScreen {
 	private void insertInDatabase() {
 		String[] fields = name.split(";");
 		OnlineRanking.saveEntry(fields[0].trim(), Integer.parseInt(fields[1].trim()));
+		try {
+			// Dando uma chance para o banco se atualizar e pegarmos o rank mais atual.
+			Thread.sleep(700);
+		} catch (InterruptedException e) {
+
+		}
 		loadRankingFromDatabase();
 	}
 
