@@ -3,8 +3,6 @@ package br.cefetmg.games.database;
 import java.io.FileInputStream;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import br.cefetmg.games.Config;
 import br.cefetmg.games.database.model.RankingEntry;
 
 public class OnlineRanking {
@@ -84,13 +85,14 @@ public class OnlineRanking {
 						while (!hasNetworkConnection) {
 							sleep(THREAD_SLEEP_TIME);
 						}
-						Path configPath = Paths.get("./data").resolve("service-account.json");
-						FileInputStream serviceAccount = new FileInputStream(configPath.toFile());
+						FileHandle config = Gdx.files.local(Config.DATABASE_CONFIG);
+						FileInputStream serviceAccount = new FileInputStream(config.file());
 						FirebaseOptions options = new FirebaseOptions.Builder()
 								.setCredentials(GoogleCredentials.fromStream(serviceAccount))
 								.setDatabaseUrl(DATABASE_URL).build();
 						FirebaseApp.initializeApp(options);
-						database = FirebaseDatabase.getInstance().getReference();
+						FirebaseDatabase db = FirebaseDatabase.getInstance();
+						database = db.getReference();
 						database.child(".info/connected").addValueEventListener(new ValueEventListener() {
 
 							@Override
