@@ -83,7 +83,9 @@ public class PlayingGamesScreen extends BaseScreen
                         new NinjaCatFactory(),
                         //estevao e sarah
                         new TheFridgeGameFactory(),
-                        new KillTheRatsFactory()
+                        new KillTheRatsFactory(),
+                        //andre brait
+                        new AstroCatFactory()
                 )
         ), 0, 1, this, this);
 
