@@ -1,8 +1,5 @@
 package br.cefetmg.games.database.model;
 
-import com.google.firebase.database.IgnoreExtraProperties;
-
-@IgnoreExtraProperties
 public class RankingEntry implements Comparable<RankingEntry> {
 
 	private String name;

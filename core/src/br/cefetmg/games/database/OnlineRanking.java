@@ -1,50 +1,28 @@
 package br.cefetmg.games.database;
 
-import java.io.FileInputStream;
-import java.net.InetSocketAddress;
-import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import br.cefetmg.games.Config;
+import br.cefetmg.games.database.interfaces.Leaderboard;
 import br.cefetmg.games.database.model.RankingEntry;
 
 public class OnlineRanking {
 
-	private static final int THREAD_SLEEP_TIME = 5000;
+	/**
+	 * Deve ser setado antes de usar o ranking!
+	 */
+	public static Leaderboard leaderboard;
 
-	private static final String ENTRIES_KEY = "entries";
+	public static final String ENTRIES_KEY = "entries";
 
-	private static final String POINTS_KEY = "points";
+	public static final String POINTS_KEY = "points";
 
-	private static final String DATABASE_URL = "https://cefet-games-meow-au.firebaseio.com/";
-
-	private static DatabaseReference database = null;
-
-	private static Boolean databaseConnected = false;
-
-	private static Boolean hasNetworkConnection = false;
+	public static final String DATABASE_URL = "https://cefet-games-meow-au.firebaseio.com/";
 
 	public static final Integer SIZE_LIMIT = 10;
-
-	private static final Map<String, RankingEntry> ENTRIES = new LinkedHashMap<String, RankingEntry>(10);
 
 	private static final Comparator<Entry<String, RankingEntry>> ENTRY_COMPARATOR = new Comparator<Entry<String, RankingEntry>>() {
 		@Override
@@ -53,140 +31,48 @@ public class OnlineRanking {
 		}
 	};
 
-	public static synchronized void connect() {
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				while (true) {
-					try {
-						InetSocketAddress socketAddress = new InetSocketAddress("accounts.google.com", 443);
-						SocketChannel channel = SocketChannel.open();
-						channel.configureBlocking(false);
-						channel.connect(socketAddress);
-						while (!channel.finishConnect()) {
-							sleep(1000);
-						}
-						hasNetworkConnection = true;
-					} catch (Exception e) {
-						hasNetworkConnection = false;
-					} finally {
-						sleep(THREAD_SLEEP_TIME);
-					}
-				}
-			}
-		}).start();
-
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					if (!isInitialized()) {
-						while (!hasNetworkConnection) {
-							sleep(THREAD_SLEEP_TIME);
-						}
-						FileHandle config = Gdx.files.local(Config.DATABASE_CONFIG);
-						FileInputStream serviceAccount = new FileInputStream(config.file());
-						FirebaseOptions options = new FirebaseOptions.Builder()
-								.setCredentials(GoogleCredentials.fromStream(serviceAccount))
-								.setDatabaseUrl(DATABASE_URL).build();
-						FirebaseApp.initializeApp(options);
-						FirebaseDatabase db = FirebaseDatabase.getInstance();
-						database = db.getReference();
-						database.child(".info/connected").addValueEventListener(new ValueEventListener() {
-
-							@Override
-							public void onDataChange(DataSnapshot snapshot) {
-								databaseConnected = Boolean.TRUE.equals(snapshot.getValue(Boolean.class));
-							}
-
-							@Override
-							public void onCancelled(DatabaseError error) {
-								databaseConnected = false;
-							}
-						});
-						database.child(ENTRIES_KEY).orderByChild(POINTS_KEY).limitToLast(SIZE_LIMIT)
-								.addChildEventListener(new ChildEventListener() {
-
-									@Override
-									public void onChildRemoved(DataSnapshot snapshot) {
-										synchronized (ENTRIES) {
-											ENTRIES.remove(snapshot.getKey());
-										}
-									}
-
-									@Override
-									public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
-
-									}
-
-									@Override
-									public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
-										updateEntries(snapshot.getKey(), snapshot.getValue(RankingEntry.class));
-									}
-
-									@Override
-									public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
-										updateEntries(snapshot.getKey(), snapshot.getValue(RankingEntry.class));
-									}
-
-									@Override
-									public void onCancelled(DatabaseError error) {
-
-									}
-								});
-						DatabaseReference.goOnline();
-					}
-				} catch (Exception e) {
-					database = null;
-				}
-			}
-		}).start();
+	public static void connect() {
+		leaderboard.connect();
 	}
 
 	public static boolean isInitialized() {
-		return database != null;
+		return leaderboard.isInitialized();
 	}
 
 	public static boolean isOnline() {
-		return isInitialized() && databaseConnected && hasNetworkConnection;
+		return leaderboard.isOnline();
 	}
 
 	public static void saveEntry(RankingEntry entry) {
-		if (isInitialized()) {
-			String key = database.child(ENTRIES_KEY).push().getKey();
-			database.child(ENTRIES_KEY).child(key).setValueAsync(entry);
-		}
+		leaderboard.saveEntry(entry);
 	}
 
 	public static void saveEntry(String name, int points) {
 		saveEntry(new RankingEntry(name, points));
 	}
 
-	private static void updateEntries(String key, RankingEntry entry) {
-		synchronized (ENTRIES) {
-			ENTRIES.put(key, entry);
+	public static void updateEntries(String key, RankingEntry entry) {
+		synchronized (leaderboard.getEntryMap()) {
+			leaderboard.getEntryMap().put(key, entry);
 			List<Entry<String, RankingEntry>> mapEntries = new ArrayList<Entry<String, RankingEntry>>(
-					ENTRIES.entrySet());
+					leaderboard.getEntryMap().entrySet());
 			Collections.sort(mapEntries, ENTRY_COMPARATOR);
-			ENTRIES.clear();
+			leaderboard.getEntryMap().clear();
 			for (Entry<String, RankingEntry> mapEntry : mapEntries) {
-				ENTRIES.put(mapEntry.getKey(), mapEntry.getValue());
+				leaderboard.getEntryMap().put(mapEntry.getKey(), mapEntry.getValue());
 			}
+		}
+	}
+	
+	public static void removeEntry(String key) {
+		synchronized(leaderboard.getEntryMap()) {
+			leaderboard.getEntryMap().remove(key);
 		}
 	}
 
 	public static List<RankingEntry> getEntries() {
-		synchronized (ENTRIES) {
-			return new ArrayList<RankingEntry>(ENTRIES.values());
-		}
-	}
-
-	private static void sleep(int milis) {
-		try {
-			Thread.sleep(milis);
-		} catch (InterruptedException e) {
-
+		synchronized (leaderboard.getEntryMap()) {
+			return new ArrayList<RankingEntry>(leaderboard.getEntryMap().values());
 		}
 	}
 
