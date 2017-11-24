@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Timer.Task;
 import java.util.Random;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 
@@ -25,7 +26,7 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 
 public class MouseAttack extends MiniGame {
 
-    private static Cat2 cat;
+    private Cat cat;
     private Monster monster;
 
     private Array<Monster> enemies;
@@ -50,7 +51,8 @@ public class MouseAttack extends MiniGame {
     
     private static final Vector2 CAT_POSITION = new Vector2(100, 100);
     private static final Vector2 BALL_ORIGIN_POSITION = new Vector2(CAT_POSITION)
-            .add(15, 0);
+            .add(7, -8);
+    private static final float TIME_TO_ACTUALLY_SHOOT_AFTER_SHOOTING = 0.18f;
 
     public MouseAttack(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -82,7 +84,7 @@ public class MouseAttack extends MiniGame {
         target = new Sprite(targetTexture);
         target.setOriginCenter();
 
-        cat = new Cat2(catTexture);
+        cat = new Cat(catTexture);
         cat.setScale(2);
 
         enemiesKilled = 0;
@@ -121,22 +123,26 @@ public class MouseAttack extends MiniGame {
     public void onHandlePlayingInput() {
         // atualiza a posição do alvo de acordo com o mouse
         cat.setCenter(CAT_POSITION.x, CAT_POSITION.y);
-        Vector3 click = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        final Vector3 click = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         viewport.unproject(click);
         this.target.setPosition(click.x - this.target.getWidth() / 2,
                 click.y - this.target.getHeight() / 2);
 
         // verifica se matou um inimigo
         if (Gdx.input.justTouched()) {
-            Projetil projetil = new Projetil(projectileTexture);
-            projetil.setPosition(BALL_ORIGIN_POSITION.x, BALL_ORIGIN_POSITION.y);
-            projetil.shoot(click.x, click.y);
-            projectiles.add(projetil);
+            cat.playShootingAnimation();
+            super.timer.scheduleTask(new Task() {
+                @Override
+                public void run() {
+                    Projetil projetil = new Projetil(projectileTexture);
+                    projetil.setPosition(BALL_ORIGIN_POSITION.x, BALL_ORIGIN_POSITION.y);
+                    projetil.shoot(click.x, click.y);
+                    projectiles.add(projetil);
 
-            drawProj = true;
-            animateCat = true;
-
-            shootSound.play();
+                    drawProj = true;
+                    shootSound.play();
+                }
+            }, TIME_TO_ACTUALLY_SHOOT_AFTER_SHOOTING);
         }
 
     }
@@ -179,10 +185,6 @@ public class MouseAttack extends MiniGame {
             }
         }
         cat.update(dt);
-        if(animateCat){            
-            cat.animate= true;
-            animateCat=false;
-        }
     }
 
     @Override
@@ -216,107 +218,56 @@ public class MouseAttack extends MiniGame {
     
     // <editor-fold desc="Classes internas da MouseAttack" defaultstate="collapsed">
 
-    static class Cat2 extends AnimatedSprite {
+    private static class Cat extends AnimatedSprite {
 
-        static final int FRAME_WIDTH = 50;
-        static final int FRAME_HEIGHT = 50;
-        TextureRegion[][] quadrosDaAnimacao;
-        Texture spriteSheet;
-        float sx;
-        float sy;
-        public boolean animate = false;
+        private static final float FRAME_DURATION = 0.05f;
+        private static final int FRAME_WIDTH = 50;
+        private static final int FRAME_HEIGHT = 50;
+        private final Animation parado;
+        private final Animation atirando;
 
-        float tempoDaAnimacao;
 
-        Animation power;
-        Animation socar;
-        Animation chutar;
-        Animation morrer;
-        Animation parado;
+        public Cat(final Texture cat) {
 
-        int x = 0;
-
-        public Cat2(final Texture cat) {
-
-            super(new Animation(0.1f, new Array<TextureRegion>() {
+            super(new Animation(FRAME_DURATION, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
-                            cat, 50, 50);
+                            cat, FRAME_WIDTH, FRAME_HEIGHT);
                     super.addAll(new TextureRegion[]{
                         frames[4][0]
                     });
                 }
             }));
 
-            quadrosDaAnimacao = TextureRegion.split(cat, 50, 50);
+            TextureRegion[][] quadrosDaAnimacao = TextureRegion.split(
+                    cat, FRAME_WIDTH, FRAME_HEIGHT);
 
-            chutar = new Animation(0.1f,
-                    quadrosDaAnimacao[4][0],
-                    quadrosDaAnimacao[4][1],
-                    quadrosDaAnimacao[4][2],
-                    quadrosDaAnimacao[4][3],
-                    quadrosDaAnimacao[4][4],
-                    quadrosDaAnimacao[4][5],
-                    quadrosDaAnimacao[4][6],
-                    quadrosDaAnimacao[4][7],
-                    quadrosDaAnimacao[4][8],
-                    quadrosDaAnimacao[4][9]);
-
-            power = new Animation(0.1f,
+            atirando = new Animation(FRAME_DURATION,
                     quadrosDaAnimacao[1][0],
                     quadrosDaAnimacao[1][1],
                     quadrosDaAnimacao[1][2],
                     quadrosDaAnimacao[1][3],
                     quadrosDaAnimacao[1][4],
                     quadrosDaAnimacao[1][5]);
-
-            morrer = new Animation(0.1f,
-                    quadrosDaAnimacao[3][0],
-                    quadrosDaAnimacao[3][1],
-                    quadrosDaAnimacao[3][2],
-                    quadrosDaAnimacao[3][3]);
-
-            parado = new Animation(0.1f,
+            parado = new Animation(FRAME_DURATION,
                     quadrosDaAnimacao[0][0]);
-
-            socar = new Animation(0.1f,
-                    quadrosDaAnimacao[5][5],
-                    quadrosDaAnimacao[5][6],
-                    quadrosDaAnimacao[5][7],
-                    quadrosDaAnimacao[5][8],
-                    quadrosDaAnimacao[5][9]);
-
-        }
-
-        Vector2 getHeadPosition() {
-            return new Vector2(
-                    this.getX() + this.getWidth() * 0.5f,
-                    this.getY() + this.getHeight() * 0.8f);
-        }
-
-        float getHeadDistanceTo(float enemyX, float enemyY) {
-            return getHeadPosition().dst(enemyX, enemyY);
-        }
-
-        public void changeAnimation() {
-            this.setAnimation(power);
-            this.getAnimation().setPlayMode(Animation.PlayMode.NORMAL);
             
+            super.setAnimation(parado);
+            super.setAutoUpdate(false);
+        }
 
+        public void playShootingAnimation() {
+            super.setTime(0);
+            super.setAnimation(atirando);
         }
 
         @Override
-        public void update() {
-
-            tempoDaAnimacao += Gdx.graphics.getDeltaTime();
-            if(animate)
-                changeAnimation();
+        public void update(float dt) {
+            super.update(dt);
             
-            if(isAnimationFinished()&& animate==true){
-                animate=false;
-                this.setAnimation(parado);
-                this.getAnimation().setPlayMode(Animation.PlayMode.NORMAL);
-                
+            if (super.getAnimation() == atirando && super.isAnimationFinished()) {
+                super.setTime(0);
+                super.setAnimation(parado);
             }
         }
     }
