@@ -187,7 +187,7 @@ public class MouseAttack extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Mate os monstros!";
+        return "Acabe com os monstros!";
     }
 
     @Override
