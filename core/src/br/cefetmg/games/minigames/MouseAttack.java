@@ -2,7 +2,6 @@ package br.cefetmg.games.minigames;
 
 import static br.cefetmg.games.Config.WORLD_HEIGHT;
 import static br.cefetmg.games.Config.WORLD_WIDTH;
-import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.sound.MySound;
@@ -14,9 +13,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Timer.Task;
-import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import java.util.Random;
@@ -43,18 +39,18 @@ public class MouseAttack extends MiniGame {
     private Texture background;
 
     private int enemiesKilled;
-    private int spawnedEnemies;
 
     private MySound shootSound;
     private MySound monsterDieSound;
 
-    private float initialEnemyScale;
-    private int totalEnemies;
-    private float spawnInterval;
-    private int numberOfEnemy;
+    private int numberOfEnemies;
 
     private boolean drawProj = false;
     public boolean animateCat = false;
+    
+    private static final Vector2 CAT_POSITION = new Vector2(100, 100);
+    private static final Vector2 BALL_ORIGIN_POSITION = new Vector2(CAT_POSITION)
+            .add(15, 0);
 
     public MouseAttack(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -90,27 +86,10 @@ public class MouseAttack extends MiniGame {
         cat.setScale(2);
 
         enemiesKilled = 0;
-        spawnedEnemies = 0;
 
-        for (int i = 0; i < numberOfEnemy; i++) {
+        for (int i = 0; i < numberOfEnemies; i++) {
             spawnEnemy();
         }
-    }
-
-    private void scheduleEnemySpawn() {
-        Task t = new Task() {
-            @Override
-            public void run() {
-                spawnEnemy();
-                if (++spawnedEnemies < totalEnemies) {
-                    scheduleEnemySpawn();
-                }
-            }
-        };
-        // spawnInterval * 15% para mais ou para menos
-        float nextSpawnMillis = this.spawnInterval
-                * (rand.nextFloat() / 3 + 0.15f);
-        timer.scheduleTask(t, nextSpawnMillis);
     }
 
     int mul = 1;
@@ -135,16 +114,13 @@ public class MouseAttack extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        this.numberOfEnemy = (int) (10*difficulty + 5);
+        this.numberOfEnemies = (int) (10*difficulty + 5);
     }
-
-    Vector2 direction;
 
     @Override
     public void onHandlePlayingInput() {
         // atualiza a posição do alvo de acordo com o mouse
-        //cat.setCenter(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
-        cat.setCenter(100, 100);
+        cat.setCenter(CAT_POSITION.x, CAT_POSITION.y);
         Vector3 click = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         viewport.unproject(click);
         this.target.setPosition(click.x - this.target.getWidth() / 2,
@@ -152,13 +128,8 @@ public class MouseAttack extends MiniGame {
 
         // verifica se matou um inimigo
         if (Gdx.input.justTouched()) {
-            //direction = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-            direction = new Vector2(click.x, click.y);
-
             Projetil projetil = new Projetil(projectileTexture);
-            //projetil.setPosition(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
-            projetil.setPosition(100, 100);
-            //projetil.shoot(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+            projetil.setPosition(BALL_ORIGIN_POSITION.x, BALL_ORIGIN_POSITION.y);
             projetil.shoot(click.x, click.y);
             projectiles.add(projetil);
 
@@ -181,7 +152,7 @@ public class MouseAttack extends MiniGame {
                 monsterDieSound.play();
                 this.enemiesKilled++;
                 this.enemies.removeValue(enemies.get(i), true);
-                if (this.enemiesKilled >= this.numberOfEnemy) {
+                if (this.enemiesKilled >= this.numberOfEnemies) {
                     super.challengeSolved();
                 }
             }
@@ -190,12 +161,10 @@ public class MouseAttack extends MiniGame {
 
         if (drawProj) {
             for (int i = 0; i < projectiles.size; i++) {
-                projectiles.get(i).update(Gdx.graphics.getDeltaTime());
-                projectiles.get(i).setPosition(projectiles.get(i).position.x+100, projectiles.get(i).position.y+100);
-
+                projectiles.get(i).update(dt);
             }
+            
             for (int i = 0; i < enemies.size; i++) {
-                //Sprite sprite = enemies.get(i);
                 Monster m = enemies.get(i);
                 for (int j = 0; j < projectiles.size; j++) {
                     if (m.getBoundingRectangle().overlaps(
@@ -230,6 +199,7 @@ public class MouseAttack extends MiniGame {
             Monster m = enemies.get(i);
             m.draw(batch);
         }
+        
         if (drawProj) {
             for (int i = 0; i < projectiles.size; i++) {
                 projectiles.get(i).draw(batch);
@@ -355,7 +325,6 @@ public class MouseAttack extends MiniGame {
 
         TextureRegion[][] quadrosDaAnimacao;
         public float maxVelocity = 300;
-        public Vector2 position = new Vector2();
         public Vector2 velocity = new Vector2();
         float targetX;
         float targetY;
@@ -381,24 +350,22 @@ public class MouseAttack extends MiniGame {
                     quadrosDaAnimacao[0][0],
                     quadrosDaAnimacao[0][1],
                     quadrosDaAnimacao[0][2]);
-            //this.texture = texture;
-            //projeSprite = new Sprite(texture);
             
+            shoot.setPlayMode(Animation.PlayMode.LOOP);
             this.setAnimation(shoot);
-            this.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
-            
         }
 
         public void shoot(float targetX, float targetY) {
-            velocity.set(targetX - position.x, targetY - position.y).nor().scl(maxVelocity);
+            velocity.set(targetX - getX(), targetY - getY())
+                    .nor()
+                    .scl(maxVelocity);
         }
 
-        public void update(float deltaTime) {
-            super.update(deltaTime);
-            position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+        @Override
+        public void update(float dt) {
+            super.update(dt);
+            super.setPosition(getX() + velocity.x * dt, getY() + velocity.y * dt);
         }
-
-
     }
 
     static class Monster extends AnimatedSprite {
@@ -444,14 +411,6 @@ public class MouseAttack extends MiniGame {
                     quadrosDaAnimacao[0][3],
                     quadrosDaAnimacao[0][4]);
 
-            /*morrendo = new Animation(0.1f,
-                    quadrosDaAnimacao[3][0],
-                    quadrosDaAnimacao[3][1],
-                    quadrosDaAnimacao[3][2],
-                    quadrosDaAnimacao[3][3],
-                    quadrosDaAnimacao[3][4],
-                    quadrosDaAnimacao[3][5],
-                    quadrosDaAnimacao[3][6]);*/
 
             super.setAnimation(parado);
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
