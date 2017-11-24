@@ -77,4 +77,11 @@ public class Config {
      * Caminho do arquivo que salva o progresso do jogador localmente.
      */
     public static final String PROGRESS_LOCAL_FILE = "data/progress-file.txt";
+
+    /**
+     * Caminho do arquivo com informações sobre os desenvolvedores.
+     */
+    public static final String CREDITS_FILE = "data/credits.txt";
+
+;
 }

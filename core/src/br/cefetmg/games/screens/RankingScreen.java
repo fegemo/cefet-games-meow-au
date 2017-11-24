@@ -1,6 +1,8 @@
 package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
+import br.cefetmg.games.sound.MyMusic;
+import br.cefetmg.games.sound.SoundManager;
 import br.cefetmg.games.transition.TransitionScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -348,7 +350,12 @@ public class RankingScreen extends BaseScreen {
 
     @Override
     protected void assetsLoaded() {
-
+        if (showingScore) {
+            MyMusic musicaTema = SoundManager.getInstance()
+                    .playBackgroundMusic("menu/meowautheme.mp3");
+            musicaTema.setLooping(true);
+            musicaTema.setVolume(0.4f);
+        }
     }
 
     private class Letter {

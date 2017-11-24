@@ -4,9 +4,9 @@ import br.cefetmg.games.graphics.hud.SoundIcon;
 import br.cefetmg.games.transition.TransitionScreen;
 import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.MySound;
+import br.cefetmg.games.sound.SoundManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
@@ -51,7 +51,7 @@ public class MenuScreen extends BaseScreen {
     private MySound click2;
     private int selecionaModo = 0;
 
-    private MyMusic musicaTema;
+    private boolean shouldContinueBackgroundMusic;
 
     /**
      * Cria uma nova tela de menu.
@@ -108,11 +108,11 @@ public class MenuScreen extends BaseScreen {
         btnBack = assets.get("menu/button_voltar.png", Texture.class);
         logo = assets.get("menu/logo.png", Texture.class);
 
-        musicaTema = new MyMusic(assets.get("menu/meowautheme.mp3", Music.class));
+        MyMusic musicaTema = SoundManager.getInstance()
+                .playBackgroundMusic("menu/meowautheme.mp3");
         musicaTema.setLooping(true);
         musicaTema.setVolume(0.4f);
-        musicaTema.play();
-
+        
         click1 = new MySound(assets.get("menu/click1.mp3", Sound.class));
         click2 = new MySound(assets.get("menu/click2.mp3", Sound.class));
         soundIcon.create(
@@ -142,6 +142,7 @@ public class MenuScreen extends BaseScreen {
                     click2.play();
                 }
                 if (rankingBounds.contains(clickPosition.x, clickPosition.y)) {
+                    shouldContinueBackgroundMusic = true;
                     transitionScreen(new RankingScreen(super.game, this),
                             TransitionScreen.Effect.FADE_IN_OUT, 0.3f);
 
@@ -233,8 +234,8 @@ public class MenuScreen extends BaseScreen {
     }
         
     private void navigateToCredits(){
+        shouldContinueBackgroundMusic = true;
         game.setScreen(new CreditsScreen(game, this));
-
     }
 
     /**
@@ -243,7 +244,9 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void cleanUp() {
         background.getTexture().dispose();
-        musicaTema.stop();
+        if (!shouldContinueBackgroundMusic) {
+            SoundManager.getInstance().stopBackgroundMusic("menu/meowautheme.mp3");
+        }
     }
 
 }

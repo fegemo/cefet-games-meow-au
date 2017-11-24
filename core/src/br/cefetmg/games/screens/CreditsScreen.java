@@ -1,5 +1,8 @@
 package br.cefetmg.games.screens;
 
+import br.cefetmg.games.Config;
+import br.cefetmg.games.sound.MyMusic;
+import br.cefetmg.games.sound.SoundManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -58,19 +61,24 @@ public class CreditsScreen extends BaseScreen {
         linePos = new ArrayList<Vector2>();
         float aux = 0;
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(Gdx.files.internal("creditsScreen/credits.txt").read()));
-            String line = "";
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(
+                            Gdx.files.internal(Config.CREDITS_FILE).read()));
+            String line;
 
             while ((line = br.readLine()) != null) {
                 lines.add(line);
-                linePos.add(new Vector2((float) (Gdx.graphics.getWidth() * 0.55), aux));
+                linePos.add(
+                        new Vector2((float) (Gdx.graphics.getWidth() * 0.55),
+                                aux));
 
                 aux -= SPACING;
             }
             br.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Gdx.app.log(this.getClass().getName(), 
+                    "Error fetching credits file. Details: " + e.getMessage());
         }
 
     }
@@ -99,11 +107,6 @@ public class CreditsScreen extends BaseScreen {
     @Override
     public void draw() {
 
-        font = assets.get("orangejuice.ttf");
-        font.setColor(Color.DARK_GRAY);
-        bigfont = assets.get("orangejuice.ttf");
-        bigfont.setColor(Color.DARK_GRAY);
-
         batch.begin();
         batch.draw(background, 0, 0,
                 viewport.getWorldWidth(),
@@ -114,7 +117,6 @@ public class CreditsScreen extends BaseScreen {
                     bigfont.draw(batch, lines.get(i).substring(1, lines.get(i).length()), linePos.get(i).x, linePos.get(i).y);
                     bigfont.setColor(Color.DARK_GRAY);
                 } else {
-                    //font.draw(batch, lines.get(i), linePos.get(i).x, linePos.get(i).y);
                     font.draw(batch, lines.get(i), linePos.get(i).x, linePos.get(i).y, viewport.getWorldWidth() / 4, 1, false);
                     font.setColor(Color.DARK_GRAY);
 
@@ -126,7 +128,15 @@ public class CreditsScreen extends BaseScreen {
 
     @Override
     protected void assetsLoaded() {
+        font = assets.get("orangejuice.ttf");
+        font.setColor(Color.DARK_GRAY);
+        bigfont = assets.get("orangejuice.ttf");
+        bigfont.setColor(Color.DARK_GRAY);
 
+        MyMusic musicaTema = SoundManager.getInstance()
+                .playBackgroundMusic("menu/meowautheme.mp3");
+        musicaTema.setLooping(true);
+        musicaTema.setVolume(0.4f);
     }
 
 }
