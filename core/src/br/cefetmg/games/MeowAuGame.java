@@ -1,5 +1,7 @@
 package br.cefetmg.games;
 
+import br.cefetmg.games.database.OnlineRanking;
+import br.cefetmg.games.database.interfaces.Leaderboard;
 import br.cefetmg.games.screens.SplashScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -54,6 +56,12 @@ public class MeowAuGame extends Game {
 
     public void setLoadedScreen(Screen screen) {
         loadedScreen = screen;
+    }
+    
+    public MeowAuGame(Leaderboard leaderboard) {
+    	super();
+    	OnlineRanking.leaderboard = leaderboard;
+    	OnlineRanking.connect();
     }
 
 }

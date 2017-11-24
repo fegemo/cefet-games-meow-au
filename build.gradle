@@ -22,6 +22,7 @@ allprojects {
         box2DLightsVersion = '1.4'
         aiVersion = '1.8.0'
         gdxUtilsVersion = '0.13.4'
+        firebaseDesktop = '5.5.0'
     }
 
     repositories {
@@ -42,6 +43,7 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+    	compile "com.google.firebase:firebase-admin:$firebaseDesktop"
     }
 }
 

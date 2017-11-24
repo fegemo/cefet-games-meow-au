@@ -3,7 +3,12 @@ package br.cefetmg.games.screens;
 import br.cefetmg.games.Config;
 import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.SoundManager;
+import br.cefetmg.games.database.OnlineRanking;
+import br.cefetmg.games.database.model.RankingEntry;
 import br.cefetmg.games.transition.TransitionScreen;
+
+import java.util.List;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -28,6 +33,8 @@ public class RankingScreen extends BaseScreen {
     private TextureRegion enter;
     private TextureRegion space;
     private TextureRegion board;
+    private TextureRegion onlineIcon;
+    private TextureRegion offlineIcon;
 
     private final Letter[][] letters;
 
@@ -47,7 +54,7 @@ public class RankingScreen extends BaseScreen {
 
     private FileHandle file;
 
-    private int maxRankingQuantity;
+    private boolean online = false;
 
     public RankingScreen(Game game, BaseScreen previous, int phase) {
         super(game, previous);
@@ -60,33 +67,62 @@ public class RankingScreen extends BaseScreen {
         super(game, previous);
         this.letters = new Letter[3][10];
         initFromMenuScreen();
-
     }
 
-    private void initFromMenuScreen() {
+    private void loadRankingFromDatabase() {
+        file = Gdx.files.local(Config.RANKING_DATABASE_TEMP_FILE);
+        List<RankingEntry> entries = OnlineRanking.getEntries();
+        StringBuilder sb = new StringBuilder();
+        for (RankingEntry entry : entries) {
+            sb.append(entry.getName());
+            int delta = Math.max(14 - entry.getName().length(), 1);
+            for (int i = 0; i < delta; i++) {
+                sb.append(" ");
+            }
+            sb.append(entry.getPoints());
+            sb.append('\n');
+        }
+        file.writeString(sb.toString(), false);
+        fileContent = file.readString();
+        fileLenght = file.length();
+    }
+
+    private void loadRankingFromFile() {
         file = Gdx.files.local(Config.RANKING_LOCAL_FILE);
         if (!file.exists()) {
             file.writeString("", false);
         }
         fileContent = file.readString();
         fileLenght = file.length();
+    }
+
+    private void initFromMenuScreen() {
+        online = OnlineRanking.isOnline();
+        if (online) {
+            loadRankingFromDatabase();
+        } else {
+            loadRankingFromFile();
+        }
         testString = "";
         scoreKeeper = "";
         name = "";
         rightQuantityKeeper = "";
         writingScore = false;
         showingScore = true;
-        maxRankingQuantity = 10;
         boardBottom = new Vector2(viewport.getWorldWidth() * 0.25f, viewport.getWorldHeight() * 0.08f);
         boardSize = new Vector2(viewport.getWorldWidth() * 0.5f, viewport.getWorldHeight() * 0.775f);
         pointerX = viewport.getWorldWidth() / 2;
         pointerY = viewport.getWorldHeight() / 2;
         pointerSize = letterWidth * 0.5f;
-
     }
 
     private void initFromGameOver() {
-
+        online = OnlineRanking.isOnline();
+        if (online) {
+            loadRankingFromDatabase();
+        } else {
+            loadRankingFromFile();
+        }
         name = "";
         distFromBoard = viewport.getWorldWidth() / 7;
         bottomX = distFromBoard;
@@ -97,21 +133,13 @@ public class RankingScreen extends BaseScreen {
         pointerX = viewport.getWorldWidth() / 2;
         pointerY = viewport.getWorldHeight() / 2;
         pointerSize = letterWidth * 0.5f;
-        file = Gdx.files.local(Config.RANKING_LOCAL_FILE);
-        if (!file.exists()) {
-            file.writeString("", false);
-        }
-        fileContent = file.readString();
-        fileLenght = file.length();
         writingScore = true;
         showingScore = false;
-        maxRankingQuantity = 10;
         boardBottom = new Vector2(viewport.getWorldWidth() * 0.25f, viewport.getWorldHeight() * 0.08f);
         boardSize = new Vector2(viewport.getWorldWidth() * 0.5f, viewport.getWorldHeight() * 0.775f);
-
     }
 
-    public int rankingQuantity() {
+    private int rankingQuantity() {
         int quantity = 0;
         fileLenght = file.length();
         if (file.length() > 0) {
@@ -124,7 +152,19 @@ public class RankingScreen extends BaseScreen {
         return quantity;
     }
 
-    public void insert() {
+    private void insertInDatabase() {
+        String[] fields = name.split(";");
+        OnlineRanking.saveEntry(fields[0].trim(), Integer.parseInt(fields[1].trim()));
+        try {
+            // Dando uma chance para o banco se atualizar e pegarmos o rank mais atual.
+            Thread.sleep(700);
+        } catch (InterruptedException e) {
+
+        }
+        loadRankingFromDatabase();
+    }
+
+    private void insertInFile() {
         boolean alreadyGreater = false;
         String converter;
         i = 0;
@@ -147,7 +187,6 @@ public class RankingScreen extends BaseScreen {
                 if (phaseNumber >= Integer.parseInt(converter) && !alreadyGreater) {
                     if ("".equals(scoreKeeper)) {
                         scoreKeeper = name;
-
                     } else {
                         scoreKeeper = scoreKeeper + name;
                     }
@@ -171,13 +210,14 @@ public class RankingScreen extends BaseScreen {
             file.writeString(name, false);
             fileContent = file.readString();
         }
+        removeExtra();
     }
 
-    public void removeExtra() {
+    private void removeExtra() {
         int cont = 0;
         rightQuantityKeeper = "";
         fileLenght = file.length();
-        if (rankingQuantity() > maxRankingQuantity) {
+        if (rankingQuantity() > OnlineRanking.SIZE_LIMIT) {
             i = 0;
             rightQuantityKeeper = "" + fileContent.charAt(i);
             i++;
@@ -186,7 +226,7 @@ public class RankingScreen extends BaseScreen {
                 if (fileContent.charAt(i) == '\n') {
                     cont++;
                 }
-                if (cont == maxRankingQuantity) {
+                if (cont == OnlineRanking.SIZE_LIMIT) {
                     file.writeString(rightQuantityKeeper, false);
                     fileContent = "";
                     fileContent = file.readString();
@@ -194,6 +234,14 @@ public class RankingScreen extends BaseScreen {
                 }
                 i++;
             }
+        }
+    }
+
+    private void insert() {
+        if (online) {
+            insertInDatabase();
+        } else {
+            insertInFile();
         }
     }
 
@@ -208,14 +256,16 @@ public class RankingScreen extends BaseScreen {
         background = new TextureRegion(new Texture("end4.png"));
         pointer = new TextureRegion(new Texture("pointer.png"));
         board = new TextureRegion(new Texture("rectangle.png"));
+        onlineIcon = new TextureRegion(new Texture("online-icon.png"));
+        offlineIcon = new TextureRegion(new Texture("offline-icon.png"));
 
-        //auxChar define qual é  o asset carregado, qual a letra do teclado
-        //comeca em a e vai selecionando as proximas letras automaticamente
+        // auxChar define qual é o asset carregado, qual a letra do teclado
+        // comeca em a e vai selecionando as proximas letras automaticamente
         char auxChar = 'a';
 
         for (i = 0; i < 3; i++) {
             for (j = 0; j < 10; j++) {
-                //so temos 26 letras
+                // so temos 26 letras
                 if (i == 2 && j == 6) {
                     break;
                 }
@@ -230,9 +280,9 @@ public class RankingScreen extends BaseScreen {
             bottomY -= viewport.getWorldHeight() / 6.5;
         }
         /*
-            posicao do spaco, backspace e enter sao separadas das demais,
-            baseadas na ultima letra
-            ]*/
+		 * posicao do spaco, backspace e enter sao separadas das demais, baseadas na
+		 * ultima letra ]
+         */
         i = 2;
         j = 5;
         backspaceBottom = new Vector2(letters[i][j].bottom.x + distBetweenLetters, letters[i][j].bottom.y);
@@ -263,7 +313,6 @@ public class RankingScreen extends BaseScreen {
 
         if (Gdx.input.justTouched()) {
             if (writingScore) {
-
                 for (i = 0; i < 3; i++) {
                     for (j = 0; j < 10; j++) {
                         if (i == 2 && j == 6) {
@@ -283,28 +332,28 @@ public class RankingScreen extends BaseScreen {
                     if (name.length() > 0) {
                         name = name.substring(0, name.length() - 1);
                     }
-
                 } else if (collider(spaceBottom, spaceSize, click)) {
                     name = name + " ";
                 } else if (collider(enterBottom, enterSize, click)) {
-
                     if (!name.trim().equals("")) {
                         for (i = 0; i <= 10; i++) {
                             if (i == name.length()) {
                                 name += " ";
                             }
                         }
-                        name = name + "   " + phaseNumber + '\n';
+                        if (online) {
+                            name = name + ";" + phaseNumber;
+                        } else {
+                            name = name + "   " + phaseNumber + '\n';
+                        }
                         writingScore = false;
                         showingScore = true;
                         insert();
-                        removeExtra();
                     }
                 }
             } else if (showingScore) {
                 Gdx.input.setCursorCatched(false);
-                transitionScreen(new MenuScreen(super.game, this),
-                        TransitionScreen.Effect.FADE_IN_OUT, 0.4f);
+                transitionScreen(new MenuScreen(super.game, this), TransitionScreen.Effect.FADE_IN_OUT, 0.4f);
             }
         }
     }
@@ -321,11 +370,11 @@ public class RankingScreen extends BaseScreen {
     @Override
     public void draw() {
         batch.begin();
-        batch.draw(background, 0, 0,
-                viewport.getWorldWidth(),
-                viewport.getWorldHeight());
+        batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        float connectedIconSize = viewport.getWorldWidth() * 0.05f;
+        batch.draw(OnlineRanking.isOnline() ? onlineIcon : offlineIcon,
+                viewport.getWorldWidth() - connectedIconSize - 2.0f, 2.0f, connectedIconSize, connectedIconSize);
         if (writingScore) {
-
             drawCenterAlignedText("Sua pontuação:  " + phaseNumber + "", viewport.getWorldHeight() * 0.91f);
             drawCenterAlignedText("Coloque seu nome:  " + name + "", viewport.getWorldHeight() * 0.84f);
             for (i = 0; i < 3; i++) {
@@ -333,7 +382,8 @@ public class RankingScreen extends BaseScreen {
                     if (i == 2 && j == 6) {
                         break;
                     }
-                    batch.draw(letters[i][j].tex, letters[i][j].bottom.x, letters[i][j].bottom.y, letters[i][j].size.x, letters[i][j].size.y);
+                    batch.draw(letters[i][j].tex, letters[i][j].bottom.x, letters[i][j].bottom.y, letters[i][j].size.x,
+                            letters[i][j].size.y);
                 }
             }
             batch.draw(backspace, backspaceBottom.x, backspaceBottom.y, backspaceSize.x, backspaceSize.y);
@@ -358,7 +408,7 @@ public class RankingScreen extends BaseScreen {
         }
     }
 
-    private class Letter {
+    private static class Letter {
 
         private TextureRegion tex;
         private Vector2 bottom;
