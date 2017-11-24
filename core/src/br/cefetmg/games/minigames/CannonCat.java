@@ -31,7 +31,7 @@ public class CannonCat extends MiniGame {
     public int center_y = 700 / 2;
     public double tempo1 = System.currentTimeMillis();
     public double tempo2 = System.currentTimeMillis();
-    public final static int MAX_AMMO = 10;
+    public final static int MAX_AMMO = 13;
     public final static int NUMBER_OF_CATS = 8;
     private ObjectMap<Direction, Texture> cannonTextures;
 
@@ -119,15 +119,15 @@ public class CannonCat extends MiniGame {
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         if (difficulty <= 0.25) { //Fácil: Canhão super lento e longuíssimo tempo de jogo
-            TEMPO_MUDANCA_DIRECAO_CANHAO = 750;
+            TEMPO_MUDANCA_DIRECAO_CANHAO = 150;
             super.maxDuration *= 2;
         } else if (difficulty <= 0.5) { //Médio: Canhão lento e longo tempo de jogo
-            TEMPO_MUDANCA_DIRECAO_CANHAO = 500;
+            TEMPO_MUDANCA_DIRECAO_CANHAO = 125;
             super.maxDuration *= 1.5;
         } else if (difficulty <= 0.75) { //Difícil: Canhão normal e tempo de jogo normal
-            TEMPO_MUDANCA_DIRECAO_CANHAO = 250;
-        } else { //Impossível: Canhão rápido e tempo de jogo baixo
             TEMPO_MUDANCA_DIRECAO_CANHAO = 100;
+        } else { //Impossível: Canhão rápido e tempo de jogo baixo
+            TEMPO_MUDANCA_DIRECAO_CANHAO = 75;
             super.maxDuration /= 1.5;
         }
     }
