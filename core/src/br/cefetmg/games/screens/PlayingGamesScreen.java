@@ -270,6 +270,8 @@ public class PlayingGamesScreen extends BaseScreen
             case BACK_MENU:
                 super.game.setScreen(new MenuScreen(super.game, this));
                 break;
+            default:
+            	break;
         }
         this.state = newState;
     }

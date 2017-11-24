@@ -74,6 +74,11 @@ public class Config {
     public static final String RANKING_LOCAL_FILE = "data/local-ranking.txt";
     
     /**
+     * Caminho do arquivo que salva o ranking remoto (temporário).
+     */
+    public static final String RANKING_DATABASE_TEMP_FILE = "data/remote-ranking.txt";
+    
+    /**
      * Caminho do arquivo que salva o progresso do jogador localmente.
      */
     public static final String PROGRESS_LOCAL_FILE = "data/progress-file.txt";
@@ -83,5 +88,8 @@ public class Config {
      */
     public static final String CREDITS_FILE = "data/credits.txt";
 
-;
+    /**
+     * Caminho do arquivo de configuração do banco de dados.
+     */
+    public static final String DATABASE_CONFIG = "data/service-account.json";
 }
