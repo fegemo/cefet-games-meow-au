@@ -14,7 +14,7 @@ public class OnlineRanking {
 	/**
 	 * Deve ser setado antes de usar o ranking!
 	 */
-	public static Leaderboard leaderboard;
+	private static Leaderboard leaderboard;
 
 	public static final String ENTRIES_KEY = "entries";
 
@@ -32,19 +32,23 @@ public class OnlineRanking {
 	};
 
 	public static void connect() {
-		leaderboard.connect();
+		if (leaderboard != null) {
+			leaderboard.connect();
+		}
 	}
 
 	public static boolean isInitialized() {
-		return leaderboard.isInitialized();
+		return leaderboard != null && leaderboard.isInitialized();
 	}
 
 	public static boolean isOnline() {
-		return leaderboard.isOnline();
+		return leaderboard != null && leaderboard.isOnline();
 	}
 
 	public static void saveEntry(RankingEntry entry) {
-		leaderboard.saveEntry(entry);
+		if (leaderboard != null) {
+			leaderboard.saveEntry(entry);
+		}
 	}
 
 	public static void saveEntry(String name, int points) {
@@ -52,27 +56,41 @@ public class OnlineRanking {
 	}
 
 	public static void updateEntries(String key, RankingEntry entry) {
-		synchronized (leaderboard.getEntryMap()) {
-			leaderboard.getEntryMap().put(key, entry);
-			List<Entry<String, RankingEntry>> mapEntries = new ArrayList<Entry<String, RankingEntry>>(
-					leaderboard.getEntryMap().entrySet());
-			Collections.sort(mapEntries, ENTRY_COMPARATOR);
-			leaderboard.getEntryMap().clear();
-			for (Entry<String, RankingEntry> mapEntry : mapEntries) {
-				leaderboard.getEntryMap().put(mapEntry.getKey(), mapEntry.getValue());
+		if (leaderboard != null) {
+			synchronized (leaderboard.getEntryMap()) {
+				leaderboard.getEntryMap().put(key, entry);
+				List<Entry<String, RankingEntry>> mapEntries = new ArrayList<Entry<String, RankingEntry>>(
+						leaderboard.getEntryMap().entrySet());
+				Collections.sort(mapEntries, ENTRY_COMPARATOR);
+				leaderboard.getEntryMap().clear();
+				for (Entry<String, RankingEntry> mapEntry : mapEntries) {
+					leaderboard.getEntryMap().put(mapEntry.getKey(), mapEntry.getValue());
+				}
 			}
 		}
 	}
-	
+
 	public static void removeEntry(String key) {
-		synchronized(leaderboard.getEntryMap()) {
-			leaderboard.getEntryMap().remove(key);
+		if (leaderboard != null) {
+			synchronized (leaderboard.getEntryMap()) {
+				leaderboard.getEntryMap().remove(key);
+			}
 		}
 	}
 
 	public static List<RankingEntry> getEntries() {
-		synchronized (leaderboard.getEntryMap()) {
-			return new ArrayList<RankingEntry>(leaderboard.getEntryMap().values());
+		if (leaderboard != null) {
+			synchronized (leaderboard.getEntryMap()) {
+				return new ArrayList<RankingEntry>(leaderboard.getEntryMap().values());
+			}
+		} else {
+			return new ArrayList<RankingEntry>();
+		}
+	}
+
+	public static void setLeaderboard(Leaderboard leaderBoardObj) {
+		if (leaderboard == null) {
+			leaderboard = leaderBoardObj;
 		}
 	}
 
