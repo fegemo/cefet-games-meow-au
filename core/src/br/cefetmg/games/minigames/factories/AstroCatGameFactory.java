@@ -7,7 +7,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
-import br.cefetmg.games.minigames.AstroCat;
+import br.cefetmg.games.minigames.AstroCatGame;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.screens.BaseScreen;
@@ -18,11 +18,11 @@ import br.cefetmg.games.screens.BaseScreen;
  * @author andrebrait
  *
  */
-public class AstroCatFactory implements MiniGameFactory {
+public class AstroCatGameFactory implements MiniGameFactory {
 
 	@Override
 	public MiniGame createMiniGame(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
-		return new AstroCat(screen, observer, difficulty);
+		return new AstroCatGame(screen, observer, difficulty);
 	}
 
 	@Override
