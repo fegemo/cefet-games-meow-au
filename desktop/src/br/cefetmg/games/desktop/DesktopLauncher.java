@@ -26,6 +26,6 @@ public class DesktopLauncher {
         config.vSyncEnabled = true;
         config.title = "Meow Au";
 
-        new LwjglApplication(new MeowAuGame(), config);
+        new LwjglApplication(new MeowAuGame(new DesktopLeaderboard()), config);
     }
 }

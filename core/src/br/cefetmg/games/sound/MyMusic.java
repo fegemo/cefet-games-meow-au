@@ -10,10 +10,16 @@ import com.badlogic.gdx.utils.Disposable;
 public class MyMusic implements AudioResource, Disposable {
 
     private final Music music;
+    private final String assetPath;
     private float desiredVolume;
 
-    public MyMusic(Music current) {
-        this.music = current;
+    public MyMusic(Music music) {
+        this(music, "");
+    }
+    
+    public MyMusic(Music music, String assetPath) {
+        this.music = music;
+        this.assetPath = assetPath;
         this.desiredVolume = 1.0f;
     }
 
@@ -59,6 +65,10 @@ public class MyMusic implements AudioResource, Disposable {
     @Override
     public void restoreVolume() {
         music.setVolume(desiredVolume);
+    }
+    
+    public String getAssetPath() {
+        return assetPath;
     }
 
     @Override
