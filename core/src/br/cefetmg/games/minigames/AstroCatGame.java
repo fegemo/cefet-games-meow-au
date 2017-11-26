@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter.RangedNumericValue;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter.ScaledNumericValue;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -45,7 +47,7 @@ public class AstroCatGame extends MiniGame {
 	private static final int NUM_ASTEROIDS = 6;
 	private static final float GAME_DURATION = 15.0f;
 
-	private static final float STEP_TIME = 1f / 60f;
+	private static final float STEP_TIME = 1.0f / 60.0f;
 	private static final int VELOCITY_ITERATIONS = 6;
 	private static final int POSITION_ITERATIONS = 2;
 	private static final float DELTA_ASTEROID_START = 50.0f;
@@ -56,7 +58,6 @@ public class AstroCatGame extends MiniGame {
 
 	private PhysicsShapeCache physCache;
 
-	private ParticleEffect particleEffect;
 	private Texture[] asteroidTextures;
 	private Texture astroCatTexture, planetTexture, backgroundTexture;
 	private Sprite background;
@@ -201,47 +202,48 @@ public class AstroCatGame extends MiniGame {
 
 	private static class AstroCat extends AstroCatBody {
 
-		private final ParticleEmitter rocket;
+		private final static float MINUS_NOVENTA_RAD = (float) Math.toRadians(-90.0);
+
+		private final ParticleEffect rocket;
+		private final Vector2 rocketDiff;
+		private final float diffToNoventa;
 
 		public AstroCat(PhysicsShapeCache physCache, World world, Texture astroCatTexture, Vector2 position,
-				ParticleEmitter rocketEmitter) {
+				ParticleEffect rocketEmitter) {
 			super("astrocat", physCache, astroCatTexture, world, position);
 			rocket = rocketEmitter;
+			rocketDiff = new Vector2(sprite.getWidth() * 0.095f, sprite.getHeight() * -0.53f);
+			diffToNoventa = rocketDiff.angleRad() - MINUS_NOVENTA_RAD;
+			updatePosition();
 		}
 
-		// @Override
-		// public void updatePosition() {
-		// float targetAngleRad = (float) body.getAngle();
-		// float targetAngleDeg = (float) Math.toDegrees(targetAngleRad);
-		// Vector2 emitterOffset = new Vector2(1.0f, 1.0f);
-		// emitterOffset.setAngleRad(targetAngleRad);
-		//
-		// Vector2 position = body.getPosition();
-		// sprite.setRotation(targetAngleDeg);
-		// sprite.setCenter(position.x, position.y);
-		//
-		// rocket.setPosition(body.getPosition().x, body.getPosition().y);
-		// setNewCenter(rocket.getAngle(), targetAngleDeg);
-		// setNewCenter(rocket.getYOffsetValue(), emitterOffset.y);
-		// setNewCenter(rocket.getXOffsetValue(), emitterOffset.x);
-		// }
-		//
-		// private void setNewCenter(ScaledNumericValue value, float center) {
-		// float spanHigh = (value.getHighMax() - value.getHighMin()) * 0.5f;
-		// float spanLow = (value.getLowMax() - value.getLowMin()) * 0.5f;
-		// value.setHigh(center - spanHigh, center + spanHigh);
-		// value.setLow(center - spanLow, center + spanLow);
-		// }
-		//
-		// private void setNewCenter(RangedNumericValue value, float center) {
-		// float spanLow = (value.getLowMax() - value.getLowMin()) * 0.5f;
-		// value.setLow(center - spanLow, center + spanLow);
-		// }
-		//
-		// @Override
-		// public void draw(Batch batch) {
-		// sprite.draw(batch);
-		// }
+		@Override
+		public void updatePosition() {
+			super.updatePosition();
+			if (rocket != null) {
+				float targetAngleRad = (float) body.getAngle();
+				Vector2 emitterOffset = rocketDiff.cpy().rotateRad(targetAngleRad + diffToNoventa)
+						.add(body.getPosition());
+				rocket.setPosition(emitterOffset.x, emitterOffset.y);
+				for (ParticleEmitter emitter : rocket.getEmitters()) {
+					setNewCenter(emitter.getAngle(), (float) Math.toDegrees(targetAngleRad + MINUS_NOVENTA_RAD));
+				}
+			}
+		}
+
+		private void setNewCenter(ScaledNumericValue value, float center) {
+			float spanHigh = (value.getHighMax() - value.getHighMin()) * 0.5f;
+			float spanLow = (value.getLowMax() - value.getLowMin()) * 0.5f;
+			value.setHigh(center - spanHigh, center + spanHigh);
+			value.setLow(center - spanLow, center + spanLow);
+		}
+
+		@Override
+		public void draw(Batch batch) {
+			rocket.start();
+			rocket.draw(batch);
+			super.draw(batch);
+		}
 
 	}
 
@@ -263,11 +265,6 @@ public class AstroCatGame extends MiniGame {
 		asteroidSet = new HashSet<Asteroid>();
 		ThreadLocalRandom rand = ThreadLocalRandom.current();
 
-		// Carregando efeito de partículas
-		particleEffect = new ParticleEffect();
-		particleEffect.load(Gdx.files.local("astrocat/rocket.p"), Gdx.files.local("astrocat"));
-		particleEffect.scaleEffect(SCALE);
-
 		// Carregando texturas
 		asteroidTextures = new Texture[NUM_ASTEROIDS];
 		for (int i = 0; i < NUM_ASTEROIDS; i++) {
@@ -282,11 +279,16 @@ public class AstroCatGame extends MiniGame {
 		world = new World(new Vector2(0.0f, 0.0f), true);
 		physCache = new PhysicsShapeCache(Gdx.files.local("astrocat/physics.xml"));
 
+		// Carregando efeito de partículas
+		ParticleEffect particleEffect = new ParticleEffect();
+		particleEffect.load(Gdx.files.local("astrocat/rocket.p"), Gdx.files.local("astrocat"));
+		particleEffect.scaleEffect(SCALE);
+
 		// Instanciando Sprites
 		float verticalMiddle = viewport.getWorldHeight() / 2;
 		astroCat = new AstroCat(physCache, world, astroCatTexture,
 				new Vector2(viewport.getWorldWidth() * 0.1f, getRandomWithinRange(rand, verticalMiddle, 0.7f)),
-				particleEffect.getEmitters().get(0));
+				particleEffect);
 		planet = new Planet(physCache, world, planetTexture,
 				new Vector2(viewport.getWorldWidth() * 0.95f, getRandomWithinRange(rand, verticalMiddle, 0.8f)));
 
@@ -382,6 +384,7 @@ public class AstroCatGame extends MiniGame {
 		if (accumulator >= STEP_TIME) {
 			accumulator -= STEP_TIME;
 			world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+			astroCat.rocket.update(dt);
 			updateBodies();
 		}
 	}
@@ -421,7 +424,6 @@ public class AstroCatGame extends MiniGame {
 		for (Asteroid asteroid : asteroids) {
 			asteroid.draw(batch);
 		}
-		// particleEffect.start();
 		backgroundMusic.setVolume(0.6f);
 		if (isPaused()) {
 			backgroundMusic.pause();
@@ -444,7 +446,6 @@ public class AstroCatGame extends MiniGame {
 
 	@Override
 	protected void onEnd() {
-		particleEffect.dispose();
 		backgroundMusic.stop();
 		backgroundMusic.dispose();
 		world.destroyBody(astroCat.body);
