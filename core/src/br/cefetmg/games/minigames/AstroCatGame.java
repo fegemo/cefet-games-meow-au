@@ -87,7 +87,10 @@ public class AstroCatGame extends MiniGame {
 
 		@Override
 		public void beginContact(Contact contact) {
-			impact.play();
+			if (((contact.getFixtureA().getFilterData().categoryBits & 1)
+					| (contact.getFixtureB().getFilterData().categoryBits & 1)) != 0) {
+				impact.play();
+			}
 		}
 
 		@Override
@@ -168,7 +171,7 @@ public class AstroCatGame extends MiniGame {
 			if (rand.nextBoolean()) {
 				// O asteróide sairá de uma das laterais da tela
 				angleMultiplier = 0.1f;
-				float x = rand.nextBoolean() && rand.nextBoolean() ? -DELTA_ASTEROID_START
+				float x = (rand.nextBoolean() && rand.nextBoolean()) ? -DELTA_ASTEROID_START
 						: viewport.getWorldWidth() + DELTA_ASTEROID_START;
 				float y = rand.nextFloat() * (1.0f + rand.nextFloat()) * viewport.getWorldHeight();
 				newPosition = new Vector2(x, y);
@@ -309,7 +312,7 @@ public class AstroCatGame extends MiniGame {
 		// Inserindo listener de detecção de colisão com som
 		contactListener = new AstroCatContactListener();
 		world.setContactListener(contactListener);
-		
+
 		createWalls();
 	}
 
@@ -321,10 +324,10 @@ public class AstroCatGame extends MiniGame {
 		PolygonShape shapeVertical = new PolygonShape();
 
 		bodyDef.type = BodyDef.BodyType.StaticBody;
-		fixtureDefHorizontal.filter.maskBits = 4;
-		fixtureDefHorizontal.filter.categoryBits = 4;
-		fixtureDefVertical.filter.maskBits = 4;
-		fixtureDefVertical.filter.categoryBits = 4;
+		fixtureDefHorizontal.filter.maskBits = 2;
+		fixtureDefHorizontal.filter.categoryBits = 8;
+		fixtureDefVertical.filter.maskBits = 2;
+		fixtureDefVertical.filter.categoryBits = 8;
 		shapeHorizontal.setAsBox(viewport.getWorldWidth(), 1);
 		shapeVertical.setAsBox(1, viewport.getWorldHeight());
 		fixtureDefHorizontal.shape = shapeHorizontal;
