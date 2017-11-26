@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -240,9 +241,16 @@ public class AstroCatGame extends MiniGame {
 
 		@Override
 		public void draw(Batch batch) {
-			rocket.start();
 			rocket.draw(batch);
 			super.draw(batch);
+		}
+
+		public void accelerate() {
+			rocket.start();
+		}
+
+		public void stopAccelerating() {
+			rocket.reset();
 		}
 
 	}
@@ -407,8 +415,14 @@ public class AstroCatGame extends MiniGame {
 
 	@Override
 	public void onHandlePlayingInput() {
-		// TODO Auto-generated method stub
+		Vector2 cursor = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+		viewport.unproject(cursor);
 
+		if (Gdx.input.isKeyPressed(Input.Buttons.LEFT) || Gdx.input.isTouched()) {
+			astroCat.accelerate();
+		} else {
+			astroCat.stopAccelerating();
+		}
 	}
 
 	@Override
