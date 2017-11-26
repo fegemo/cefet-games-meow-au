@@ -12,15 +12,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
-import com.badlogic.gdx.graphics.g2d.ParticleEmitter.RangedNumericValue;
-import com.badlogic.gdx.graphics.g2d.ParticleEmitter.ScaledNumericValue;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.codeandweb.physicseditor.PhysicsShapeCache;
@@ -52,7 +54,9 @@ public class AstroCatGame extends MiniGame {
 
 	private float accumulator = 0.0f;
 
-	private PhysicsShapeCache physicsBodies;
+	private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
+
+	private PhysicsShapeCache physCache;
 
 	private ParticleEffect particleEffect;
 	private Texture[] asteroidTextures;
@@ -70,15 +74,16 @@ public class AstroCatGame extends MiniGame {
 	private Planet planet;
 	private Asteroid[] asteroids;
 
+	private Body[] walls;
 	private Set<Asteroid> asteroidSet;
 
-	private ContactListener asteroidListener;
+	private ContactListener contactListener;
 
 	public AstroCatGame(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
 		super(screen, observer, difficulty, GAME_DURATION, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
 	}
 
-	private class AsteroidContactListener implements ContactListener {
+	private class AstroCatContactListener implements ContactListener {
 
 		@Override
 		public void beginContact(Contact contact) {
@@ -102,81 +107,83 @@ public class AstroCatGame extends MiniGame {
 
 	}
 
-	private static interface AstroCatBody {
+	private static abstract class AstroCatBody {
 
-		public void updatePosition();
+		protected final Sprite sprite;
+		protected final Body body;
 
-		public void draw(Batch batch);
-
-		public Sprite getSprite();
-
-		public Body getBody();
-
-	}
-
-	private static class Asteroid implements AstroCatBody {
-
-		private final Sprite sprite;
-		private final Body body;
-		private final int index;
-
-		public Asteroid(int i, PhysicsShapeCache physCache, World world, Texture[] asteroidTextures, int asteroidNum) {
-			index = i;
-			sprite = new Sprite(asteroidTextures[asteroidNum - 1]);
+		protected AstroCatBody(String bodyName, PhysicsShapeCache physCache, Texture texture, World world,
+				Vector2 position) {
+			body = physCache.createBody(bodyName, world, SCALE, SCALE);
+			body.setTransform(position, 0.0f);
+			sprite = new Sprite(texture);
 			sprite.setSize(sprite.getWidth() * SCALE, sprite.getHeight() * SCALE);
-			body = physCache.createBody("asteroid" + asteroidNum, world, SCALE, SCALE);
-			deactivatePhysics();
+			sprite.setOriginCenter();
+			updatePosition();
 		}
 
-		@Override
 		public void updatePosition() {
-			sprite.setPosition(body.getPosition().x, body.getPosition().y);
-			// sprite.setRotation((float) Math.toDegrees(body.getAngle()));
-			sprite.setOrigin(0.0f, 0.0f);
+			Vector2 bodyCenter = body.getPosition();
+			sprite.setCenter(bodyCenter.x, bodyCenter.y);
+			sprite.setRotation((float) Math.toDegrees(body.getAngle()));
 		}
 
-		@Override
 		public void draw(Batch batch) {
 			sprite.draw(batch);
 		}
 
+		public void deactivate() {
+			body.setActive(false);
+			sprite.setAlpha(0.0f);
+		}
+
+		public void activate() {
+			body.setActive(true);
+			sprite.setAlpha(1.0f);
+		}
+
+	}
+
+	private static class Asteroid extends AstroCatBody {
+
+		private final int index;
+
+		public Asteroid(int i, PhysicsShapeCache physCache, World world, Texture[] asteroidTextures, int asteroidNum) {
+			super("asteroid" + asteroidNum, physCache, asteroidTextures[asteroidNum - 1], world, Vector2.Zero);
+			index = i;
+			deactivate();
+		}
+
 		public void setNewPositionAndSpeed(Vector2 position, Vector2 speed, float omega) {
 			body.setTransform(position, speed.angleRad());
-			body.setLinearVelocity(speed.scl(20.0f));
+			body.setLinearVelocity(speed);
 			body.setAngularVelocity(omega);
 			updatePosition();
 		}
 
-		public void getNewRandomPositionAndSpeed(Viewport viewport, AstroCat player, float speed) {
+		public void setNewRandomPositionAndSpeed(Viewport viewport, AstroCat player, float speed) {
 			ThreadLocalRandom rand = ThreadLocalRandom.current();
 			Vector2 newPosition;
+			float angleMultiplier;
 			if (rand.nextBoolean()) {
 				// O asteróide sairá de uma das laterais da tela
-				float x = rand.nextBoolean() ? -DELTA_ASTEROID_START : viewport.getWorldWidth() + DELTA_ASTEROID_START;
-				float y = rand.nextFloat() * viewport.getWorldHeight();
+				angleMultiplier = 0.1f;
+				float x = rand.nextBoolean() && rand.nextBoolean() ? -DELTA_ASTEROID_START
+						: viewport.getWorldWidth() + DELTA_ASTEROID_START;
+				float y = rand.nextFloat() * (1.0f + rand.nextFloat()) * viewport.getWorldHeight();
 				newPosition = new Vector2(x, y);
 			} else {
 				// O asteróide sairá de cima ou baixo da tela
-				float x = rand.nextFloat() * viewport.getWorldWidth();
+				angleMultiplier = 0.2f;
+				float x = rand.nextFloat() * (1.0f + rand.nextFloat()) * viewport.getWorldWidth();
 				float y = rand.nextBoolean() ? -DELTA_ASTEROID_START : viewport.getWorldHeight() + DELTA_ASTEROID_START;
 				newPosition = new Vector2(x, y);
 			}
-			Vector2 newSpeed = newPosition.cpy().sub(player.getBody().getPosition());
-			float newSpeedNorm = speed + (rand.nextBoolean() ? -1.0f : 1.0f) * rand.nextFloat() * 0.2f * speed;
-			float oldAngleRad = body.getAngle();
-			float newAngleRad = oldAngleRad + (rand.nextBoolean() ? -1.0f : 1.0f) * 0.2f * oldAngleRad;
-			setNewPositionAndSpeed(newPosition, newSpeed.setAngleRad(newAngleRad).nor().scl(newSpeedNorm),
-					(rand.nextBoolean() ? -1.0f : 1.0f) * rand.nextFloat() * 5.0f);
-		}
-
-		@Override
-		public Sprite getSprite() {
-			return sprite;
-		}
-
-		@Override
-		public Body getBody() {
-			return body;
+			Vector2 relativePlayerPosition = player.body.getPosition().cpy().sub(newPosition);
+			float newSpeedNorm = getRandomWithinRange(rand, speed, 0.2f);
+			float newAngleRad = getRandomWithinRange(rand, relativePlayerPosition.angleRad(), angleMultiplier);
+			float newOmega = getRandomWithinRange(rand, 2.0f, 1.5f);
+			setNewPositionAndSpeed(newPosition, new Vector2(newSpeedNorm, 0.0f).rotateRad(newAngleRad), newOmega);
 		}
 
 		@Override
@@ -189,115 +196,71 @@ public class AstroCatGame extends MiniGame {
 			return 37 * index;
 		}
 
-		public void deactivatePhysics() {
-			body.setActive(false);
-		}
-
-		public void activatePhysics() {
-			body.setActive(true);
-		}
 	}
 
-	private static class AstroCat implements AstroCatBody {
+	private static class AstroCat extends AstroCatBody {
 
-		private final Sprite sprite;
-		private final Body body;
 		private final ParticleEmitter rocket;
 
 		public AstroCat(PhysicsShapeCache physCache, World world, Texture astroCatTexture, Vector2 position,
 				ParticleEmitter rocketEmitter) {
+			super("astrocat", physCache, astroCatTexture, world, position);
 			rocket = rocketEmitter;
-			sprite = new Sprite(astroCatTexture);
-			sprite.setSize(sprite.getWidth() * SCALE, sprite.getHeight() * SCALE);
-			body = physCache.createBody("astrocat", world, SCALE, SCALE);
-			body.setTransform(position, 0.0f);
-			updatePosition();
 		}
 
-		@Override
-		public void updatePosition() {
-			float targetAngleRad = (float) body.getAngle();
-			float targetAngleDeg = (float) Math.toDegrees(targetAngleRad);
-			Vector2 emitterOffset = new Vector2(1.0f, 1.0f);
-			emitterOffset.setAngleRad(targetAngleRad);
-			emitterOffset.scl(sprite.getHeight() * -0.525f);
+		// @Override
+		// public void updatePosition() {
+		// float targetAngleRad = (float) body.getAngle();
+		// float targetAngleDeg = (float) Math.toDegrees(targetAngleRad);
+		// Vector2 emitterOffset = new Vector2(1.0f, 1.0f);
+		// emitterOffset.setAngleRad(targetAngleRad);
+		//
+		// Vector2 position = body.getPosition();
+		// sprite.setRotation(targetAngleDeg);
+		// sprite.setCenter(position.x, position.y);
+		//
+		// rocket.setPosition(body.getPosition().x, body.getPosition().y);
+		// setNewCenter(rocket.getAngle(), targetAngleDeg);
+		// setNewCenter(rocket.getYOffsetValue(), emitterOffset.y);
+		// setNewCenter(rocket.getXOffsetValue(), emitterOffset.x);
+		// }
+		//
+		// private void setNewCenter(ScaledNumericValue value, float center) {
+		// float spanHigh = (value.getHighMax() - value.getHighMin()) * 0.5f;
+		// float spanLow = (value.getLowMax() - value.getLowMin()) * 0.5f;
+		// value.setHigh(center - spanHigh, center + spanHigh);
+		// value.setLow(center - spanLow, center + spanLow);
+		// }
+		//
+		// private void setNewCenter(RangedNumericValue value, float center) {
+		// float spanLow = (value.getLowMax() - value.getLowMin()) * 0.5f;
+		// value.setLow(center - spanLow, center + spanLow);
+		// }
+		//
+		// @Override
+		// public void draw(Batch batch) {
+		// sprite.draw(batch);
+		// }
 
-			sprite.setPosition(body.getPosition().x, body.getPosition().y);
-			// sprite.setRotation(targetAngleDeg);
-			sprite.setOrigin(0.0f, 0.0f);
-			rocket.setPosition(body.getPosition().x, body.getPosition().y);
-			setNewCenter(rocket.getAngle(), targetAngleDeg);
-			setNewCenter(rocket.getYOffsetValue(), emitterOffset.y);
-			setNewCenter(rocket.getXOffsetValue(), emitterOffset.x);
-		}
-
-		private void setNewCenter(ScaledNumericValue value, float center) {
-			float spanHigh = (value.getHighMax() - value.getHighMin()) * 0.5f;
-			float spanLow = (value.getLowMax() - value.getLowMin()) * 0.5f;
-			value.setHigh(center - spanHigh, center + spanHigh);
-			value.setLow(center - spanLow, center + spanLow);
-		}
-
-		private void setNewCenter(RangedNumericValue value, float center) {
-			float spanLow = (value.getLowMax() - value.getLowMin()) * 0.5f;
-			value.setLow(center - spanLow, center + spanLow);
-		}
-
-		@Override
-		public void draw(Batch batch) {
-			sprite.draw(batch);
-		}
-
-		@Override
-		public Sprite getSprite() {
-			return sprite;
-		}
-
-		@Override
-		public Body getBody() {
-			return body;
-		}
 	}
 
-	private static class Planet implements AstroCatBody {
-
-		private final Sprite sprite;
-		private final Body body;
+	private static class Planet extends AstroCatBody {
 
 		public Planet(PhysicsShapeCache physCache, World world, Texture planetTexture, Vector2 position) {
-			sprite = new Sprite(planetTexture);
-			sprite.setSize(sprite.getWidth() * SCALE, sprite.getHeight() * SCALE);
-			body = physCache.createBody("planet", world, SCALE, SCALE);
-			body.setTransform(position, 0.0f);
-			updatePosition();
+			super("planet", physCache, planetTexture, world, position);
 		}
 
-		@Override
-		public void updatePosition() {
-			sprite.setPosition(body.getPosition().x, body.getPosition().y);
-			// sprite.setRotation((float) Math.toDegrees(body.getAngle()));
-			sprite.setOrigin(0.0f, 0.0f);
-		}
+	}
 
-		@Override
-		public void draw(Batch batch) {
-			sprite.draw(batch);
-		}
-
-		@Override
-		public Sprite getSprite() {
-			return sprite;
-		}
-
-		@Override
-		public Body getBody() {
-			return body;
-		}
+	private static float getRandomWithinRange(ThreadLocalRandom rand, float value, float range) {
+		return value + (rand.nextBoolean() ? -1.0f : 1.0f) * rand.nextFloat() * range * value;
 	}
 
 	@Override
 	protected void onStart() {
+		walls = new Body[4];
 		asteroidSet = new HashSet<Asteroid>();
+		ThreadLocalRandom rand = ThreadLocalRandom.current();
 
 		// Carregando efeito de partículas
 		particleEffect = new ParticleEffect();
@@ -316,24 +279,23 @@ public class AstroCatGame extends MiniGame {
 		impact = new MySound(assets.get("astrocat/impact.ogg", Sound.class));
 		backgroundMusic = new MyMusic(assets.get("astrocat/background.mp3", Music.class));
 		world = new World(new Vector2(0.0f, 0.0f), true);
-		physicsBodies = new PhysicsShapeCache(Gdx.files.local("astrocat/physics.xml"));
+		physCache = new PhysicsShapeCache(Gdx.files.local("astrocat/physics.xml"));
 
 		// Instanciando Sprites
-		float verticalMiddle = viewport.getWorldHeight() * 0.5f;
-		astroCat = new AstroCat(physicsBodies, world, astroCatTexture, new Vector2(10.0f, verticalMiddle),
+		float verticalMiddle = viewport.getWorldHeight() / 2;
+		astroCat = new AstroCat(physCache, world, astroCatTexture,
+				new Vector2(viewport.getWorldWidth() * 0.1f, getRandomWithinRange(rand, verticalMiddle, 0.7f)),
 				particleEffect.getEmitters().get(0));
-		planet = new Planet(physicsBodies, world, planetTexture, new Vector2(viewport.getWorldWidth(), verticalMiddle));
+		planet = new Planet(physCache, world, planetTexture,
+				new Vector2(viewport.getWorldWidth() * 0.95f, getRandomWithinRange(rand, verticalMiddle, 0.8f)));
 
 		// Instanciando asteróides
 		int asteroidInstances = (int) (Math.ceil(maxAsteroids * 2.0f));
 
-		ThreadLocalRandom rand = ThreadLocalRandom.current();
 		asteroids = new Asteroid[asteroidInstances];
 		for (int i = 0; i < asteroidInstances; i++) {
-			Asteroid newAsteroid = new Asteroid(i, physicsBodies, world, asteroidTextures,
-					rand.nextInt(NUM_ASTEROIDS) + 1);
-			newAsteroid.setNewPositionAndSpeed(new Vector2(-30.0f, -30.0f), new Vector2(0.0f, 0.0f), 0.0f);
-			newAsteroid.deactivatePhysics();
+			Asteroid newAsteroid = new Asteroid(i, physCache, world, asteroidTextures, rand.nextInt(NUM_ASTEROIDS) + 1);
+			newAsteroid.setNewPositionAndSpeed(Vector2.Zero, Vector2.Zero, 0.0f);
 			asteroids[i] = newAsteroid;
 		}
 
@@ -345,8 +307,47 @@ public class AstroCatGame extends MiniGame {
 		background.setPosition(0.0f, 0.0f);
 
 		// Inserindo listener de detecção de colisão com som
-		asteroidListener = new AsteroidContactListener();
-		world.setContactListener(asteroidListener);
+		contactListener = new AstroCatContactListener();
+		world.setContactListener(contactListener);
+		
+		createWalls();
+	}
+
+	private void createWalls() {
+		BodyDef bodyDef = new BodyDef();
+		FixtureDef fixtureDefHorizontal = new FixtureDef();
+		FixtureDef fixtureDefVertical = new FixtureDef();
+		PolygonShape shapeHorizontal = new PolygonShape();
+		PolygonShape shapeVertical = new PolygonShape();
+
+		bodyDef.type = BodyDef.BodyType.StaticBody;
+		fixtureDefHorizontal.filter.maskBits = 4;
+		fixtureDefHorizontal.filter.categoryBits = 4;
+		fixtureDefVertical.filter.maskBits = 4;
+		fixtureDefVertical.filter.categoryBits = 4;
+		shapeHorizontal.setAsBox(viewport.getWorldWidth(), 1);
+		shapeVertical.setAsBox(1, viewport.getWorldHeight());
+		fixtureDefHorizontal.shape = shapeHorizontal;
+		fixtureDefVertical.shape = shapeVertical;
+
+		walls[0] = world.createBody(bodyDef);
+		walls[0].createFixture(fixtureDefHorizontal);
+		walls[0].setTransform(0.0f, 0.0f, 0.0f);
+
+		walls[1] = world.createBody(bodyDef);
+		walls[1].createFixture(fixtureDefVertical);
+		walls[1].setTransform(0.0f, 0.0f, 0.0f);
+
+		walls[2] = world.createBody(bodyDef);
+		walls[2].createFixture(fixtureDefHorizontal);
+		walls[2].setTransform(0.0f, viewport.getWorldHeight(), 0.0f);
+
+		walls[3] = world.createBody(bodyDef);
+		walls[3].createFixture(fixtureDefVertical);
+		walls[3].setTransform(viewport.getWorldWidth(), 0.0f, 0.0f);
+
+		shapeHorizontal.dispose();
+		shapeVertical.dispose();
 	}
 
 	private void fillAsteroidSet() {
@@ -356,22 +357,20 @@ public class AstroCatGame extends MiniGame {
 			do {
 				selected = asteroids[rand.nextInt(asteroids.length)];
 			} while (!asteroidSet.add(selected));
-			selected.getNewRandomPositionAndSpeed(viewport, astroCat, (float) asteroidSpeed);
-			selected.activatePhysics();
+			selected.setNewRandomPositionAndSpeed(viewport, astroCat, (float) asteroidSpeed);
+			selected.activate();
 		}
 	}
 
 	private void removeOutOfBoundAsteroids() {
 		for (Iterator<Asteroid> i = asteroidSet.iterator(); i.hasNext();) {
 			Asteroid asteroid = i.next();
-			Vector2 pos = asteroid.getBody().getPosition();
+			Vector2 pos = asteroid.body.getPosition();
 			if (pos.x <= -DELTA_ASTEROID_START || pos.y <= -DELTA_ASTEROID_START
 					|| pos.x >= viewport.getWorldWidth() + DELTA_ASTEROID_START
 					|| pos.y >= viewport.getWorldHeight() + DELTA_ASTEROID_START) {
-				asteroid.deactivatePhysics();
-				asteroid.setNewPositionAndSpeed(
-						new Vector2(-viewport.getWorldWidth() * 2.0f, -viewport.getWorldHeight() * 2.0f),
-						new Vector2(0.0f, 0.0f), 0.0f);
+				asteroid.deactivate();
+				asteroid.setNewPositionAndSpeed(Vector2.Zero, Vector2.Zero, 0.0f);
 				i.remove();
 			}
 		}
@@ -382,13 +381,24 @@ public class AstroCatGame extends MiniGame {
 		if (accumulator >= STEP_TIME) {
 			accumulator -= STEP_TIME;
 			world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+			updateBodies();
 		}
+	}
+
+	private void updateBodies() {
+		astroCat.updatePosition();
+		removeOutOfBoundAsteroids();
+		fillAsteroidSet();
+		for (Asteroid asteroid : asteroidSet) {
+			asteroid.updatePosition();
+		}
+		planet.updatePosition();
 	}
 
 	@Override
 	protected void configureDifficultyParameters(float difficulty) {
 		maxAsteroids = Math.ceil(DifficultyCurve.S.getCurveValueBetween(difficulty, 10.0f, 60.0f));
-		asteroidSpeed = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 50.0f, 120.0f);
+		asteroidSpeed = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 400.0f, 1200.0f);
 	}
 
 	@Override
@@ -399,25 +409,21 @@ public class AstroCatGame extends MiniGame {
 
 	@Override
 	public void onUpdate(float dt) {
-		removeOutOfBoundAsteroids();
-		fillAsteroidSet();
 		stepWorld(dt);
-		astroCat.updatePosition();
-		for (Asteroid asteroid : asteroidSet) {
-			asteroid.updatePosition();
-		}
-		planet.updatePosition();
 	}
 
 	@Override
 	public void onDrawGame() {
 		background.draw(batch);
 		astroCat.draw(batch);
+		planet.draw(batch);
 		for (Asteroid asteroid : asteroids) {
 			asteroid.draw(batch);
 		}
-		planet.draw(batch);
-		particleEffect.start();
+		// particleEffect.start();
+		// backgroundMusic.setLooping(true);
+		// backgroundMusic.play();
+		debugRenderer.render(world, viewport.getCamera().combined);
 	}
 
 	@Override
@@ -428,6 +434,29 @@ public class AstroCatGame extends MiniGame {
 	@Override
 	public boolean shouldHideMousePointer() {
 		return false;
+	}
+
+	@Override
+	protected void onGamePaused(boolean paused) {
+		if (paused && backgroundMusic.isPlaying()) {
+			backgroundMusic.pause();
+		} else {
+			backgroundMusic.play();
+		}
+	}
+
+	@Override
+	protected void onEnd() {
+		particleEffect.dispose();
+		backgroundMusic.stop();
+		world.destroyBody(astroCat.body);
+		world.destroyBody(planet.body);
+		for (Asteroid asteroid : asteroids) {
+			world.destroyBody(asteroid.body);
+		}
+		for (Body wall : walls) {
+			world.destroyBody(wall);
+		}
 	}
 
 }
