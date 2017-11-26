@@ -39,8 +39,8 @@ public class JetRat extends MiniGame {
     private float screenHeight;
     private float posX, posY;
     int srcX, troca;
-    float aceleracao, velocidade;
     private MySound meon;
+    private MySound jet;
     int cont;
     int difficulty;
     
@@ -49,7 +49,7 @@ public class JetRat extends MiniGame {
          
         super(screen, observer, difficulty, 10f,
                 TimeoutBehavior.WINS_WHEN_MINIGAME_ENDS);
-             
+        
     }
 
     @Override
@@ -62,10 +62,14 @@ public class JetRat extends MiniGame {
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         tubeTexture = assets.get("jet-rat/tube.png", Texture.class);
         meon = new MySound(assets.get("jet-rat/meon.mp3", Sound.class));
+        jet = new MySound(assets.get("jet-rat/Kruncha angry.mp3", Sound.class));
         mouse = new Calopsita(mouseTexture);
         mouse.setScale(0.5f);
+        
         screenHeight = Gdx.graphics.getHeight();
         screenWidth = Gdx.graphics.getWidth();
+
+        mouse.setPosition(screenWidth/8, screenHeight/4);
 
         enemies = new Array<Tube>();
 
@@ -79,7 +83,6 @@ public class JetRat extends MiniGame {
 
         }, 0, (float) Math.random() + 0.7f);
         srcX = 0;
-        velocidade = -1 * WORLD_HEIGHT * 0.004f;
         meon.play(0.2f);
     }
 
@@ -104,6 +107,7 @@ public class JetRat extends MiniGame {
 
         enemy.setPosition(WORLD_WIDTH, 60 * enemy.getSize());
         enemy.setSpeed(tubeSpeed);
+        enemy.startAnimation("dormindo");
         enemies.add(enemy);
     }
 
@@ -118,21 +122,38 @@ public class JetRat extends MiniGame {
     @Override
     public void onHandlePlayingInput() {
 
-        // atualiza a posição do alvo de acordo com o mouse
-        Vector3 position;
-        position = new Vector3(posX, posY, 0);
-        viewport.unproject(position);
-        mouse.setCenter(position.x, position.y);
-        for (Tube tubes : this.enemies) {
-            if (mouse.getY() + 70 <= tubes.getHeight() + tubes.getSize() * 60
-                    && (mouse.getX() > tubes.getX() - 80 && mouse.getX() < tubes.getX() + 80)) {
-
-                super.challengeFailed();
-                meon.stop();
-                tubes.changePicture();
+        if (Gdx.input.isTouched()) {
+            if(mouse.getY() <= screenHeight/2){
+                mouse.acceleration.y = 4.0f*Math.abs(Calopsita.ACCELERATION_Y);
             }
+            else{
+                mouse.acceleration.y = Math.abs(Calopsita.ACCELERATION_Y);
+            }
+            mouse.acceleration.x = 30.0f;
+            
+            if(!mouse.fuel){
+                mouse.startAnimation("fuel");
+            }
+            mouse.fuel = true;
+            
+            jet.play();
+            jet.setVolume(0.5f);
         }
-
+        else{
+            if(mouse.getY() >= screenHeight/2){
+                mouse.acceleration.y = -2.0f*Math.abs(Calopsita.ACCELERATION_Y);
+            }
+            else{
+                mouse.acceleration.y = -Math.abs(Calopsita.ACCELERATION_Y);
+            }
+            
+            mouse.acceleration.x = -30.0f;
+            
+            if(mouse.fuel){
+                mouse.startAnimation("nofuel");
+            }
+            mouse.fuel = false;
+        }
     }
 
     @Override
@@ -144,36 +165,31 @@ public class JetRat extends MiniGame {
            meon.pause();
        
         mouse.update(dt);
-        srcX += 5;
-
-        if (posY < screenHeight + 2) {
-            posY -= velocidade ;
-        }else{
-            super.challengeFailed();
-            meon.stop();
-        }
-        if (posX > screenWidth / 2 - 16) {
-            posX -= 0.5;
-        }
-        if (Gdx.input.justTouched()) {
-            cont=10;
-            posX += 2;
-        }
         
-        if(cont>0){
-            cont--;
-            posY -= WORLD_HEIGHT * 0.012;
-        }
-        // atualiza os inimigos (quadro de animação + colisão com dentes)
-        for (int i = 0; i < this.enemies.size; i++) {
-            Tube tube = this.enemies.get(i);
-            tube.setPosition(tube.getX() - 5, tube.getY());
-            tube.changePicture();
-        }
         if (mouse.getY() + mouse.getHeight() / 2 > WORLD_HEIGHT) {
             super.challengeFailed();
             meon.stop();
         }
+        
+        // atualiza a posição do alvo de acordo com o mouse
+        Vector3 position;
+        position = new Vector3(posX, posY, 0);
+        viewport.unproject(position);
+        //mouse.setCenter(position.x, position.y);
+        for (Tube tubes : this.enemies) {
+            
+            if (mouse.getY() + 70 <= tubes.getHeight() + tubes.getSize() * 60
+                    && (mouse.getX() > tubes.getX() - 80 && mouse.getX() < tubes.getX() + 80)) {
+
+                super.challengeFailed();
+                meon.stop();
+                //tubes.changePicture();
+                tubes.startAnimation("acordado");
+            }
+            tubes.setPosition(tubes.getX() - 5, tubes.getY());
+            
+        }
+
      
     }
    
@@ -204,25 +220,57 @@ public class JetRat extends MiniGame {
     }
     public 
 
-    class Calopsita extends AnimatedSprite {
+    class Calopsita extends MultiAnimatedSprite {
 
         static final int FRAME_WIDTH = 131;//131
         static final int FRAME_HEIGHT = 156;//156
 
+        static final float MAX_SPEED_Y = 250.0f;
+        static final float ACCELERATION_Y = 150.0f;
+        
+        static final float MAX_SPEED_X = 100.0f;
+        static final float ACCELERATION_X = 50.0f;
+                
+        private Vector2 speed;
+        private Vector2 acceleration;
+        
+        boolean fuel;
+        
         public Calopsita(final Texture toothbrushTexture) {
-            super(new Animation(0.22f, new Array<TextureRegion>() {
+            super(new HashMap<String, Animation>() {
                 {
-                    TextureRegion[][] frames = TextureRegion.split(
-                            toothbrushTexture, FRAME_WIDTH, FRAME_HEIGHT);
-                    super.addAll(new TextureRegion[]{
-                        frames[0][0],
-                        frames[0][1],
-                        frames[0][2],
-                        frames[0][3],});
+                    
+                    TextureRegion[][] frames = TextureRegion
+                            .split(toothbrushTexture,
+                                    FRAME_WIDTH, FRAME_HEIGHT);
+                    Animation sleep = new Animation(0.1f,
+                            frames[0][0],
+                            frames[0][1],
+                            frames[0][2],
+                            frames[0][3]
+                            
+                    );
+                    Animation acordado = new Animation(0.1f,
+                            frames[0][4],
+                            frames[0][5],
+                            frames[0][6],
+                            frames[0][7]
+                    );
+                    sleep.setPlayMode(Animation.PlayMode.LOOP);
+                    acordado.setPlayMode(Animation.PlayMode.LOOP);
+                    put("fuel", sleep);
+                    put("nofuel", acordado);
+
                 }
-            }));
+            }, "nofuel");
+                    
+            this.fuel = false;
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
             super.setAutoUpdate(false);
+            
+            this.speed = new Vector2(0.0f, 0.0f);
+            this.acceleration = new Vector2(0.0f, -ACCELERATION_Y);
+            
         }
 
         Vector2 getHeadPosition() {
@@ -234,6 +282,18 @@ public class JetRat extends MiniGame {
         float getHeadDistanceTo(float enemyX, float enemyY) {
             return getHeadPosition().dst(enemyX, enemyY);
         }
+        
+        @Override
+        public void update(float dt) {
+
+            super.update(dt);
+            super.setPosition(super.getX() + this.speed.x * dt,
+                    super.getY() + this.speed.y * dt);
+            
+            this.speed.x = Math.max(Math.min(this.speed.x+this.acceleration.x*dt, Calopsita.MAX_SPEED_X), 0.0f);
+            this.speed.y = Math.max(Math.min(this.speed.y+this.acceleration.y*dt, Calopsita.MAX_SPEED_Y), -Calopsita.MAX_SPEED_Y);
+            
+        }
     }
 
     class Tube extends MultiAnimatedSprite {
@@ -241,7 +301,7 @@ public class JetRat extends MiniGame {
         private Vector2 speed;
 
         private static final int FRAME_WIDTH = 220;
-        private static final int FRAME_HEIGHT = 305;
+        private static final int FRAME_HEIGHT = 390;
         private int size;
 
         public Tube(final Texture tubesSpritesheet) {
@@ -252,16 +312,26 @@ public class JetRat extends MiniGame {
                             .split(tubesSpritesheet,
                                     FRAME_WIDTH, FRAME_HEIGHT);
                     Animation sleep = new Animation(0.1f,
-                            frames[0][0]);
+                            frames[0][0],
+                            frames[1][0],
+                            frames[2][0]
+                    );
                     Animation acordado = new Animation(0.1f,
-                            frames[0][1]);
-                    sleep.setPlayMode(Animation.PlayMode.NORMAL);
-                    put("walking", sleep);
+                            frames[0][1],
+                            frames[1][1],
+                            frames[2][1]
+                    );
+                    sleep.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+                    acordado.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+                    put("dormindo", sleep);
                     put("acordado", acordado);
 
                 }
-            }, "walking");
-
+            }, "dormindo");
+             
+            super.getAnimation().setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+            super.setAutoUpdate(false);
+            
         }
 
         public void changePicture() {
