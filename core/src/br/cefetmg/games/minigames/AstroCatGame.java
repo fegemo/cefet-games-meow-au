@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.codeandweb.physicseditor.PhysicsShapeCache;
 
 import br.cefetmg.games.minigames.util.DifficultyCurve;
+import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
@@ -424,8 +425,14 @@ public class AstroCatGame extends MiniGame {
 			asteroid.draw(batch);
 		}
 		// particleEffect.start();
-		// backgroundMusic.setLooping(true);
-		// backgroundMusic.play();
+		backgroundMusic.setVolume(0.6f);
+		if (isPaused()) {
+			backgroundMusic.pause();
+		} else if (MiniGameState.PLAYING.equals(getState())) {
+			backgroundMusic.play();
+		} else {
+			backgroundMusic.stop();
+		}
 		debugRenderer.render(world, viewport.getCamera().combined);
 	}
 
@@ -440,18 +447,10 @@ public class AstroCatGame extends MiniGame {
 	}
 
 	@Override
-	protected void onGamePaused(boolean paused) {
-		if (paused && backgroundMusic.isPlaying()) {
-			backgroundMusic.pause();
-		} else {
-			backgroundMusic.play();
-		}
-	}
-
-	@Override
 	protected void onEnd() {
 		particleEffect.dispose();
 		backgroundMusic.stop();
+		backgroundMusic.dispose();
 		world.destroyBody(astroCat.body);
 		world.destroyBody(planet.body);
 		for (Asteroid asteroid : asteroids) {
