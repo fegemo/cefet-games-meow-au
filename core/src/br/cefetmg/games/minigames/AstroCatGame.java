@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
@@ -54,8 +53,6 @@ public class AstroCatGame extends MiniGame {
 	private static final float SCALE = 0.4f;
 
 	private float accumulator = 0.0f;
-
-	private Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
 
 	private PhysicsShapeCache physCache;
 
@@ -294,7 +291,7 @@ public class AstroCatGame extends MiniGame {
 				new Vector2(viewport.getWorldWidth() * 0.95f, getRandomWithinRange(rand, verticalMiddle, 0.8f)));
 
 		// Instanciando asteróides
-		int asteroidInstances = (int) (Math.ceil(maxAsteroids * 2.0f));
+		int asteroidInstances = (int) (Math.ceil(maxAsteroids * 1.2f));
 
 		asteroids = new Asteroid[asteroidInstances];
 		for (int i = 0; i < asteroidInstances; i++) {
@@ -401,8 +398,8 @@ public class AstroCatGame extends MiniGame {
 
 	@Override
 	protected void configureDifficultyParameters(float difficulty) {
-		maxAsteroids = Math.ceil(DifficultyCurve.S.getCurveValueBetween(difficulty, 10.0f, 60.0f));
-		asteroidSpeed = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 400.0f, 1200.0f);
+		maxAsteroids = Math.ceil(DifficultyCurve.S.getCurveValueBetween(difficulty, 8.0f, 18.0f));
+		asteroidSpeed = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 300.0f, 1200.0f);
 	}
 
 	@Override
@@ -433,7 +430,6 @@ public class AstroCatGame extends MiniGame {
 		} else {
 			backgroundMusic.stop();
 		}
-		debugRenderer.render(world, viewport.getCamera().combined);
 	}
 
 	@Override
