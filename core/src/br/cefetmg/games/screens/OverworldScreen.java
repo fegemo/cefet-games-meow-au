@@ -605,13 +605,20 @@ public class OverworldScreen extends BaseScreen {
     
     public void drawScoreText () {
         final float horizontalPosition = viewport.getWorldWidth() * 0.45f;
-        final float verticalPosition = viewport.getWorldHeight() * 0.95f;
+        final float verticalPosition = viewport.getWorldHeight();
         String text = String.valueOf(score) + "/" + getPontuacaoNecessaria();
         messagesFont.setColor(Color.WHITE);
         messagesFont.draw(batch,
+                "Pontos",
+                horizontalPosition,
+                verticalPosition * 0.95f,
+                0.9f * viewport.getWorldWidth(),
+                Align.center,
+                true);
+        messagesFont.draw(batch,
                 text,
                 horizontalPosition,
-                verticalPosition,
+                verticalPosition * 0.88f,
                 0.9f * viewport.getWorldWidth(),
                 Align.center,
                 true);
