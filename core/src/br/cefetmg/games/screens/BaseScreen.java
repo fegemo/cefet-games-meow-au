@@ -47,7 +47,7 @@ public abstract class BaseScreen extends ScreenAdapter {
     public Viewport viewport;
     public Rectangle visibleWorldBounds;
     public final AssetManager assets;
-    private BitmapFont messagesFont;
+    protected BitmapFont messagesFont;
     private float deviceAspectRatioDivergenceFromDesired;
     private boolean wasJustDisposed = false;
     private boolean assetsFinishedLoading = false;

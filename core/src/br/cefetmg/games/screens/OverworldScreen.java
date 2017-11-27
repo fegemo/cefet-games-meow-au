@@ -19,12 +19,20 @@ import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.utils.Align;
 import java.util.ArrayList;
 import java.util.HashSet;
 
 public class OverworldScreen extends BaseScreen {
 
     private static final int NUMBER_OF_LEVELS = 5;
+    private static final int FIRST_STAGE_SCORE = 3;
+    private static final int SECOND_STAGE_SCORE = 9;
+    private static final int THIRD_STAGE_SCORE = 18;
+    private static final int FOURTH_STAGE_SCORE = 36;
+    private static final int LAST_STAGE_SCORE = 72;
     private Vector2 click;
     private Stage stage;
 
@@ -43,7 +51,7 @@ public class OverworldScreen extends BaseScreen {
             exit, menu, play, water;
     
     private final InputMultiplexer inputMultiplexer;
-    
+    private BitmapFont messagesFont;
     private ArrayList<Image> locks;
     private boolean desenhaMeio=true;
     private MyMusic backgroundMusic;
@@ -113,7 +121,7 @@ public class OverworldScreen extends BaseScreen {
         menu = new Image(assets.get("world/menu.png", Texture.class));
         play = new Image(assets.get("world/play.png", Texture.class));
         water = new Image(assets.get("world/water.jpg", Texture.class));
-
+        messagesFont = super.messagesFont;
         
         bool1 = true;
         desenhaMeio = true;
@@ -386,7 +394,7 @@ public class OverworldScreen extends BaseScreen {
                     )
             ), .1f, .2f, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += (3*lives)/3;
-            if (currentStage == 0 && score >= 3) currentStage = 1;
+            if (currentStage == 0 && score >= FIRST_STAGE_SCORE) currentStage = 1;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
             file.writeString(stage, false);
         }
@@ -410,7 +418,7 @@ public class OverworldScreen extends BaseScreen {
                     )
             ), .3f, .4f, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += (6*lives)/3;
-            if (currentStage == 1 && score >= 9) currentStage = 2;
+            if (currentStage == 1 && score >= SECOND_STAGE_SCORE) currentStage = 2;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
             file.writeString(stage, false);
         }
@@ -431,7 +439,7 @@ public class OverworldScreen extends BaseScreen {
                     )
             ), .5f, .6f, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += (9*lives)/3;
-            if (currentStage == 2 && score >= 18) currentStage = 3;
+            if (currentStage == 2 && score >= THIRD_STAGE_SCORE) currentStage = 3;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
             file.writeString(stage, false);
         }
@@ -453,7 +461,7 @@ public class OverworldScreen extends BaseScreen {
                     )
             ), .7f, .8f, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += (18*lives)/3;
-            if (currentStage == 3 && score >= 36) currentStage = 4;
+            if (currentStage == 3 && score >= FOURTH_STAGE_SCORE) currentStage = 4;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
             file.writeString(stage, false);
         }
@@ -475,7 +483,7 @@ public class OverworldScreen extends BaseScreen {
                     )
             ), 0.9f, 1, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += (36*lives)/3;
-            if (currentStage == 4 && score >= 72) currentStage = 5;
+            if (currentStage == 4 && score >= LAST_STAGE_SCORE) currentStage = 5;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
             file.writeString(stage, false);
         }
@@ -574,7 +582,40 @@ public class OverworldScreen extends BaseScreen {
 	batch.setProjectionMatrix(camera.combined);
         batch.begin();
             drawLocks();
+            drawScoreText();
         batch.end();
+    }
+    
+    public String getPontuacaoNecessaria() {
+        switch (currentStage){
+            case 0:
+                return String.valueOf(FIRST_STAGE_SCORE);
+            case 1:
+                return String.valueOf(SECOND_STAGE_SCORE);
+            case 2:
+                return String.valueOf(THIRD_STAGE_SCORE);
+            case 3:
+                return String.valueOf(FOURTH_STAGE_SCORE);
+            case 4:
+                return String.valueOf(LAST_STAGE_SCORE);
+                default:
+                    return String.valueOf(score);   
+        }
+    }
+    
+    public void drawScoreText () {
+        final float horizontalPosition = viewport.getWorldWidth() * 0.45f;
+        final float verticalPosition = viewport.getWorldHeight() * 0.95f;
+        String text = String.valueOf(score) + "/" + getPontuacaoNecessaria();
+        messagesFont.setColor(Color.WHITE);
+        messagesFont.draw(batch,
+                text,
+                horizontalPosition,
+                verticalPosition,
+                0.9f * viewport.getWorldWidth(),
+                Align.center,
+                true);
+        
     }
 
     @Override
