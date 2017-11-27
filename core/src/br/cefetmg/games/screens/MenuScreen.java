@@ -51,7 +51,6 @@ public class MenuScreen extends BaseScreen {
     private MySound click2;
     private int selecionaModo = 0;
 
-    private boolean hasPreloaded;
     private boolean shouldContinueBackgroundMusic;
 
     /**
@@ -95,39 +94,32 @@ public class MenuScreen extends BaseScreen {
         assets.load("hud/no-sound-button.png", Texture.class, linearFilter);
         assets.load("hud/sound-button.png", Texture.class, linearFilter);
         soundIcon = new SoundIcon(new Stage(viewport, batch));
-        Gdx.input.setInputProcessor(soundIcon.getInputProcessor());
     }
 
     @Override
     protected void assetsLoaded() {
+        background = new TextureRegion(assets.get("menu/menu-background.png", Texture.class));
+        btnPlay = assets.get("menu/button_jogar.png", Texture.class);
+        btnExit = assets.get("menu/button_sair.png", Texture.class);
+        btnRanking = assets.get("menu/button_ranking.png", Texture.class);
+        btnCredits = assets.get("menu/button_creditos.png", Texture.class);
+        btnNormal = assets.get("menu/button_normal.png", Texture.class);
+        btnSurvival = assets.get("menu/button_survival.png", Texture.class);
+        btnBack = assets.get("menu/button_voltar.png", Texture.class);
+        logo = assets.get("menu/logo.png", Texture.class);
+
+        MyMusic musicaTema = SoundManager.getInstance()
+                .playBackgroundMusic("menu/meowautheme.mp3");
+        musicaTema.setLooping(true);
+        musicaTema.setVolume(0.4f);
         
+        click1 = new MySound(assets.get("menu/click1.mp3", Sound.class));
+        click2 = new MySound(assets.get("menu/click2.mp3", Sound.class));
+        soundIcon.create(
+                    assets.get("hud/no-sound-button.png", Texture.class),
+                    assets.get("hud/sound-button.png", Texture.class));
+        Gdx.input.setInputProcessor(soundIcon.getInputProcessor());
     }
-    
-    private boolean preload() {
-		if (super.assets.update() && !hasPreloaded) {
-			background = new TextureRegion(assets.get("menu/menu-background.png", Texture.class));
-			btnPlay = assets.get("menu/button_jogar.png", Texture.class);
-			btnExit = assets.get("menu/button_sair.png", Texture.class);
-			btnRanking = assets.get("menu/button_ranking.png", Texture.class);
-			btnCredits = assets.get("menu/button_creditos.png", Texture.class);
-			btnNormal = assets.get("menu/button_normal.png", Texture.class);
-			btnSurvival = assets.get("menu/button_survival.png", Texture.class);
-			btnBack = assets.get("menu/button_voltar.png", Texture.class);
-			logo = assets.get("menu/logo.png", Texture.class);
-
-			MyMusic musicaTema = SoundManager.getInstance().playBackgroundMusic("menu/meowautheme.mp3");
-			musicaTema.setLooping(true);
-			musicaTema.setVolume(0.4f);
-
-			click1 = new MySound(assets.get("menu/click1.mp3", Sound.class));
-			click2 = new MySound(assets.get("menu/click2.mp3", Sound.class));
-			soundIcon.create(assets.get("hud/no-sound-button.png", Texture.class),
-					assets.get("hud/sound-button.png", Texture.class));
-
-			hasPreloaded = true;
-		}
-		return hasPreloaded;
-	}
 
     /**
      * Recebe <em>input</em> do jogador.
@@ -190,9 +182,7 @@ public class MenuScreen extends BaseScreen {
      */
     @Override
     public void update(float dt) {
-    	if (preload()) {
-			soundIcon.update(dt);
-		}
+        soundIcon.update(dt);
     }
 
     /**
