@@ -126,7 +126,7 @@ timeline2: 0.7808219
 timeline3: 1.0
 - Options - 
 attached: true
-continuous: true
+continuous: false
 aligned: false
 additive: false
 behind: true
