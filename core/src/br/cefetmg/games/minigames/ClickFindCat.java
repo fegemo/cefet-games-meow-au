@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer.Task;
+import java.util.ArrayList;
 
 /**
  *
@@ -31,17 +32,20 @@ public class ClickFindCat extends MiniGame {
     private Sprite miraSprite;
     private Sprite catSprite;
     private Rat rat;
+    private ArrayList<Rat> Ratos;
     private Sound meawSound;
     private Sound scaredMeawSound;
     private Sound happyMeawSound;
+    private float numeroDeRatos=5;
     private float initialCatScale;
     private float CatScaleX;
     private float CatScaleY;
     private float hipotenuzaDaTela;
     private float difficulty;
-    private float tempoDeAnimacao;
-    private boolean ratWasRunning;
-    private int ratRunning;
+    private float tempoDeAnimacao;        
+    float height;   
+    float width;  
+
     
     public ClickFindCat(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
@@ -50,8 +54,9 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     protected void onStart() {
-        ratWasRunning=false;
-        ratRunning = 0;
+        
+        Ratos = new ArrayList<Rat>();
+
         tempoDeAnimacao = 0;
         hipotenuzaDaTela = viewport.getScreenWidth() * viewport.getScreenWidth()
                 + viewport.getScreenHeight() * viewport.getScreenHeight();
@@ -70,7 +75,13 @@ public class ClickFindCat extends MiniGame {
         scaredMeawSound = assets.get("ClickFindCat/ScaredCat.wav", Sound.class);
         happyMeawSound = assets.get("ClickFindCat/YAY.mp3", Sound.class);
         initializeCat();
-        initializeRat();
+        //initializeRat();
+        for (int i = 0; i < numeroDeRatos; i++) {
+            Ratos.add( initializeRat() );
+        }
+        height = viewport.getWorldHeight() - ratTexture.getHeight();   
+        width = viewport.getWorldWidth() - ratTexture.getWidth();
+        CheckCatRatDistance();
     }
 
     @Override
@@ -89,15 +100,14 @@ public class ClickFindCat extends MiniGame {
         
     }
     
-    public void initializeRat() {
-        Vector2 posicaoInicial = new Vector2(MathUtils.random(0, viewport.getWorldWidth() - ratTexture.getWidth()),
-                MathUtils.random(0, viewport.getWorldHeight() - ratTexture.getHeight()));
+    public Rat initializeRat() {
+        Vector2 posicaoInicial = new Vector2(MathUtils.random(height)*MathUtils.random(height),MathUtils.random(height)*MathUtils.random(height));
         Vector2 alvo = new Vector2(catSprite.getX(),catSprite.getY());
-        rat = new Rat(ratTexture,alvo,posicaoInicial);
+        return new Rat(ratTexture,alvo,posicaoInicial);
     }
 
     @Override
-    public void onHandlePlayingInput() {
+    public void onHandlePlayingInput(){
         Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);
         this.miraSprite.setPosition(click.x - this.miraSprite.getWidth() / 2, click.y - this.miraSprite.getHeight() / 2);
@@ -108,33 +118,33 @@ public class ClickFindCat extends MiniGame {
                 float distancia = click.dst2(catSprite.getX(), catSprite.getY());
                 float intensidade = (float) Math.pow((1 - distancia / hipotenuzaDaTela), 4);
                 meawSound.play(intensidade);
-                ratWasRunning=true;
             }
-
         }
+    }
+    
+    public void CheckCatRatDistance(){
+        for (Rat Rato : Ratos) {
+            Rato.checkDistance();
+            if( Rato.ratWasRunning ){
+                Rato.fuga(miraSprite.getX(),miraSprite.getY());
+            }else{
+                Rato.vagabundo();
+            }
+        }    
     }
 
     @Override
     public void onUpdate(float dt) {
+        CheckCatRatDistance();
         if (super.getState() == MiniGameState.PLAYER_FAILED) {
             scaredMeawSound.play();
         } else if (rand.nextInt() % 4 == 1 && super.getState() == MiniGameState.PLAYER_SUCCEEDED) {
             happyMeawSound.play();
         }
         tempoDeAnimacao += Gdx.graphics.getDeltaTime();
-        
-        if(ratWasRunning){
-            rat.movimento();
-            rat.fuga(miraSprite.getX(),miraSprite.getY());
-            ratRunning++;
-            if(ratRunning==10)
-                ratWasRunning=false;
-        }else{
-            rat.vagabundo();
-            ratRunning=0;
+        for (Rat Rato : Ratos) {
+            Rato.movimento(viewport.getWorldWidth(), viewport.getWorldHeight());
         }
-            
-        rat.andar(viewport.getWorldWidth(), viewport.getWorldHeight());
         
     }
 
@@ -145,7 +155,10 @@ public class ClickFindCat extends MiniGame {
             catSprite.draw(batch);
             //System.out.println("Achou achou");
         }
-        rat.render(batch,tempoDeAnimacao);
+        for (Rat Rato : Ratos) {
+            Rato.render(batch,tempoDeAnimacao);
+        }
+        
         //Desenha a Mira
         miraSprite.draw(batch);
 
@@ -174,9 +187,14 @@ public class ClickFindCat extends MiniGame {
         private Vector2 velocidade;
         public TipoDeMovimento tipoDeMovimento;
         private Vector2 alvo;
+        public boolean ratWasRunning;
+        public int ratRunning;
+        
         
         public Rat (Texture SpriteSheet,Vector2 alvo,Vector2 posicao) {
-         this.alvo = alvo;
+         this.ratWasRunning =false;
+         this.ratRunning=0;
+         this.alvo = new Vector2(alvo.x+16,alvo.y+16);
          this.posicao = posicao;
          direcao = Direcao.CIMA;
          tipoDeMovimento = TipoDeMovimento.VAGAR;
@@ -211,18 +229,20 @@ public class ClickFindCat extends MiniGame {
         }
         
         public void fuga(float x, float y){
-            Steering= new Vector2(x,y);
-            tipoDeMovimento = TipoDeMovimento.FUGIR;
+            Steering= alvo;
+            this.tipoDeMovimento = TipoDeMovimento.FUGIR;
         }
         
         public void vagabundo(){
-            tipoDeMovimento = TipoDeMovimento.VAGAR;
+            this.tipoDeMovimento = TipoDeMovimento.VAGAR;
         }
         
-        public void movimento () {
+        public void movimento (float larguraDoMundo, float alturaDoMundo) {
+            checkDistance();
             switch(tipoDeMovimento) {
                 case VAGAR:
                     MudarDirecao();
+                    andar(larguraDoMundo,alturaDoMundo);
                     break;
                 case FUGIR:
                     fugir();
@@ -232,17 +252,25 @@ public class ClickFindCat extends MiniGame {
             }
         }
         
+        public void checkDistance(){
+            Vector2 posicaoo = new Vector2(posicao.x,posicao.y);
+            float contigente = posicaoo.dst(alvo);
+            float valor = 100;
+            if( this.posicao.x > alvo.x -50 && this.posicao.x<alvo.x+82 ){
+                if(this.posicao.y > alvo.y -50 && this.posicao.y<alvo.y+82)
+                    this.ratWasRunning=true;
+            }
+            if( contigente <= valor)
+                this.ratWasRunning=true;
+            else if(contigente > valor-10)
+                this.ratWasRunning=false;
+
+        }
+        
         public void andar (float larguraDoMundo, float alturaDoMundo) {
             float ande= randomBinomial();
             float passo = 30 * (float) Math.random();
-            if( tipoDeMovimento == tipoDeMovimento.FUGIR){
-                fugir();
-                System.out.println("velocidade"+velocidade.toString() + "posição" + posicao.toString());
-                posicao.add(velocidade);
-                System.out.println("posição + velocidade"+ posicao.toString());
-            }
-            else{
-                if(ande > 0.25){
+                if(ande > 0.5){
                     switch (direcao) {
                         case DIREITA:
                             posicao.add(passo, 0);
@@ -260,7 +288,6 @@ public class ClickFindCat extends MiniGame {
                                 break;
                     }
                 }
-            }
             if (posicao.x < 10) {
                 posicao.x = 50;
                 direcao = Direcao.DIREITA;
@@ -300,23 +327,24 @@ public class ClickFindCat extends MiniGame {
         }
         
         public void fugir () {
-            Vector2 Auxiliar2 = new Vector2(posicao.x,posicao.y);
-            Vector2 Auxiliar = new Vector2(Steering.x,Steering.y);
-            Auxiliar2.sub(alvo);
-            Auxiliar.sub(alvo);
-            Auxiliar.scl(0.25f);
-            Auxiliar2.scl(0.75f);
-            velocidade = Auxiliar.add(Auxiliar2);
-            //velocidade.scl(1/100);
-            System.out.println("velocidade1 = "+velocidade.toString());
-            velocidade.x *=(double) 1 /(double) 100;
-            velocidade.y *=(double) 1 /(double) 100;
-            System.out.println("velocidade 2= "+velocidade.toString());
-            //
+            Vector2 position = new Vector2(posicao.x,posicao.y);            
+            position.add(alvo);
+            velocidade = position;
+            velocidade.x *=(double) 1 /(double) 50;
+            velocidade.y *=(double) 1 /(double) 50;
+            posicao.sub(velocidade);
+            this.ratRunning++;
+            if(ratRunning==2){
+                this.tipoDeMovimento = TipoDeMovimento.VAGAR;
+                this.ratRunning=0;                
+            }
+                
         }
+        
         public void saiuDaTela(){
             Vector2 alvo1 = new Vector2(this.alvo.x,this.alvo.y);
             Vector2 ajuda = new Vector2(posicao.x,posicao.y);
+//            velocidade.nor();
             velocidade = ajuda.add(alvo1);
         }
         
