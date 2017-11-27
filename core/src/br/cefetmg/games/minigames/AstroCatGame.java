@@ -6,25 +6,24 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
-import com.badlogic.gdx.graphics.g2d.ParticleEmitter.RangedNumericValue;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter.ScaledNumericValue;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.MassData;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -52,14 +51,13 @@ public class AstroCatGame extends MiniGame {
 	private static final int NUM_ASTEROIDS = 6;
 	private static final float GAME_DURATION = 15.0f;
 
-	private static final float STEP_TIME = 1.0f / 60.0f;
+	private static final float STEPS_PER_SECOND = 60.0f;
+	private static final float STEP_TIME = 1.0f / STEPS_PER_SECOND;
 	private static final int VELOCITY_ITERATIONS = 6;
 	private static final int POSITION_ITERATIONS = 2;
 	private static final float DELTA_ASTEROID_START = 50.0f;
 
-	private static final float ROCKET_MINIMUM_ACT_ANGULAR_VELOCITY = 1.0f;
-	private static final float ROCKET_TORQUE = 1.0f * PIXELS_PER_METER;
-	private static final float ROCKET_FORCE = 3.0f * PIXELS_PER_METER;
+	private static final float ROCKET_FORCE = 4.0f * PIXELS_PER_METER;
 
 	private static final float SCALE = 0.4f;
 
@@ -72,8 +70,6 @@ public class AstroCatGame extends MiniGame {
 	private Sprite background;
 	private MySound gasNoise, impact;
 	private MyMusic backgroundMusic;
-
-	private Box2DDebugRenderer renderer;
 
 	private World world;
 
@@ -88,8 +84,7 @@ public class AstroCatGame extends MiniGame {
 	private Set<Asteroid> asteroidSet;
 
 	private ContactListener contactListener;
-	
-	private boolean physicsRunning;
+
 	private boolean finished;
 
 	public AstroCatGame(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
@@ -227,7 +222,9 @@ public class AstroCatGame extends MiniGame {
 
 	private static class AstroCat extends AstroCatBody {
 
-		private final static float MINUS_NOVENTA_RAD = (float) Math.toRadians(-90.0);
+		private final static float PI = (float) Math.PI;
+		private final static float CIRCLE_RAD = PI * 2.0f;
+		private final static float NOVENTA_RAD = PI * 0.5f;
 
 		private final ParticleEffect rocket;
 		private final Vector2 rocketDiff;
@@ -243,7 +240,7 @@ public class AstroCatGame extends MiniGame {
 			super("astrocat", physCache, astroCatTexture, world, position, false);
 			rocket = rocketEmitter;
 			rocketDiff = new Vector2(sprite.getWidth() * 0.095f, sprite.getHeight() * -0.53f);
-			diffToNoventa = rocketDiff.angleRad() - MINUS_NOVENTA_RAD;
+			diffToNoventa = rocketDiff.angleRad() + NOVENTA_RAD;
 			currentForce = new Vector2(ROCKET_FORCE, 0);
 			gasNoise = gasNoiseSound;
 			isPlayingSound = false;
@@ -253,8 +250,8 @@ public class AstroCatGame extends MiniGame {
 		@Override
 		public void updatePosition() {
 			super.updatePosition();
-			float targetAngleRad = (float) body.getAngle();
-			float targetAnglePropulsionRad = targetAngleRad + MINUS_NOVENTA_RAD;
+			float targetAngleRad = body.getAngle();
+			float targetAnglePropulsionRad = targetAngleRad - NOVENTA_RAD;
 			currentForce.setAngleRad(targetAnglePropulsionRad).scl(-1.0f);
 			Vector2 emitterOffset = rocketDiff.cpy().rotateRad(targetAngleRad + diffToNoventa)
 					.add(body.getPosition().cpy().scl(PIXELS_PER_METER));
@@ -295,19 +292,26 @@ public class AstroCatGame extends MiniGame {
 			body.applyForceToCenter(Vector2.Zero, false);
 		}
 
-		private float getTorque(float totalRotation) {
-			if (Math.abs(totalRotation) <= Math.ulp(180)
-					&& body.getAngularVelocity() <= ROCKET_MINIMUM_ACT_ANGULAR_VELOCITY) {
-				return 0.0f;
-			}
-			totalRotation /= 10.0f;
-			return totalRotation * ROCKET_TORQUE - body.getAngularVelocity()
-					* Math.min(totalRotation == 0.0 ? Float.MAX_VALUE : 1 / totalRotation, 100.0f);
-		}
-
 		public void turnToPoint(Vector2 point) {
-			float totalRotation = body.getWorldCenter().angle(point) * 0.5f;
-			body.applyTorque(getTorque(totalRotation), true);
+
+			// Lei dos eixos paralelos
+			MassData md = body.getMassData();
+			float inertiaAtCenterOfMass = body.getInertia() + md.mass * md.center.len2();
+			// Momento de inércia na origem + massa vezes dist. dos eixos ao quadrado
+
+			float bodyAngle = body.getAngle() + NOVENTA_RAD;
+			float desiredAngle = point.cpy().scl(RATIO_METERS_PER_PIXEL).sub(body.getPosition()).angleRad();
+			float nextAngle = bodyAngle + body.getAngularVelocity() * STEP_TIME;
+			float totalRotation = desiredAngle - nextAngle;
+			while (totalRotation < -PI) {
+				totalRotation += CIRCLE_RAD;
+			}
+			while (totalRotation > PI) {
+				totalRotation -= CIRCLE_RAD;
+			}
+			float desiredAngularVelocity = totalRotation * STEPS_PER_SECOND;
+			float torque = inertiaAtCenterOfMass * desiredAngularVelocity * STEPS_PER_SECOND;
+			body.applyTorque(torque, true);
 		}
 
 	}
@@ -326,9 +330,8 @@ public class AstroCatGame extends MiniGame {
 
 	@Override
 	protected void onStart() {
-		physicsRunning = false;
 		finished = false;
-		
+
 		walls = new Body[4];
 		asteroidSet = new HashSet<Asteroid>();
 		ThreadLocalRandom rand = ThreadLocalRandom.current();
@@ -382,8 +385,6 @@ public class AstroCatGame extends MiniGame {
 		world.setContactListener(contactListener);
 
 		createWalls();
-
-		renderer = new Box2DDebugRenderer();
 	}
 
 	private void createWalls() {
@@ -455,12 +456,10 @@ public class AstroCatGame extends MiniGame {
 	private void stepWorld(float dt) {
 		accumulator += Math.min(dt, 0.25f);
 		if (accumulator >= STEP_TIME) {
-			physicsRunning = true;
 			accumulator -= STEP_TIME;
 			world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 			updateBodies();
 			astroCat.rocket.update(dt);
-			physicsRunning = false;
 		}
 	}
 
@@ -476,27 +475,38 @@ public class AstroCatGame extends MiniGame {
 
 	@Override
 	protected void configureDifficultyParameters(float difficulty) {
-		maxAsteroids = Math.ceil(DifficultyCurve.S.getCurveValueBetween(difficulty, 8.0f, 18.0f));
+		maxAsteroids = Math.ceil(DifficultyCurve.S.getCurveValueBetween(difficulty, 8.0f, 24.0f));
 		asteroidSpeed = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 0.16f, 0.75f) * PIXELS_PER_METER;
 	}
 
 	@Override
 	public void onHandlePlayingInput() {
-		Vector2 cursor = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-		viewport.unproject(cursor);
 
-		astroCat.turnToPoint(cursor);
-
-		if (Gdx.input.isKeyPressed(Input.Buttons.LEFT) || Gdx.input.isTouched()) {
-			astroCat.accelerate();
+		if (Gdx.input.isPeripheralAvailable(Peripheral.MultitouchScreen)) {
+			if (Gdx.input.isTouched(0)) {
+				Vector2 cursor = new Vector2(Gdx.input.getX(0), Gdx.input.getY(0));
+				viewport.unproject(cursor);
+				astroCat.turnToPoint(cursor);
+				astroCat.accelerate();
+			} else {
+				astroCat.stopAccelerating();
+			}
 		} else {
-			astroCat.stopAccelerating();
+			Vector2 cursor = new Vector2(Gdx.input.getX(0), Gdx.input.getY(0));
+			viewport.unproject(cursor);
+			astroCat.turnToPoint(cursor);
+			if (Gdx.input.isTouched(0)) {
+				astroCat.accelerate();
+			} else {
+				astroCat.stopAccelerating();
+			}
 		}
+
 	}
 
 	@Override
 	public void onUpdate(float dt) {
-		if(finished) {
+		if (finished) {
 			super.challengeSolved();
 		}
 		stepWorld(dt);
@@ -518,7 +528,6 @@ public class AstroCatGame extends MiniGame {
 		} else {
 			backgroundMusic.stop();
 		}
-		renderer.render(world, viewport.getCamera().combined.cpy().scale(PIXELS_PER_METER, PIXELS_PER_METER, 0.0f));
 	}
 
 	@Override
