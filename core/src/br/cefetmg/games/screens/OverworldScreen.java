@@ -48,11 +48,13 @@ public class OverworldScreen extends BaseScreen {
     private boolean desenhaMeio=true;
     private MyMusic backgroundMusic;
     private int currentStage;
+    private int lives;
     private int score;
     FileHandle file;
 
-    public OverworldScreen(Game game, BaseScreen previous) {
+    public OverworldScreen(Game game, BaseScreen previous,int currentStage, int lives) {
         super(game, previous);
+        this.lives = lives;
         inputMultiplexer = new InputMultiplexer();
     }
 
@@ -245,7 +247,7 @@ public class OverworldScreen extends BaseScreen {
             file.writeString("0", true);
             currentStage = 0;
             score = 0;
-        }else {
+        }else if (currentStage == 0) {
             String arquivo = file.readString();
             String[] split = arquivo.split(":");
             currentStage = Integer.parseInt(split[0]);
@@ -382,9 +384,9 @@ public class OverworldScreen extends BaseScreen {
                             new BasCATballFactory(),
                             new RunningFactory()
                     )
-            ), .1f, .2f), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
-            score += 2;
-            if (currentStage == 0) currentStage = 1;
+            ), .1f, .2f, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
+            score += (3*lives)/3;
+            if (currentStage == 0 && score >= 3) currentStage = 1;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
             file.writeString(stage, false);
         }
@@ -406,9 +408,9 @@ public class OverworldScreen extends BaseScreen {
                             new DogBarksCatFleeFactory(),
                             new ClickFindCatFactory()
                     )
-            ), .3f, .4f), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
-            score += 4;
-            if (currentStage == 1) currentStage = 2;
+            ), .3f, .4f, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
+            score += (6*lives)/3;
+            if (currentStage == 1 && score >= 9) currentStage = 2;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
             file.writeString(stage, false);
         }
@@ -427,9 +429,9 @@ public class OverworldScreen extends BaseScreen {
                             new SpyFishFactory(),
                             new PhantomCatFactory()
                     )
-            ), .5f, .6f), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
-            score += 6;
-            if (currentStage == 2) currentStage = 3;
+            ), .5f, .6f, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
+            score += (9*lives)/3;
+            if (currentStage == 2 && score >= 18) currentStage = 3;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
             file.writeString(stage, false);
         }
@@ -449,9 +451,9 @@ public class OverworldScreen extends BaseScreen {
                             new HeadSoccerFactory(),
                             new CatAvoiderFactory()
                     )
-            ), .7f, .8f), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
-            score += 8;
-            if (currentStage == 3) currentStage = 4;
+            ), .7f, .8f, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
+            score += (18*lives)/3;
+            if (currentStage == 3 && score >= 36) currentStage = 4;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
             file.writeString(stage, false);
         }
@@ -471,9 +473,9 @@ public class OverworldScreen extends BaseScreen {
                             //estevao e sarah//
                             new KillTheRatsFactory()
                     )
-            ), 0.9f, 1), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
-            score += 10;
-            if (currentStage == 4) currentStage = 5;
+            ), 0.9f, 1, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
+            score += (36*lives)/3;
+            if (currentStage == 4 && score >= 72) currentStage = 5;
             String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
             file.writeString(stage, false);
         }
