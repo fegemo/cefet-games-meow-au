@@ -453,6 +453,7 @@ public class OverworldScreen extends BaseScreen {
                             new UnderwaterCatFactory(),
                             // arthur e pedro
                             new ClickFindCatFactory(),
+                            new DogBarksCatFleeFactory(),
                             // andré brait
                             new AstroCatGameFactory()
                     )
