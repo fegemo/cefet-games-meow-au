@@ -201,7 +201,7 @@ public class AstroCatGame extends MiniGame {
 				float y = rand.nextBoolean() ? -DELTA_ASTEROID_START : viewport.getWorldHeight() + DELTA_ASTEROID_START;
 				newPosition = new Vector2(x, y);
 			}
-			Vector2 relativePlayerPosition = player.body.getPosition().cpy().sub(newPosition);
+			Vector2 relativePlayerPosition = player.body.getPosition().cpy().scl(PIXELS_PER_METER).sub(newPosition);
 			float newSpeedNorm = getRandomWithinRange(rand, speed, 0.2f);
 			float newAngleRad = getRandomWithinRange(rand, relativePlayerPosition.angleRad(), angleMultiplier);
 			float newOmega = getRandomWithinRange(rand, 2.0f, 1.5f);
