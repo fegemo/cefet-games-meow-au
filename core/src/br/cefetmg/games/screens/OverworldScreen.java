@@ -51,7 +51,7 @@ public class OverworldScreen extends BaseScreen {
             exit, menu, play, water;
     
     private final InputMultiplexer inputMultiplexer;
-    private BitmapFont messagesFont;
+    private BitmapFont fonteDeTexto;
     private ArrayList<Image> locks;
     private boolean desenhaMeio=true;
     private MyMusic backgroundMusic;
@@ -121,7 +121,7 @@ public class OverworldScreen extends BaseScreen {
         menu = new Image(assets.get("world/menu.png", Texture.class));
         play = new Image(assets.get("world/play.png", Texture.class));
         water = new Image(assets.get("world/water.jpg", Texture.class));
-        messagesFont = super.messagesFont;
+        fonteDeTexto = super.messagesFont;
         
         bool1 = true;
         desenhaMeio = true;
@@ -395,8 +395,8 @@ public class OverworldScreen extends BaseScreen {
             ), .1f, .2f, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += (3*lives)/3;
             if (currentStage == 0 && score >= FIRST_STAGE_SCORE) currentStage = 1;
-            String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
-            file.writeString(stage, false);
+            String estagio = (String.valueOf(currentStage)+":"+String.valueOf(score));
+            file.writeString(estagio, false);
         }
         
     }
@@ -419,8 +419,8 @@ public class OverworldScreen extends BaseScreen {
             ), .3f, .4f, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += (6*lives)/3;
             if (currentStage == 1 && score >= SECOND_STAGE_SCORE) currentStage = 2;
-            String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
-            file.writeString(stage, false);
+            String estagio = (String.valueOf(currentStage)+":"+String.valueOf(score));
+            file.writeString(estagio, false);
         }
     }
 
@@ -440,8 +440,8 @@ public class OverworldScreen extends BaseScreen {
             ), .5f, .6f, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += (9*lives)/3;
             if (currentStage == 2 && score >= THIRD_STAGE_SCORE) currentStage = 3;
-            String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
-            file.writeString(stage, false);
+            String estagio = (String.valueOf(currentStage)+":"+String.valueOf(score));
+            file.writeString(estagio, false);
         }
     }
 
@@ -462,8 +462,8 @@ public class OverworldScreen extends BaseScreen {
             ), .7f, .8f, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += (18*lives)/3;
             if (currentStage == 3 && score >= FOURTH_STAGE_SCORE) currentStage = 4;
-            String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
-            file.writeString(stage, false);
+            String estagio = (String.valueOf(currentStage)+":"+String.valueOf(score));
+            file.writeString(estagio, false);
         }
     }
 
@@ -484,8 +484,8 @@ public class OverworldScreen extends BaseScreen {
             ), 0.9f, 1, currentStage), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
             score += (36*lives)/3;
             if (currentStage == 4 && score >= LAST_STAGE_SCORE) currentStage = 5;
-            String stage = (String.valueOf(currentStage)+":"+String.valueOf(score));
-            file.writeString(stage, false);
+            String estagio = (String.valueOf(currentStage)+":"+String.valueOf(score));
+            file.writeString(estagio, false);
         }
     }
     
@@ -607,15 +607,15 @@ public class OverworldScreen extends BaseScreen {
         final float horizontalPosition = viewport.getWorldWidth() * 0.45f;
         final float verticalPosition = viewport.getWorldHeight();
         String text = String.valueOf(score) + "/" + getPontuacaoNecessaria();
-        messagesFont.setColor(Color.WHITE);
-        messagesFont.draw(batch,
+        fonteDeTexto.setColor(Color.WHITE);
+        fonteDeTexto.draw(batch,
                 "Pontos",
                 horizontalPosition,
                 verticalPosition * 0.95f,
                 0.9f * viewport.getWorldWidth(),
                 Align.center,
                 true);
-        messagesFont.draw(batch,
+        fonteDeTexto.draw(batch,
                 text,
                 horizontalPosition,
                 verticalPosition * 0.88f,
