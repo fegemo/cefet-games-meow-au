@@ -52,6 +52,38 @@ public class PlayingGamesScreen extends BaseScreen
         lives = Config.MAX_LIVES;
         sequencer = new InfiniteGameSequencer(new HashSet<MiniGameFactory>(
                 Arrays.asList(
+                        // gustavo henrique e rogenes
+                        new BasCATballFactory(),
+                        new RunningFactory(),
+                        // rafael e luis carlos
+                        new DodgeTheVeggiesFactory(),
+                        new CatchThatHomeworkFactory(),
+                        // adriel
+                        new UnderwaterCatFactory(),
+                        // arthur e pedro
+                        new DogBarksCatFleeFactory(),
+                        new ClickFindCatFactory(),
+                        // cassiano e gustavo jordão
+                        new TicCatDogFactory(),
+                        new JumpTheObstaclesFactory(),
+                        // luiza e pedro cordeiro
+                        new SpyFishFactory(),
+                        new PhantomCatFactory(),
+                        // gabriel e natália
+                        new MouseAttackFactory(),
+                        new JetRatFactory(),
+                        // emanoel e vinícius
+                        new HeadSoccerFactory(),
+                        new CatAvoiderFactory(),
+                        // joão e miguel
+                        new CannonCatFactory(),
+                        new MeowsicFactory(),
+                        // túlio
+                        new RainingCatsFactory(),
+                        new NinjaCatFactory(),
+                        //estevao e sarah
+                        new TheFridgeGameFactory(),
+                        new KillTheRatsFactory(),
                         //andre brait
                         new AstroCatGameFactory()
                 )
@@ -240,8 +272,6 @@ public class PlayingGamesScreen extends BaseScreen
             case BACK_MENU:
                 super.game.setScreen(new MenuScreen(super.game, this));
                 break;
-            default:
-            	break;
         }
         this.state = newState;
     }
