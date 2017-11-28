@@ -22,9 +22,12 @@ public class ShooTheTartarusFactory implements MiniGameFactory {
     }
 
     @Override
-    public Map<String, Class> getAssetsToPreload() {
-        return new HashMap<String, Class>() {
-            {
+    public Map<String, Class<?>> getAssetsToPreload() {
+        return new HashMap<String, Class<?>>() {
+
+        	private static final long serialVersionUID = 8865895013644176699L;
+
+			{
                 put("shoo-the-tartarus/toothbrush-spritesheet.png",
                         Texture.class);
                 put("shoo-the-tartarus/tartarus-spritesheet.png",

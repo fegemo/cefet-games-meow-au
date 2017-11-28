@@ -1,7 +1,6 @@
 package br.cefetmg.games.minigames;
 
 import static br.cefetmg.games.Config.*;
-import static br.cefetmg.games.minigames.CatAvoider.*;
 import static br.cefetmg.games.minigames.HeadSoccer.Player.convertToRad;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
@@ -275,7 +274,7 @@ public class CatAvoider extends MiniGame {
 
     class AnimatedSprite {
 
-        private Animation movement;
+        private Animation<TextureRegion> movement;
         private float animationTime;
         private final Texture spriteSheet;
         private final TextureRegion[][] animationPictures;

@@ -18,9 +18,12 @@ public class DogBarksCatFleeFactory implements MiniGameFactory {
     }
 
     @Override
-    public Map<String, Class> getAssetsToPreload() {
-        return new HashMap<String, Class>() {
-            {
+    public Map<String, Class<?>> getAssetsToPreload() {
+        return new HashMap<String, Class<?>>() {
+
+        	private static final long serialVersionUID = -479466678946768105L;
+
+			{
                 put("DogBarksCatFlee/dog_separado_1.png", Texture.class);
                 put("DogBarksCatFlee/kitten1-alt_3.png", Texture.class);
                 put("DogBarksCatFlee/kitten1-alt_4.png", Texture.class);

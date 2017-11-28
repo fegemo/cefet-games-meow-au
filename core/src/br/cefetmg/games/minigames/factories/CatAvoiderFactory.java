@@ -19,9 +19,12 @@ public class CatAvoiderFactory implements MiniGameFactory {
     }
 
     @Override
-    public Map<String, Class> getAssetsToPreload() {
-        return new HashMap<String, Class>() {
-            {
+    public Map<String, Class<?>> getAssetsToPreload() {
+        return new HashMap<String, Class<?>>() {
+
+        	private static final long serialVersionUID = -8120385775736994694L;
+
+			{
                 put("avoider/backgroundTexture.png", Texture.class);
                 put("avoider/grey.png", Texture.class);
                 put("avoider/catNinja.png", Texture.class);

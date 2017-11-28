@@ -1,6 +1,8 @@
 package br.cefetmg.games.graphics;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import java.util.Map;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 
@@ -10,9 +12,9 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
  */
 public class MultiAnimatedSprite extends AnimatedSprite {
 
-    private final Map<String, Animation> animations;
+    private final Map<String, Animation<TextureRegion>> animations;
 
-    public MultiAnimatedSprite(Map<String, Animation> animations,
+    public MultiAnimatedSprite(Map<String, Animation<TextureRegion>> animations,
             String initialAnimationName) {
         super(animations.get(initialAnimationName));
         this.animations = animations;

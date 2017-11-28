@@ -27,5 +27,5 @@ public interface MiniGameFactory {
      * Retorna os recursos que devem ser pré-carregados para este MiniGame.
      * @return os recursos que devem ser pré-carregados para este MiniGame. 
      */
-    public Map<String, Class> getAssetsToPreload();
+    public Map<String, Class<?>> getAssetsToPreload();
 }

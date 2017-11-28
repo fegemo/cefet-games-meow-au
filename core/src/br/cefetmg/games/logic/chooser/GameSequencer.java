@@ -85,14 +85,14 @@ public class GameSequencer extends BaseGameSequencer {
      * Pré-carrega os <em>assets</em> dos minigames que foram selecionados.
      */
     private void preloadAssets() {
-        HashMap<String, Class> allAssets = new HashMap<String, Class>();
+        HashMap<String, Class<?>> allAssets = new HashMap<String, Class<?>>();
         HashSet<Integer> allFactoriesIndices = new HashSet<Integer>(
                 Arrays.asList(indexSequence));
         for (Integer i : allFactoriesIndices) {
             allAssets.putAll(((MiniGameFactory) availableGames.toArray()[i])
                     .getAssetsToPreload());
         }
-        for (Entry<String, Class> asset : allAssets.entrySet()) {
+        for (Entry<String, Class<?>> asset : allAssets.entrySet()) {
             screen.assets.load(asset.getKey(), asset.getValue());
         }
     }

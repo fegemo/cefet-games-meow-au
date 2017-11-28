@@ -210,7 +210,7 @@ public class JetRat extends MiniGame {
         static final int FRAME_HEIGHT = 156;//156
 
         public Calopsita(final Texture toothbrushTexture) {
-            super(new Animation(0.22f, new Array<TextureRegion>() {
+            super(new Animation<TextureRegion>(0.22f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             toothbrushTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -246,14 +246,17 @@ public class JetRat extends MiniGame {
 
         public Tube(final Texture tubesSpritesheet) {
 
-            super(new HashMap<String, Animation>() {
-                {
+            super(new HashMap<String, Animation<TextureRegion>>() {
+
+            	private static final long serialVersionUID = -8200531733912617437L;
+
+				{
                     TextureRegion[][] frames = TextureRegion
                             .split(tubesSpritesheet,
                                     FRAME_WIDTH, FRAME_HEIGHT);
-                    Animation sleep = new Animation(0.1f,
+                    Animation<TextureRegion> sleep = new Animation<TextureRegion>(0.1f,
                             frames[0][0]);
-                    Animation acordado = new Animation(0.1f,
+                    Animation<TextureRegion> acordado = new Animation<TextureRegion>(0.1f,
                             frames[0][1]);
                     sleep.setPlayMode(Animation.PlayMode.NORMAL);
                     put("walking", sleep);

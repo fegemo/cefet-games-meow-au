@@ -14,9 +14,12 @@ public class MeowsicFactory implements MiniGameFactory {
     // ...
 
     @Override
-    public Map<String, Class> getAssetsToPreload() {
-        return new HashMap<String, Class>() {
-            {
+    public Map<String, Class<?>> getAssetsToPreload() {
+        return new HashMap<String, Class<?>>() {
+
+        	private static final long serialVersionUID = 4604314551855088320L;
+
+			{
                 put("meowsic/background.png", Texture.class);
                 put("meowsic/cat.png", Texture.class);
                 put("meowsic/sheet.png", Texture.class);

@@ -22,9 +22,12 @@ public class BasCATballFactory implements MiniGameFactory {
     }
 
     @Override
-    public Map<String, Class> getAssetsToPreload() {
-        return new HashMap<String, Class>() {
-            {
+    public Map<String, Class<?>> getAssetsToPreload() {
+        return new HashMap<String, Class<?>>() {
+
+        	private static final long serialVersionUID = 2905843381463040656L;
+
+			{
                 put("bascatball/ball.png", Texture.class);
                 put("bascatball/player.png", Texture.class);
                 put("bascatball/bar.png", Texture.class);

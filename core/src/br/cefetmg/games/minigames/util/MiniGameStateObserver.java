@@ -1,7 +1,5 @@
 package br.cefetmg.games.minigames.util;
 
-import br.cefetmg.games.minigames.MiniGame;
-
 /**
  *
  * @author Flávio Coutinho - fegemo <coutinho@decom.cefetmg.br>

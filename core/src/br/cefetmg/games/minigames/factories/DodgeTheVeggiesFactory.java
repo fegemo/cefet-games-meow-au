@@ -18,9 +18,12 @@ public class DodgeTheVeggiesFactory implements MiniGameFactory {
     }
 
     @Override
-    public Map<String, Class> getAssetsToPreload() {
-        return new HashMap<String, Class>() {
-            {
+    public Map<String, Class<?>> getAssetsToPreload() {
+        return new HashMap<String, Class<?>>() {
+
+        	private static final long serialVersionUID = -3452708954054227444L;
+
+			{
                 put("dodge-the-veggies/potato.png", Texture.class);
                 put("dodge-the-veggies/tomato.png", Texture.class);
                 put("dodge-the-veggies/onion.png", Texture.class);

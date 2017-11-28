@@ -427,11 +427,14 @@ public class BasCATball extends MiniGame {
     class Cat extends MultiAnimatedSprite {
 
         public Cat(final Texture move) {
-            super(new HashMap<String, Animation>() {
-                {
+            super(new HashMap<String, Animation<TextureRegion>>() {
+
+            	private static final long serialVersionUID = 6079753448454570372L;
+
+				{
                     TextureRegion[][] frames = TextureRegion
                             .split(move, move.getWidth() / 6, move.getHeight() / 3);
-                    Animation movingFront = new Animation(0.1f,
+                    Animation<TextureRegion> movingFront = new Animation<TextureRegion>(0.1f,
                             frames[0][0],
                             frames[0][1],
                             frames[0][2],
@@ -444,7 +447,7 @@ public class BasCATball extends MiniGame {
 
                     TextureRegion[][] frames2 = TextureRegion
                             .split(move, move.getWidth() / 6, move.getHeight() / 3);
-                    Animation movingBack = new Animation(0.1f,
+                    Animation<TextureRegion> movingBack = new Animation<TextureRegion>(0.1f,
                             frames2[1][3],
                             frames2[1][2],
                             frames2[1][1],
@@ -456,14 +459,14 @@ public class BasCATball extends MiniGame {
                     put("movingBack", movingBack);
 
                     TextureRegion[][] frames3 = TextureRegion.split(move, move.getWidth() / 6, move.getHeight() / 3);
-                    Animation standingFront = new Animation(0.1f,
+                    Animation<TextureRegion> standingFront = new Animation<TextureRegion>(0.1f,
                             frames3[2][0]
                     );
                     standingFront.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
                     put("standingFront", standingFront);
 
                     TextureRegion[][] frames4 = TextureRegion.split(move, move.getWidth() / 6, move.getHeight() / 3);
-                    Animation standingBack = new Animation(0.1f,
+                    Animation<TextureRegion> standingBack = new Animation<TextureRegion>(0.1f,
                             frames4[2][1]
                     );
                     standingBack.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);

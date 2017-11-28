@@ -223,13 +223,13 @@ public class MouseAttack extends MiniGame {
         private static final float FRAME_DURATION = 0.05f;
         private static final int FRAME_WIDTH = 50;
         private static final int FRAME_HEIGHT = 50;
-        private final Animation parado;
-        private final Animation atirando;
+        private final Animation<TextureRegion> parado;
+        private final Animation<TextureRegion> atirando;
 
 
         public Cat(final Texture cat) {
 
-            super(new Animation(FRAME_DURATION, new Array<TextureRegion>() {
+            super(new Animation<TextureRegion>(FRAME_DURATION, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             cat, FRAME_WIDTH, FRAME_HEIGHT);
@@ -242,14 +242,14 @@ public class MouseAttack extends MiniGame {
             TextureRegion[][] quadrosDaAnimacao = TextureRegion.split(
                     cat, FRAME_WIDTH, FRAME_HEIGHT);
 
-            atirando = new Animation(FRAME_DURATION,
+            atirando = new Animation<TextureRegion>(FRAME_DURATION,
                     quadrosDaAnimacao[1][0],
                     quadrosDaAnimacao[1][1],
                     quadrosDaAnimacao[1][2],
                     quadrosDaAnimacao[1][3],
                     quadrosDaAnimacao[1][4],
                     quadrosDaAnimacao[1][5]);
-            parado = new Animation(FRAME_DURATION,
+            parado = new Animation<TextureRegion>(FRAME_DURATION,
                     quadrosDaAnimacao[0][0]);
             
             super.setAnimation(parado);
@@ -281,11 +281,11 @@ public class MouseAttack extends MiniGame {
         float targetY;
         Texture texture;
         public Sprite projeSprite;
-        Animation shoot;
+        Animation<TextureRegion> shoot;
 
         public Projetil(final Texture texture) {
             
-            super(new Animation(0.1f, new Array<TextureRegion>() {
+            super(new Animation<TextureRegion>(0.1f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             texture, 16, 19);
@@ -297,7 +297,7 @@ public class MouseAttack extends MiniGame {
 
             quadrosDaAnimacao = TextureRegion.split(texture, 16, 19);
 
-            shoot = new Animation(0.1f,
+            shoot = new Animation<TextureRegion>(0.1f,
                     quadrosDaAnimacao[0][0],
                     quadrosDaAnimacao[0][1],
                     quadrosDaAnimacao[0][2]);
@@ -330,15 +330,15 @@ public class MouseAttack extends MiniGame {
 
         float tempoDaAnimacao;
 
-        Animation morrendo;
-        Animation parado;
+        Animation<TextureRegion> morrendo;
+        Animation<TextureRegion> parado;
         boolean morto = false;
 
         int x = 0;
 
         public Monster(final Texture monster) {
 
-            super(new Animation(0.1f, new Array<TextureRegion>() {
+            super(new Animation<TextureRegion>(0.1f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             monster, 35, 35);
@@ -355,7 +355,7 @@ public class MouseAttack extends MiniGame {
 
             quadrosDaAnimacao = TextureRegion.split(monster, 35, 35);
 
-            parado = new Animation(0.1f,
+            parado = new Animation<TextureRegion>(0.1f,
                     quadrosDaAnimacao[0][0],
                     quadrosDaAnimacao[0][1],
                     quadrosDaAnimacao[0][2],
@@ -394,7 +394,6 @@ public class MouseAttack extends MiniGame {
         @Override
         public void update() {
             tempoDaAnimacao += Gdx.graphics.getDeltaTime();
-
         }
     }
     

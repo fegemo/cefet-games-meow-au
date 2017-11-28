@@ -24,7 +24,6 @@ public class DodgeTheVeggies extends MiniGame {
 
     private Texture catSpritesheet;
     private Cat cat;
-    private Texture veggieTexture;
     private Texture faintedCatTexture;
     private Array<Veggie> veggies;
     private Array<Texture> veggieTextures;
@@ -186,18 +185,20 @@ public class DodgeTheVeggies extends MiniGame {
     }
 
     class Cat extends MultiAnimatedSprite {
-        private final int lives = 9;
         private final float height;
         static final int FRAME_WIDTH = 497;
         static final int FRAME_HEIGHT = 291;
 
         public Cat(Texture texture, float height) {
-            super(new HashMap<String, Animation>() {
-                {
+            super(new HashMap<String, Animation<TextureRegion>>() {
+
+            	private static final long serialVersionUID = -1113235957398204604L;
+
+				{
                     TextureRegion[][] frames = TextureRegion
                             .split(catSpritesheet,
                                     FRAME_WIDTH, FRAME_HEIGHT);
-                    Animation walking = new Animation(0.2f,
+                    Animation<TextureRegion> walking = new Animation<TextureRegion>(0.2f,
                             frames[0][0],
                             frames[0][1],
                             frames[0][2],

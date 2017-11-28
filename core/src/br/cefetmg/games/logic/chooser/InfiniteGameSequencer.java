@@ -6,10 +6,7 @@ import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.math.MathUtils;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -61,11 +58,11 @@ public class InfiniteGameSequencer extends BaseGameSequencer {
      * Pré-carrega os <em>assets</em> de todos os minigames.
      */
     private void preloadAssets() {
-        HashMap<String, Class> allAssets = new HashMap<String, Class>();
+        HashMap<String, Class<?>> allAssets = new HashMap<String, Class<?>>();
         for(int i = 0; i < availableGames.size(); i++)
             allAssets.putAll(((MiniGameFactory) availableGames.toArray()[i])
                     .getAssetsToPreload());
-        for (Map.Entry<String, Class> asset : allAssets.entrySet())
+        for (Map.Entry<String, Class<?>> asset : allAssets.entrySet())
             screen.assets.load(asset.getKey(), asset.getValue());
     }
 

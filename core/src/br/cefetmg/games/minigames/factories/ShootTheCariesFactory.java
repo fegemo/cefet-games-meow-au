@@ -35,9 +35,12 @@ public class ShootTheCariesFactory implements MiniGameFactory {
      * @return
      */
     @Override
-    public Map<String, Class> getAssetsToPreload() {
-        return new HashMap<String, Class>() {
-            {
+    public Map<String, Class<?>> getAssetsToPreload() {
+        return new HashMap<String, Class<?>>() {
+
+        	private static final long serialVersionUID = 5231259227814630178L;
+
+			{
                 put("shoot-the-caries/caries.png", Texture.class);
                 put("shoot-the-caries/target.png", Texture.class);
                 put("shoot-the-caries/caries1.mp3", Sound.class);

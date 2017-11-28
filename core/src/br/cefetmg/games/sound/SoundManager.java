@@ -1,8 +1,6 @@
 package br.cefetmg.games.sound;
 
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import java.util.HashSet;
 
 /**

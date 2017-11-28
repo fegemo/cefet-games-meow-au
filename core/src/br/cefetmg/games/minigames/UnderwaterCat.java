@@ -27,9 +27,7 @@ import com.badlogic.gdx.math.Rectangle;
 public class UnderwaterCat extends MiniGame {
 
     private float minimumEnemySpeed;
-    private float maximumEnemySpeed;
     private float spawnInterval;
-    private int totalFish;
     private Texture background;
     private MyMusic backgroundMusic;
     private MyMusic swimmingAmbientSound;
@@ -49,7 +47,6 @@ public class UnderwaterCat extends MiniGame {
 
     private int numberEaten = 0;
     private int fishToEat;
-    private float time = 0;
 
     public UnderwaterCat(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -81,7 +78,6 @@ public class UnderwaterCat extends MiniGame {
                 "underwater-cat/background.bmp", Texture.class);
         numberEaten = 0;
         isOver = false;
-        this.time = 0;
         initializeFish(fishToEat);
         timer.scheduleTask(new Timer.Task() {
             @Override
@@ -95,8 +91,6 @@ public class UnderwaterCat extends MiniGame {
     protected void configureDifficultyParameters(float difficulty) {
         this.minimumEnemySpeed = DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 120, 220);
-        this.maximumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 240, 340);
         this.spawnInterval = DifficultyCurve.LINEAR_NEGATIVE
                 .getCurveValueBetween(difficulty, 0.25f, 1.5f);
         this.fishToEat = (int) Math.ceil(DifficultyCurve.LINEAR
@@ -218,7 +212,6 @@ public class UnderwaterCat extends MiniGame {
 
     private void initializeFish(int qtdePeixes) {
         int tipoPeixe = 1;
-        Vector3 posicao = new Vector3();
         for (int i = 0; i <= qtdePeixes; i++) {
             switch (tipoPeixe) {
                 case 1:
@@ -258,7 +251,6 @@ public class UnderwaterCat extends MiniGame {
     }
 
     private void createFishAux(Fish fish) {
-        Vector3 posicao = new Vector3();
         float randomWidth = MathUtils.random(viewport.getWorldWidth() - 200, 200);
         float randomHeight = MathUtils.random(viewport.getWorldHeight() - 200, 200);
 

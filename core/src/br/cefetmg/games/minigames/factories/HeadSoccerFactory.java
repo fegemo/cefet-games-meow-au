@@ -23,9 +23,12 @@ public class HeadSoccerFactory implements MiniGameFactory {
      * @return
      */
     @Override
-    public Map<String, Class> getAssetsToPreload() {
-        return new HashMap<String, Class>() {
-            {
+    public Map<String, Class<?>> getAssetsToPreload() {
+        return new HashMap<String, Class<?>>() {
+
+        	private static final long serialVersionUID = -1094264515611932222L;
+
+			{
                 put("head-soccer/shoes.png", Texture.class);
                 put("avoider/grey.png", Texture.class);
                 put("head-soccer/Arena.png", Texture.class);

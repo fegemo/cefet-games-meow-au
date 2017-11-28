@@ -22,9 +22,12 @@ public class RunningFactory implements MiniGameFactory {
     }
 
     @Override
-    public Map<String, Class> getAssetsToPreload() {
-        return new HashMap<String, Class>() {
-            {
+    public Map<String, Class<?>> getAssetsToPreload() {
+        return new HashMap<String, Class<?>>() {
+
+        	private static final long serialVersionUID = -7323404034696729084L;
+
+			{
                 put("running/dog-run-spritesheet.png", Texture.class);
                 put("running/cat-run-spritesheet.png", Texture.class);
                 put("running/fundo.png", Texture.class);

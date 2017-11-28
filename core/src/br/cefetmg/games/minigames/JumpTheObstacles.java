@@ -166,12 +166,15 @@ public class JumpTheObstacles extends MiniGame {
         private final Vector2 force;
         
         Dog(final Texture kongTexture) {
-            super(new HashMap<String, Animation>() {
-                {
+            super(new HashMap<String, Animation<TextureRegion>>() {
+
+            	private static final long serialVersionUID = -7583342445390938444L;
+
+				{
                     TextureRegion[][] frames = TextureRegion.split(
                             kongTexture, FRAME_WIDTH, FRAME_HEIGHT);
 
-                    Animation walking = new Animation(0.05f,
+                    Animation<TextureRegion> walking = new Animation<TextureRegion>(0.05f,
                             frames[1][0],
                             frames[1][0],
                             frames[1][0],
@@ -193,7 +196,7 @@ public class JumpTheObstacles extends MiniGame {
                     walking.setPlayMode(Animation.PlayMode.LOOP_RANDOM);
                     put("walking", walking);
 
-                    Animation jumping = new Animation(Dog.TOTAL_JUMPING_TIME / 6.0f,
+                    Animation<TextureRegion> jumping = new Animation<TextureRegion>(Dog.TOTAL_JUMPING_TIME / 6.0f,
                             frames[0][0],
                             frames[0][1],
                             frames[0][2],
@@ -289,7 +292,7 @@ public class JumpTheObstacles extends MiniGame {
         private Vector2 speed;
 
         Obstacle(final Texture kongTexture) {
-            super(new Animation(0.1f, new Array<TextureRegion>() {
+            super(new Animation<TextureRegion>(0.1f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             kongTexture, FRAME_WIDTH, FRAME_HEIGHT);
