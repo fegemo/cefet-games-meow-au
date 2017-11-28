@@ -20,10 +20,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer.Task;
 import java.util.ArrayList;
+import com.badlogic.gdx.math.Circle;
 
 /**
  *
- * @author Pedro
+ * @author Pedro @author Arthurrr
  */
 public class ClickFindCat extends MiniGame {
 
@@ -42,17 +43,16 @@ public class ClickFindCat extends MiniGame {
     private Sound meawSound;
     private Sound scaredMeawSound;
     private Sound happyMeawSound;
-    private float numeroDeRatos=5;
+    private float numeroDeRatos = 100;
     private float initialCatScale;
     private float CatScaleX;
     private float CatScaleY;
     private float hipotenuzaDaTela;
     private float difficulty;
-    private float tempoDeAnimacao;        
-    float height;   
-    float width;  
+    private float tempoDeAnimacao;
+    float height;
+    float width;
 
-    
     public ClickFindCat(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
         this.difficulty = difficulty;
@@ -60,17 +60,17 @@ public class ClickFindCat extends MiniGame {
 
     @Override
     protected void onStart() {
-        
+
         Ratos = new ArrayList<Rat>();
 
         tempoDeAnimacao = 0;
         hipotenuzaDaTela = viewport.getScreenWidth() * viewport.getScreenWidth()
                 + viewport.getScreenHeight() * viewport.getScreenHeight();
-        
+
         initialCatScale = 0.4f * DifficultyCurve.LINEAR_NEGATIVE.getCurveValue(difficulty);
-        CatScaleX = initialCatScale*(float) viewport.getWorldWidth()/viewport.getScreenWidth();
-        CatScaleY = initialCatScale*(float) viewport.getWorldHeight()/viewport.getScreenHeight();
-        
+        CatScaleX = initialCatScale * (float) viewport.getWorldWidth() / viewport.getScreenWidth();
+        CatScaleY = initialCatScale * (float) viewport.getWorldHeight() / viewport.getScreenHeight();
+
         catTexture = assets.get("ClickFindCat/gatinho-grande.png", Texture.class);
         ratTexture = assets.get("ClickFindCat/crav_rat.png", Texture.class);
         miraTexture = assets.get("ClickFindCat/target.png", Texture.class);
@@ -83,11 +83,8 @@ public class ClickFindCat extends MiniGame {
         initializeCat();
         //initializeRat();
         for (int i = 0; i < numeroDeRatos; i++) {
-            Ratos.add( initializeRat() );
+            Ratos.add(initializeRat());
         }
-        height = viewport.getWorldHeight() - ratTexture.getHeight();   
-        width = viewport.getWorldWidth() - ratTexture.getWidth();
-        CheckCatRatDistance();
     }
 
     @Override
@@ -98,22 +95,41 @@ public class ClickFindCat extends MiniGame {
     public void initializeCat() {
         Vector2 posicaoInicial = new Vector2(MathUtils.random(0, viewport.getWorldWidth() - catTexture.getWidth()),
                 MathUtils.random(0, viewport.getWorldHeight() - catTexture.getHeight()));
-
         catSprite = new Sprite(catTexture);
         catSprite.setPosition(posicaoInicial.x, posicaoInicial.y);
-        System.out.println(difficulty+" "+initialCatScale +" " + CatScaleX + " " + CatScaleY);
         catSprite.setScale(CatScaleX, CatScaleY);
-        
+
+    }
+    
+    public float randomBinomial() {
+            return (float) (Math.random() - Math.random());
     }
     
     public Rat initializeRat() {
-        Vector2 posicaoInicial = new Vector2(MathUtils.random(height)*MathUtils.random(height),MathUtils.random(height)*MathUtils.random(height));
-        Vector2 alvo = new Vector2(catSprite.getX(),catSprite.getY());
-        return new Rat(ratTexture,alvo,posicaoInicial);
+        // Os seguintes processos utilizados foram criados para distribuir melhor a concentração de Ratos na tela;
+        float alturaDaTela=viewport.getWorldHeight() - ratTexture.getHeight();
+        float larguraDaTela=viewport.getWorldWidth() - ratTexture.getWidth();
+        float posicaoX;
+        float posicaoY;
+        
+        if( randomBinomial() > randomBinomial()){
+           posicaoY=MathUtils.random(0,alturaDaTela/2);
+        }else{
+           posicaoY= MathUtils.random(alturaDaTela/2,alturaDaTela);
+        }
+        if( randomBinomial()> randomBinomial()){
+            posicaoX=MathUtils.random(0,larguraDaTela/2);
+        }else{
+            posicaoX=MathUtils.random(larguraDaTela/2,larguraDaTela);
+        }
+        //
+        Vector2 posicaoInicial = new Vector2(posicaoX,posicaoY);
+        Vector2 alvo = new Vector2(catSprite.getX() + (catSprite.getWidth() / 2), catSprite.getY() + (catSprite.getHeight() / 2));// centro do gato.
+        return new Rat(ratTexture, alvo, posicaoInicial);
     }
 
     @Override
-    public void onHandlePlayingInput(){
+    public void onHandlePlayingInput() {
         Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);
         this.miraSprite.setPosition(click.x - this.miraSprite.getWidth() / 2, click.y - this.miraSprite.getHeight() / 2);
@@ -127,16 +143,16 @@ public class ClickFindCat extends MiniGame {
             }
         }
     }
-    
-    public void CheckCatRatDistance(){
+
+    public void CheckCatRatDistance() {
         for (Rat Rato : Ratos) {
             Rato.checkDistance();
-            if( Rato.ratWasRunning ){
-                Rato.fuga(miraSprite.getX(),miraSprite.getY());
-            }else{
+            if (Rato.ratWasRunning) {
+                Rato.fuga(miraSprite.getX(), miraSprite.getY());
+            } else {
                 Rato.vagabundo();
             }
-        }    
+        }
     }
 
     @Override
@@ -149,9 +165,8 @@ public class ClickFindCat extends MiniGame {
         }
         tempoDeAnimacao += Gdx.graphics.getDeltaTime();
         for (Rat Rato : Ratos) {
-            Rato.movimento(viewport.getWorldWidth(), viewport.getWorldHeight());
+            Rato.movimento(dt, viewport.getWorldWidth(), viewport.getWorldHeight());
         }
-        
     }
 
     @Override
@@ -162,9 +177,9 @@ public class ClickFindCat extends MiniGame {
             //System.out.println("Achou achou");
         }
         for (Rat Rato : Ratos) {
-            Rato.render(batch,tempoDeAnimacao);
+            Rato.render(batch, tempoDeAnimacao);
         }
-        
+
         //Desenha a Mira
         miraSprite.draw(batch);
 
@@ -179,9 +194,9 @@ public class ClickFindCat extends MiniGame {
     public boolean shouldHideMousePointer() {
         return true;
     }
-    
+
     static class Rat {
-        
+
         private final TextureRegion[][] quadrosDeAnimacao;
         private final Animation<TextureRegion> andarParaDireita;
         private final Animation<TextureRegion> andarParaTras;
@@ -195,112 +210,107 @@ public class ClickFindCat extends MiniGame {
         private Vector2 alvo;
         public boolean ratWasRunning;
         public int ratRunning;
-        
-        
-        public Rat (Texture SpriteSheet,Vector2 alvo,Vector2 posicao) {
-         this.ratWasRunning =false;
-         this.ratRunning=0;
-         this.alvo = new Vector2(alvo.x+16,alvo.y+16);
-         this.posicao = posicao;
-         direcao = Direcao.CIMA;
-         tipoDeMovimento = TipoDeMovimento.VAGAR;
-         quadrosDeAnimacao = TextureRegion.split (SpriteSheet,42,32);
-            System.out.println(+quadrosDeAnimacao.length);
-         andarParaTras = new Animation<TextureRegion>(0.1f, 
-        		quadrosDeAnimacao[0][0],
-        		quadrosDeAnimacao[0][1],
-        		quadrosDeAnimacao[0][2]);
-        andarParaTras.setPlayMode(PlayMode.LOOP_PINGPONG);
-        
-        andarParaDireita = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
-        		quadrosDeAnimacao[2][0],
-        		quadrosDeAnimacao[2][1],
-        		quadrosDeAnimacao[2][2]
-        });
-        andarParaDireita.setPlayMode(PlayMode.LOOP_PINGPONG);
-        
-        andarParaEsquerda = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
-        		quadrosDeAnimacao[1][0],
-        		quadrosDeAnimacao[1][1],
-        		quadrosDeAnimacao[1][2]
-        });
-        andarParaEsquerda.setPlayMode(PlayMode.LOOP_PINGPONG);
-        
-        andarParaCima = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
-        		quadrosDeAnimacao[3][0],
-        		quadrosDeAnimacao[3][1],
-        		quadrosDeAnimacao[3][2]
-        });
-        andarParaCima.setPlayMode(PlayMode.LOOP_PINGPONG);
+
+        public Rat(Texture SpriteSheet, Vector2 alvo, Vector2 posicao) {
+            this.ratWasRunning = false;
+            this.ratRunning = 0;
+            this.alvo = new Vector2(alvo.x + 16, alvo.y + 16);
+            this.posicao = posicao;
+            direcao = Direcao.CIMA;
+            tipoDeMovimento = TipoDeMovimento.FUGIR;
+            quadrosDeAnimacao = TextureRegion.split(SpriteSheet, 42, 32);
+            //System.out.println(+quadrosDeAnimacao.length);
+            andarParaTras = new Animation<TextureRegion>(0.1f,
+                    quadrosDeAnimacao[0][0],
+                    quadrosDeAnimacao[0][1],
+                    quadrosDeAnimacao[0][2]);
+            andarParaTras.setPlayMode(PlayMode.LOOP_PINGPONG);
+
+            andarParaDireita = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
+                quadrosDeAnimacao[2][0],
+                quadrosDeAnimacao[2][1],
+                quadrosDeAnimacao[2][2]
+            });
+            andarParaDireita.setPlayMode(PlayMode.LOOP_PINGPONG);
+
+            andarParaEsquerda = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
+                quadrosDeAnimacao[1][0],
+                quadrosDeAnimacao[1][1],
+                quadrosDeAnimacao[1][2]
+            });
+            andarParaEsquerda.setPlayMode(PlayMode.LOOP_PINGPONG);
+
+            andarParaCima = new Animation<TextureRegion>(0.1f, new TextureRegion[]{
+                quadrosDeAnimacao[3][0],
+                quadrosDeAnimacao[3][1],
+                quadrosDeAnimacao[3][2]
+            });
+            andarParaCima.setPlayMode(PlayMode.LOOP_PINGPONG);
         }
-        
-        public void fuga(float x, float y){
-            Steering= alvo;
+
+        public void fuga(float x, float y) {
+            Steering = alvo;
             this.tipoDeMovimento = TipoDeMovimento.FUGIR;
         }
-        
-        public void vagabundo(){
+
+        public void vagabundo() {
             this.tipoDeMovimento = TipoDeMovimento.VAGAR;
         }
-        
-        public void movimento (float larguraDoMundo, float alturaDoMundo) {
+
+        public void movimento(float dt, float larguraDoMundo, float alturaDoMundo) {
             checkDistance();
-            switch(tipoDeMovimento) {
+            switch (tipoDeMovimento) {
                 case VAGAR:
                     MudarDirecao();
-                    andar(larguraDoMundo,alturaDoMundo);
+                    andar(dt, larguraDoMundo, alturaDoMundo);
                     break;
                 case FUGIR:
-                    fugir();
+                    fugir(dt);
                     break;
                 default:
                     break;
             }
         }
-        
-        public void checkDistance(){
-            Vector2 posicaoo = new Vector2(posicao.x,posicao.y);
-            float contigente = posicaoo.dst(alvo);
-            float valor = 100;
-            if( this.posicao.x > alvo.x -50 && this.posicao.x<alvo.x+82 ){
-                if(this.posicao.y > alvo.y -50 && this.posicao.y<alvo.y+82)
-                    this.ratWasRunning=true;
-            }
-            if( contigente <= valor)
-                this.ratWasRunning=true;
-            else if(contigente > valor-10)
-                this.ratWasRunning=false;
 
+        public void checkDistance() {
+            Vector2 centroDoGato = new Vector2(alvo.x, alvo.y);
+            float distanciaGatoRato = centroDoGato.dst(new Vector2(this.posicao));
+            float minDistanciaStartRunning = 200;
+            if (distanciaGatoRato <= minDistanciaStartRunning) {
+                this.ratWasRunning = true;
+            } else if (distanciaGatoRato > minDistanciaStartRunning) {
+                this.ratWasRunning = false;
+            }
         }
-        
-        public void andar (float larguraDoMundo, float alturaDoMundo) {
-            float ande= randomBinomial();
-            float passo = 30 * (float) Math.random();
-                if(ande > 0.5){
-                    switch (direcao) {
-                        case DIREITA:
-                            posicao.add(passo, 0);
-                            break;
-                        case ESQUERDA:
-                            posicao.add(-passo, 0);
-                            break;
-                        case CIMA:
-                            posicao.add(0, passo);
-                            break;
-                        case BAIXO:
-                            posicao.add(0, -passo);
-                            break;
-                            default:
-                                break;
-                    }
+
+        public void andar(float dt, float larguraDoMundo, float alturaDoMundo) {
+            float ande = randomBinomial();
+            float passo = 50 * (float) Math.random();
+            passo += passo* dt;
+            if (ande > 0.6) {
+                switch (direcao) {
+                    case DIREITA:
+                        posicao.add(passo, 0);
+                        break;
+                    case ESQUERDA:
+                        posicao.add(-passo, 0);
+                        break;
+                    case CIMA:
+                        posicao.add(0, passo);
+                        break;
+                    case BAIXO:
+                        posicao.add(0, -passo);
+                        break;
+                    default:
+                        break;
                 }
+            }
             if (posicao.x < 10) {
                 posicao.x = 50;
                 direcao = Direcao.DIREITA;
                 saiuDaTela();
-            }
-            else if (posicao.x > larguraDoMundo-10) {
-                posicao.x = larguraDoMundo-50;
+            } else if (posicao.x > larguraDoMundo - 10) {
+                posicao.x = larguraDoMundo - 50;
                 direcao = Direcao.ESQUERDA;
                 saiuDaTela();
             }
@@ -310,16 +320,16 @@ public class ClickFindCat extends MiniGame {
                 direcao = Direcao.CIMA;
                 saiuDaTela();
                 posicao.add(velocidade);
-            } else if (posicao.y > larguraDoMundo-100) {
-                posicao.y = larguraDoMundo-50;
+            } else if (posicao.y > larguraDoMundo - 100) {
+                posicao.y = larguraDoMundo - 50;
                 direcao = Direcao.BAIXO;
                 saiuDaTela();
                 posicao.add(velocidade);
             }
-            
+
         }
-        
-        public void MudarDirecao () {
+
+        public void MudarDirecao() {
             float chance = (float) Math.random();
             if (chance < 0.25) {
                 direcao = Direcao.DIREITA;
@@ -331,58 +341,60 @@ public class ClickFindCat extends MiniGame {
                 direcao = Direcao.ESQUERDA;
             }
         }
-        
-        public void fugir () {
-            Vector2 position = new Vector2(posicao.x,posicao.y);            
-            position.add(alvo);
-            velocidade = position;
-            velocidade.x *=(double) 1 /(double) 50;
-            velocidade.y *=(double) 1 /(double) 50;
-            posicao.sub(velocidade);
-            this.ratRunning++;
-            if(ratRunning==2){
-                this.tipoDeMovimento = TipoDeMovimento.VAGAR;
-                this.ratRunning=0;                
+
+        public void fugir(float dt) {
+
+            if (ratRunning < 2) {
+                Vector2 position = new Vector2(posicao.x, posicao.y);
+                velocidade = position.sub(alvo);
+                velocidade.nor();
+                velocidade.scl(10 * (float) Math.random()+10 * (float) Math.random()*dt);
             }
-                
+            posicao.add(velocidade);
+            this.ratRunning++;
+            if (ratRunning == 12) {
+                this.tipoDeMovimento = TipoDeMovimento.VAGAR;
+                this.ratRunning = 0;
+            }
         }
-        
-        public void saiuDaTela(){
-            Vector2 alvo1 = new Vector2(this.alvo.x,this.alvo.y);
-            Vector2 ajuda = new Vector2(posicao.x,posicao.y);
+
+        public void saiuDaTela() {
+            Vector2 alvo1 = new Vector2(this.alvo.x, this.alvo.y);
+            Vector2 ajuda = new Vector2(posicao.x, posicao.y);
 //            velocidade.nor();
             velocidade = ajuda.add(alvo1);
         }
-        
+
         public float randomBinomial() {
-            return (float)(Math.random() - Math.random());
+            return (float) (Math.random() - Math.random());
         }
-        
-        public void render (SpriteBatch batch, float tempoDeAnimacao) {
+
+        public void render(SpriteBatch batch, float tempoDeAnimacao) {
             switch (direcao) {
                 case DIREITA:
-                    batch.draw((TextureRegion)andarParaDireita.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
+                    batch.draw((TextureRegion) andarParaDireita.getKeyFrame(tempoDeAnimacao), posicao.x, posicao.y);
                     break;
                 case BAIXO:
-                    batch.draw((TextureRegion)andarParaTras.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
+                    batch.draw((TextureRegion) andarParaTras.getKeyFrame(tempoDeAnimacao), posicao.x, posicao.y);
                     break;
                 case CIMA:
-                    batch.draw((TextureRegion)andarParaCima.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
+                    batch.draw((TextureRegion) andarParaCima.getKeyFrame(tempoDeAnimacao), posicao.x, posicao.y);
                     break;
                 case ESQUERDA:
-                    batch.draw((TextureRegion)andarParaEsquerda.getKeyFrame(tempoDeAnimacao),posicao.x,posicao.y);
+                    batch.draw((TextureRegion) andarParaEsquerda.getKeyFrame(tempoDeAnimacao), posicao.x, posicao.y);
                     break;
                 default:
                     break;
             }
         }
-        
+
         static enum Direcao {
             CIMA, BAIXO, ESQUERDA, DIREITA;
         }
+
         static enum TipoDeMovimento {
             VAGAR, FUGIR;
         }
-        
+
     }
 }
