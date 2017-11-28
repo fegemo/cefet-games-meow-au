@@ -188,6 +188,7 @@ public class JetRat extends MiniGame {
             }
             tubes.setPosition(tubes.getX() - 5, tubes.getY());
             
+            tubes.update(dt);
         }
 
      
@@ -200,7 +201,7 @@ public class JetRat extends MiniGame {
 
         for (Tube tubes : this.enemies) {
             tubes.draw(batch);
-            for (int i = 0; i < tubes.getSize(); i++) {
+            for (int i = 0; i < tubes.getOriginY()/60; i++) {
                 batch.draw(tubeTexture, tubes.getX(), 60 * i);
             }
 
