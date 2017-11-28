@@ -272,7 +272,7 @@ public class ClickFindCat extends MiniGame {
             float minDistanciaStartRunning = 200;
             if (distanciaGatoRato <= minDistanciaStartRunning) {
                 this.ratWasRunning = true;
-            } else if (distanciaGatoRato > minDistanciaStartRunning) {
+            } else if (distanciaGatoRato > 1.2*minDistanciaStartRunning) {
                 this.ratWasRunning = false;
             }
         }
