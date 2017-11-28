@@ -57,7 +57,7 @@ public class AstroCatGame extends MiniGame {
 	private static final int POSITION_ITERATIONS = 2;
 	private static final float DELTA_ASTEROID_START = 50.0f;
 
-	private static final float ROCKET_FORCE = 4.0f * PIXELS_PER_METER;
+	private static final float ROCKET_FORCE = 5.0f * PIXELS_PER_METER;
 
 	private static final float SCALE = 0.4f;
 
@@ -475,8 +475,8 @@ public class AstroCatGame extends MiniGame {
 
 	@Override
 	protected void configureDifficultyParameters(float difficulty) {
-		maxAsteroids = Math.ceil(DifficultyCurve.S.getCurveValueBetween(difficulty, 8.0f, 24.0f));
-		asteroidSpeed = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 0.16f, 0.75f) * PIXELS_PER_METER;
+		maxAsteroids = Math.ceil(DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 7.0f, 14.0f));
+		asteroidSpeed = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 0.16f, 0.32f) * PIXELS_PER_METER;
 	}
 
 	@Override
