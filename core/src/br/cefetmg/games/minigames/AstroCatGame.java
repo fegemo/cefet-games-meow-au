@@ -10,6 +10,7 @@ import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
@@ -66,7 +67,7 @@ public class AstroCatGame extends MiniGame {
 	private PhysicsShapeCache physCache;
 
 	private Texture[] asteroidTextures;
-	private Texture astroCatTexture, planetTexture, backgroundTexture;
+	private Texture astroCatTexture, planetTexture, backgroundTexture, crosshairTexture;
 	private Sprite background;
 	private MySound gasNoise, impact;
 	private MyMusic backgroundMusic;
@@ -79,6 +80,9 @@ public class AstroCatGame extends MiniGame {
 	private AstroCat astroCat;
 	private Planet planet;
 	private Asteroid[] asteroids;
+	private Sprite crosshair;
+
+	private boolean crosshairVisible;
 
 	private Body[] walls;
 	private Set<Asteroid> asteroidSet;
@@ -137,8 +141,9 @@ public class AstroCatGame extends MiniGame {
 			body = physCache.createBody(bodyName, world, BODY_SCALE_PER_PIXEL, BODY_SCALE_PER_PIXEL);
 			body.setTransform(position.cpy().scl(RATIO_METERS_PER_PIXEL), 0.0f);
 			sprite = new Sprite(texture);
-			sprite.setSize(sprite.getWidth() * SCALE, sprite.getHeight() * SCALE);
 			sprite.setOriginCenter();
+			sprite.setScale(SCALE);
+			// sprite.setSize(sprite.getWidth() * SCALE, sprite.getHeight() * SCALE);
 			if (processPosition) {
 				updatePosition();
 			}
@@ -226,6 +231,9 @@ public class AstroCatGame extends MiniGame {
 		private final static float CIRCLE_RAD = PI * 2.0f;
 		private final static float NOVENTA_RAD = PI * 0.5f;
 
+		private final static float ROCKET_DIFF_X_SCALE = SCALE * 0.095f;
+		private final static float ROCKET_DIFF_Y_SCALE = SCALE * -0.53f;
+
 		private final ParticleEffect rocket;
 		private final Vector2 rocketDiff;
 		private final float diffToNoventa;
@@ -239,7 +247,7 @@ public class AstroCatGame extends MiniGame {
 				ParticleEffect rocketEmitter, MySound gasNoiseSound) {
 			super("astrocat", physCache, astroCatTexture, world, position, false);
 			rocket = rocketEmitter;
-			rocketDiff = new Vector2(sprite.getWidth() * 0.095f, sprite.getHeight() * -0.53f);
+			rocketDiff = new Vector2(sprite.getWidth() * ROCKET_DIFF_X_SCALE, sprite.getHeight() * ROCKET_DIFF_Y_SCALE);
 			diffToNoventa = rocketDiff.angleRad() + NOVENTA_RAD;
 			currentForce = new Vector2(ROCKET_FORCE, 0);
 			gasNoise = gasNoiseSound;
@@ -339,11 +347,12 @@ public class AstroCatGame extends MiniGame {
 		// Carregando texturas
 		asteroidTextures = new Texture[NUM_ASTEROIDS];
 		for (int i = 0; i < NUM_ASTEROIDS; i++) {
-			asteroidTextures[i] = assets.get("astrocat/asteroid" + (i + 1) + ".png", Texture.class);
+			asteroidTextures[i] = loadTexture("astrocat/asteroid" + (i + 1) + ".png");
 		}
-		astroCatTexture = assets.get("astrocat/astrocat.png", Texture.class);
-		backgroundTexture = assets.get("astrocat/background.png", Texture.class);
-		planetTexture = assets.get("astrocat/planet.png", Texture.class);
+		astroCatTexture = loadTexture("astrocat/astrocat.png");
+		crosshairTexture = loadTexture("astrocat/crosshair.png");
+		backgroundTexture = loadTexture("astrocat/background.png");
+		planetTexture = loadTexture("astrocat/planet.png");
 		gasNoise = new MySound(assets.get("astrocat/gasnoise.mp3", Sound.class));
 		impact = new MySound(assets.get("astrocat/impact.ogg", Sound.class));
 		backgroundMusic = new MyMusic(assets.get("astrocat/background.mp3", Music.class));
@@ -380,11 +389,24 @@ public class AstroCatGame extends MiniGame {
 				viewport.getWorldHeight() / background.getHeight());
 		background.setPosition(0.0f, 0.0f);
 
+		// Definindo sprite da mira
+		crosshair = new Sprite(crosshairTexture);
+		crosshair.setOriginCenter();
+		crosshair.setScale(SCALE);
+		crosshair.setAlpha(0.0f);
+		crosshairVisible = false;
+
 		// Inserindo listener de detecção de colisão com som
 		contactListener = new AstroCatContactListener();
 		world.setContactListener(contactListener);
 
 		createWalls();
+	}
+
+	private Texture loadTexture(String path) {
+		Texture tex = assets.get(path, Texture.class);
+		tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		return tex;
 	}
 
 	private void createWalls() {
@@ -483,6 +505,10 @@ public class AstroCatGame extends MiniGame {
 	public void onHandlePlayingInput() {
 
 		if (Gdx.input.isPeripheralAvailable(Peripheral.MultitouchScreen)) {
+			if (crosshairVisible) {
+				crosshair.setAlpha(0.0f);
+				crosshairVisible = false;
+			}
 			if (Gdx.input.isTouched(0)) {
 				Vector2 cursor = new Vector2(Gdx.input.getX(0), Gdx.input.getY(0));
 				viewport.unproject(cursor);
@@ -494,6 +520,11 @@ public class AstroCatGame extends MiniGame {
 		} else {
 			Vector2 cursor = new Vector2(Gdx.input.getX(0), Gdx.input.getY(0));
 			viewport.unproject(cursor);
+			if (!crosshairVisible) {
+				crosshair.setAlpha(0.9f);
+				crosshairVisible = true;
+			}
+			crosshair.setCenter(cursor.x, cursor.y);
 			astroCat.turnToPoint(cursor);
 			if (Gdx.input.isTouched(0)) {
 				astroCat.accelerate();
@@ -520,6 +551,7 @@ public class AstroCatGame extends MiniGame {
 		for (Asteroid asteroid : asteroids) {
 			asteroid.draw(batch);
 		}
+		crosshair.draw(batch);
 		backgroundMusic.setVolume(0.6f);
 		if (isPaused()) {
 			backgroundMusic.pause();
@@ -537,7 +569,7 @@ public class AstroCatGame extends MiniGame {
 
 	@Override
 	public boolean shouldHideMousePointer() {
-		return false;
+		return true;
 	}
 
 	@Override
