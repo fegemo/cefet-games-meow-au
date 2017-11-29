@@ -134,6 +134,8 @@ public class Hud {
                 stateObserver.onGameResumed();
                 clock.resumeTicking();
                 isPaused = !isPaused;
+                pauseButton.setProgrammaticChangeEvents(false);
+                pauseButton.setChecked(false);
             }
         });
                 
