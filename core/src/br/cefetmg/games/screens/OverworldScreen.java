@@ -431,7 +431,9 @@ public class OverworldScreen extends BaseScreen {
                             new MouseAttackFactory(),
                             // gustavo henrique e rogenes
                             new BasCATballFactory(),
-                            new RunningFactory()
+                            new RunningFactory(),
+                            // arthur e pedro
+                            new DogBarksCatFleeFactory()
                     )
             ), .1f, .2f, currentLevel), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
         }
@@ -450,8 +452,9 @@ public class OverworldScreen extends BaseScreen {
                             // adriel
                             new UnderwaterCatFactory(),
                             // arthur e pedro
-                            new DogBarksCatFleeFactory(),
-                            new ClickFindCatFactory()
+                            new ClickFindCatFactory(),
+                            // andré brait
+                            new AstroCatGameFactory()
                     )
             ), .3f, .4f, currentLevel), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
         }
