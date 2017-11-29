@@ -17,51 +17,51 @@ import com.badlogic.gdx.Screen;
  */
 public class MeowAuGame extends Game {
 
-    private static Screen loadedScreen = null;
+	private static Screen loadedScreen = null;
 
-    @Override
-    public void create() {
-        this.setScreen(new SplashScreen(this, null));
-    }
+	@Override
+	public void create() {
+		this.setScreen(new SplashScreen(this, null));
+	}
 
-    private void handleInput() {
-        if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
-            Gdx.app.exit();
-        }
-    }
+	private void handleInput() {
+		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+			Gdx.app.exit();
+		}
+	}
 
-    @Override
-    public void render() {
-        handleInput();
-        super.render();
-    }
+	@Override
+	public void render() {
+		handleInput();
+		super.render();
+	}
 
-    @Override
-    public void dispose() {
-        if (this.getScreen() != null) {
-            this.getScreen().dispose();
-        }
-    }
+	@Override
+	public void dispose() {
+		if (this.getScreen() != null) {
+			this.getScreen().dispose();
+		}
+	}
 
-    @Override
-    public void setScreen(Screen screen) {
-        if (loadedScreen == screen) {
-            this.screen = screen;
-            loadedScreen = null;
-            return;
-        }
+	@Override
+	public void setScreen(Screen screen) {
+		if (loadedScreen == screen) {
+			this.screen = screen;
+			loadedScreen = null;
+			return;
+		}
 
-        super.setScreen(screen);
-    }
+		super.setScreen(screen);
+	}
 
-    public void setLoadedScreen(Screen screen) {
-        loadedScreen = screen;
-    }
-    
-    public MeowAuGame(Leaderboard leaderboard) {
-    	super();
-    	OnlineRanking.leaderboard = leaderboard;
-    	OnlineRanking.connect();
-    }
+	public void setLoadedScreen(Screen screen) {
+		loadedScreen = screen;
+	}
+
+	public MeowAuGame(Leaderboard leaderboard) {
+		super();
+		OnlineRanking.setLeaderboard(leaderboard);
+		OnlineRanking.connect();
+	}
 
 }
