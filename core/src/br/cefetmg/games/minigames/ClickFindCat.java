@@ -256,12 +256,13 @@ public class ClickFindCat extends MiniGame {
         public void vagabundo() {
             this.tipoDeMovimento = TipoDeMovimento.VAGAR;
         }
-
+        
         public void movimento(float dt, float larguraDoMundo, float alturaDoMundo) {
             checkDistance();
+            boolean deveMudarDirecao = (Math.random() < 0.01);
             switch (tipoDeMovimento) {
                 case VAGAR:
-                    MudarDirecao();
+                    MudarDirecao(deveMudarDirecao);
                     andar(dt, larguraDoMundo, alturaDoMundo);
                     break;
                 case FUGIR:
@@ -329,17 +330,20 @@ public class ClickFindCat extends MiniGame {
 
         }
 
-        public void MudarDirecao() {
-            float chance = (float) Math.random();
-            if (chance < 0.25) {
-                direcao = Direcao.DIREITA;
-            } else if (chance < 0.5) {
-                direcao = Direcao.CIMA;
-            } else if (chance < 0.75) {
-                direcao = Direcao.BAIXO;
-            } else {
-                direcao = Direcao.ESQUERDA;
+        public void MudarDirecao(boolean DeveMudar) {
+            if (DeveMudar) {
+                float chance = (float) Math.random();
+                if (chance < 0.25) {
+                    direcao = Direcao.DIREITA;
+                } else if (chance < 0.5) {
+                    direcao = Direcao.CIMA;
+                } else if (chance < 0.75) {
+                    direcao = Direcao.BAIXO;
+                } else {
+                    direcao = Direcao.ESQUERDA;
+                }    
             }
+            
         }
 
         public void fugir(float dt) {

@@ -77,3 +77,5 @@ local-ranking.txt
 remote-ranking.txt
 
 core/assets/data/ProgressFile\.txt
+
+*.txt
