@@ -21,7 +21,7 @@ import com.badlogic.gdx.math.Vector2;
  * @author Rogenes
  */
 public class RankingScreen extends BaseScreen {
-	
+
 	private static enum InitiatedFrom {
 		MAIN_MENU, GAME_OVER;
 	}
@@ -57,8 +57,8 @@ public class RankingScreen extends BaseScreen {
 	private Vector2 boardBottom, boardSize;
 
 	private FileHandle file;
-	
-	private InitiatedFrom initiatedFrom; 
+
+	private InitiatedFrom initiatedFrom;
 
 	private boolean online;
 
@@ -342,20 +342,20 @@ public class RankingScreen extends BaseScreen {
 
 	@Override
 	public void draw() {
-		
-		if(initiatedFrom == InitiatedFrom.GAME_OVER) {
+
+		if (initiatedFrom == InitiatedFrom.GAME_OVER) {
 			initFromGameOver();
 		} else {
 			initFromMenuScreen();
 		}
-		
+
 		batch.begin();
 		batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-		
+
 		float connectedIconSize = viewport.getWorldWidth() * 0.05f;
 		batch.draw(OnlineRanking.isOnline() ? onlineIcon : offlineIcon,
 				viewport.getWorldWidth() - connectedIconSize - 2.0f, 2.0f, connectedIconSize, connectedIconSize);
-		
+
 		if (writingScore) {
 			drawCenterAlignedText("Sua pontuação:  " + phaseNumber + "", viewport.getWorldHeight() * 0.91f);
 			drawCenterAlignedText("Coloque seu nome:  " + name + "", viewport.getWorldHeight() * 0.84f);
@@ -393,6 +393,9 @@ public class RankingScreen extends BaseScreen {
 		board = new TextureRegion(assets.get("rectangle.png", Texture.class));
 		onlineIcon = new TextureRegion(assets.get("online-icon.png", Texture.class));
 		offlineIcon = new TextureRegion(assets.get("offline-icon.png", Texture.class));
+		backspace = new TextureRegion(assets.get("letters/backspace.png", Texture.class));
+		enter = new TextureRegion(assets.get("letters/enter.png", Texture.class));
+		space = new TextureRegion(assets.get("letters/space.png", Texture.class));
 
 		// auxChar define qual é o asset carregado, qual a letra do teclado
 		// comeca em a e vai selecionando as proximas letras automaticamente
@@ -428,7 +431,6 @@ public class RankingScreen extends BaseScreen {
 
 		enterBottom = new Vector2(letters[i][j].bottom.x + 4 * distBetweenLetters, letters[i][j].bottom.y);
 		enterSize = new Vector2(letters[i][j].size.x, letters[i][j].size.y);
-
 	}
 
 	private static class Letter {
