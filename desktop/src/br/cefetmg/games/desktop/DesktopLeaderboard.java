@@ -35,7 +35,7 @@ public class DesktopLeaderboard implements Leaderboard {
 
     @Override
     public synchronized void connect() {
-        new Thread(new Runnable() {
+        Thread connectThread = new Thread(new Runnable() {
 
             @Override
             public void run() {
@@ -56,9 +56,11 @@ public class DesktopLeaderboard implements Leaderboard {
                     }
                 }
             }
-        }).start();
+        });
+        connectThread.setDaemon(true);
+        connectThread.start();
 
-        new Thread(new Runnable() {
+        Thread dbThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -122,7 +124,9 @@ public class DesktopLeaderboard implements Leaderboard {
                     database = null;
                 }
             }
-        }).start();
+        });
+        dbThread.setDaemon(true);
+        dbThread.start();
     }
 
     @Override
