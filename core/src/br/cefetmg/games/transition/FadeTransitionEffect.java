@@ -51,7 +51,7 @@ public abstract class FadeTransitionEffect extends TransitionEffect {
         ShapeRenderer shapeRenderer = new ShapeRenderer();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(color);
-        shapeRenderer.rect(0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        shapeRenderer.rect(0, 0, viewport.getScreenWidth(), viewport.getScreenHeight());
         shapeRenderer.end();
 
         Gdx.gl.glDisable(GL20.GL_BLEND);
