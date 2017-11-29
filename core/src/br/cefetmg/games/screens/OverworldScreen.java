@@ -217,7 +217,6 @@ public class OverworldScreen extends BaseScreen {
         
         // File Handle
         // Read and Create Progress File
-        System.out.println(file.path());
         if (!file.exists()) {
             file.writeString("0:", false);
             file.writeString("0", true);
