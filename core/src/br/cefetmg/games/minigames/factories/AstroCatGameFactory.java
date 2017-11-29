@@ -41,6 +41,7 @@ public class AstroCatGameFactory implements MiniGameFactory {
 				put("astrocat/gasnoise.mp3", Sound.class);
 				put("astrocat/impact.ogg", Sound.class);
 				put("astrocat/planet.png", Texture.class);
+				put("astrocat/crosshair.png", Texture.class);
 			}
 		};
 	}
