@@ -51,6 +51,7 @@ public abstract class BaseScreen extends ScreenAdapter {
     private float deviceAspectRatioDivergenceFromDesired;
     private boolean wasJustDisposed = false;
     private boolean assetsFinishedLoading = false;
+    private boolean assetsStartedLoading = false;
     
     /**
      * Cria uma instância de tela.
@@ -70,7 +71,6 @@ public abstract class BaseScreen extends ScreenAdapter {
         FileHandleResolver resolver = new InternalFileHandleResolver();
         assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
         assets.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
-
 
         // fonte para mensagens
         FreeTypeFontLoaderParameter messagesFontParams = new FreeTypeFontLoaderParameter();
@@ -165,7 +165,6 @@ public abstract class BaseScreen extends ScreenAdapter {
         if (previous != null) {
             previous.dispose();
         }
-        this.appear();
     }
 
     /**
@@ -190,6 +189,10 @@ public abstract class BaseScreen extends ScreenAdapter {
      */
     @Override
     public final void render(float dt) {
+    	if(!assetsStartedLoading) {
+    		appear();
+    		assetsStartedLoading = true;
+    	}
         if (assets.update()) {
             if (!assetsFinishedLoading) {
                 messagesFont = assets.get("snaphand-v1-free.ttf");
@@ -282,7 +285,7 @@ public abstract class BaseScreen extends ScreenAdapter {
      * textura).
      */
     protected abstract void assetsLoaded();
-
+    
     /**
      * Executa as ações de limpeza e descarregamento de recursos e é chamada
      * automaticamente quando a tela não está mais sendo usada.
