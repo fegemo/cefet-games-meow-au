@@ -190,9 +190,6 @@ public abstract class BaseScreen extends ScreenAdapter {
      */
     @Override
     public final void render(float dt) {
-    	if(this instanceof MenuScreen) {
-    		assets.finishLoading();
-    	}
         if (assets.update()) {
             if (!assetsFinishedLoading) {
                 messagesFont = assets.get("snaphand-v1-free.ttf");
