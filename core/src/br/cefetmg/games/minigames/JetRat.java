@@ -12,10 +12,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
-import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -23,6 +21,7 @@ import java.util.Random;
 import static br.cefetmg.games.Config.WORLD_HEIGHT;
 import static br.cefetmg.games.Config.WORLD_WIDTH;
 import br.cefetmg.games.sound.MySound;
+import com.badlogic.gdx.math.Rectangle;
 
 public class JetRat extends MiniGame {
 
@@ -37,7 +36,6 @@ public class JetRat extends MiniGame {
     private float minimumEnemySpeed;
     private float screenWidth;
     private float screenHeight;
-    private float posX, posY;
     int srcX, troca;
     private MySound meon;
     private MySound jet;
@@ -73,8 +71,6 @@ public class JetRat extends MiniGame {
 
         enemies = new Array<Tube>();
 
-        posX = viewport.getScreenWidth() * 0.4f;
-        posY = viewport.getScreenHeight() * 0.5f;
         timer.scheduleTask(new Task() {
             @Override
             public void run() {
@@ -99,13 +95,9 @@ public class JetRat extends MiniGame {
                 .nor()
                 .scl(dist);
         Tube enemy = new Tube(cattubeTexture);
-        //int size = (int) Math.ceil(DifficultyCurve.LINEAR
-       //         .getCurveValueBetween(difficulty, 0, 4))*10;
-        
-     //   System.out.println("Diff "+size );
         enemy.setSize(new Random().nextInt(this.difficulty)+3);
 
-        enemy.setPosition(WORLD_WIDTH, 60 * enemy.getSize());
+        enemy.setPosition(WORLD_WIDTH, 10 * enemy.getSize());
         enemy.setSpeed(tubeSpeed);
         enemy.startAnimation("dormindo");
         enemies.add(enemy);
@@ -114,9 +106,9 @@ public class JetRat extends MiniGame {
     @Override
     protected void configureDifficultyParameters(float difficulty) {
         this.minimumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 120, 150);
+                .getCurveValueBetween(difficulty, 70, 140);
         this.difficulty = (int) (Math.ceil(DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 1, 4))-1);
+                .getCurveValueBetween(difficulty, 1, 14))-1);
     }
     
     @Override
@@ -166,29 +158,23 @@ public class JetRat extends MiniGame {
        
         mouse.update(dt);
         
-        if (mouse.getY() + mouse.getHeight() / 2 > WORLD_HEIGHT) {
+        if ((mouse.getY() + mouse.getHeight() / 2 > WORLD_HEIGHT) || 
+                (mouse.getY() + mouse.getHeight() < 0)) {
             super.challengeFailed();
             meon.stop();
         }
         
-        // atualiza a posição do alvo de acordo com o mouse
-        Vector3 position;
-        position = new Vector3(posX, posY, 0);
-        viewport.unproject(position);
-        //mouse.setCenter(position.x, position.y);
-        for (Tube tubes : this.enemies) {
+        for (Tube tube : this.enemies) {
             
-            if (mouse.getY() + 70 <= tubes.getHeight() + tubes.getSize() * 60
-                    && (mouse.getX() > tubes.getX() - 80 && mouse.getX() < tubes.getX() + 80)) {
+            if (mouse.getBoundingRectangle().overlaps(tube.getColliderRectangle())) {
 
                 super.challengeFailed();
                 meon.stop();
-                //tubes.changePicture();
-                tubes.startAnimation("acordado");
+                tube.startAnimation("acordado");
             }
-            tubes.setPosition(tubes.getX() - 5, tubes.getY());
+            tube.setPosition(tube.getX() - 5, tube.getY());
             
-            tubes.update(dt);
+            tube.update(dt);
         }
 
      
@@ -199,12 +185,11 @@ public class JetRat extends MiniGame {
     public void onDrawGame() {
         batch.draw(bg1, 0, 0, srcX, 0, WORLD_WIDTH, WORLD_HEIGHT);
 
-        for (Tube tubes : this.enemies) {
-            tubes.draw(batch);
-            for (int i = 0; i < tubes.getOriginY()/60; i++) {
-                batch.draw(tubeTexture, tubes.getX(), 60 * i);
+        for (Tube tube : this.enemies) {
+            for (int i = 0; i < tube.getOriginY()/60; i++) {
+                batch.draw(tubeTexture, tube.getX(), 60 * i);
             }
-
+            tube.draw(batch);
         }
 
         mouse.draw(batch);
@@ -227,7 +212,7 @@ public class JetRat extends MiniGame {
         static final int FRAME_HEIGHT = 156;//156
 
         static final float MAX_SPEED_Y = 250.0f;
-        static final float ACCELERATION_Y = 150.0f;
+        static final float ACCELERATION_Y = 300.0f;
         
         static final float MAX_SPEED_X = 100.0f;
         static final float ACCELERATION_X = 50.0f;
@@ -304,6 +289,8 @@ public class JetRat extends MiniGame {
         private static final int FRAME_WIDTH = 220;
         private static final int FRAME_HEIGHT = 390;
         private int size;
+        private final Rectangle colliderRectangle;
+        private static final int COLLIDER_PADDING_TOP = 50;
 
         public Tube(final Texture tubesSpritesheet) {
 
@@ -332,7 +319,7 @@ public class JetRat extends MiniGame {
              
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
             super.setAutoUpdate(false);
-            
+            colliderRectangle = new Rectangle(super.getBoundingRectangle());
         }
 
         public void changePicture() {
@@ -343,7 +330,7 @@ public class JetRat extends MiniGame {
         public void update(float dt) {
 
             super.update(dt);
-            super.setPosition(super.getX() + this.speed.x * dt,
+            setPosition(super.getX() + this.speed.x * dt,
                     super.getY() + this.speed.y * dt);
         }
 
@@ -362,6 +349,27 @@ public class JetRat extends MiniGame {
         public void setSpeed(Vector2 speed) {
             this.speed = speed;
         }
+        
+        public Rectangle getColliderRectangle() {
+            return colliderRectangle;
+        }
+        
+        private void updateColliderRectangle() {
+            colliderRectangle.set(getBoundingRectangle());
+            colliderRectangle.setHeight(
+                    colliderRectangle.getY() + 
+                    colliderRectangle.getHeight()
+                            - COLLIDER_PADDING_TOP);
+            colliderRectangle.setY(0);
+        }
+
+        @Override
+        public void setPosition(float x, float y) {
+            super.setPosition(x, y);
+            updateColliderRectangle();
+        }
+        
+        
 
     }
 
