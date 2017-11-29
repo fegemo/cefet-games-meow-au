@@ -228,7 +228,7 @@ public class MenuScreen extends BaseScreen {
             transitionScreen(new PlayingGamesScreen(super.game, this),
                     TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
         } else {
-            transitionScreen(new OverworldScreen(super.game, this, 0, 3),
+            transitionScreen(new OverworldScreen(super.game, this),
                     TransitionScreen.Effect.FADE_IN_OUT, 0.4f);
         }
     }
