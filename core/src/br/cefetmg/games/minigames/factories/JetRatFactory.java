@@ -31,6 +31,7 @@ public class JetRatFactory implements MiniGameFactory {
                 put("jet-rat/tube.png", Texture.class);
                 put("jet-rat/jatmouse.png", Texture.class);
                 put("jet-rat/meon.mp3", Sound.class);
+                put("jet-rat/Kruncha angry.mp3", Sound.class);
             }
         };
     }
