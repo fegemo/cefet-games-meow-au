@@ -554,6 +554,7 @@ public class AstroCatGame extends MiniGame {
 		crosshair.draw(batch);
 		backgroundMusic.setVolume(0.6f);
 		if (isPaused()) {
+			astroCat.stopAccelerating();
 			backgroundMusic.pause();
 		} else if (MiniGameState.PLAYING.equals(getState())) {
 			backgroundMusic.play();
