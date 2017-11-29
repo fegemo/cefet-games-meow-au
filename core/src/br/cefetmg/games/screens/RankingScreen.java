@@ -22,10 +22,6 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class RankingScreen extends BaseScreen {
 
-	private static enum InitiatedFrom {
-		MAIN_MENU, GAME_OVER;
-	}
-
 	private String testString;
 	private String scoreKeeper;
 	private String name, fileContent;
@@ -58,8 +54,6 @@ public class RankingScreen extends BaseScreen {
 
 	private FileHandle file;
 
-	private InitiatedFrom initiatedFrom;
-
 	private boolean online;
 
 	public RankingScreen(Game game, BaseScreen previous, int phase) {
@@ -67,14 +61,14 @@ public class RankingScreen extends BaseScreen {
 		this.letters = new Letter[3][10];
 		this.phaseNumber = phase;
 		this.online = false;
-		this.initiatedFrom = InitiatedFrom.GAME_OVER;
+		initFromGameOver();
 	}
 
 	public RankingScreen(Game game, BaseScreen previous) {
 		super(game, previous);
 		this.letters = new Letter[3][10];
 		this.online = false;
-		this.initiatedFrom = InitiatedFrom.MAIN_MENU;
+		initFromMenuScreen();
 	}
 
 	private void loadRankingFromDatabase() {
@@ -103,48 +97,42 @@ public class RankingScreen extends BaseScreen {
 		fileContent = file.readString();
 		fileLenght = file.length();
 	}
-
-	private void initFromMenuScreen() {
+	
+	private void commonInit() {
 		online = OnlineRanking.isOnline();
 		if (online) {
 			loadRankingFromDatabase();
 		} else {
 			loadRankingFromFile();
 		}
-		testString = "";
-		scoreKeeper = "";
 		name = "";
-		rightQuantityKeeper = "";
-		writingScore = false;
-		showingScore = true;
 		boardBottom = new Vector2(viewport.getWorldWidth() * 0.25f, viewport.getWorldHeight() * 0.08f);
 		boardSize = new Vector2(viewport.getWorldWidth() * 0.5f, viewport.getWorldHeight() * 0.775f);
 		pointerX = viewport.getWorldWidth() / 2;
 		pointerY = viewport.getWorldHeight() / 2;
+	}
+
+	private void initFromMenuScreen() {
+		commonInit();
+		testString = "";
+		scoreKeeper = "";
+		rightQuantityKeeper = "";
+		writingScore = false;
+		showingScore = true;
 		pointerSize = letterWidth * 0.5f;
 	}
 
 	private void initFromGameOver() {
-		online = OnlineRanking.isOnline();
-		if (online) {
-			loadRankingFromDatabase();
-		} else {
-			loadRankingFromFile();
-		}
-		name = "";
+		commonInit();
 		distFromBoard = viewport.getWorldWidth() / 7;
 		bottomX = distFromBoard;
 		bottomY = viewport.getWorldHeight() / 3;
 		letterWidth = viewport.getWorldWidth() / 15;
 		letterHeight = viewport.getWorldHeight() / 7;
 		distBetweenLetters = viewport.getWorldWidth() / 14;
-		pointerX = viewport.getWorldWidth() / 2;
-		pointerY = viewport.getWorldHeight() / 2;
 		pointerSize = letterWidth * 0.5f;
 		writingScore = true;
 		showingScore = false;
-		boardBottom = new Vector2(viewport.getWorldWidth() * 0.25f, viewport.getWorldHeight() * 0.08f);
-		boardSize = new Vector2(viewport.getWorldWidth() * 0.5f, viewport.getWorldHeight() * 0.775f);
 	}
 
 	private int rankingQuantity() {
@@ -342,12 +330,6 @@ public class RankingScreen extends BaseScreen {
 
 	@Override
 	public void draw() {
-
-		if (initiatedFrom == InitiatedFrom.GAME_OVER) {
-			initFromGameOver();
-		} else {
-			initFromMenuScreen();
-		}
 
 		batch.begin();
 		batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
