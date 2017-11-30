@@ -8,7 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
 import com.badlogic.gdx.math.Vector2;
@@ -29,21 +29,23 @@ public class CreditsScreen extends BaseScreen {
     private List<Vector2> linePos;
     static int SPACING = 60;
     FreeTypeFontGenerator generator;
-    private TextureRegion background;
+    private Sprite background;
     FreeTypeFontLoaderParameter snackerComicParams;
     FreeTypeFontLoaderParameter snackerComicParams2;
     int bigword;
 
     public CreditsScreen(Game game, BaseScreen previous) {
         super(game, previous);
-
     }
 
     @Override
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         //init font
-        background = new TextureRegion(new Texture("menu/menu-background.png"));
+        background = new Sprite(new Texture("menu/menu-background.png"));
+        background.setOrigin(0, 0);
+        background.setScale(viewport.getWorldWidth() / background.getWidth(), viewport.getWorldHeight() / background.getHeight());
+        background.setPosition(0, 0);
         snackerComicParams = new FreeTypeFontLoaderParameter();
         snackerComicParams.fontFileName = "fonts/orangejuice.ttf";
         snackerComicParams.fontParameters.size = 55;
@@ -69,9 +71,8 @@ public class CreditsScreen extends BaseScreen {
             while ((line = br.readLine()) != null) {
                 lines.add(line);
                 linePos.add(
-                        new Vector2((float) (Gdx.graphics.getWidth() * 0.55),
+                        new Vector2((float) (viewport.getWorldWidth() * 0.55),
                                 aux));
-
                 aux -= SPACING;
             }
             br.close();
@@ -94,23 +95,18 @@ public class CreditsScreen extends BaseScreen {
 
     @Override
     public void update(float dt) {
-
         for (int i = 0; i < lines.size(); i++) {
-            linePos.get(i).y += 1.5;
+            linePos.get(i).y += 1.5f;
         }
-
-        if (linePos.get(lines.size() - 1).y > Gdx.graphics.getHeight() + lines.size() * 6) {
+        if (linePos.get(lines.size() - 1).y > viewport.getWorldHeight() + lines.size() * 6) {
             game.setScreen(new MenuScreen(game, this));
         }
     }
 
     @Override
     public void draw() {
-
         batch.begin();
-        batch.draw(background, 0, 0,
-                viewport.getWorldWidth(),
-                viewport.getWorldHeight());
+        background.draw(batch);
         for (int i = 0; i < (lines.size() - 1); i++) {
             if (!lines.get(i).equals("")) {
                 if (lines.get(i).charAt(0) == '-') {
@@ -119,7 +115,6 @@ public class CreditsScreen extends BaseScreen {
                 } else {
                     font.draw(batch, lines.get(i), linePos.get(i).x, linePos.get(i).y, viewport.getWorldWidth() / 4, 1, false);
                     font.setColor(Color.DARK_GRAY);
-
                 }
             }
         }
