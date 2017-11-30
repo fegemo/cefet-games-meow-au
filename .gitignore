@@ -74,6 +74,7 @@ Thumbs.db
 core/assets/data/ProgressFile\.txt
 
 *.txt
+<<<<<<< HEAD
 
 # meow au specific
 progress-file.txt
@@ -83,3 +84,5 @@ remote-ranking.txt
 core/assets/data/ProgressFile\.txt
 
 *.txt
+=======
+>>>>>>> master
