@@ -7,13 +7,17 @@ import br.cefetmg.games.sound.MySound;
 import br.cefetmg.games.sound.SoundManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -28,7 +32,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
  */
 public class MenuScreen extends BaseScreen {
 
-    private static final float FADE_TIME = 0.7f;
+    private static final float SCREENS_FADE_TIME = 0.7f;
+    private static final float BUTTONS_FADE_TIME = 0.25f;
     private static final float BUTTONS_PADDING = 5.0f;
     private static final int BUTTON_COLSPAN = 3;
 
@@ -129,13 +134,26 @@ public class MenuScreen extends BaseScreen {
         background.setFillParent(true);
         table.setFillParent(true);
 
-        btnNormal.setVisible(false);
+        btnPlay.setDisabled(true);
+        btnExit.setDisabled(true);
+        btnRanking.setDisabled(true);
+        btnCredits.setDisabled(true);
+        btnNormal.setDisabled(true);
+        btnSurvival.setDisabled(true);
+        btnBack.setDisabled(true);
+
+        btnPlay.getColor().a = 0.0f;
+        btnExit.getColor().a = 0.0f;
+        btnRanking.getColor().a = 0.0f;
+        btnCredits.getColor().a = 0.0f;
+        btnNormal.getColor().a = 0.0f;
+        btnSurvival.getColor().a = 0.0f;
+        btnBack.getColor().a = 0.0f;
+
         playNormalBtnStack.add(btnNormal);
         playNormalBtnStack.add(btnPlay);
-        btnSurvival.setVisible(false);
         rankSurvivalBtnStack.add(btnSurvival);
         rankSurvivalBtnStack.add(btnRanking);
-        btnBack.setVisible(false);
         creditsBackBtnStack.add(btnBack);
         creditsBackBtnStack.add(btnCredits);
 
@@ -153,6 +171,16 @@ public class MenuScreen extends BaseScreen {
         table.add(creditsBackBtnStack).pad(BUTTONS_PADDING).colspan(BUTTON_COLSPAN).right();
         table.row();
         table.add(btnExit).pad(BUTTONS_PADDING).colspan(BUTTON_COLSPAN).right();
+
+        float delay = SCREENS_FADE_TIME / 2.0f;
+        fadeInButton(btnPlay, delay);
+        fadeInButton(btnRanking, delay);
+        fadeInButton(btnCredits, delay);
+        fadeInButton(btnExit, delay);
+
+        logo.addAction(Actions.sequence(Actions.alpha(0.0f), Actions.delay(delay), Actions.fadeIn(BUTTONS_FADE_TIME)));
+        soundButton.getButton().addAction(
+                Actions.sequence(Actions.alpha(0.0f), Actions.delay(delay), Actions.fadeIn(BUTTONS_FADE_TIME)));
 
         Gdx.input.setInputProcessor(stage);
     }
@@ -190,21 +218,43 @@ public class MenuScreen extends BaseScreen {
         logo = new Image(logoTexture);
     }
 
+    private void fadeInButton(final Button button, float delay) {
+        RunnableAction actionEnableButton = Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                button.setDisabled(false);
+            }
+        });
+        button.clearActions();
+        button.toFront();
+        if (delay > 0.0f) {
+            button.addAction(Actions.sequence(Actions.alpha(0.0f), Actions.delay(delay),
+                    Actions.fadeIn(BUTTONS_FADE_TIME), actionEnableButton));
+        } else {
+            button.addAction(
+                    Actions.sequence(Actions.alpha(0.0f), Actions.fadeIn(BUTTONS_FADE_TIME), actionEnableButton));
+        }
+    }
+
+    private void fadeOutButton(Button button) {
+        button.clearActions();
+        button.setDisabled(true);
+        button.toBack();
+        button.addAction(Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(BUTTONS_FADE_TIME)));
+    }
+
     private void setButtonListeners() {
         btnPlay.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 enterClickSound.play();
-                btnNormal.toFront();
-                btnSurvival.toFront();
-                btnBack.toFront();
-                btnNormal.setVisible(true);
-                btnSurvival.setVisible(true);
-                btnBack.setVisible(true);
-                btnPlay.setVisible(false);
-                btnRanking.setVisible(false);
-                btnCredits.setVisible(false);
-                btnExit.setVisible(false);
+                fadeInButton(btnNormal, BUTTONS_FADE_TIME);
+                fadeInButton(btnSurvival, BUTTONS_FADE_TIME);
+                fadeInButton(btnBack, BUTTONS_FADE_TIME);
+                fadeOutButton(btnPlay);
+                fadeOutButton(btnRanking);
+                fadeOutButton(btnCredits);
+                fadeOutButton(btnExit);
             }
         });
         btnExit.addListener(new ChangeListener() {
@@ -246,16 +296,13 @@ public class MenuScreen extends BaseScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 backClickSound.play();
-                btnNormal.toBack();
-                btnSurvival.toBack();
-                btnBack.toBack();
-                btnNormal.setVisible(false);
-                btnSurvival.setVisible(false);
-                btnBack.setVisible(false);
-                btnPlay.setVisible(true);
-                btnRanking.setVisible(true);
-                btnCredits.setVisible(true);
-                btnExit.setVisible(true);
+                fadeInButton(btnPlay, BUTTONS_FADE_TIME);
+                fadeInButton(btnRanking, BUTTONS_FADE_TIME);
+                fadeInButton(btnCredits, BUTTONS_FADE_TIME);
+                fadeInButton(btnExit, BUTTONS_FADE_TIME);
+                fadeOutButton(btnNormal);
+                fadeOutButton(btnSurvival);
+                fadeOutButton(btnBack);
             }
         });
     }
@@ -289,12 +336,13 @@ public class MenuScreen extends BaseScreen {
 
     private void navigateToOverworld() {
         shouldContinueBackgroundMusic = false;
-        transitionScreen(new OverworldScreen(super.game, this), TransitionScreen.Effect.FADE_IN_OUT, FADE_TIME);
+        transitionScreen(new OverworldScreen(super.game, this), TransitionScreen.Effect.FADE_IN_OUT, SCREENS_FADE_TIME);
     }
 
     private void navigateToSurvivalGame() {
         shouldContinueBackgroundMusic = false;
-        transitionScreen(new PlayingGamesScreen(super.game, this), TransitionScreen.Effect.FADE_IN_OUT, FADE_TIME);
+        transitionScreen(new PlayingGamesScreen(super.game, this), TransitionScreen.Effect.FADE_IN_OUT,
+                SCREENS_FADE_TIME);
     }
 
     private void navigateToCredits() {
@@ -304,7 +352,7 @@ public class MenuScreen extends BaseScreen {
 
     private void navigateToRanking() {
         shouldContinueBackgroundMusic = true;
-        transitionScreen(new RankingScreen(game, this), TransitionScreen.Effect.FADE_IN_OUT, FADE_TIME);
+        transitionScreen(new RankingScreen(game, this), TransitionScreen.Effect.FADE_IN_OUT, SCREENS_FADE_TIME);
     }
 
     private void exitGame() {
