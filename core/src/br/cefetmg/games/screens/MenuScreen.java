@@ -235,10 +235,19 @@ public class MenuScreen extends BaseScreen {
     }
 
     private void fadeOutButton(Button button) {
+        fadeOutButton(button, null);
+    }
+
+    private void fadeOutButton(Button button, final Runnable runAfter) {
         button.clearActions();
         button.setDisabled(true);
         button.toBack();
-        button.addAction(Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(BUTTONS_FADE_TIME)));
+        if (runAfter != null) {
+            button.addAction(
+                    Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(BUTTONS_FADE_TIME), Actions.run(runAfter)));
+        } else {
+            button.addAction(Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(BUTTONS_FADE_TIME)));
+        }
     }
 
     private void setButtonListeners() {
@@ -259,35 +268,80 @@ public class MenuScreen extends BaseScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 backClickSound.play();
-                exitGame();
+                fadeOutElements();
+                fadeOutButton(btnPlay);
+                fadeOutButton(btnRanking);
+                fadeOutButton(btnCredits);
+                fadeOutButton(btnExit, new Runnable() {
+                    @Override
+                    public void run() {
+                        exitGame();
+                    }
+                });
             }
         });
         btnRanking.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 enterClickSound.play();
-                navigateToRanking();
+                fadeOutElements();
+                fadeOutButton(btnPlay);
+                fadeOutButton(btnRanking, new Runnable() {
+                    @Override
+                    public void run() {
+                        navigateToRanking();
+                    }
+                });
+                fadeOutButton(btnCredits);
+                fadeOutButton(btnExit);
             }
         });
         btnCredits.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 enterClickSound.play();
-                navigateToCredits();
+                fadeOutElements();
+                fadeOutButton(btnPlay);
+                fadeOutButton(btnRanking);
+                fadeOutButton(btnCredits, new Runnable() {
+                    @Override
+                    public void run() {
+                        navigateToCredits();
+                    }
+                });
+                fadeOutButton(btnExit);
+
             }
         });
         btnNormal.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 enterClickSound.play();
-                navigateToOverworld();
+                fadeOutElements();
+                fadeOutButton(btnNormal, new Runnable() {
+                    @Override
+                    public void run() {
+                        navigateToOverworld();
+                    }
+                });
+                fadeOutButton(btnSurvival);
+                fadeOutButton(btnBack);
             }
         });
         btnSurvival.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 enterClickSound.play();
-                navigateToSurvivalGame();
+                fadeOutElements();
+                fadeOutButton(btnNormal);
+                fadeOutButton(btnSurvival, new Runnable() {
+                    @Override
+                    public void run() {
+                        navigateToSurvivalGame();
+                    }
+                });
+                fadeOutButton(btnBack);
+
             }
         });
         btnBack.addListener(new ChangeListener() {
@@ -366,6 +420,13 @@ public class MenuScreen extends BaseScreen {
         if (!shouldContinueBackgroundMusic) {
             SoundManager.getInstance().stopBackgroundMusic("menu/meowautheme.mp3");
         }
+    }
+
+    private void fadeOutElements() {
+        logo.clearActions();
+        soundButton.getButton().clearActions();
+        logo.addAction(Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(BUTTONS_FADE_TIME)));
+        soundButton.getButton().addAction(Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(BUTTONS_FADE_TIME)));
     }
 
 }
