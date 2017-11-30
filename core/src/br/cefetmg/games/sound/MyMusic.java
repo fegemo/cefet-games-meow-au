@@ -29,7 +29,7 @@ public class MyMusic implements AudioResource, Disposable {
             music.setVolume(desiredVolume);
             music.play();
         } else {
-            music.setVolume(0);
+            music.setVolume(0.0f);
             music.play();
         }
     }
@@ -54,12 +54,14 @@ public class MyMusic implements AudioResource, Disposable {
     @Override
     public void setVolume(float vol) {
         desiredVolume = vol;
-        music.setVolume(vol);
+        if (SoundManager.getInstance().isAudioEnabled()) {
+            music.setVolume(vol);
+        }
     }
 
     @Override
     public void suppressVolume() {
-        music.setVolume(0);
+        music.setVolume(0.0f);
     }
     
     @Override
