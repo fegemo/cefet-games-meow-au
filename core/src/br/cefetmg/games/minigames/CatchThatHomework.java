@@ -137,15 +137,11 @@ public class CatchThatHomework extends MiniGame {
         static final int FRAME_HEIGHT = 34;
         
         public Cat(final Texture catSpritesheet, float height) {
-            super(new HashMap<String, Animation<TextureRegion>>() {
-
-            	private static final long serialVersionUID = -7727796721411477601L;
-
-				{
+            super(new HashMap<String, Animation>() {
                     TextureRegion[][] frames = TextureRegion
                             .split(catSpritesheet,
                                     FRAME_WIDTH, FRAME_HEIGHT);
-                    Animation<TextureRegion> walking = new Animation<TextureRegion>(0.2f,
+                    Animation walking = new Animation(0.2f,
                             frames[0][0],
                             frames[1][0],
                             frames[1][1],

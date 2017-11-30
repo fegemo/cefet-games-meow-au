@@ -321,7 +321,7 @@ public class Running extends MiniGame {
         static final int FRAME_HEIGHT = 142;
 
         Cat(final Texture catTexture) {
-            super(new Animation<TextureRegion>(0.1f, new Array<TextureRegion>() {
+            super(new Animation(0.1f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             catTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -359,7 +359,7 @@ public class Running extends MiniGame {
         static final int FRAME_HEIGHT = 144;
 
         Dog(final Texture dogTexture) {
-            super(new Animation<TextureRegion>(0.1f, new Array<TextureRegion>() {
+            super(new Animation(0.1f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             dogTexture, FRAME_WIDTH, FRAME_HEIGHT);

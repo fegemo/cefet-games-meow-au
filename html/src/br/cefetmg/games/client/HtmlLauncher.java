@@ -3,7 +3,7 @@ package br.cefetmg.games.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-//import br.cefetmg.games.BrushMyTeethPlzGame;
+import br.cefetmg.games.BrushMyTeethPlzGame;
 
 public class HtmlLauncher extends GwtApplication {
 
@@ -14,7 +14,6 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener createApplicationListener () {
-                //return new BrushMyTeethPlzGame();
-        	return null;
+            	return new BrushMyTeethPlzGame();
         }
 }

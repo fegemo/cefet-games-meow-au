@@ -18,11 +18,8 @@ public class NinjaCatFactory implements MiniGameFactory {
     }
 
     @Override
-    public Map<String, Class<?>> getAssetsToPreload() {
-        return new HashMap<String, Class<?>>() {
-
-        	private static final long serialVersionUID = -7870795245287004449L;
-
+    public Map<String, Class> getAssetsToPreload() {
+        return new HashMap<String, Class>() {
 			{
                 put("ninja-cat/bg1.png", Texture.class);
                 put("ninja-cat/arrow.png", Texture.class);

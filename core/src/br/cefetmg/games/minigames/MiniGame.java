@@ -137,8 +137,6 @@ public abstract class MiniGame {
                 }
                 onUpdate(dt);
                 break;
-            default:
-            	break;
         }
     }
 
@@ -151,8 +149,6 @@ public abstract class MiniGame {
             case PLAYER_SUCCEEDED:
                 onDrawGame();
                 break;
-            default:
-            	break;
         }
     }
 
@@ -192,8 +188,6 @@ public abstract class MiniGame {
                 this.onEnd();
                 timer.stop();
                 break;
-            default:
-            	break;
         }
         this.state = newState;
         this.stateObserver.onStateChanged(state);

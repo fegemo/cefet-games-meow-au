@@ -189,10 +189,10 @@ public abstract class BaseScreen extends ScreenAdapter {
      */
     @Override
     public final void render(float dt) {
-    	if(!assetsStartedLoading) {
-    		appear();
-    		assetsStartedLoading = true;
-    	}
+        if (!assetsStartedLoading) {
+            appear();
+            assetsStartedLoading = true;
+        }
         if (assets.update()) {
             if (!assetsFinishedLoading) {
                 messagesFont = assets.get("snaphand-v1-free.ttf");
@@ -285,7 +285,7 @@ public abstract class BaseScreen extends ScreenAdapter {
      * textura).
      */
     protected abstract void assetsLoaded();
-    
+
     /**
      * Executa as ações de limpeza e descarregamento de recursos e é chamada
      * automaticamente quando a tela não está mais sendo usada.

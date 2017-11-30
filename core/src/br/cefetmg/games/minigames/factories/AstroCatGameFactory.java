@@ -26,11 +26,8 @@ public class AstroCatGameFactory implements MiniGameFactory {
     }
 
     @Override
-    public Map<String, Class<?>> getAssetsToPreload() {
-        return new HashMap<String, Class<?>>() {
-
-            private static final long serialVersionUID = 2617852037998135484L;
-
+    public Map<String, Class> getAssetsToPreload() {
+        return new HashMap<String, Class>() {
             {
                 put("astrocat/asteroid1.png", Texture.class);
                 put("astrocat/asteroid2.png", Texture.class);

@@ -12,9 +12,9 @@ import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
  */
 public class MultiAnimatedSprite extends AnimatedSprite {
 
-    private final Map<String, Animation<TextureRegion>> animations;
+    private final Map<String, Animation> animations;
 
-    public MultiAnimatedSprite(Map<String, Animation<TextureRegion>> animations,
+    public MultiAnimatedSprite(Map<String, Animation> animations,
             String initialAnimationName) {
         super(animations.get(initialAnimationName));
         this.animations = animations;

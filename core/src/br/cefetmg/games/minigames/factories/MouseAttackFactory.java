@@ -23,11 +23,8 @@ public class MouseAttackFactory implements MiniGameFactory {
     }
 
     @Override
-    public Map<String, Class<?>> getAssetsToPreload() {
-        return new HashMap<String, Class<?>>() {
-
-        	private static final long serialVersionUID = -1168216598823984879L;
-
+    public Map<String, Class> getAssetsToPreload() {
+        return new HashMap<String, Class>() {
 			{
                 put("mouse-attack/sprite-cat.png", Texture.class);
                 put("mouse-attack/bg_grass.png", Texture.class);

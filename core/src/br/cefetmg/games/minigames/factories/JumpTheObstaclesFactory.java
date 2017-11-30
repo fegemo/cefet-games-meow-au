@@ -18,11 +18,8 @@ public class JumpTheObstaclesFactory implements MiniGameFactory {
     }
 
     @Override
-    public Map<String, Class<?>> getAssetsToPreload() {
-        return new HashMap<String, Class<?>>() {
-
-        	private static final long serialVersionUID = 3747430422656277920L;
-
+    public Map<String, Class> getAssetsToPreload() {
+        return new HashMap<String, Class>() {
 			{
                 put("jump-the-obstacles/dog.png", Texture.class);
                 put("jump-the-obstacles/obstacles.png", Texture.class);

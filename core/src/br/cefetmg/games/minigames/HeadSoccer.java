@@ -61,7 +61,7 @@ public class HeadSoccer extends MiniGame {
     private Sprite bottomD;
     private Sprite bottomJ;
     private Sprite bottomK;
-    private ArrayList<Object> objects;
+    private ArrayList objects;
     private Rectangle bot_Rect;
     
     private boolean isOver;
@@ -120,7 +120,7 @@ public class HeadSoccer extends MiniGame {
         TraveD.setPosition(INITIALXRIGHTGOAL, INITIALYGOAL);
         TraveE.setPosition(INITIALXLEFTGOAL, INITIALYGOAL);
 
-        objects = new ArrayList<Object>();
+        objects = new ArrayList();
 
         ball = new Ball(batch, 8, 6);
         cat = new Player(new Vector2(463.5f, FLOOR), new Vector2(30, FLOOR), new Vector2(1245, 209),
@@ -187,6 +187,7 @@ public class HeadSoccer extends MiniGame {
             //Colisão bot e player
             if (Colision.rectsOverlap(bot_Rect, player_Rect)) {
                 float x = bot.speed.x;
+                float y = bot.speed.y;
                 if (bot.speed.x + cat.speed.x > bot.maxSpeed) {
                     bot.speed.set(bot.maxSpeed, bot.speed.y);
                 } else if (bot.speed.x + cat.speed.x < -bot.maxSpeed) {
@@ -216,6 +217,7 @@ public class HeadSoccer extends MiniGame {
             //Colisão jogador bola
             if (Colision.rectCircleOverlap(player_Rect, ball.circle) != null) {
                 lastCollisonTime += dt;
+                float x = Colision.rectCircleOverlap(player_Rect, ball.circle).x;
                 float y = Colision.rectCircleOverlap(player_Rect, ball.circle).y;
                 if (cat.walking) {
                     ball.setSpeed(ball.getSpeed().add(cat.getSpeed()).scl(cat.getMass()));
@@ -239,6 +241,7 @@ public class HeadSoccer extends MiniGame {
             //Colisão bot bola
             if (Colision.rectCircleOverlap(bot_Rect, ball.circle) != null) {
                 lastCollisonTime += dt;
+                float x = Colision.rectCircleOverlap(bot_Rect, ball.circle).x;
                 float y = Colision.rectCircleOverlap(bot_Rect, ball.circle).y;
                 if (bot.walking) {
                     ball.setSpeed(ball.getSpeed().add(bot.getSpeed()).scl(bot.getMass()));
@@ -278,6 +281,7 @@ public class HeadSoccer extends MiniGame {
             //Colisão travessão esquerdo e bola
             if (Colision.rectCircleOverlap(goalCrossLeft.getBounds(), ball.circle) != null) {
                 lastCollisonTime += dt;
+                float x = Colision.rectCircleOverlap(goalCrossLeft.getBounds(), ball.circle).x;
                 float y = Colision.rectCircleOverlap(goalCrossLeft.getBounds(), ball.circle).y;
 
                 if (goalCrossRight.getBounds().y + goalCrossRight.getBounds().height == y) {
@@ -297,6 +301,7 @@ public class HeadSoccer extends MiniGame {
             //Colisão travessão direito e bola
             if (Colision.rectCircleOverlap(goalCrossRight.getBounds(), ball.circle) != null) {
                 lastCollisonTime += dt;
+                float x = Colision.rectCircleOverlap(goalCrossRight.getBounds(), ball.circle).x;
                 float y = Colision.rectCircleOverlap(goalCrossRight.getBounds(), ball.circle).y;
                 if (goalCrossRight.getBounds().y + goalCrossRight.getBounds().height == y) {
                     ball.setSpeed(ball.getSpeed().x, ball.getSpeed().y * -1);
@@ -558,6 +563,7 @@ public class HeadSoccer extends MiniGame {
         private float botStep, playerWidth, playerHeight;
         public Sprite sprite_Bot, sprite_Shoes;
         public Vector2 position, positionMin, positionMax, speed, footPosition;
+        private Texture botTexture;
         private SpriteBatch batch;
         public float maxSpeed;
         private float mass, aTime;
@@ -574,6 +580,7 @@ public class HeadSoccer extends MiniGame {
             this.positionMax = positionMax;
             this.batch = batch;
             this.botStep = botStep;
+            this.botTexture = botTexture;
             this.maxSpeed = maxSpeed;
             this.mass = mass;
             aTime = 0.3f;
@@ -885,9 +892,10 @@ public class HeadSoccer extends MiniGame {
         public static final int INITIALYGOAL = 75;
 
         public boolean walking, orientation, footUp, footDown, movingFoot, left, right, jump, kick;
-        private float playerStep, playerWidth;
+        private float playerStep, playerWidth, playerHeight;
         public Sprite sprite_Player, sprite_Shoes;
         public Vector2 position, positionMin, positionMax, speed, footPosition;
+        private Texture playerTexture;
         private SpriteBatch batch;
         public float maxSpeed;
         private float mass, aTime;
@@ -902,6 +910,7 @@ public class HeadSoccer extends MiniGame {
             this.positionMax = positionMax;
             this.batch = batch;
             this.playerStep = playerStep;
+            this.playerTexture = playerTexture;
             this.maxSpeed = maxSpeed;
             this.mass = mass;
             aTime = 0.3f;
@@ -926,7 +935,8 @@ public class HeadSoccer extends MiniGame {
 
             oldOrientation = 0;
             this.playerWidth = sprite_Player.getWidth();
-
+            this.playerHeight = sprite_Player.getHeight();
+            
             this.position = positionInicial;
             footPosition = new Vector2(positionInicial.x, positionInicial.y - sprite_Shoes.getHeight() / 2);
 

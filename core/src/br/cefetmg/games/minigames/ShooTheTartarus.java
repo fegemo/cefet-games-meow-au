@@ -268,7 +268,7 @@ public class ShooTheTartarus extends MiniGame {
         static final int FRAME_HEIGHT = 280;
 
         ToothBrush(final Texture toothbrushTexture) {
-            super(new Animation<TextureRegion>(0.1f, new Array<TextureRegion>() {
+            super(new Animation(0.1f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             toothbrushTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -304,15 +304,12 @@ public class ShooTheTartarus extends MiniGame {
         static final int FRAME_HEIGHT = 36;
 
         public Tartarus(final Texture tartarusSpritesheet) {
-            super(new HashMap<String, Animation<TextureRegion>>() {
-
-            	private static final long serialVersionUID = -7117056560056943808L;
-
+            super(new HashMap<String, Animation>() {
 				{
                     TextureRegion[][] frames = TextureRegion
                             .split(tartarusSpritesheet,
                                     FRAME_WIDTH, FRAME_HEIGHT);
-                    Animation<TextureRegion> walking = new Animation<TextureRegion>(0.2f,
+                    Animation walking = new Animation(0.2f,
                             frames[0][0],
                             frames[0][1],
                             frames[0][2],

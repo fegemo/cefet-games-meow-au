@@ -274,7 +274,7 @@ public class CatAvoider extends MiniGame {
 
     class AnimatedSprite {
 
-        private Animation<TextureRegion> movement;
+        private Animation movement;
         private float animationTime;
         private final Texture spriteSheet;
         private final TextureRegion[][] animationPictures;

@@ -26,11 +26,8 @@ public class KillTheRatsFactory implements MiniGameFactory {
     }
 
     @Override
-    public Map<String, Class<?>> getAssetsToPreload() {
-        return new HashMap<String, Class<?>>() {
-
-        	private static final long serialVersionUID = 7101872701457658025L;
-
+    public Map<String, Class> getAssetsToPreload() {
+        return new HashMap<String, Class>() {
 			{
                 put("kill-the-rats/Background_Sewer.png", Texture.class);
                 put("kill-the-rats/cat_sprite.png", Texture.class);

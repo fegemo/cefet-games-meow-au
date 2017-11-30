@@ -13,12 +13,9 @@ public class CannonCatFactory implements MiniGameFactory {
     // ...
 
     @Override
-    public Map<String, Class<?>> getAssetsToPreload() {
-        return new HashMap<String, Class<?>>() {
-            
-			private static final long serialVersionUID = -5341092965829686816L;
-
-			{
+    public Map<String, Class> getAssetsToPreload() {
+        return new HashMap<String, Class>() {
+            {
                 put("cannon-cat/background.png", Texture.class);
                 put("cannon-cat/biscoito.png", Texture.class);
                 put("cannon-cat/cat.png", Texture.class);

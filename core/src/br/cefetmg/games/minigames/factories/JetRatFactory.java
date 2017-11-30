@@ -23,11 +23,8 @@ public class JetRatFactory implements MiniGameFactory {
     }
 
     @Override
-    public Map<String, Class<?>> getAssetsToPreload() {
-        return new HashMap<String, Class<?>>() {
-
-        	private static final long serialVersionUID = -5066075287679149275L;
-
+    public Map<String, Class getAssetsToPreload() {
+        return new HashMap<String, Class>() {
 			{
                 put("jet-rat/tubecat.png", Texture.class);
                 put("jet-rat/background.png", Texture.class);

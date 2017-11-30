@@ -37,6 +37,7 @@ public class NinjaCat extends MiniGame {
 
     private boolean rampage;
     private boolean right;
+    private boolean flip;
     private boolean hit;
     private boolean gameover;
     private boolean gameclear;
@@ -44,6 +45,7 @@ public class NinjaCat extends MiniGame {
     private boolean pose;
     private boolean victory;
 
+    private Texture playerTexture;
     private Texture arrowTexture;
     private Texture bgTexture;
     private Texture zombieTex;
@@ -120,6 +122,7 @@ public class NinjaCat extends MiniGame {
         pose = true;
         end = false;
         right = true;
+        flip = false;
         intro.play(.3f);
         rampage = false;
         victory = false;
@@ -200,8 +203,10 @@ public class NinjaCat extends MiniGame {
                     if (zomb.getBoundingRectangle().overlaps(arrow.getBoundingRectangle())) {
                         rampage = true;
                         if (arrow.getX() > cat.getX() && !right) {
+                            flip = false;
                             right = true;
                         } else if (arrow.getX() < cat.getX() && right) {
+                            flip = true;
                             right = false;
                         }
                         break;
@@ -241,7 +246,7 @@ public class NinjaCat extends MiniGame {
         static final int FRAME_HEIGHT = 76;
 
         Cat(final Texture catTexture) {
-            super(new Animation<TextureRegion>(.14f, new Array<TextureRegion>() {
+            super(new Animation(.14f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             catTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -261,7 +266,7 @@ public class NinjaCat extends MiniGame {
         static final int FRAME_HEIGHT = 79;
 
         Zombie(final Texture zombieTexture) {
-            super(new Animation<TextureRegion>(.18f / (speed / 3), new Array<TextureRegion>() {
+            super(new Animation(.18f / (speed / 3), new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             zombieTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -294,7 +299,7 @@ public class NinjaCat extends MiniGame {
         static final int FRAME_HEIGHT = 368;
 
         BackGround(final Texture bgTexture) {
-            super(new Animation<TextureRegion>(.25f, new Array<TextureRegion>() {
+            super(new Animation(.25f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             bgTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -321,7 +326,7 @@ public class NinjaCat extends MiniGame {
         static final int FRAME_HEIGHT = 70;
 
         DeadZombie(final Texture deadzombieTexture) {
-            super(new Animation<TextureRegion>(.14f, new Array<TextureRegion>() {
+            super(new Animation(.14f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             deadzombieTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -350,7 +355,7 @@ public class NinjaCat extends MiniGame {
         static final int FRAME_HEIGHT = 79;
 
         KillingZombie(final Texture deadzombieTexture) {
-            super(new Animation<TextureRegion>(.18f, new Array<TextureRegion>() {
+            super(new Animation(.18f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             deadzombieTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -376,7 +381,7 @@ public class NinjaCat extends MiniGame {
         static final int FRAME_HEIGHT = 85;
 
         CatIntro(final Texture catPose) {
-            super(new Animation<TextureRegion>(.18f, new Array<TextureRegion>() {
+            super(new Animation(.18f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             catPose, FRAME_WIDTH, FRAME_HEIGHT);

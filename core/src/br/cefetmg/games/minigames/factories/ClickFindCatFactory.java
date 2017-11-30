@@ -22,11 +22,8 @@ public class ClickFindCatFactory implements MiniGameFactory {
     }
 
     @Override
-    public Map<String, Class<?>> getAssetsToPreload() {
-        return new HashMap<String, Class<?>>() {
-
-        	private static final long serialVersionUID = 8670219995114089154L;
-
+    public Map<String, Class> getAssetsToPreload() {
+        return new HashMap<String, Class>() {
 			{
                 put("ClickFindCat/gatinho-grande.png", Texture.class);
                 put("ClickFindCat/target.png", Texture.class);

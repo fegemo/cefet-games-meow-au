@@ -39,6 +39,7 @@ public class DogBarksCatFlee extends MiniGame {
     private Array<Tiles> tilesVector;
     private Vector2 posicaoInicial;
     private Texture tileTexture[] = new Texture[5];
+    private float spawnInterval;
     private float tempoDeAnimacao;
     private int morreu = 0;
     private float difficulty;
@@ -171,7 +172,7 @@ public class DogBarksCatFlee extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-    	
+        spawnInterval = DifficultyCurve.S.getCurveValue(difficulty);
     }
 
     @Override

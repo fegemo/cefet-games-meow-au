@@ -190,11 +190,8 @@ public class DodgeTheVeggies extends MiniGame {
         static final int FRAME_HEIGHT = 291;
 
         public Cat(Texture texture, float height) {
-            super(new HashMap<String, Animation<TextureRegion>>() {
-
-            	private static final long serialVersionUID = -1113235957398204604L;
-
-				{
+            super(new HashMap<String, Animation>() {
+                {
                     TextureRegion[][] frames = TextureRegion
                             .split(catSpritesheet,
                                     FRAME_WIDTH, FRAME_HEIGHT);

@@ -18,12 +18,9 @@ public class CatchThatHomeworkFactory implements MiniGameFactory {
     }
 
     @Override
-    public Map<String, Class<?>> getAssetsToPreload() {
-        return new HashMap<String, Class<?>>() {
-
-        	private static final long serialVersionUID = 3144976050120274595L;
-
-			{
+    public Map<String, Class> getAssetsToPreload() {
+        return new HashMap<String, Class>() {
+            {
                 put("catch-that-homework/cat-spritesheet.png",
                         Texture.class);
                 put("catch-that-homework/homework.png",

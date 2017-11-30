@@ -24,7 +24,7 @@ public class TheFridgeGame extends MiniGame {
 
     private Random generator;
     private MyMusic backgroundSound;
-    private MySound whistleUp, whistleDown, crash;
+    private MySound whistleUp, whistleDown, crash, clap;
     private Texture[] foodTexture, buttonsTexture;
     private Object[][] food;
     private Object[] shelfs;
@@ -478,6 +478,7 @@ public class TheFridgeGame extends MiniGame {
         whistleUp =new MySound( assets.get("the-fridge-game/whistle-up.mp3", Sound.class));
         whistleDown = new MySound(assets.get("the-fridge-game/whistle-down.mp3", Sound.class));
         crash = new MySound(assets.get("the-fridge-game/crash.mp3", Sound.class));
+        clap =new MySound( assets.get("the-fridge-game/clap.mp3", Sound.class));
         //objects//
         generator = new Random();
         background = new Object(new Vector2(0, 0), viewport.getWorldWidth(), viewport.getWorldHeight(),
