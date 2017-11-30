@@ -138,6 +138,7 @@ public class CatchThatHomework extends MiniGame {
         
         public Cat(final Texture catSpritesheet, float height) {
             super(new HashMap<String, Animation>() {
+                {
                     TextureRegion[][] frames = TextureRegion
                             .split(catSpritesheet,
                                     FRAME_WIDTH, FRAME_HEIGHT);
