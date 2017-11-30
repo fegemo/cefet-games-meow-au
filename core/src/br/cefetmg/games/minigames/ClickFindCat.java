@@ -1,5 +1,6 @@
 package br.cefetmg.games.minigames;
 
+import br.cefetmg.games.Config;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
@@ -9,6 +10,7 @@ import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import static com.badlogic.gdx.graphics.VertexAttribute.Position;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -16,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer.Task;
 
 /**
  *
@@ -236,7 +239,7 @@ public class ClickFindCat extends MiniGame {
         public void andar (float larguraDoMundo, float alturaDoMundo) {
             float ande= randomBinomial();
             float passo = 30 * (float) Math.random();
-            if( tipoDeMovimento == TipoDeMovimento.FUGIR){
+            if( tipoDeMovimento == tipoDeMovimento.FUGIR){
                 fugir();
                 System.out.println("velocidade"+velocidade.toString() + "posição" + posicao.toString());
                 posicao.add(velocidade);

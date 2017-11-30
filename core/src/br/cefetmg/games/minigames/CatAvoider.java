@@ -1,6 +1,7 @@
 package br.cefetmg.games.minigames;
 
 import static br.cefetmg.games.Config.*;
+import static br.cefetmg.games.minigames.CatAvoider.*;
 import static br.cefetmg.games.minigames.HeadSoccer.Player.convertToRad;
 import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
