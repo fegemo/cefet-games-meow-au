@@ -49,8 +49,8 @@ public class LoadingScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(background, 0, TIMER_SIZE, 
-                viewport.getScreenWidth(), 
+        batch.draw(background, 0, TIMER_SIZE,
+                viewport.getScreenWidth(),
                 viewport.getScreenHeight() - TIMER_SIZE);
         batch.end();
 

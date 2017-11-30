@@ -112,6 +112,7 @@ public class OverworldScreen extends BaseScreen {
         play = new Image(assets.get("world/play.png", Texture.class));
         water = new Image(assets.get("world/water.jpg", Texture.class));
 
+
         bool1 = true;
         desenhaMeio = true;
         click1 = new MySound(assets.get("menu/click2.mp3", Sound.class));

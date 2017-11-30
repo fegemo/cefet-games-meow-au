@@ -444,7 +444,7 @@ public class KillTheRats extends MiniGame {
         
         public boolean getEnableFieldForce() {
             return enableFieldForce;
-        }        
+        }
     }
     
     private class Rat extends MultiAnimatedSprite {
@@ -477,7 +477,7 @@ public class KillTheRats extends MiniGame {
                     TextureRegion[][] frames = TextureRegion
                             .split(ratsSpriteSheet,
                                     ratsSpriteSheet.getWidth()/COLS, ratsSpriteSheet.getHeight()/ROWS);
-                    Animation walking = new Animation(FRAME_DURATION, frames[0]); // todas as colunas da linha 0
+                    Animation walking = new Animation<TextureRegion>(FRAME_DURATION, frames[0]); // todas as colunas da linha 0
                     walking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
                     put("walking", walking);
                 }
