@@ -167,7 +167,7 @@ public class JumpTheObstacles extends MiniGame {
         
         Dog(final Texture kongTexture) {
             super(new HashMap<String, Animation>() {
-				{
+                {
                     TextureRegion[][] frames = TextureRegion.split(
                             kongTexture, FRAME_WIDTH, FRAME_HEIGHT);
 
@@ -289,7 +289,7 @@ public class JumpTheObstacles extends MiniGame {
         private Vector2 speed;
 
         Obstacle(final Texture kongTexture) {
-            super(new Animation(0.1f, new Array() {
+            super(new Animation(0.1f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             kongTexture, FRAME_WIDTH, FRAME_HEIGHT);

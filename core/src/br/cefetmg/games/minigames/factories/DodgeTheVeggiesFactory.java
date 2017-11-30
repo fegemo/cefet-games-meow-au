@@ -20,7 +20,7 @@ public class DodgeTheVeggiesFactory implements MiniGameFactory {
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("dodge-the-veggies/potato.png", Texture.class);
                 put("dodge-the-veggies/tomato.png", Texture.class);
                 put("dodge-the-veggies/onion.png", Texture.class);

@@ -24,7 +24,7 @@ public class RunningFactory implements MiniGameFactory {
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("running/dog-run-spritesheet.png", Texture.class);
                 put("running/cat-run-spritesheet.png", Texture.class);
                 put("running/fundo.png", Texture.class);

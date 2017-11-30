@@ -24,7 +24,7 @@ public class ClickFindCatFactory implements MiniGameFactory {
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("ClickFindCat/gatinho-grande.png", Texture.class);
                 put("ClickFindCat/target.png", Texture.class);
                 //Imagem Disponível em

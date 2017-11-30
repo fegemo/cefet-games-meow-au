@@ -37,7 +37,7 @@ public class ShootTheCariesFactory implements MiniGameFactory {
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("shoot-the-caries/caries.png", Texture.class);
                 put("shoot-the-caries/target.png", Texture.class);
                 put("shoot-the-caries/caries1.mp3", Sound.class);

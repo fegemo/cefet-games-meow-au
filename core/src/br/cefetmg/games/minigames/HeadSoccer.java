@@ -936,7 +936,7 @@ public class HeadSoccer extends MiniGame {
             oldOrientation = 0;
             this.playerWidth = sprite_Player.getWidth();
             this.playerHeight = sprite_Player.getHeight();
-            
+
             this.position = positionInicial;
             footPosition = new Vector2(positionInicial.x, positionInicial.y - sprite_Shoes.getHeight() / 2);
 

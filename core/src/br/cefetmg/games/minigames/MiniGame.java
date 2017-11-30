@@ -145,6 +145,7 @@ public abstract class MiniGame {
             case PLAYING:
                 onDrawGame();
                 break;
+
             case PLAYER_FAILED:
             case PLAYER_SUCCEEDED:
                 onDrawGame();

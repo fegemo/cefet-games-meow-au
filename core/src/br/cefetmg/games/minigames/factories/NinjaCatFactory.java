@@ -20,7 +20,7 @@ public class NinjaCatFactory implements MiniGameFactory {
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("ninja-cat/bg1.png", Texture.class);
                 put("ninja-cat/arrow.png", Texture.class);
                 put("ninja-cat/atk.png", Texture.class);

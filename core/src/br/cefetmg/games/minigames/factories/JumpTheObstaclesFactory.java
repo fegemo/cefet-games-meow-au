@@ -20,7 +20,7 @@ public class JumpTheObstaclesFactory implements MiniGameFactory {
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("jump-the-obstacles/dog.png", Texture.class);
                 put("jump-the-obstacles/obstacles.png", Texture.class);
                 put("jump-the-obstacles/background.png", Texture.class);

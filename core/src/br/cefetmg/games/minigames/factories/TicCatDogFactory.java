@@ -20,7 +20,7 @@ public class TicCatDogFactory implements MiniGameFactory {
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("tic-cat-dog/main-background.jpg", Texture.class);
                 put("tic-cat-dog/white-square.png", Texture.class);
                 put("tic-cat-dog/cat-square.png", Texture.class);

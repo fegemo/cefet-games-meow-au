@@ -28,7 +28,7 @@ public class KillTheRatsFactory implements MiniGameFactory {
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("kill-the-rats/Background_Sewer.png", Texture.class);
                 put("kill-the-rats/cat_sprite.png", Texture.class);
                 put("kill-the-rats/ratframes.png", Texture.class);

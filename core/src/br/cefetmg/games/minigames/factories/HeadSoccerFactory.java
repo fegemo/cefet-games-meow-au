@@ -25,7 +25,7 @@ public class HeadSoccerFactory implements MiniGameFactory {
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("head-soccer/shoes.png", Texture.class);
                 put("avoider/grey.png", Texture.class);
                 put("head-soccer/Arena.png", Texture.class);

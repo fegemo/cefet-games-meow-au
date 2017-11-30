@@ -18,13 +18,18 @@ import java.util.HashMap;
 class LifeHeart extends Actor {
 
     private final MultiAnimatedSprite sprite;
+    private static final int FRAME_WIDTH = 100;
+    private static final int FRAME_HEIGHT = 112;
 
     LifeHeart(Texture lifeTexture, Texture explodeTexture) {
+        TextureRegion[][] frames = TextureRegion
+                .split(lifeTexture, FRAME_WIDTH, FRAME_HEIGHT);
         Animation alive = new Animation<TextureRegion>(0.025f, workFrames(lifeTexture, 7, 7));
         alive.setPlayMode(Animation.PlayMode.LOOP);
         Animation dying = new Animation<TextureRegion>(0.025f, workFrames(explodeTexture, 3, 6));
                 
-        HashMap<String, Animation> animations = new HashMap<String, Animation>();
+        HashMap<String, Animation> animations
+                = new HashMap<String, Animation>();
         animations.put("alive", alive);
         animations.put("dying", dying);
         

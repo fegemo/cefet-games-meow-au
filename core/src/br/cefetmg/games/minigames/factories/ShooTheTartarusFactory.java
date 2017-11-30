@@ -24,7 +24,7 @@ public class ShooTheTartarusFactory implements MiniGameFactory {
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("shoo-the-tartarus/toothbrush-spritesheet.png",
                         Texture.class);
                 put("shoo-the-tartarus/tartarus-spritesheet.png",

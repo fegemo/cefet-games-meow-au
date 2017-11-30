@@ -16,7 +16,7 @@ public class MeowsicFactory implements MiniGameFactory {
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("meowsic/background.png", Texture.class);
                 put("meowsic/cat.png", Texture.class);
                 put("meowsic/sheet.png", Texture.class);

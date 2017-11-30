@@ -428,7 +428,7 @@ public class BasCATball extends MiniGame {
 
         public Cat(final Texture move) {
             super(new HashMap<String, Animation>() {
-				{
+                {
                     TextureRegion[][] frames = TextureRegion
                             .split(move, move.getWidth() / 6, move.getHeight() / 3);
                     Animation movingFront = new Animation(0.1f,

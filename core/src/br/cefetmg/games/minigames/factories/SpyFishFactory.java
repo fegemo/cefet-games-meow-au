@@ -24,7 +24,7 @@ public class SpyFishFactory implements MiniGameFactory {
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("spy-fish/fish.png", Texture.class);
                 put("spy-fish/card.png", Texture.class);
                 put("spy-fish/ocean.png", Texture.class);

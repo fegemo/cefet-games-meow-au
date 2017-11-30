@@ -25,7 +25,7 @@ public class UnderwaterCatFactory implements MiniGameFactory {
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("underwater-cat/swimcatspritesheet.png", Texture.class);
                 put("underwater-cat/fish1.png", Texture.class);
                 put("underwater-cat/fish2.png", Texture.class);

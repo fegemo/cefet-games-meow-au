@@ -72,6 +72,7 @@ public abstract class BaseScreen extends ScreenAdapter {
         assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
         assets.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
 
+
         // fonte para mensagens
         FreeTypeFontLoaderParameter messagesFontParams = new FreeTypeFontLoaderParameter();
         messagesFontParams.fontFileName = "fonts/snaphand-v1-free.ttf";

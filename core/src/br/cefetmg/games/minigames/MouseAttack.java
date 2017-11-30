@@ -394,7 +394,7 @@ public class MouseAttack extends MiniGame {
         @Override
         public void update() {
             tempoDaAnimacao += Gdx.graphics.getDeltaTime();
-            
+
         }
     }
     

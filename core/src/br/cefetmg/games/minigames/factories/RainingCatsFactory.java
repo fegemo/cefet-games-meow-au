@@ -21,7 +21,7 @@ public class RainingCatsFactory implements MiniGameFactory {
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
 
                 put("raining-cats/player.png", Texture.class);
                 put("raining-cats/sakamoto.png", Texture.class);

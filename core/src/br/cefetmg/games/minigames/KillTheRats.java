@@ -265,10 +265,10 @@ public class KillTheRats extends MiniGame {
     }
     
     private class SwapButton extends Sprite {
-        
+
         static final int FRAME_WIDTH = 256;
         static final int FRAME_HEIGHT = 256;
-
+        
         private float radius;
 
         SwapButton(final Texture weaponTexture) {
@@ -296,11 +296,11 @@ public class KillTheRats extends MiniGame {
         public float getY() {
             return super.getY() + super.getHeight() / 2;
         }
-        
+
         public Vector2 getPosition() {
             return new Vector2(getX(), getY());
         }
-
+        
         public void swap(Vector2 v) {
             Circle c = new Circle(getX(), getY(), radius);
             
@@ -433,7 +433,7 @@ public class KillTheRats extends MiniGame {
         public Rectangle getBoundRect() {
             return new Rectangle(getX(), getY(), getWidth(), getHeight());
         }
-
+        
         public Circle getBoundCirle() {
             return new Circle(getPosition(), collisionRadius);
         }
@@ -444,8 +444,7 @@ public class KillTheRats extends MiniGame {
         
         public boolean getEnableFieldForce() {
             return enableFieldForce;
-        }
-        
+        }        
     }
     
     private class Rat extends MultiAnimatedSprite {
@@ -474,11 +473,11 @@ public class KillTheRats extends MiniGame {
         
         public Rat(final Texture ratsSpriteSheet, MySound s) {
             super(new HashMap<String, Animation>() {
-				{
+                {
                     TextureRegion[][] frames = TextureRegion
                             .split(ratsSpriteSheet,
                                     ratsSpriteSheet.getWidth()/COLS, ratsSpriteSheet.getHeight()/ROWS);
-                    Animation<TextureRegion> walking = new Animation<TextureRegion>(FRAME_DURATION, frames[0]); // todas as colunas da linha 0
+                    Animation walking = new Animation(FRAME_DURATION, frames[0]); // todas as colunas da linha 0
                     walking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
                     put("walking", walking);
                 }
@@ -719,24 +718,24 @@ public class KillTheRats extends MiniGame {
 
         public Fire(final Texture fireTexture) {
             super(new HashMap<String, Animation>() {
-				{
+                {
                     TextureRegion[][] frames = TextureRegion.split(fireTexture, 64, 64);
-                    Animation fireball = new Animation(FRAME_DURATION, frames[0]); // todas as colunas da linha 0
+                    Animation fireball = new Animation<TextureRegion>(FRAME_DURATION, frames[0]); // todas as colunas da linha 0
                     fireball.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
                     put("fireball", fireball);
                     
                     frames = TextureRegion.split(rocketTexture, 360, 720);
-                    Animation rocket = new Animation(FRAME_DURATION, frames[0]); // todas as colunas da linha 0
+                    Animation rocket = new Animation<TextureRegion>(FRAME_DURATION, frames[0]); // todas as colunas da linha 0
                     rocket.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
                     put("rocket", rocket);
                     
                     frames = TextureRegion.split(miniExplosionTexture, 96, 96);
-                    Animation miniExplosion = new Animation(FRAME_DURATION, frames[0]); // todas as colunas da linha 0
+                    Animation miniExplosion = new Animation<TextureRegion>(FRAME_DURATION, frames[0]); // todas as colunas da linha 0
                     miniExplosion.setPlayMode(Animation.PlayMode.LOOP);
                     put("miniExplosion", miniExplosion);
                     
                     frames = TextureRegion.split(bigExplosionTexture, 96, 96);
-                    Animation<TextureRegion> bigExplosion = new Animation<TextureRegion>(FRAME_DURATION, 
+                    Animation bigExplosion = new Animation<TextureRegion>(FRAME_DURATION, 
                             frames[0][0], frames[0][1], frames[0][2], frames[0][3], frames[0][4],
                             frames[1][0], frames[1][1], frames[2][2], frames[1][3], frames[1][4],
                             frames[2][0], frames[2][1], frames[1][2], frames[2][3], frames[2][4]);

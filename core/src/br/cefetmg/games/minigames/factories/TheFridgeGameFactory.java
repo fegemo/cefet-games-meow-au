@@ -31,7 +31,7 @@ public class TheFridgeGameFactory implements MiniGameFactory{
     @Override
     public Map<String, Class> getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("the-fridge-game/fridge-game-background.png", Texture.class);
                 put("the-fridge-game/open-fridge.png", Texture.class);
                 for(int i=1;i<19;i++){

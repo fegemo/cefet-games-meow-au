@@ -305,7 +305,7 @@ public class ShooTheTartarus extends MiniGame {
 
         public Tartarus(final Texture tartarusSpritesheet) {
             super(new HashMap<String, Animation>() {
-				{
+                {
                     TextureRegion[][] frames = TextureRegion
                             .split(tartarusSpritesheet,
                                     FRAME_WIDTH, FRAME_HEIGHT);

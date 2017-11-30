@@ -25,7 +25,7 @@ public class JetRatFactory implements MiniGameFactory {
     @Override
     public Map<String, Class getAssetsToPreload() {
         return new HashMap<String, Class>() {
-			{
+            {
                 put("jet-rat/tubecat.png", Texture.class);
                 put("jet-rat/background.png", Texture.class);
                 put("jet-rat/tube.png", Texture.class);

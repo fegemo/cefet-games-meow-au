@@ -210,7 +210,7 @@ public class JetRat extends MiniGame {
         static final int FRAME_HEIGHT = 156;//156
 
         public Calopsita(final Texture toothbrushTexture) {
-            super(new Animation(0.22f, new Array() {
+            super(new Animation(0.22f, new Array<TextureRegion>() {
                 {
                     TextureRegion[][] frames = TextureRegion.split(
                             toothbrushTexture, FRAME_WIDTH, FRAME_HEIGHT);
@@ -247,7 +247,7 @@ public class JetRat extends MiniGame {
         public Tube(final Texture tubesSpritesheet) {
 
             super(new HashMap<String, Animation>() {
-				{
+                {
                     TextureRegion[][] frames = TextureRegion
                             .split(tubesSpritesheet,
                                     FRAME_WIDTH, FRAME_HEIGHT);
