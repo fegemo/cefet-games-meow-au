@@ -66,6 +66,7 @@ public class PlayingGamesScreen extends BaseScreen
                         // cassiano e gustavo jordão
                         new TicCatDogFactory(),
                         new JumpTheObstaclesFactory(),
+                        new HitTheGopherFactory(),
                         // luiza e pedro cordeiro
                         new SpyFishFactory(),
                         new PhantomCatFactory(),
