@@ -1,8 +1,6 @@
 package br.cefetmg.games.graphics;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-
 import java.util.Map;
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
 
