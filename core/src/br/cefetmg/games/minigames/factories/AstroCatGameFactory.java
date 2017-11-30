@@ -20,33 +20,33 @@ import br.cefetmg.games.screens.BaseScreen;
  */
 public class AstroCatGameFactory implements MiniGameFactory {
 
-	@Override
-	public MiniGame createMiniGame(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
-		return new AstroCatGame(screen, observer, difficulty);
-	}
+    @Override
+    public MiniGame createMiniGame(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
+        return new AstroCatGame(screen, observer, difficulty);
+    }
 
-	@Override
-	public Map<String, Class<?>> getAssetsToPreload() {
-		return new HashMap<String, Class<?>>() {
-			
-			private static final long serialVersionUID = 2617852037998135484L;
+    @Override
+    public Map<String, Class<?>> getAssetsToPreload() {
+        return new HashMap<String, Class<?>>() {
 
-			{
-				put("astrocat/asteroid1.png", Texture.class);
-				put("astrocat/asteroid2.png", Texture.class);
-				put("astrocat/asteroid3.png", Texture.class);
-				put("astrocat/asteroid4.png", Texture.class);
-				put("astrocat/asteroid5.png", Texture.class);
-				put("astrocat/asteroid6.png", Texture.class);
-				put("astrocat/astrocat.png", Texture.class);
-				put("astrocat/background.png", Texture.class);
-				put("astrocat/background.mp3", Music.class);
-				put("astrocat/gasnoise.mp3", Sound.class);
-				put("astrocat/impact.ogg", Sound.class);
-				put("astrocat/planet.png", Texture.class);
-				put("astrocat/crosshair.png", Texture.class);
-			}
-		};
-	}
+            private static final long serialVersionUID = 2617852037998135484L;
+
+            {
+                put("astrocat/asteroid1.png", Texture.class);
+                put("astrocat/asteroid2.png", Texture.class);
+                put("astrocat/asteroid3.png", Texture.class);
+                put("astrocat/asteroid4.png", Texture.class);
+                put("astrocat/asteroid5.png", Texture.class);
+                put("astrocat/asteroid6.png", Texture.class);
+                put("astrocat/astrocat.png", Texture.class);
+                put("astrocat/background.png", Texture.class);
+                put("astrocat/background.mp3", Music.class);
+                put("astrocat/gasnoise.mp3", Sound.class);
+                put("astrocat/impact.ogg", Sound.class);
+                put("astrocat/planet.png", Texture.class);
+                put("astrocat/crosshair.png", Texture.class);
+            }
+        };
+    }
 
 }
