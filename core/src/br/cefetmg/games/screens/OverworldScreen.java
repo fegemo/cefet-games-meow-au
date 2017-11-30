@@ -288,23 +288,23 @@ public class OverworldScreen extends BaseScreen {
             cadeado.setScale(0.5f);
             i++;
         }
-<<<<<<< refs/remotes/fegemo/master
-=======
-        
-        // File Handle
-        // Read and Create Progress File
-        if (!file.exists()) {
-            file.writeString("0:", false);
-            file.writeString("0", true);
-            currentStage = 0;
-            score = 0;
-        }else {
-            String arquivo = new String(file.readString());
-            String[] split = arquivo.split(":");
-            currentStage = Integer.parseInt(split[0]);
-            score = Integer.parseInt(split[1]);
-        }
->>>>>>> Velocidade de troca mais lenta
+//<<<<<<< refs/remotes/fegemo/master
+////=======
+//        
+//        // File Handle
+//        // Read and Create Progress File
+//        if (!file.exists()) {
+//            file.writeString("0:", false);
+//            file.writeString("0", true);
+//            currentStage = 0;
+//            score = 0;
+//        }else {
+//            String arquivo = new String(file.readString());
+//            String[] split = arquivo.split(":");
+//            currentStage = Integer.parseInt(split[0]);
+//            score = Integer.parseInt(split[1]);
+//        }
+//>>>>>>> Velocidade de troca mais lenta
     }
 
     @Override
@@ -464,24 +464,19 @@ public class OverworldScreen extends BaseScreen {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
                     Arrays.asList(
                             // rafael e luis carlos
-                            //new DodgeTheVeggiesFactory(),
-                            //new CatchThatHomeworkFactory(),
+                            new DodgeTheVeggiesFactory(),
+                            new CatchThatHomeworkFactory(),
                             // adriel
-                            //new UnderwaterCatFactory(),
+                            new UnderwaterCatFactory(),
                             // arthur e pedro
-<<<<<<< HEAD
-                            new ClickFindCatFactory(),
                             new DogBarksCatFleeFactory(),
+                            new ClickFindCatFactory(),
                             // andré brait
                             new AstroCatGameFactory()
-=======
-                            //new DogBarksCatFleeFactory(),
-                            new ClickFindCatFactory()
->>>>>>> master
                     )
             ), .3f, .4f, currentLevel), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
         }
-    }
+}
 
     private void thirdStage(boolean go) {
         openLevels[2] = true;
