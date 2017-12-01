@@ -51,6 +51,7 @@ public abstract class BaseScreen extends ScreenAdapter {
     private float deviceAspectRatioDivergenceFromDesired;
     private boolean wasJustDisposed = false;
     private boolean assetsFinishedLoading = false;
+    private boolean assetsStartedLoading = false;
     
     /**
      * Cria uma instância de tela.
@@ -165,7 +166,6 @@ public abstract class BaseScreen extends ScreenAdapter {
         if (previous != null) {
             previous.dispose();
         }
-        this.appear();
     }
 
     /**
@@ -190,6 +190,10 @@ public abstract class BaseScreen extends ScreenAdapter {
      */
     @Override
     public final void render(float dt) {
+        if (!assetsStartedLoading) {
+            appear();
+            assetsStartedLoading = true;
+        }
         if (assets.update()) {
             if (!assetsFinishedLoading) {
                 messagesFont = assets.get("snaphand-v1-free.ttf");
