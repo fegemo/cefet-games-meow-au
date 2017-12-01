@@ -141,6 +141,8 @@ public class MenuScreen extends BaseScreen {
         stage.addActor(table);
         soundButton.create(assets.get("hud/no-sound-button.png", Texture.class),
                 assets.get("hud/sound-button.png", Texture.class));
+        soundButton.getButton().setY(viewport.getWorldHeight() * 0.08f);
+        soundButton.getButton().setX(viewport.getWorldHeight() * 0.08f);
 
         btnPlay.setDisabled(true);
         btnExit.setDisabled(true);
@@ -188,7 +190,7 @@ public class MenuScreen extends BaseScreen {
         table.row();
         table.add(btnExit).pad(BUTTONS_PADDING).colspan(BUTTON_COLSPAN).center();
 
-        float delay = SCREENS_FADE_TIME / 2.0f;
+        float delay = SCREENS_FADE_TIME * 0.05f;
         int pos = 0;
         fadeInButton(btnPlay, null, delay + (++pos * BUTTONS_FADE_DELAY));
         fadeInButton(btnRanking, null, delay + (++pos * BUTTONS_FADE_DELAY));
