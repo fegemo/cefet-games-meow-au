@@ -284,7 +284,7 @@ public class OverworldScreen extends BaseScreen {
 
         int i = 0;
         for (Image cadeado : locks) {
-            cadeado.setPosition(posicaoIcone[i].x + cadeado.getImageHeight() / 2, posicaoIcone[i].y + +cadeado.getImageWidth() / 2);//a
+            cadeado.setPosition(posicaoIcone[i].x + cadeado.getImageHeight() / 2, posicaoIcone[i].y + +cadeado.getImageWidth() / 2);
             cadeado.setScale(0.5f);
             i++;
         }
