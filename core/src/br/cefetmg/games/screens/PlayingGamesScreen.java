@@ -38,6 +38,7 @@ public class PlayingGamesScreen extends BaseScreen
     private final Hud hud;
     private PlayScreenState state;
     private int lives;
+    private int currentStage;
     private boolean hasPreloaded;
     private final InputMultiplexer inputMultiplexer;
     private MySound gameWonSound;
@@ -66,6 +67,7 @@ public class PlayingGamesScreen extends BaseScreen
                         // cassiano e gustavo jordão
                         new TicCatDogFactory(),
                         new JumpTheObstaclesFactory(),
+                        new HitTheGopherFactory(),
                         // luiza e pedro cordeiro
                         new SpyFishFactory(),
                         new PhantomCatFactory(),
@@ -94,10 +96,11 @@ public class PlayingGamesScreen extends BaseScreen
     }
 
     public PlayingGamesScreen(Game game, BaseScreen previous, int nGames, Set<MiniGameFactory> games,
-            float initialDifficulty, float finalDifficulty) {
+            float initialDifficulty, float finalDifficulty, int currentStage) {
         super(game, previous);
         state = PlayScreenState.PLAYING;
         lives = Config.MAX_LIVES;
+        this.currentStage = currentStage;
         sequencer = new GameSequencer(nGames, games, initialDifficulty, finalDifficulty, this, this);
 
         hud = new Hud(this, this);
@@ -163,7 +166,7 @@ public class PlayingGamesScreen extends BaseScreen
 
                 } else if (sequencer instanceof GameSequencer) {
                     // volta para o menu principal
-                    transitionScreen(new OverworldScreen(super.game, this),
+                    transitionScreen(new OverworldScreen(super.game, this, currentStage, lives),
                             TransitionScreen.Effect.FADE_IN_OUT, 0.5f);
                 }
             }
