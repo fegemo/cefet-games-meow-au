@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Uma tela de Menu Principal do jogo.
@@ -23,7 +24,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
  */
 public class MenuScreen extends BaseScreen {
 
-    public static final int BUTTONS_X = (int) (Gdx.graphics.getWidth() * 0.6);
     public static final int BUTTONS_WIDTH = 204;
     public static final int BUTTONS_HEIGHT = 54;
     public static final int PLAY_Y = 360;
@@ -53,11 +53,17 @@ public class MenuScreen extends BaseScreen {
 
     private boolean shouldContinueBackgroundMusic;
 
+    private static final int getButtonsX(Viewport viewport) {
+        return (int) (viewport.getWorldWidth() * 0.6f);
+    }
+
     /**
      * Cria uma nova tela de menu.
      *
-     * @param game o jogo dono desta tela.
-     * @param previous a tela de onde o usuário veio.
+     * @param game
+     *            o jogo dono desta tela.
+     * @param previous
+     *            a tela de onde o usuário veio.
      */
     public MenuScreen(Game game, BaseScreen previous) {
         super(game, previous);
@@ -71,7 +77,7 @@ public class MenuScreen extends BaseScreen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.input.setCursorCatched(false);
 
-        //instancia música tema
+        // instancia música tema
         assets.load("menu/meowautheme.mp3", Music.class);
 
         // instancia a textura e a região de textura (usada para repetir)
@@ -108,16 +114,14 @@ public class MenuScreen extends BaseScreen {
         btnBack = assets.get("menu/button_voltar.png", Texture.class);
         logo = assets.get("menu/logo.png", Texture.class);
 
-        MyMusic musicaTema = SoundManager.getInstance()
-                .playBackgroundMusic("menu/meowautheme.mp3");
+        MyMusic musicaTema = SoundManager.getInstance().playBackgroundMusic("menu/meowautheme.mp3");
         musicaTema.setLooping(true);
         musicaTema.setVolume(0.4f);
-        
+
         click1 = new MySound(assets.get("menu/click1.mp3", Sound.class));
         click2 = new MySound(assets.get("menu/click2.mp3", Sound.class));
-        soundIcon.create(
-                    assets.get("hud/no-sound-button.png", Texture.class),
-                    assets.get("hud/sound-button.png", Texture.class));
+        soundIcon.create(assets.get("hud/no-sound-button.png", Texture.class),
+                assets.get("hud/sound-button.png", Texture.class));
         Gdx.input.setInputProcessor(soundIcon.getInputProcessor());
     }
 
@@ -127,14 +131,16 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void handleInput() {
 
-        //verifica se clique foi em algum botão
+        // verifica se clique foi em algum botão
         if (Gdx.input.justTouched()) {
             Vector3 clickPosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(clickPosition);
-            Rectangle playBounds = new Rectangle(BUTTONS_X, PLAY_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
-            Rectangle rankingBounds = new Rectangle(BUTTONS_X, RANKING_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
-            Rectangle creditsBounds = new Rectangle(BUTTONS_X, CREDITS_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
-            Rectangle exitBounds = new Rectangle(BUTTONS_X, EXIT_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
+
+            float buttonsX = getButtonsX(viewport);
+            Rectangle playBounds = new Rectangle(buttonsX, PLAY_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
+            Rectangle rankingBounds = new Rectangle(buttonsX, RANKING_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
+            Rectangle creditsBounds = new Rectangle(buttonsX, CREDITS_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
+            Rectangle exitBounds = new Rectangle(buttonsX, EXIT_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
 
             if (selecionaModo == 0) {
                 if (playBounds.contains(clickPosition.x, clickPosition.y)) {
@@ -143,9 +149,7 @@ public class MenuScreen extends BaseScreen {
                 }
                 if (rankingBounds.contains(clickPosition.x, clickPosition.y)) {
                     shouldContinueBackgroundMusic = true;
-                    transitionScreen(new RankingScreen(super.game, this),
-                            TransitionScreen.Effect.FADE_IN_OUT, 0.3f);
-
+                    transitionScreen(new RankingScreen(super.game, this), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
                     click2.play();
                 }
                 if (creditsBounds.contains(clickPosition.x, clickPosition.y)) {
@@ -166,7 +170,7 @@ public class MenuScreen extends BaseScreen {
                     navigateToMicroGameScreen(true);
                 }
                 if (creditsBounds.contains(clickPosition.x, clickPosition.y)) {
-                    //Volta para os botões
+                    // Volta para os botões
                     selecionaModo = 0;
                     click1.play();
                 }
@@ -178,7 +182,8 @@ public class MenuScreen extends BaseScreen {
     /**
      * Atualiza a lógica da tela.
      *
-     * @param dt Tempo desde a última atualização.
+     * @param dt
+     *            Tempo desde a última atualização.
      */
     @Override
     public void update(float dt) {
@@ -191,28 +196,19 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void draw() {
         batch.begin();
-        batch.draw(background, 0, 0,
-                viewport.getWorldWidth(),
-                viewport.getWorldHeight());
-        batch.draw(logo, LOGO_X, LOGO_Y,
-                LOGO_WIDTH, LOGO_HEIGHT);
+        batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        batch.draw(logo, LOGO_X, LOGO_Y, LOGO_WIDTH, LOGO_HEIGHT);
 
+        float buttonsX = getButtonsX(viewport);
         if (selecionaModo == 0) {
-            batch.draw(btnPlay, BUTTONS_X, PLAY_Y,
-                    BUTTONS_WIDTH, BUTTONS_HEIGHT);
-            batch.draw(btnRanking, BUTTONS_X, RANKING_Y,
-                    BUTTONS_WIDTH, BUTTONS_HEIGHT);
-            batch.draw(btnCredits, BUTTONS_X, CREDITS_Y,
-                    BUTTONS_WIDTH, BUTTONS_HEIGHT);
-            batch.draw(btnExit, BUTTONS_X, EXIT_Y,
-                    BUTTONS_WIDTH, BUTTONS_HEIGHT);
+            batch.draw(btnPlay, buttonsX, PLAY_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
+            batch.draw(btnRanking, buttonsX, RANKING_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
+            batch.draw(btnCredits, buttonsX, CREDITS_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
+            batch.draw(btnExit, buttonsX, EXIT_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
         } else if (selecionaModo == 1) {
-            batch.draw(btnNormal, BUTTONS_X, PLAY_Y,
-                    BUTTONS_WIDTH, BUTTONS_HEIGHT);
-            batch.draw(btnSurvival, BUTTONS_X, RANKING_Y,
-                    BUTTONS_WIDTH, BUTTONS_HEIGHT);
-            batch.draw(btnBack, BUTTONS_X, CREDITS_Y,
-                    BUTTONS_WIDTH, BUTTONS_HEIGHT);
+            batch.draw(btnNormal, buttonsX, PLAY_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
+            batch.draw(btnSurvival, buttonsX, RANKING_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
+            batch.draw(btnBack, buttonsX, CREDITS_Y, BUTTONS_WIDTH, BUTTONS_HEIGHT);
         }
 
         batch.end();
@@ -225,15 +221,13 @@ public class MenuScreen extends BaseScreen {
      */
     private void navigateToMicroGameScreen(boolean isSurvival) {
         if (isSurvival) {
-            transitionScreen(new PlayingGamesScreen(super.game, this),
-                    TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
+            transitionScreen(new PlayingGamesScreen(super.game, this), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
         } else {
-            transitionScreen(new OverworldScreen(super.game, this),
-                    TransitionScreen.Effect.FADE_IN_OUT, 0.4f);
+            transitionScreen(new OverworldScreen(super.game, this), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
         }
     }
-        
-    private void navigateToCredits(){
+
+    private void navigateToCredits() {
         shouldContinueBackgroundMusic = true;
         game.setScreen(new CreditsScreen(game, this));
     }
