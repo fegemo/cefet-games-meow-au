@@ -1,8 +1,16 @@
 package br.cefetmg.games.graphics.hud;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+
+import br.cefetmg.games.sound.SoundManager;
 
 /**
  *
@@ -13,25 +21,46 @@ public class SoundIcon {
     private static final float MARGIN_LEFT = 8f;
 
     private final Stage stage;
-    private SoundButton soundButton;
+    private Button soundButton;
+    private Skin skin;
 
     public SoundIcon(Stage stage) {
         this.stage = stage;
     }
 
     public void create(Texture noSound, Texture sound) {
-        soundButton = new SoundButton(noSound, sound);
-        soundButton.getButton().setY(stage.getViewport().getWorldHeight() * 0.15f);
-        soundButton.getButton().setX(MARGIN_LEFT);
-        stage.addActor(soundButton.getButton());
+        skin = new Skin(Gdx.files.internal("hud/uiskin.json"));
+
+        skin.add("noSound", noSound);
+        skin.add("sound", sound);
+
+        soundButton = new ImageButton(skin.getDrawable("sound"), skin.getDrawable("sound"),
+                skin.getDrawable("noSound"));
+        soundButton.setChecked(!SoundManager.getInstance().isAudioEnabled());
+
+        soundButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                boolean sound = SoundManager.getInstance().isAudioEnabled();
+                if (sound) {
+                    SoundManager.getInstance().disableSounds();
+                } else {
+                    SoundManager.getInstance().enableSounds();
+                }
+            }
+        });
+
+        soundButton.setY(stage.getViewport().getWorldHeight() * 0.15f);
+        soundButton.setX(MARGIN_LEFT);
+        stage.addActor(soundButton);
     }
 
     public void show() {
-        soundButton.show();
+        soundButton.setVisible(true);
     }
 
     public void hide() {
-        soundButton.hide();
+        soundButton.setVisible(false);
     }
 
     public InputProcessor getInputProcessor() {
@@ -44,5 +73,13 @@ public class SoundIcon {
 
     public void draw() {
         stage.draw();
+    }
+    
+    public Button getButton() {
+        return this.soundButton;
+    }
+
+    public Skin getSkin() {
+        return this.skin;
     }
 }
