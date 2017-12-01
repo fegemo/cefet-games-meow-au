@@ -288,23 +288,6 @@ public class OverworldScreen extends BaseScreen {
             cadeado.setScale(0.5f);
             i++;
         }
-//<<<<<<< refs/remotes/fegemo/master
-////=======
-//        
-//        // File Handle
-//        // Read and Create Progress File
-//        if (!file.exists()) {
-//            file.writeString("0:", false);
-//            file.writeString("0", true);
-//            currentStage = 0;
-//            score = 0;
-//        }else {
-//            String arquivo = new String(file.readString());
-//            String[] split = arquivo.split(":");
-//            currentStage = Integer.parseInt(split[0]);
-//            score = Integer.parseInt(split[1]);
-//        }
-//>>>>>>> Velocidade de troca mais lenta
     }
 
     @Override
