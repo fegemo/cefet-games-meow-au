@@ -1,6 +1,6 @@
 package br.cefetmg.games.screens;
 
-import br.cefetmg.games.graphics.hud.SoundButton;
+import br.cefetmg.games.graphics.hud.SoundIcon;
 import br.cefetmg.games.transition.TransitionScreen;
 import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.MySound;
@@ -12,16 +12,17 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 
 /**
  * Uma tela de Menu Principal do jogo.
@@ -32,17 +33,26 @@ public class MenuScreen extends BaseScreen {
 
     private static final float SCREENS_FADE_TIME = 0.7f;
     private static final float BUTTONS_FADE_TIME = 0.25f;
+    private static final float BUTTONS_FADE_DELAY = 0.1f;
+    private static final float AMOUNT_MOVE_BUTTON = 30.0f;
+    private static final float INITIAL_LOGO_SCALE = 0.9f;
+    private static final float FINAL_LOGO_SCALE = 1.0f;
     private static final float BUTTONS_PADDING = 5.0f;
     private static final int BUTTON_COLSPAN = 3;
 
-    private SoundButton soundButton;
+    private static enum Direction {
+        LEFT, RIGHT;
+    }
+
+    private SoundIcon soundButton;
 
     private Stage stage;
     private Table table;
 
-    private Stack playNormalBtnStack;
-    private Stack rankSurvivalBtnStack;
-    private Stack creditsBackBtnStack;
+    private Stack playNormalSurvivalBtnStack;
+    private Table normalSurvivalTable;
+    private Table playTable;
+    private Stack rankBackBtnStack;
 
     private Image background;
     private Button btnPlay;
@@ -113,9 +123,10 @@ public class MenuScreen extends BaseScreen {
 
         stage = new Stage(viewport, batch);
         table = new Table();
-        playNormalBtnStack = new Stack();
-        rankSurvivalBtnStack = new Stack();
-        creditsBackBtnStack = new Stack();
+        normalSurvivalTable = new Table();
+        playTable = new Table();
+        playNormalSurvivalBtnStack = new Stack();
+        rankBackBtnStack = new Stack();
     }
 
     @Override
@@ -128,9 +139,8 @@ public class MenuScreen extends BaseScreen {
 
     private void assembleScreen() {
         stage.addActor(table);
-
-        background.setFillParent(true);
-        table.setFillParent(true);
+        soundButton.create(assets.get("hud/no-sound-button.png", Texture.class),
+                assets.get("hud/sound-button.png", Texture.class));
 
         btnPlay.setDisabled(true);
         btnExit.setDisabled(true);
@@ -139,7 +149,7 @@ public class MenuScreen extends BaseScreen {
         btnNormal.setDisabled(true);
         btnSurvival.setDisabled(true);
         btnBack.setDisabled(true);
-
+        
         btnPlay.getColor().a = 0.0f;
         btnExit.getColor().a = 0.0f;
         btnRanking.getColor().a = 0.0f;
@@ -148,37 +158,44 @@ public class MenuScreen extends BaseScreen {
         btnSurvival.getColor().a = 0.0f;
         btnBack.getColor().a = 0.0f;
 
-        playNormalBtnStack.add(btnNormal);
-        playNormalBtnStack.add(btnPlay);
-        rankSurvivalBtnStack.add(btnSurvival);
-        rankSurvivalBtnStack.add(btnRanking);
-        creditsBackBtnStack.add(btnBack);
-        creditsBackBtnStack.add(btnCredits);
+        logo.setOrigin(Align.center);
+        background.setFillParent(true);
+
+        normalSurvivalTable.center();
+        normalSurvivalTable.add(btnNormal).padLeft(BUTTONS_PADDING).padRight(BUTTONS_PADDING).center();
+        normalSurvivalTable.add(btnSurvival).padLeft(BUTTONS_PADDING).padRight(BUTTONS_PADDING).center();
+        
+        playTable.center();
+        playTable.add(btnPlay);
+        
+        playNormalSurvivalBtnStack.add(normalSurvivalTable);
+        playNormalSurvivalBtnStack.add(playTable);
+        rankBackBtnStack.add(btnBack);
+        rankBackBtnStack.add(btnRanking);
 
         Skin skin = soundButton.getSkin();
+        table.setFillParent(true);
         table.center();
         table.setSkin(skin);
         table.setBackground(background.getDrawable());
-        table.add(logo).colspan(BUTTON_COLSPAN);
+        table.add(logo).colspan(BUTTON_COLSPAN).pad(-40.0f);
         table.row();
-        table.add(playNormalBtnStack).pad(BUTTONS_PADDING).colspan(BUTTON_COLSPAN).right();
+        table.add(playNormalSurvivalBtnStack).pad(BUTTONS_PADDING).colspan(BUTTON_COLSPAN).center();
         table.row();
-        table.add(soundButton.getButton()).pad(BUTTONS_PADDING).left();
-        table.add(rankSurvivalBtnStack).pad(BUTTONS_PADDING).colspan(2).right();
+        table.add(rankBackBtnStack).pad(BUTTONS_PADDING).colspan(BUTTON_COLSPAN).center();
         table.row();
-        table.add(creditsBackBtnStack).pad(BUTTONS_PADDING).colspan(BUTTON_COLSPAN).right();
+        table.add(btnCredits).pad(BUTTONS_PADDING).colspan(BUTTON_COLSPAN).center();
         table.row();
-        table.add(btnExit).pad(BUTTONS_PADDING).colspan(BUTTON_COLSPAN).right();
+        table.add(btnExit).pad(BUTTONS_PADDING).colspan(BUTTON_COLSPAN).center();
 
         float delay = SCREENS_FADE_TIME / 2.0f;
-        fadeInButton(btnPlay, delay);
-        fadeInButton(btnRanking, delay);
-        fadeInButton(btnCredits, delay);
-        fadeInButton(btnExit, delay);
+        int pos = 0;
+        fadeInButton(btnPlay, null, delay + (++pos * BUTTONS_FADE_DELAY));
+        fadeInButton(btnRanking, null, delay + (++pos * BUTTONS_FADE_DELAY));
+        fadeInButton(btnCredits, null, delay + (++pos * BUTTONS_FADE_DELAY));
+        fadeInButton(btnExit, null, delay + (++pos * BUTTONS_FADE_DELAY));
 
-        logo.addAction(Actions.sequence(Actions.alpha(0.0f), Actions.delay(delay), Actions.fadeIn(BUTTONS_FADE_TIME)));
-        soundButton.getButton().addAction(
-                Actions.sequence(Actions.alpha(0.0f), Actions.delay(delay), Actions.fadeIn(BUTTONS_FADE_TIME)));
+        fadeInElements(delay);
 
         Gdx.input.setInputProcessor(stage);
     }
@@ -203,8 +220,7 @@ public class MenuScreen extends BaseScreen {
     }
 
     private void createWidgets() {
-        soundButton = new SoundButton(assets.get("hud/no-sound-button.png", Texture.class),
-                assets.get("hud/sound-button.png", Texture.class));
+        soundButton = new SoundIcon(stage);
         background = new Image(backgroundTexture);
         btnPlay = new Button(new Image(btnPlayTexture).getDrawable());
         btnExit = new Button(new Image(btnExitTexture).getDrawable());
@@ -216,8 +232,16 @@ public class MenuScreen extends BaseScreen {
         logo = new Image(logoTexture);
     }
 
-    private void fadeInButton(final Button button, float delay) {
-        RunnableAction actionEnableButton = Actions.run(new Runnable() {
+    private void fadeInButton(Button button, int position, float additionalDelay) {
+        fadeInButton(button, Direction.LEFT, position, additionalDelay);
+    }
+
+    private void fadeInButton(Button button, Direction direction, int position, float additionalDelay) {
+        fadeInButton(button, direction, (position + 1) * BUTTONS_FADE_DELAY + additionalDelay);
+    }
+
+    private void fadeInButton(final Button button, Direction direction, float delay) {
+        Action actionEnableButton = Actions.run(new Runnable() {
             @Override
             public void run() {
                 button.setDisabled(false);
@@ -225,29 +249,55 @@ public class MenuScreen extends BaseScreen {
         });
         button.clearActions();
         button.toFront();
-        if (delay > 0.0f) {
-            button.addAction(Actions.sequence(Actions.alpha(0.0f), Actions.delay(delay),
-                    Actions.fadeIn(BUTTONS_FADE_TIME), actionEnableButton));
-        } else {
-            button.addAction(
-                    Actions.sequence(Actions.alpha(0.0f), Actions.fadeIn(BUTTONS_FADE_TIME), actionEnableButton));
-        }
+        float moveAmount = getMoveAmount(direction);
+        Action noAlphaAction = Actions.alpha(0.0f);
+        Action delayAction = Actions.delay(delay);
+        Action fadeInAction = Actions.fadeIn(BUTTONS_FADE_TIME);
+        Action setPositionAction = Actions.moveBy(-moveAmount, 0.0f);
+        Action moveAction = Actions.moveBy(moveAmount, 0.0f, BUTTONS_FADE_TIME);
+        Action moveAndFade = Actions.parallel(fadeInAction, moveAction);
+        button.addAction(
+                Actions.sequence(noAlphaAction, setPositionAction, delayAction, moveAndFade, actionEnableButton));
     }
 
-    private void fadeOutButton(Button button) {
-        fadeOutButton(button, null);
+    private void fadeOutButton(Button button, int position) {
+        fadeOutButton(button, position, null);
     }
 
-    private void fadeOutButton(Button button, final Runnable runAfter) {
+    private void fadeOutButton(Button button, int position, Runnable runAfter) {
+        fadeOutButton(button, Direction.LEFT, position, runAfter);
+    }
+
+    private void fadeOutButton(Button button, Direction direction, int position) {
+        fadeOutButton(button, direction, position, null);
+    }
+
+    private void fadeOutButton(Button button, Direction direction, int position, Runnable runAfter) {
+        fadeOutButton(button, direction, (position + 1) * BUTTONS_FADE_DELAY, runAfter);
+    }
+
+    private void fadeOutButton(Button button, Direction direction, float delay, final Runnable runAfter) {
         button.clearActions();
         button.setDisabled(true);
         button.toBack();
+        float moveAmount = getMoveAmount(direction);
+        Action fullAlphaAction = Actions.alpha(1.0f);
+        Action delayAction = Actions.delay(delay);
+        Action fadeOutAction = Actions.fadeOut(BUTTONS_FADE_TIME);
+        Action setPositionAction = Actions.moveBy(-moveAmount, 0.0f);
+        Action moveAction = Actions.moveBy(moveAmount, 0.0f, BUTTONS_FADE_TIME);
+        Action moveAndFade = Actions.parallel(fadeOutAction, moveAction);
         if (runAfter != null) {
-            button.addAction(
-                    Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(BUTTONS_FADE_TIME), Actions.run(runAfter)));
+            button.addAction(Actions.sequence(fullAlphaAction, delayAction, moveAndFade, setPositionAction,
+                    Actions.run(runAfter)));
         } else {
-            button.addAction(Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(BUTTONS_FADE_TIME)));
+            button.addAction(Actions.sequence(fullAlphaAction, delayAction, moveAndFade, setPositionAction));
         }
+    }
+
+    private static float getMoveAmount(Direction direction) {
+        return direction == Direction.LEFT ? -AMOUNT_MOVE_BUTTON
+                : direction == Direction.RIGHT ? AMOUNT_MOVE_BUTTON : 0.0f;
     }
 
     private void setButtonListeners() {
@@ -255,106 +305,115 @@ public class MenuScreen extends BaseScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 enterClickSound.play();
-                fadeInButton(btnNormal, BUTTONS_FADE_TIME);
-                fadeInButton(btnSurvival, BUTTONS_FADE_TIME);
-                fadeInButton(btnBack, BUTTONS_FADE_TIME);
-                fadeOutButton(btnPlay);
-                fadeOutButton(btnRanking);
-                fadeOutButton(btnCredits);
-                fadeOutButton(btnExit);
+                int posSecondary = 0;
+                normalSurvivalTable.toFront();
+                fadeInButton(btnNormal, posSecondary, BUTTONS_FADE_TIME);
+                fadeInButton(btnSurvival, Direction.RIGHT, posSecondary++, BUTTONS_FADE_TIME);
+                fadeInButton(btnBack, posSecondary++, BUTTONS_FADE_TIME);
+                int posPrimary = 0;
+                fadeOutButton(btnPlay, posPrimary++);
+                fadeOutButton(btnRanking, posPrimary++);
+                fadeOutButton(btnCredits, posPrimary++);
+                fadeOutButton(btnExit, posPrimary++);
             }
         });
         btnExit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 backClickSound.play();
-                fadeOutElements();
-                fadeOutButton(btnPlay);
-                fadeOutButton(btnRanking);
-                fadeOutButton(btnCredits);
-                fadeOutButton(btnExit, new Runnable() {
+                int pos = 0;
+                fadeOutButton(btnPlay, null, pos++);
+                fadeOutButton(btnRanking, null, pos++);
+                fadeOutButton(btnCredits, null, pos++);
+                fadeOutButton(btnExit, null, pos++, new Runnable() {
                     @Override
                     public void run() {
                         exitGame();
                     }
                 });
+                fadeOutElements(pos * BUTTONS_FADE_DELAY);
             }
         });
         btnRanking.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 enterClickSound.play();
-                fadeOutElements();
-                fadeOutButton(btnPlay);
-                fadeOutButton(btnRanking, new Runnable() {
+                int pos = 0;
+                fadeOutButton(btnPlay, null, pos++);
+                fadeOutButton(btnRanking, null, pos++, new Runnable() {
                     @Override
                     public void run() {
                         navigateToRanking();
                     }
                 });
-                fadeOutButton(btnCredits);
-                fadeOutButton(btnExit);
+                fadeOutButton(btnCredits, null, pos++);
+                fadeOutButton(btnExit, null, pos++);
+                fadeOutElements(pos * BUTTONS_FADE_DELAY);
             }
         });
         btnCredits.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 enterClickSound.play();
-                fadeOutElements();
-                fadeOutButton(btnPlay);
-                fadeOutButton(btnRanking);
-                fadeOutButton(btnCredits, new Runnable() {
+                int pos = 0;
+                fadeOutButton(btnPlay, null, pos++);
+                fadeOutButton(btnRanking, null, pos++);
+                fadeOutButton(btnCredits, null, pos++, new Runnable() {
                     @Override
                     public void run() {
                         navigateToCredits();
                     }
                 });
-                fadeOutButton(btnExit);
-
+                fadeOutButton(btnExit, null, pos++);
+                fadeOutElements(pos * BUTTONS_FADE_DELAY);
             }
         });
         btnNormal.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 enterClickSound.play();
-                fadeOutElements();
-                fadeOutButton(btnNormal, new Runnable() {
+                int pos = 0;
+                fadeOutButton(btnNormal, null, pos, new Runnable() {
                     @Override
                     public void run() {
                         navigateToOverworld();
                     }
                 });
-                fadeOutButton(btnSurvival);
-                fadeOutButton(btnBack);
+                fadeOutButton(btnSurvival, null, pos++);
+                fadeOutButton(btnBack, null, pos++);
+                fadeOutElements(pos * BUTTONS_FADE_DELAY);
             }
         });
         btnSurvival.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 enterClickSound.play();
-                fadeOutElements();
-                fadeOutButton(btnNormal);
-                fadeOutButton(btnSurvival, new Runnable() {
+                int pos = 0;
+                fadeOutButton(btnNormal, null, pos);
+                fadeOutButton(btnSurvival, null, pos++, new Runnable() {
                     @Override
                     public void run() {
                         navigateToSurvivalGame();
                     }
                 });
-                fadeOutButton(btnBack);
-
+                fadeOutButton(btnBack, null, pos++);
+                fadeOutElements(pos * BUTTONS_FADE_DELAY);
             }
         });
         btnBack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 backClickSound.play();
-                fadeInButton(btnPlay, BUTTONS_FADE_TIME);
-                fadeInButton(btnRanking, BUTTONS_FADE_TIME);
-                fadeInButton(btnCredits, BUTTONS_FADE_TIME);
-                fadeInButton(btnExit, BUTTONS_FADE_TIME);
-                fadeOutButton(btnNormal);
-                fadeOutButton(btnSurvival);
-                fadeOutButton(btnBack);
+                int posPrimary = 0;
+                playTable.toFront();
+                fadeInButton(btnPlay, Direction.RIGHT, posPrimary++, BUTTONS_FADE_TIME);
+                fadeInButton(btnRanking, Direction.RIGHT, posPrimary++, BUTTONS_FADE_TIME);
+                fadeInButton(btnCredits, Direction.RIGHT, posPrimary++, BUTTONS_FADE_TIME);
+                fadeInButton(btnExit, Direction.RIGHT, posPrimary++, BUTTONS_FADE_TIME);
+                int posSecondary = 0;
+                fadeOutButton(btnNormal, Direction.RIGHT, posSecondary);
+                fadeOutButton(btnSurvival, posSecondary++);
+                fadeOutButton(btnBack, Direction.RIGHT, posSecondary++);
             }
         });
     }
@@ -422,11 +481,24 @@ public class MenuScreen extends BaseScreen {
         }
     }
 
-    private void fadeOutElements() {
+    private void fadeInElements(float delay) {
         logo.clearActions();
         soundButton.getButton().clearActions();
-        logo.addAction(Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(BUTTONS_FADE_TIME)));
-        soundButton.getButton().addAction(Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(BUTTONS_FADE_TIME)));
+        logo.addAction(Actions.sequence(Actions.alpha(0.0f), Actions.scaleTo(INITIAL_LOGO_SCALE, INITIAL_LOGO_SCALE),
+                Actions.delay(delay), Actions.parallel(Actions.fadeIn(BUTTONS_FADE_TIME),
+                        Actions.scaleTo(FINAL_LOGO_SCALE, FINAL_LOGO_SCALE, BUTTONS_FADE_TIME))));
+        soundButton.getButton().addAction(
+                Actions.sequence(Actions.alpha(0.0f), Actions.delay(2.0f * delay), Actions.fadeIn(BUTTONS_FADE_TIME)));
+    }
+
+    private void fadeOutElements(float delay) {
+        logo.clearActions();
+        soundButton.getButton().clearActions();
+        logo.addAction(Actions.sequence(Actions.alpha(1.0f), Actions.scaleTo(FINAL_LOGO_SCALE, FINAL_LOGO_SCALE),
+                Actions.delay(delay), Actions.parallel(Actions.fadeOut(BUTTONS_FADE_TIME),
+                        Actions.scaleTo(INITIAL_LOGO_SCALE, INITIAL_LOGO_SCALE, BUTTONS_FADE_TIME))));
+        soundButton.getButton().addAction(
+                Actions.sequence(Actions.alpha(1.0f), Actions.delay(delay), Actions.fadeOut(BUTTONS_FADE_TIME)));
     }
 
 }
