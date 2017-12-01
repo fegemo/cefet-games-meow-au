@@ -40,9 +40,6 @@ public class ClickFindCat extends MiniGame {
 
     private Rat rat;
     private ArrayList<Rat> ratos;
-    //private Sound meawSound;
-    //private Sound scaredMeawSound;
-    //private Sound happyMeawSound;
     private int numeroDeRatos;
     private float initialCatScale;
     private float catScaleX;
@@ -145,12 +142,12 @@ public class ClickFindCat extends MiniGame {
     }
 
     public void checkCatRatDistance() {
-        for (Rat Rato : ratos) {
-            Rato.checkDistance();
-            if (Rato.ratWasRunning) {
-                Rato.fuga(miraSprite.getX(), miraSprite.getY());
+        for (Rat rato : ratos) {
+            rato.checkDistance();
+            if (rato.ratWasRunning) {
+                rato.fuga(miraSprite.getX(), miraSprite.getY());
             } else {
-                Rato.vagabundo();
+                rato.vagabundo();
             }
         }
     }
@@ -164,8 +161,8 @@ public class ClickFindCat extends MiniGame {
             happyMeawSound.play();
         }
         tempoDeAnimacao += Gdx.graphics.getDeltaTime();
-        for (Rat Rato : ratos) {
-            Rato.movimento(dt, viewport.getWorldWidth(), viewport.getWorldHeight());
+        for (Rat rato : ratos) {
+            rato.movimento(dt, viewport.getWorldWidth(), viewport.getWorldHeight());
         }
     }
 
@@ -176,8 +173,8 @@ public class ClickFindCat extends MiniGame {
             catSprite.draw(batch);
             //System.out.println("Achou achou");
         }
-        for (Rat Rato : ratos) {
-            Rato.render(batch, tempoDeAnimacao);
+        for (Rat rato : ratos) {
+            rato.render(batch, tempoDeAnimacao);
         }
 
         //Desenha a Mira
@@ -330,8 +327,8 @@ public class ClickFindCat extends MiniGame {
 
         }
 
-        public void mudarDirecao(boolean DeveMudar) {
-            if (DeveMudar) {
+        public void mudarDirecao(boolean deveMudar) {
+            if (deveMudar) {
                 float chance = (float) Math.random();
                 if (chance < 0.25) {
                     direcao = Direcao.DIREITA;
