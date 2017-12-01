@@ -40,9 +40,9 @@ public class ClickFindCat extends MiniGame {
 
     private Rat rat;
     private ArrayList<Rat> ratos;
-    private Sound meawSound;
-    private Sound scaredMeawSound;
-    private Sound happyMeawSound;
+    //private Sound meawSound;
+    //private Sound scaredMeawSound;
+    //private Sound happyMeawSound;
     private int numeroDeRatos;
     private float initialCatScale;
     private float catScaleX;
