@@ -11,14 +11,12 @@ import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -167,10 +165,8 @@ public class MenuScreen extends BaseScreen {
         rankBackBtnStack.add(btnBack);
         rankBackBtnStack.add(btnRanking);
 
-        Skin skin = soundButton.getSkin();
         table.setFillParent(true);
         table.center();
-        table.setSkin(skin);
         table.setBackground(background.getDrawable());
         table.add(logo).colspan(BUTTON_COLSPAN).pad(-40.0f);
         table.row();
