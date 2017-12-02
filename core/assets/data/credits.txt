@@ -1,7 +1,18 @@
-COLABORADORES:
+
+
+
+DESENVOLVEDORES
+ARTISTAS
+GAME DESIGNERS
+MÚSICOS
+
+
+
+
 
 Adriel Augusto
 Andre Brait
+Arthur Abeilice
 Cassiano de Brito
 Estevao
 Flavio Coutinho
@@ -11,7 +22,6 @@ Gustavo Marques
 Joao Matos
 Luis Carlos
 Luiza dos Anjos
-Arthur Abeilice
 Miguel Rodrigues
 Natalia Natsumy
 Pedro Belisario
@@ -21,3 +31,15 @@ Rogenes Reis
 Sarah Rodrigues
 Tulio Santos
 Vinicius Henrique
+
+
+
+
+
+Feito com amor S2S2
+pela turma de
+Desenvolvimento de Jogos
+do CEFET-MG em 2017/02
+
+
+

@@ -2,37 +2,56 @@ package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
 import br.cefetmg.games.sound.MyMusic;
+import br.cefetmg.games.sound.MySound;
 import br.cefetmg.games.sound.SoundManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
-import com.badlogic.gdx.math.Vector2;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Scaling;
 
 /**
+ * Tela de créditos
  *
  * @author Natália Natsumy
+ * @authos André Brait <andrebrait@gmail.com>
  */
 public class CreditsScreen extends BaseScreen {
 
-    private BitmapFont font;
-    private BitmapFont bigfont;
-    private List<String> lines;
-    private List<Vector2> linePos;
-    static int SPACING = 60;
-    FreeTypeFontGenerator generator;
-    private Sprite background;
-    FreeTypeFontLoaderParameter snackerComicParams;
-    FreeTypeFontLoaderParameter snackerComicParams2;
-    int bigword;
+    private static final float SCROLL_SPEED = 150.0f;
+    private static final float TIME_TO_SCROLL = 1.5f;
+    private static final float TIME_TO_BACK = 2.0f;
+    private static final float TIME_FADE = 0.25f;
+
+    private MySound click2;
+    private Image background;
+    private Button menuBtn;
+    private Stage stage;
+    private Stack stack;
+    private ScrollPane scrollPane;
+    private Label textLabel;
+    private float timePassedOnShow;
+    private float timePassedAfterEnd;
+    private boolean inputDetected;
+    private boolean reachedEnd;
+    private boolean isGoingBack;
 
     public CreditsScreen(Game game, BaseScreen previous) {
         super(game, previous);
@@ -41,97 +60,157 @@ public class CreditsScreen extends BaseScreen {
     @Override
     public void appear() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
-        //init font
-        background = new Sprite(new Texture("menu/menu-background.png"));
-        background.setOrigin(0, 0);
-        background.setScale(viewport.getWorldWidth() / background.getWidth(), viewport.getWorldHeight() / background.getHeight());
-        background.setPosition(0, 0);
-        snackerComicParams = new FreeTypeFontLoaderParameter();
+        // init font
+        TextureLoader.TextureParameter linearFilter = new TextureLoader.TextureParameter();
+        linearFilter.minFilter = Texture.TextureFilter.Linear;
+        linearFilter.magFilter = Texture.TextureFilter.Linear;
+        assets.load("menu/menu-background.png", Texture.class, linearFilter);
+        assets.load("world/menu.png", Texture.class, linearFilter);
+        assets.load("menu/click2.mp3", Sound.class);
+
+        FreeTypeFontLoaderParameter snackerComicParams = new FreeTypeFontLoaderParameter();
         snackerComicParams.fontFileName = "fonts/orangejuice.ttf";
-        snackerComicParams.fontParameters.size = 55;
+        snackerComicParams.fontParameters.size = 65;
         snackerComicParams.fontParameters.minFilter = Texture.TextureFilter.Linear;
         snackerComicParams.fontParameters.magFilter = Texture.TextureFilter.Linear;
-        snackerComicParams2 = new FreeTypeFontLoaderParameter();
-        snackerComicParams2.fontFileName = "fonts/orangejuice.ttf";
-        snackerComicParams2.fontParameters.size = 65;
-        snackerComicParams2.fontParameters.minFilter = Texture.TextureFilter.Linear;
-        snackerComicParams2.fontParameters.magFilter = Texture.TextureFilter.Linear;
         assets.load("orangejuice.ttf", BitmapFont.class, snackerComicParams);
-        assets.load("orangejuice.ttf", BitmapFont.class, snackerComicParams2);
 
-        lines = new ArrayList<String>();
-        linePos = new ArrayList<Vector2>();
-        float aux = 0;
-        try {
-            BufferedReader br = new BufferedReader(
-                    new InputStreamReader(
-                            Gdx.files.internal(Config.CREDITS_FILE).read()));
-            String line;
+        stage = new Stage(viewport, batch);
+        stack = new Stack();
 
-            while ((line = br.readLine()) != null) {
-                lines.add(line);
-                linePos.add(
-                        new Vector2((float) (viewport.getWorldWidth() * 0.55),
-                                aux));
-                aux -= SPACING;
-            }
-            br.close();
+        timePassedOnShow = 0.0f;
+        timePassedAfterEnd = 0.0f;
+        inputDetected = false;
+        reachedEnd = false;
+        isGoingBack = false;
 
-        } catch (Exception e) {
-            Gdx.app.log(this.getClass().getName(), 
-                    "Error fetching credits file. Details: " + e.getMessage());
-        }
-
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
     public void cleanUp() {
-
+        stage.dispose();
     }
 
     @Override
     public void handleInput() {
+        // Como estamos usando scene2d, o input é gerenciado nele.
     }
 
     @Override
     public void update(float dt) {
-        for (int i = 0; i < lines.size(); i++) {
-            linePos.get(i).y += 1.5f;
-        }
-        if (linePos.get(lines.size() - 1).y > viewport.getWorldHeight() + lines.size() * 6) {
-            game.setScreen(new MenuScreen(game, this));
+        stage.act(dt);
+        if (!isGoingBack) {
+            if (timePassedOnShow >= TIME_TO_SCROLL) {
+                if (!inputDetected && !reachedEnd) {
+                    scrollPane.setScrollY(scrollPane.getScrollY() + SCROLL_SPEED * dt);
+                    reachedEnd = scrollPane.isBottomEdge();
+                }
+            } else {
+                timePassedOnShow += dt;
+            }
+            if (!inputDetected && reachedEnd) {
+                if (timePassedAfterEnd >= TIME_TO_BACK) {
+                    goBackActionSequence();
+                } else {
+                    timePassedAfterEnd += dt;
+                }
+            }
         }
     }
 
     @Override
     public void draw() {
-        batch.begin();
-        background.draw(batch);
-        for (int i = 0; i < (lines.size() - 1); i++) {
-            if (!lines.get(i).equals("")) {
-                if (lines.get(i).charAt(0) == '-') {
-                    bigfont.draw(batch, lines.get(i).substring(1, lines.get(i).length()), linePos.get(i).x, linePos.get(i).y);
-                    bigfont.setColor(Color.DARK_GRAY);
-                } else {
-                    font.draw(batch, lines.get(i), linePos.get(i).x, linePos.get(i).y, viewport.getWorldWidth() / 4, 1, false);
-                    font.setColor(Color.DARK_GRAY);
-                }
-            }
-        }
-        batch.end();
+        stage.draw();
     }
 
     @Override
     protected void assetsLoaded() {
-        font = assets.get("orangejuice.ttf");
-        font.setColor(Color.DARK_GRAY);
-        bigfont = assets.get("orangejuice.ttf");
-        bigfont.setColor(Color.DARK_GRAY);
+        BitmapFont font = assets.get("orangejuice.ttf");
+        background = new Image(assets.get("menu/menu-background.png", Texture.class));
+        Image menu = new Image(assets.get("world/menu.png", Texture.class));
+        menuBtn = new Button(menu.getDrawable());
+        click2 = new MySound(assets.get("menu/click2.mp3", Sound.class));
+        menuBtn.setY(viewport.getWorldHeight() * 0.02f);
+        menuBtn.setX(menuBtn.getY());
 
-        MyMusic musicaTema = SoundManager.getInstance()
-                .playBackgroundMusic("menu/meowautheme.mp3");
+        stage.addActor(menuBtn);
+        stage.addActor(stack);
+
+        background.setFillParent(true);
+        background.setScaling(Scaling.stretch);
+        stack.setFillParent(true);
+        stack.add(background);
+
+        LabelStyle fontStyle = new LabelStyle(font, Color.DARK_GRAY);
+        String file = Gdx.files.internal(Config.CREDITS_FILE).readString();
+        textLabel = new Label(file, fontStyle);
+        textLabel.setAlignment(Align.center, Align.center);
+        scrollPane = new ScrollPane(textLabel);
+        stack.add(scrollPane);
+
+        scrollPane.setFillParent(true);
+        scrollPane.setFadeScrollBars(true);
+
+        scrollPane.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                inputDetected = true;
+                enableButton();
+                return true;
+            }
+        });
+        menuBtn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                click2.play();
+                inputDetected = true;
+                goBackActionSequence();
+            }
+        });
+
+        menuBtn.setDisabled(true);
+        menuBtn.addAction(Actions.alpha(0.0f));
+        textLabel.addAction(Actions.sequence(Actions.alpha(0.0f), Actions.delay(0.01f), Actions.fadeIn(TIME_FADE)));
+
+        MyMusic musicaTema = SoundManager.getInstance().playBackgroundMusic("menu/meowautheme.mp3");
         musicaTema.setLooping(true);
         musicaTema.setVolume(0.4f);
+    }
+
+    private void enableButton() {
+        if (!isGoingBack && menuBtn.isDisabled()) {
+            menuBtn.toFront();
+            menuBtn.clearActions();
+            menuBtn.addAction(Actions.sequence(Actions.fadeIn(TIME_FADE), Actions.run(new Runnable() {
+                @Override
+                public void run() {
+                    menuBtn.setDisabled(false);
+                }
+            })));
+        }
+    }
+
+    private void goBackActionSequence() {
+        scrollPane.setScrollingDisabled(true, true);
+        menuBtn.setDisabled(true);
+        if (!isGoingBack) {
+            isGoingBack = true;
+            menuBtn.clearActions();
+            textLabel.clearActions();
+            menuBtn.addAction(Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(TIME_FADE)));
+            textLabel.addAction(
+                    Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(TIME_FADE), Actions.run(new Runnable() {
+                        @Override
+                        public void run() {
+                            goBack();
+                        }
+                    })));
+        }
+    }
+
+    private void goBack() {
+        game.setScreen(new MenuScreen(game, this));
     }
 
 }
