@@ -2,12 +2,11 @@ package br.cefetmg.games.minigames;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Peripheral;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -37,6 +36,7 @@ import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.MySound;
+import br.cefetmg.games.sound.SoundManager;
 
 /**
  * Classe do jogo AstroCat
@@ -61,16 +61,14 @@ public class AstroCatGame extends MiniGame {
     private static final float ROCKET_FORCE = 5.0f * PIXELS_PER_METER;
 
     private static final float SCALE = 0.4f;
+    private static final String MUSIC_PATH = "astrocat/background.mp3";
 
     private float accumulator = 0.0f;
 
-    private PhysicsShapeCache physCache;
+    private Random rand;
 
-    private Texture[] asteroidTextures;
-    private Texture astroCatTexture, planetTexture, backgroundTexture, crosshairTexture;
     private Sprite background;
     private MySound gasNoise, impact;
-    private MyMusic backgroundMusic;
 
     private World world;
 
@@ -86,8 +84,6 @@ public class AstroCatGame extends MiniGame {
 
     private Body[] walls;
     private Set<Asteroid> asteroidSet;
-
-    private ContactListener contactListener;
 
     private boolean finished;
 
@@ -134,10 +130,10 @@ public class AstroCatGame extends MiniGame {
 
         private static final float BODY_SCALE_PER_PIXEL = SCALE * RATIO_METERS_PER_PIXEL;
         protected final Sprite sprite;
-        protected final Body body;
+        final Body body;
 
-        protected AstroCatBody(String bodyName, PhysicsShapeCache physCache, Texture texture, World world,
-                Vector2 position, boolean processPosition) {
+        AstroCatBody(String bodyName, PhysicsShapeCache physCache, Texture texture, World world,
+                     Vector2 position, boolean processPosition) {
             body = physCache.createBody(bodyName, world, BODY_SCALE_PER_PIXEL, BODY_SCALE_PER_PIXEL);
             body.setTransform(position.cpy().scl(RATIO_METERS_PER_PIXEL), 0.0f);
             sprite = new Sprite(texture);
@@ -159,12 +155,12 @@ public class AstroCatGame extends MiniGame {
             sprite.draw(batch);
         }
 
-        public void deactivate() {
+        void deactivate() {
             body.setActive(false);
             sprite.setAlpha(0.0f);
         }
 
-        public void activate() {
+        void activate() {
             body.setActive(true);
             sprite.setAlpha(1.0f);
         }
@@ -174,22 +170,23 @@ public class AstroCatGame extends MiniGame {
     private static class Asteroid extends AstroCatBody {
 
         private final int index;
+        private final Random rand;
 
-        public Asteroid(int i, PhysicsShapeCache physCache, World world, Texture[] asteroidTextures, int asteroidNum) {
+        Asteroid(int i, PhysicsShapeCache physCache, World world, Texture[] asteroidTextures, int asteroidNum) {
             super("asteroid" + asteroidNum, physCache, asteroidTextures[asteroidNum - 1], world, Vector2.Zero, true);
             index = i;
+            rand = new Random();
             deactivate();
         }
 
-        public void setNewPositionAndSpeed(Vector2 position, Vector2 speed, float omega) {
+        void setNewPositionAndSpeed(Vector2 position, Vector2 speed, float omega) {
             body.setTransform(position.cpy().scl(RATIO_METERS_PER_PIXEL), speed.angleRad());
             body.setLinearVelocity(speed);
             body.setAngularVelocity(omega);
             updatePosition();
         }
 
-        public void setNewRandomPositionAndSpeed(Viewport viewport, AstroCat player, float speed) {
-            ThreadLocalRandom rand = ThreadLocalRandom.current();
+        void setNewRandomPositionAndSpeed(Viewport viewport, AstroCat player, float speed) {
             Vector2 newPosition;
             float angleMultiplier;
             if (rand.nextBoolean()) {
@@ -243,7 +240,7 @@ public class AstroCatGame extends MiniGame {
 
         private boolean isPlayingSound;
 
-        public AstroCat(PhysicsShapeCache physCache, World world, Texture astroCatTexture, Vector2 position,
+        AstroCat(PhysicsShapeCache physCache, World world, Texture astroCatTexture, Vector2 position,
                 ParticleEffect rocketEmitter, MySound gasNoiseSound) {
             super("astrocat", physCache, astroCatTexture, world, position, false);
             rocket = rocketEmitter;
@@ -282,7 +279,7 @@ public class AstroCatGame extends MiniGame {
             super.draw(batch);
         }
 
-        public void accelerate() {
+        void accelerate() {
             rocket.start();
             if (!isPlayingSound) {
                 gasNoise.loop();
@@ -291,7 +288,7 @@ public class AstroCatGame extends MiniGame {
             body.applyForceToCenter(currentForce, true);
         }
 
-        public void stopAccelerating() {
+        void stopAccelerating() {
             rocket.reset();
             if (isPlayingSound) {
                 gasNoise.stop();
@@ -300,8 +297,7 @@ public class AstroCatGame extends MiniGame {
             body.applyForceToCenter(Vector2.Zero, false);
         }
 
-        public void turnToPoint(Vector2 point) {
-
+        void turnToPoint(Vector2 point) {
             // Lei dos eixos paralelos
             MassData md = body.getMassData();
             float inertiaAtCenterOfMass = body.getInertia() + md.mass * md.center.len2();
@@ -325,39 +321,36 @@ public class AstroCatGame extends MiniGame {
     }
 
     private static class Planet extends AstroCatBody {
-
-        public Planet(PhysicsShapeCache physCache, World world, Texture planetTexture, Vector2 position) {
+        Planet(PhysicsShapeCache physCache, World world, Texture planetTexture, Vector2 position) {
             super("planet", physCache, planetTexture, world, position, true);
         }
-
     }
 
-    private static float getRandomWithinRange(ThreadLocalRandom rand, float value, float range) {
+    private static float getRandomWithinRange(Random rand, float value, float range) {
         return value + (rand.nextBoolean() ? -1.0f : 1.0f) * rand.nextFloat() * range * value;
     }
 
     @Override
     protected void onStart() {
         finished = false;
+        rand = new Random();
 
         walls = new Body[4];
         asteroidSet = new HashSet<Asteroid>();
-        ThreadLocalRandom rand = ThreadLocalRandom.current();
 
         // Carregando texturas
-        asteroidTextures = new Texture[NUM_ASTEROIDS];
+        Texture[] asteroidTextures = new Texture[NUM_ASTEROIDS];
         for (int i = 0; i < NUM_ASTEROIDS; i++) {
             asteroidTextures[i] = loadTexture("astrocat/asteroid" + (i + 1) + ".png");
         }
-        astroCatTexture = loadTexture("astrocat/astrocat.png");
-        crosshairTexture = loadTexture("astrocat/crosshair.png");
-        backgroundTexture = loadTexture("astrocat/background.png");
-        planetTexture = loadTexture("astrocat/planet.png");
+        Texture astroCatTexture = loadTexture("astrocat/astrocat.png");
+        Texture crosshairTexture = loadTexture("astrocat/crosshair.png");
+        Texture backgroundTexture = loadTexture("astrocat/background.png");
+        Texture planetTexture = loadTexture("astrocat/planet.png");
         gasNoise = new MySound(assets.get("astrocat/gasnoise.mp3", Sound.class));
         impact = new MySound(assets.get("astrocat/impact.ogg", Sound.class));
-        backgroundMusic = new MyMusic(assets.get("astrocat/background.mp3", Music.class));
         world = new World(new Vector2(0.0f, 0.0f), true);
-        physCache = new PhysicsShapeCache(Gdx.files.internal("astrocat/physics.xml"));
+        PhysicsShapeCache physCache = new PhysicsShapeCache(Gdx.files.internal("astrocat/physics.xml"));
 
         // Carregando efeito de partículas
         ParticleEffect particleEffect = new ParticleEffect();
@@ -397,7 +390,7 @@ public class AstroCatGame extends MiniGame {
         crosshairVisible = false;
 
         // Inserindo listener de detecção de colisão com som
-        contactListener = new AstroCatContactListener();
+        ContactListener contactListener = new AstroCatContactListener();
         world.setContactListener(contactListener);
 
         createWalls();
@@ -451,7 +444,6 @@ public class AstroCatGame extends MiniGame {
 
     private void fillAsteroidSet() {
         while (asteroidSet.size() <= maxAsteroids) {
-            ThreadLocalRandom rand = ThreadLocalRandom.current();
             Asteroid selected;
             do {
                 selected = asteroids[rand.nextInt(asteroids.length)];
@@ -552,6 +544,9 @@ public class AstroCatGame extends MiniGame {
             asteroid.draw(batch);
         }
         crosshair.draw(batch);
+
+        MyMusic backgroundMusic = SoundManager.getInstance().playBackgroundMusic(MUSIC_PATH);
+        backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(0.6f);
         if (isPaused()) {
             astroCat.stopAccelerating();
@@ -559,7 +554,7 @@ public class AstroCatGame extends MiniGame {
         } else if (MiniGameState.PLAYING.equals(getState())) {
             backgroundMusic.play();
         } else {
-            backgroundMusic.stop();
+            SoundManager.getInstance().stopBackgroundMusic("menu/meowautheme.mp3");
         }
     }
 
@@ -575,8 +570,7 @@ public class AstroCatGame extends MiniGame {
 
     @Override
     protected void onEnd() {
-        backgroundMusic.stop();
-        backgroundMusic.dispose();
+        SoundManager.getInstance().stopBackgroundMusic("menu/meowautheme.mp3");
         gasNoise.stop();
         world.destroyBody(astroCat.body);
         world.destroyBody(planet.body);
