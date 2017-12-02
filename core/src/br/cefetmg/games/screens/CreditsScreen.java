@@ -40,7 +40,7 @@ public class CreditsScreen extends BaseScreen {
     private static final float TIME_TO_BACK = 2.0f;
     private static final float TIME_FADE = 0.25f;
 
-    private MySound click2;
+    private MySound backSound;
     private Image background;
     private Button menuBtn;
     private Stage stage;
@@ -66,7 +66,7 @@ public class CreditsScreen extends BaseScreen {
         linearFilter.magFilter = Texture.TextureFilter.Linear;
         assets.load("menu/menu-background.png", Texture.class, linearFilter);
         assets.load("world/menu.png", Texture.class, linearFilter);
-        assets.load("menu/click2.mp3", Sound.class);
+        assets.load("menu/click1.mp3", Sound.class);
 
         FreeTypeFontLoaderParameter snackerComicParams = new FreeTypeFontLoaderParameter();
         snackerComicParams.fontFileName = "fonts/orangejuice.ttf";
@@ -130,7 +130,7 @@ public class CreditsScreen extends BaseScreen {
         background = new Image(assets.get("menu/menu-background.png", Texture.class));
         Image menu = new Image(assets.get("world/menu.png", Texture.class));
         menuBtn = new Button(menu.getDrawable());
-        click2 = new MySound(assets.get("menu/click2.mp3", Sound.class));
+        backSound = new MySound(assets.get("menu/click1.mp3", Sound.class));
         menuBtn.setY(viewport.getWorldHeight() * 0.02f);
         menuBtn.setX(menuBtn.getY());
 
@@ -163,7 +163,7 @@ public class CreditsScreen extends BaseScreen {
         menuBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                click2.play();
+                backSound.play();
                 inputDetected = true;
                 goBackActionSequence();
             }
