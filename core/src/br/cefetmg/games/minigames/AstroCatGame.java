@@ -357,11 +357,11 @@ public class AstroCatGame extends MiniGame {
         impact = new MySound(assets.get("astrocat/impact.ogg", Sound.class));
         backgroundMusic = new MyMusic(assets.get("astrocat/background.mp3", Music.class));
         world = new World(new Vector2(0.0f, 0.0f), true);
-        physCache = new PhysicsShapeCache(Gdx.files.local("astrocat/physics.xml"));
+        physCache = new PhysicsShapeCache(Gdx.files.internal("astrocat/physics.xml"));
 
         // Carregando efeito de partículas
         ParticleEffect particleEffect = new ParticleEffect();
-        particleEffect.load(Gdx.files.local("astrocat/rocket.p"), Gdx.files.local("astrocat"));
+        particleEffect.load(Gdx.files.internal("astrocat/rocket.p"), Gdx.files.internal("astrocat"));
         particleEffect.scaleEffect(SCALE);
 
         // Instanciando Sprites
