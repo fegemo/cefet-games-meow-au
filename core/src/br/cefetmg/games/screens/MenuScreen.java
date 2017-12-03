@@ -39,8 +39,8 @@ public class MenuScreen extends BaseScreen {
     private static final float BUTTONS_PADDING = 5.0f;
     private static final int BUTTON_COLSPAN = 3;
 
-    private static enum Direction {
-        LEFT, RIGHT;
+    private enum Direction {
+        LEFT, RIGHT
     }
 
     private SoundIcon soundButton;
@@ -76,7 +76,7 @@ public class MenuScreen extends BaseScreen {
      * @param previous
      *            a tela de onde o usuário veio.
      */
-    public MenuScreen(Game game, BaseScreen previous) {
+    MenuScreen(Game game, BaseScreen previous) {
         super(game, previous);
     }
 
@@ -283,12 +283,12 @@ public class MenuScreen extends BaseScreen {
                 normalSurvivalTable.toFront();
                 fadeInButton(btnNormal, posSecondary, BUTTONS_FADE_TIME);
                 fadeInButton(btnSurvival, Direction.RIGHT, posSecondary++, BUTTONS_FADE_TIME);
-                fadeInButton(btnBack, posSecondary++, BUTTONS_FADE_TIME);
+                fadeInButton(btnBack, posSecondary, BUTTONS_FADE_TIME);
                 int posPrimary = 0;
                 fadeOutButton(btnPlay, posPrimary++);
                 fadeOutButton(btnRanking, posPrimary++);
                 fadeOutButton(btnCredits, posPrimary++);
-                fadeOutButton(btnExit, posPrimary++);
+                fadeOutButton(btnExit, posPrimary);
             }
         });
         btnExit.addListener(new ChangeListener() {
@@ -383,11 +383,11 @@ public class MenuScreen extends BaseScreen {
                 fadeInButton(btnPlay, Direction.RIGHT, posPrimary++, BUTTONS_FADE_TIME);
                 fadeInButton(btnRanking, Direction.RIGHT, posPrimary++, BUTTONS_FADE_TIME);
                 fadeInButton(btnCredits, Direction.RIGHT, posPrimary++, BUTTONS_FADE_TIME);
-                fadeInButton(btnExit, Direction.RIGHT, posPrimary++, BUTTONS_FADE_TIME);
+                fadeInButton(btnExit, Direction.RIGHT, posPrimary, BUTTONS_FADE_TIME);
                 int posSecondary = 0;
                 fadeOutButton(btnNormal, Direction.RIGHT, posSecondary);
                 fadeOutButton(btnSurvival, posSecondary++);
-                fadeOutButton(btnBack, Direction.RIGHT, posSecondary++);
+                fadeOutButton(btnBack, Direction.RIGHT, posSecondary);
             }
         });
     }

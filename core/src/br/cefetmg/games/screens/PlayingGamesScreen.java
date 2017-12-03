@@ -28,7 +28,7 @@ import java.util.Set;
 
 /**
  *
- * @inspirado no tp de cinematica
+ * inspirado no tp de cinematica
  */
 public class PlayingGamesScreen extends BaseScreen
         implements MiniGameStateObserver {
@@ -45,7 +45,6 @@ public class PlayingGamesScreen extends BaseScreen
     private MySound gameOverSound;
     private MySound youLoseSound;
     private MySound youWinSound;
-    private MyMusic intergames;
 
     public PlayingGamesScreen(Game game, BaseScreen previous) {
         super(game, previous);
@@ -289,7 +288,7 @@ public class PlayingGamesScreen extends BaseScreen
                 hud.showGameInstructions(currentGame.getInstructions());
                 hud.startInitialCountdown();
                 hud.showPauseButton();
-                intergames = new MyMusic(assets.get("hud/intergames.wav", Music.class));
+                MyMusic intergames = new MyMusic(assets.get("hud/intergames.wav", Music.class));
                 intergames.play();
                 hud.hideSoundsButton();
                 break;
