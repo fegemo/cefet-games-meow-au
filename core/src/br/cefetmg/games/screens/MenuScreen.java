@@ -471,8 +471,13 @@ public class MenuScreen extends BaseScreen {
         logo.addAction(Actions.sequence(Actions.alpha(1.0f), Actions.scaleTo(FINAL_LOGO_SCALE, FINAL_LOGO_SCALE),
                 Actions.delay(delay),
                 Actions.parallel(Actions.fadeOut(BUTTONS_FADE_TIME),
-                        Actions.scaleTo(INITIAL_LOGO_SCALE, INITIAL_LOGO_SCALE, BUTTONS_FADE_TIME)),
-                Actions.run(action)));
+                        Actions.scaleTo(INITIAL_LOGO_SCALE, INITIAL_LOGO_SCALE, BUTTONS_FADE_TIME)), Actions.delay(0.05f),
+                Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        logo.setVisible(false);
+                    }
+                }), Actions.run(action)));
         soundButton.getButton().addAction(
                 Actions.sequence(Actions.alpha(1.0f), Actions.delay(delay), Actions.fadeOut(BUTTONS_FADE_TIME)));
     }
