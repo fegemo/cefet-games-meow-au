@@ -1,17 +1,32 @@
-COLABORADORES:
 
-Adriel Augusto
+
+
+[#3f3f3f]Feito com amor S2
+pela turma de
+[#336600]Engenharia de Computação[]
+do [#336600]CEFET-MG[] em 2017/02
+
+
+
+
+[#003399]ARTISTAS
+DESENVOLVEDORES
+GAME DESIGNERS
+MÚSICOS[]
+
+
+Adriel Augusto 
 Andre Brait
+Arthur Abeilice
 Cassiano de Brito
-Estevao
-Flavio Coutinho
+Emanoel Guimarães
+Estevao Costa
 Gabriel Melo
 Gustavo Jordao
 Gustavo Marques
 Joao Matos
 Luis Carlos
 Luiza dos Anjos
-Arthur Abeilice
 Miguel Rodrigues
 Natalia Natsumy
 Pedro Belisario
@@ -21,3 +36,11 @@ Rogenes Reis
 Sarah Rodrigues
 Tulio Santos
 Vinicius Henrique
+
+
+[#003399]PROFESSOR[]
+Flávio Coutinho
+
+
+
+
