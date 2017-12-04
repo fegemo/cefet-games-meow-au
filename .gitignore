@@ -71,7 +71,6 @@ build/
 Thumbs.db
 
 
-# meow au specific
-progress-file.txt
-local-ranking.txt
-remote-ranking.txt
+core/assets/data/ProgressFile\.txt
+
+*.txt
