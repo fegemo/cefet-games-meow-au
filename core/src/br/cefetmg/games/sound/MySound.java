@@ -100,7 +100,9 @@ public class MySound implements AudioResource, Disposable {
     @Override
     public void setVolume(float vol) {
         desiredVolume = vol;
-        sound.setVolume(soundId, vol);
+        if (SoundManager.getInstance().isAudioEnabled()) {
+            sound.setVolume(soundId, vol);
+        }
     }
 
     @Override
