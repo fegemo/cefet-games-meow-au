@@ -142,7 +142,8 @@ public class CreditsScreen extends BaseScreen {
         stack.setFillParent(true);
         stack.add(background);
 
-        LabelStyle fontStyle = new LabelStyle(font, Color.DARK_GRAY);
+        font.getData().markupEnabled = true;
+        LabelStyle fontStyle = new LabelStyle(font, Color.WHITE);
         String file = Gdx.files.internal(Config.CREDITS_FILE).readString();
         textLabel = new Label(file, fontStyle);
         textLabel.setAlignment(Align.center, Align.center);

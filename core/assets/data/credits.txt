@@ -1,21 +1,26 @@
 
 
 
+[#3f3f3f]Feito com amor S2
+pela turma de
+[#336600]Engenharia de Computação[]
+do [#336600]CEFET-MG[] em 2017/02
+
+
+
+
+[#003399]ARTISTAS
 DESENVOLVEDORES
-ARTISTAS
 GAME DESIGNERS
-MÚSICOS
+MÚSICOS[]
 
 
-
-
-
-Adriel Augusto
+Adriel Augusto 
 Andre Brait
 Arthur Abeilice
 Cassiano de Brito
-Estevao
-Flavio Coutinho
+Emanoel Guimarães
+Estevao Costa
 Gabriel Melo
 Gustavo Jordao
 Gustavo Marques
@@ -33,13 +38,9 @@ Tulio Santos
 Vinicius Henrique
 
 
+[#003399]PROFESSOR[]
+Flávio Coutinho
 
-
-
-Feito com amor S2S2
-pela turma de
-Desenvolvimento de Jogos
-do CEFET-MG em 2017/02
 
 
 
