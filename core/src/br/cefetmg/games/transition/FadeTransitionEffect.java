@@ -16,13 +16,15 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  */
 public abstract class FadeTransitionEffect extends TransitionEffect {
 
+    private final ShapeRenderer shapeRenderer;
     private final Color color;
     protected float alpha;
 
     protected FadeTransitionEffect(float duration, float initialAlpha) {
         super(duration);
         this.alpha = initialAlpha;
-        this.color = new Color();
+        this.color = new Color(0f, 0f, 0f, 0f);
+        this.shapeRenderer = new ShapeRenderer(20);
     }
 
     /**
@@ -45,15 +47,12 @@ public abstract class FadeTransitionEffect extends TransitionEffect {
     }
 
     private void drawFade(Viewport viewport) {
-        Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-        ShapeRenderer shapeRenderer = new ShapeRenderer();
+        Gdx.gl.glEnable(GL20.GL_BLEND);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(color);
         shapeRenderer.rect(0, 0, viewport.getScreenWidth(), viewport.getScreenHeight());
         shapeRenderer.end();
-
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
