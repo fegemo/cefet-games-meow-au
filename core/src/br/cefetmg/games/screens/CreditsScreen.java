@@ -4,6 +4,7 @@ import br.cefetmg.games.Config;
 import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.MySound;
 import br.cefetmg.games.sound.SoundManager;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
@@ -31,7 +32,7 @@ import com.badlogic.gdx.utils.Scaling;
  * Tela de créditos
  *
  * @author Natália Natsumy
- * @authos André Brait <andrebrait@gmail.com>
+ * @author André Brait <andrebrait@gmail.com>
  */
 public class CreditsScreen extends BaseScreen {
 
@@ -41,7 +42,6 @@ public class CreditsScreen extends BaseScreen {
     private static final float TIME_FADE = 0.25f;
 
     private MySound backSound;
-    private Image background;
     private Button menuBtn;
     private Stage stage;
     private Stack stack;
@@ -53,7 +53,7 @@ public class CreditsScreen extends BaseScreen {
     private boolean reachedEnd;
     private boolean isGoingBack;
 
-    public CreditsScreen(Game game, BaseScreen previous) {
+    CreditsScreen(Game game, BaseScreen previous) {
         super(game, previous);
     }
 
@@ -127,7 +127,7 @@ public class CreditsScreen extends BaseScreen {
     @Override
     protected void assetsLoaded() {
         BitmapFont font = assets.get("orangejuice.ttf");
-        background = new Image(assets.get("menu/menu-background.png", Texture.class));
+        Image background = new Image(assets.get("menu/menu-background.png", Texture.class));
         Image menu = new Image(assets.get("world/menu.png", Texture.class));
         menuBtn = new Button(menu.getDrawable());
         backSound = new MySound(assets.get("menu/click1.mp3", Sound.class));
@@ -172,7 +172,7 @@ public class CreditsScreen extends BaseScreen {
 
         menuBtn.setDisabled(true);
         menuBtn.addAction(Actions.alpha(0.0f));
-        textLabel.addAction(Actions.sequence(Actions.alpha(0.0f), Actions.delay(0.01f), Actions.fadeIn(TIME_FADE)));
+        textLabel.addAction(Actions.sequence(Actions.alpha(0.0f), Actions.delay(0.1f), Actions.fadeIn(TIME_FADE)));
 
         MyMusic musicaTema = SoundManager.getInstance().playBackgroundMusic("menu/meowautheme.mp3");
         musicaTema.setLooping(true);
@@ -201,12 +201,14 @@ public class CreditsScreen extends BaseScreen {
             textLabel.clearActions();
             menuBtn.addAction(Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(TIME_FADE)));
             textLabel.addAction(
-                    Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(TIME_FADE), Actions.run(new Runnable() {
-                        @Override
-                        public void run() {
-                            goBack();
-                        }
-                    })));
+                    Actions.sequence(Actions.alpha(1.0f), Actions.fadeOut(TIME_FADE), Actions.delay(0.05f),
+                            Actions.run(new Runnable() {
+                                @Override
+                                public void run() {
+                                    textLabel.setVisible(false);
+                                    goBack();
+                                }
+                            })));
         }
     }
 

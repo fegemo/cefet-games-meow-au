@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "513313261799",
+    "firebase_url": "https://cefet-games-meow-au.firebaseio.com",
+    "project_id": "cefet-games-meow-au",
+    "storage_bucket": "cefet-games-meow-au.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:513313261799:android:61091eefbec5239f",
+        "android_client_info": {
+          "package_name": "br.cefetmg.games.meowau20172"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "513313261799-qdns1vfvfj1422abhs0ioeqvl2m2dpe2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_KZqkeLIwKQHzAs4jEqGBFQFx9Uj0Eu0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

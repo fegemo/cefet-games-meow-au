@@ -2,6 +2,7 @@ package br.cefetmg.games.transition;
 
 import br.cefetmg.games.screens.BaseScreen;
 import br.cefetmg.games.screens.LoadingScreen;
+import br.cefetmg.games.screens.PlayingGamesScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.utils.Timer;
@@ -32,7 +33,9 @@ public class TransitionScreen extends ScreenAdapter {
         this.transitionEffects = transitionEffects;
         this.currentTransitionEffect = 0;
         this.game = current.game;
-        this.loadingScreen = new LoadingScreen();
+        if (next instanceof PlayingGamesScreen) {
+            this.loadingScreen = new LoadingScreen(next.viewport);
+        }
     }
 
     // ======== Sobrecarga para getInstance ======== //
@@ -73,8 +76,10 @@ public class TransitionScreen extends ScreenAdapter {
             if (transitionEffects.get(currentTransitionEffect).isFinished()) {
                 currentTransitionEffect++;
             }
-        } else if (current.toString().contains("PlayingGamesScreen")) { //Se a próxima tela for a de PlayingGamesScreen
-            //A tela de carregamento será chamada até sua conclusão (isLoadingOver receber true)
+        } else if (current instanceof PlayingGamesScreen) {
+            // se a próxima tela for a de PlayingGamesScreen
+            // a tela de carregamento será chamada até sua conclusão 
+            // (isLoadingOver receber true)
             isLoadingOver = loadingScreen.draw(current.assets, current.batch, current.viewport);
         }
     }
