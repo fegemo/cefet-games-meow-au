@@ -7,6 +7,7 @@ import br.cefetmg.games.sound.SoundManager;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -94,7 +95,10 @@ public class CreditsScreen extends BaseScreen {
 
     @Override
     public void handleInput() {
-        // Como estamos usando scene2d, o input é gerenciado nele.
+        if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
+            inputDetected = true;
+            goBackActionSequence();
+        }
     }
 
     @Override

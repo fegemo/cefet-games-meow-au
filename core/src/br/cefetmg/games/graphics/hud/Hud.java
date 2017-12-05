@@ -5,7 +5,9 @@ import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.screens.BaseScreen;
 import br.cefetmg.games.sound.MySound;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -26,8 +28,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Align;
 
+import java.util.Locale;
+
 /**
- *
  * @author fegemo <coutinho@decom.cefetmg.br>
  */
 public class Hud {
@@ -36,28 +39,22 @@ public class Hud {
     private final MiniGameStateObserver stateObserver;
     private final Stage stage;
     private SoundIcon soundIcon;
-    private Skin skin;
-    private Table table;
     private Label centeredLabel;
     private Label sequenceIndexLabel;
     private HorizontalGroup livesGroup;
 
     private Countdown countdown;
-    private Texture lifeTexture;
-    private Texture explodeLifeTexture;
-    private Texture clockTexture;
     private Image mask;
     private Button pauseButton;
     private Button backMenuButton;
     private Button backGameButton;
     private Button confirmButton;
     private Button unnconfirmedButton;
-    private MySound timerSound;
     private Clock clock;
 
     private int currentLives;
     private boolean isPaused;
-    
+
     public Hud(BaseScreen screen, MiniGameStateObserver stateObserver) {
         this.screen = screen;
         this.stateObserver = stateObserver;
@@ -65,7 +62,7 @@ public class Hud {
     }
 
     public void create() {
-        skin = new Skin(Gdx.files.internal("hud/uiskin.json"));
+        Skin skin = new Skin(Gdx.files.internal("hud/uiskin.json"));
         skin.add("unpause", screen.assets.get("hud/unpause-button.png",
                 Texture.class));
         skin.add("pause", screen.assets.get("hud/pause-button.png",
@@ -80,11 +77,11 @@ public class Hud {
         skin.add("back-game", screen.assets.get("hud/back-game-button.png",
                 Texture.class));
 
-        lifeTexture = screen.assets.get("hud/lifeTexture.png");
-        explodeLifeTexture = screen.assets.get("hud/explodeLifeTexture.png");
-        
-        clockTexture = screen.assets.get("hud/clock.png");
-        
+        Texture lifeTexture = screen.assets.get("hud/lifeTexture.png");
+        Texture explodeLifeTexture = screen.assets.get("hud/explodeLifeTexture.png");
+
+        Texture clockTexture = screen.assets.get("hud/clock.png");
+
 
         countdown = new Countdown(screen.assets.get("hud/countdown.png", Texture.class));
         countdown.setAlign(Align.center);
@@ -106,37 +103,26 @@ public class Hud {
         centeredLabel.setY(stage.getViewport().getWorldHeight() * 0.75f);
         stage.addActor(centeredLabel);
 
-        
+
         soundIcon = new SoundIcon(stage);
         soundIcon.create(
-                    screen.assets.get("hud/no-sound-button.png", Texture.class),
-                    screen.assets.get("hud/sound-button.png", Texture.class));
-
+                screen.assets.get("hud/no-sound-button.png", Texture.class),
+                screen.assets.get("hud/sound-button.png", Texture.class));
 
         pauseButton = new ImageButton(
                 skin.getDrawable("unpause"),
                 skin.getDrawable("unpause"),
                 skin.getDrawable("pause")
         );
+        pauseButton.setProgrammaticChangeEvents(false);
+
         pauseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                isPaused = !isPaused;
-                mask.setVisible(isPaused);
-                backMenuButton.setVisible(isPaused);
-                backGameButton.setVisible(isPaused);
-                if (isPaused) {
-                    stateObserver.onGamePaused();
-                    clock.pauseTicking();
-                    soundIcon.show();
-                } else {
-                    stateObserver.onGameResumed();
-                    clock.resumeTicking();
-                    soundIcon.hide();
-                }   
+                togglePauseButton();
             }
         });
-        
+
         backGameButton = new ImageButton(
                 skin.getDrawable("back-game")
         );
@@ -150,11 +136,10 @@ public class Hud {
                 stateObserver.onGameResumed();
                 clock.resumeTicking();
                 isPaused = !isPaused;
-                pauseButton.setProgrammaticChangeEvents(false);
                 pauseButton.setChecked(false);
             }
         });
-                
+
         backMenuButton = new ImageButton(
                 skin.getDrawable("back-menu")
         );
@@ -170,7 +155,7 @@ public class Hud {
                 unnconfirmedButton.setVisible(true);
             }
         });
-        
+
         confirmButton = new ImageButton(
                 skin.getDrawable("confirm")
         );
@@ -196,29 +181,29 @@ public class Hud {
                 showPauseButton();
             }
         });
-        backMenuButton.setX(stage.getViewport().getWorldWidth() * 0.50f-backMenuButton.getWidth()/2);
+        backMenuButton.setX(stage.getViewport().getWorldWidth() * 0.50f - backMenuButton.getWidth() / 2);
         backMenuButton.setY(stage.getViewport().getWorldHeight() * 0.55f);
-        backGameButton.setX(stage.getViewport().getWorldWidth() * 0.50f-backMenuButton.getWidth()/2);
+        backGameButton.setX(stage.getViewport().getWorldWidth() * 0.50f - backMenuButton.getWidth() / 2);
         backGameButton.setY(stage.getViewport().getWorldHeight() * 0.35f);
         confirmButton.setY(stage.getViewport().getWorldHeight() * 0.50f);
         unnconfirmedButton.setY(stage.getViewport().getWorldHeight() * 0.50f);
-        confirmButton.setX(stage.getViewport().getWorldWidth()  * 0.75f);
-        unnconfirmedButton.setX(stage.getViewport().getWorldWidth()  * 0.25f);
+        confirmButton.setX(stage.getViewport().getWorldWidth() * 0.75f);
+        unnconfirmedButton.setX(stage.getViewport().getWorldWidth() * 0.25f);
         stage.addActor(backMenuButton);
         stage.addActor(backGameButton);
         stage.addActor(confirmButton);
         stage.addActor(unnconfirmedButton);
-        
+
         currentLives = Config.MAX_LIVES;
 
         // faz a parte de baixo da HUD com um "layout de tabela":
         // https://github.com/libgdx/libgdx/wiki/Table
-        table = new Table();
+        Table table = new Table();
         table.bottom();
         table.setFillParent(true);
 
         sequenceIndexLabel = new Label(
-                String.format("%d", 1), new LabelStyle(
+                String.format(Locale.getDefault(), "%d", 1), new LabelStyle(
                 screen.assets.get("snaphand-v1-free.ttf", BitmapFont.class), Color.WHITE));
 
         livesGroup = new HorizontalGroup();
@@ -226,7 +211,7 @@ public class Hud {
             livesGroup.addActor(new LifeHeart(lifeTexture, explodeLifeTexture));
         }
 
-        timerSound = new MySound(screen.assets.get("hud/tick-tock.mp3", Sound.class));
+        MySound timerSound = new MySound(screen.assets.get("hud/tick-tock.mp3", Sound.class));
         clock = new Clock(clockTexture, timerSound);
 
         table.padBottom(10).row().expandX();
@@ -243,7 +228,27 @@ public class Hud {
 
     }
 
+    private void togglePauseButton() {
+        isPaused = !isPaused;
+        mask.setVisible(isPaused);
+        backMenuButton.setVisible(isPaused);
+        backGameButton.setVisible(isPaused);
+        pauseButton.setChecked(isPaused);
+        if (isPaused) {
+            stateObserver.onGamePaused();
+            clock.pauseTicking();
+            soundIcon.show();
+        } else {
+            stateObserver.onGameResumed();
+            clock.resumeTicking();
+            soundIcon.hide();
+        }
+    }
+
     public void update(float dt) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
+            togglePauseButton();
+        }
         if (!isPaused) {
             stage.act(dt);
         }
@@ -258,7 +263,7 @@ public class Hud {
     }
 
     public void setGameIndex(int index) {
-        sequenceIndexLabel.setText(String.format("%d", index));
+        sequenceIndexLabel.setText(String.format(Locale.getDefault(), "%d", index));
     }
 
     public void setLives(int lives) {
@@ -313,15 +318,15 @@ public class Hud {
     public void hidePauseButton() {
         pauseButton.setVisible(false);
     }
-    
+
     public void showMessage(String message) {
         centeredLabel.setText(message);
     }
-    
-    public void hideMessage() {
+
+    private void hideMessage() {
         centeredLabel.setText("");
     }
-    
+
     public void hideSoundsButton() {
         soundIcon.hide();
     }

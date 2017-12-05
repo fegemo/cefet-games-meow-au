@@ -1,6 +1,7 @@
 package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
+import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.SoundManager;
 import br.cefetmg.games.database.OnlineRanking;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -56,7 +58,7 @@ public class RankingScreen extends BaseScreen {
 
 	private boolean online;
 
-	public RankingScreen(Game game, BaseScreen previous, int phase) {
+	RankingScreen(Game game, BaseScreen previous, int phase) {
 		super(game, previous);
 		this.letters = new Letter[3][10];
 		this.phaseNumber = phase;
@@ -64,7 +66,7 @@ public class RankingScreen extends BaseScreen {
 		initFromGameOver();
 	}
 
-	public RankingScreen(Game game, BaseScreen previous) {
+	RankingScreen(Game game, BaseScreen previous) {
 		super(game, previous);
 		this.letters = new Letter[3][10];
 		this.online = false;
@@ -241,7 +243,7 @@ public class RankingScreen extends BaseScreen {
 		}
 	}
 
-	public boolean collider(Vector2 bottom, Vector2 size, Vector2 click) {
+	private boolean collider(Vector2 bottom, Vector2 size, Vector2 click) {
 		return (click.x > bottom.x && click.x < (bottom.x + size.x))
 				&& (click.y > bottom.y && click.y < (bottom.y + size.y));
 	}
@@ -272,6 +274,10 @@ public class RankingScreen extends BaseScreen {
 		click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
 		viewport.unproject(click);
 
+		if(showingScore && Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
+            Gdx.input.setCursorCatched(false);
+            transitionScreen(new MenuScreen(super.game, this), TransitionScreen.Effect.FADE_IN_OUT, 0.4f);
+        }
 		if (Gdx.input.justTouched()) {
 			if (writingScore) {
 				for (i = 0; i < 3; i++) {
@@ -280,7 +286,7 @@ public class RankingScreen extends BaseScreen {
 							break;
 						}
 						if (collider(letters[i][j].bottom, letters[i][j].size, click) && name.length() < 10) {
-							name = name + letters[i][j].symbol;
+							name += letters[i][j].symbol;
 							exitFor = 1;
 							break;
 						}
@@ -422,7 +428,7 @@ public class RankingScreen extends BaseScreen {
 		private Vector2 size;
 		private char symbol;
 
-		public Letter(Vector2 bottom, Vector2 size, char symbol) {
+		Letter(Vector2 bottom, Vector2 size, char symbol) {
 			this.bottom = bottom;
 			this.size = size;
 			this.symbol = symbol;

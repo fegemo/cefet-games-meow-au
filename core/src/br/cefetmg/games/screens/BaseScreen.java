@@ -2,6 +2,7 @@ package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
 import br.cefetmg.games.transition.TransitionScreen;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -27,13 +28,13 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Uma tela do jogo.
- * 
- * O jogo é dividido em várias telas (Splash, Menu, PlayingGame etc.) e o 
+ * <p>
+ * O jogo é dividido em várias telas (Splash, Menu, PlayingGame etc.) e o
  * código relativo a cada uma delas é uma instância de uma subclasse de
  * BaseScreen.
- * 
+ * <p>
  * Cada BaseScreen possui uma {@link SpriteBatch} própria, bem como duas fontes
- * ({@link BitmapFont}) padrão para escrever texto na tela: Sawasdee 24pt e 
+ * ({@link BitmapFont}) padrão para escrever texto na tela: Sawasdee 24pt e
  * Sawasdee 50pt.
  *
  * @author fegemo <coutinho@decom.cefetmg.br>
@@ -43,22 +44,23 @@ public abstract class BaseScreen extends ScreenAdapter {
     public final Game game;
     private final BaseScreen previous;
     public final SpriteBatch batch;
-    public final OrthographicCamera camera;
     public Viewport viewport;
-    public Rectangle visibleWorldBounds;
     public final AssetManager assets;
-    protected BitmapFont messagesFont;
     private float deviceAspectRatioDivergenceFromDesired;
     private boolean wasJustDisposed = false;
     private boolean assetsFinishedLoading = false;
     private boolean assetsStartedLoading = false;
-    
+    private Rectangle visibleWorldBounds;
+
+    OrthographicCamera camera;
+    BitmapFont messagesFont;
+
     /**
      * Cria uma instância de tela.
-     * 
-     * @param game O jogo do qual a nova instância pertence.
-     * @param previous A tela anterior, que levou a esta. Caso esta seja 
-     * a primeira tela, o valor deve ser null.
+     *
+     * @param game     O jogo do qual a nova instância pertence.
+     * @param previous A tela anterior, que levou a esta. Caso esta seja
+     *                 a primeira tela, o valor deve ser null.
      */
     public BaseScreen(Game game, BaseScreen previous) {
         this.game = game;
@@ -84,12 +86,12 @@ public abstract class BaseScreen extends ScreenAdapter {
         messagesFontParams.fontParameters.borderColor = Color.BLACK;
         assets.load("snaphand-v1-free.ttf", BitmapFont.class, messagesFontParams);
     }
-    
+
     /**
      * Determina qual é o melhor tipo de viewport para ser usado considerando
      * que o jogo foi projetado para 16:9, mas o dispositivo pode ter uma razão
      * de aspecto diferente.
-     *
+     * <p>
      * Se a razão real do dispositivo for próxima da razão ideal, escolhe uma
      * FillViewport, que preenche todo o espaço do dispositivo mas pode deixar
      * alguma coisinha de fora; se a razão do dispositivo for muito diferente,
@@ -132,7 +134,7 @@ public abstract class BaseScreen extends ScreenAdapter {
         return ((float) deviceWidth) / deviceHeight;
     }
 
-    public void defineVisibleWorldBounds() {
+    private void defineVisibleWorldBounds() {
         if (!shouldFillDeviceScreen()) {
             visibleWorldBounds = new Rectangle(
                     0, 0, Config.WORLD_WIDTH, Config.WORLD_HEIGHT);
@@ -156,7 +158,7 @@ public abstract class BaseScreen extends ScreenAdapter {
             );
         }
     }
-    
+
     public Rectangle getVisibleWorldBounds() {
         return visibleWorldBounds;
     }
@@ -171,7 +173,7 @@ public abstract class BaseScreen extends ScreenAdapter {
     /**
      * Atualiza as dimensões da tela de pintura ({@link Viewport}).
      *
-     * @param width nova largura da janela.
+     * @param width  nova largura da janela.
      * @param height nova altura da janela.
      */
     @Override
@@ -180,13 +182,13 @@ public abstract class BaseScreen extends ScreenAdapter {
     }
 
     /**
-     * Invoca as funções de atualização de lógica, recepção de <em>input</em> 
+     * Invoca as funções de atualização de lógica, recepção de <em>input</em>
      * e de desenho.
-     * 
+     * <p>
      * Além disso, assegura de que os desenhos
      *
      * @param dt Quanto tempo se passou desde a última vez que a função foi
-     * chamada.
+     *           chamada.
      */
     @Override
     public final void render(float dt) {
@@ -204,7 +206,7 @@ public abstract class BaseScreen extends ScreenAdapter {
 
             // chama função para gerenciar o input
             handleInput();
-            
+
             // chama função para atualizar a lógica da tela
             update(dt);
 
@@ -225,13 +227,13 @@ public abstract class BaseScreen extends ScreenAdapter {
             draw();
         }
     }
-    
-    public void transitionScreen(BaseScreen screen, TransitionScreen.Effect effect, float duration) {
+
+    void transitionScreen(BaseScreen screen, TransitionScreen.Effect effect, float duration) {
         TransitionScreen transitionScreen = TransitionScreen.getInstance(this, screen);
         transitionScreen.execute(effect, duration);
     }
-    
-    public void transitionGame(TransitionScreen.Effect effect, float duration, Timer.Task task) {
+
+    void transitionGame(TransitionScreen.Effect effect, float duration, Timer.Task task) {
         TransitionScreen transitionScreen = TransitionScreen.getInstance(this);
         transitionScreen.execute(effect, duration, task);
     }
@@ -239,12 +241,12 @@ public abstract class BaseScreen extends ScreenAdapter {
     /**
      * Escreve um texto centralizado na tela, com uma escala {@code scale} e
      * na altura {@code y}.
-     * 
+     *
      * @param text O texto a ser escrito.
-     * @param y A altura do mundo de jogo onde o texto deve ser renderizado. 
-     * Deve estar entre [0 (baixo), Config.WORLD_HEIGHT-altura-do-texto]. 
+     * @param y    A altura do mundo de jogo onde o texto deve ser renderizado.
+     *             Deve estar entre [0 (baixo), Config.WORLD_HEIGHT-altura-do-texto].
      */
-    public void drawCenterAlignedText(String text, float y) {
+    void drawCenterAlignedText(String text, float y) {
         final float horizontalPadding = 0.05f;
         messagesFont.setColor(Color.WHITE);
 
@@ -258,7 +260,7 @@ public abstract class BaseScreen extends ScreenAdapter {
                 Align.center,
                 true);
     }
-    
+
     @Override
     public final void dispose() {
         if (!wasJustDisposed) {
@@ -267,21 +269,21 @@ public abstract class BaseScreen extends ScreenAdapter {
             this.cleanUp();
         }
     }
-    
+
     /**
      * Executa ações de carregamento da tela. Esta função é chamada assim que a
      * tela vai ser exibida pela primeira vez.
-     *
+     * <p>
      * Esta função deve ser usada em vez do método {@code show()}.
      */
     public abstract void appear();
-    
+
     /**
      * Executa ações assim que todos os assets foram carregados. Ela é chamada
-     * apenas uma vez, depois de appear(), assim que todos os assets foram 
+     * apenas uma vez, depois de appear(), assim que todos os assets foram
      * carregados.
-     * 
-     * Esta função pode ser usada para carregar os elementos do jogo que 
+     * <p>
+     * Esta função pode ser usada para carregar os elementos do jogo que
      * dependem dos assets que foram carregados (eg, uma sprite precisa de uma
      * textura).
      */
@@ -295,17 +297,17 @@ public abstract class BaseScreen extends ScreenAdapter {
 
     /**
      * Executa ações relativas ao <em>input</em> do jogador.
-     * 
-     * Use {@code Gdx.input.*} para perguntar se eventos de <em>input</em> 
+     * <p>
+     * Use {@code Gdx.input.*} para perguntar se eventos de <em>input</em>
      * estão acontecendo.
      */
     public abstract void handleInput();
 
     /**
      * Atualiza a lógica da tela.
-     * 
+     *
      * @param dt Quanto tempo se passou desde a última vez que a função foi
-     * chamada.
+     *           chamada.
      */
     public abstract void update(float dt);
 
