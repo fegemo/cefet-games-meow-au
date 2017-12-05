@@ -19,12 +19,12 @@ public class TicCatDog extends MiniGame {
         private int x, y; //Index da matrix
         private int score; //Utilizado no algoritmo minmax
 
-        public Move(int x, int y) {
+        Move(int x, int y) {
             this.x = x;
             this.y = y;
         }
 
-        public Move(int score) {
+        Move(int score) {
             this.score = score;
         }
 
@@ -44,18 +44,17 @@ public class TicCatDog extends MiniGame {
             this.y = y;
         }
 
-        public int getScore() {
+        int getScore() {
             return score;
         }
 
-        public void setScore(int score) {
+        void setScore(int score) {
             this.score = score;
         }
     }
 
     private Texture backgroundTexture; //Imagem de fundo ilustrativa
-    private Texture whiteSquareTexture; //Quadrado em branco para composição do jogo da velha
-    private Texture catSquareTexture; //Quadrado com um gato no centro 
+    private Texture catSquareTexture; //Quadrado com um gato no centro
     private Texture dogSquareTexture; //Quadrado com um cachorro no centro
     private Sprite mouseArrowSprite;
     private MySound catMeowingSound;
@@ -65,14 +64,10 @@ public class TicCatDog extends MiniGame {
     private int[][] ticCatDogMatrix; //Matriz que armazena estado atual de cada quadrado
     private final int EMPTY_SQUARE = 0, CAT_SQUARE = 1, DOG_SQUARE = 2;
 
-    private float squareHeight;
-    private float squareWidth;
-    private float initialScaleMouse;
-
     private final int CAT_TURN = 1, DOG_TURN = 2;
     private int turn;
-    
-    private final int CAT_DUMB = 1, CAT_SMART = 2;
+
+    private final int CAT_SMART = 2;
     private int catCleverness;
 
     private Random generator = new Random();
@@ -87,7 +82,7 @@ public class TicCatDog extends MiniGame {
     protected void onStart() {
         backgroundTexture = assets.get(
                 "tic-cat-dog/main-background.jpg", Texture.class);
-        whiteSquareTexture = assets.get(
+        Texture whiteSquareTexture = assets.get(
                 "tic-cat-dog/white-square.png", Texture.class);
         catSquareTexture = assets.get(
                 "tic-cat-dog/cat-square.png", Texture.class);
@@ -98,10 +93,10 @@ public class TicCatDog extends MiniGame {
 
         catMeowingSound = new MySound(assets.get("tic-cat-dog/cat-meowing.wav", Sound.class));
         dogBarkingSound = new MySound(assets.get("tic-cat-dog/dog-barking.wav", Sound.class));
-        
-        squareHeight = viewport.getWorldHeight() / 5;
-        squareWidth = viewport.getWorldWidth() / 5;
-        initialScaleMouse = (float) 0.05;
+
+        float squareHeight = viewport.getWorldHeight() / 5;
+        float squareWidth = viewport.getWorldWidth() / 5;
+        float initialScaleMouse = (float) 0.05;
         
         mouseArrowSprite.setOriginCenter();
         mouseArrowSprite.setScale(initialScaleMouse, initialScaleMouse);
@@ -126,6 +121,7 @@ public class TicCatDog extends MiniGame {
 
     @Override
     protected void configureDifficultyParameters(float difficulty) {
+        int CAT_DUMB = 1;
         if(difficulty <= 0.25) { //Fácil: cachorro começa, gato randômico
             turn = DOG_TURN;
             catCleverness = CAT_DUMB;
@@ -233,8 +229,9 @@ public class TicCatDog extends MiniGame {
     public void onHandlePlayingInput() {
         //Recebe a posição do mouse e atualiza a Sprite de mouse
         Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-        this.mouseArrowSprite.setPosition(click.x - this.mouseArrowSprite.getWidth() / 2,
-                -click.y + this.mouseArrowSprite.getHeight() / 2);
+        viewport.unproject(click);
+
+        this.mouseArrowSprite.setCenter(click.x, click.y);
 
         //Verifica se o usuário clicou em algum quadrado do tic-tac-toe
         boolean clickHiSquare = false;
@@ -326,7 +323,7 @@ public class TicCatDog extends MiniGame {
         return true;
     }
 
-    public boolean isPlayerWinning(int[][] matrix, int player) {
+    private boolean isPlayerWinning(int[][] matrix, int player) {
         return //Horizontal
                 (matrix[0][0] == player && matrix[0][1] == player && matrix[0][2] == player)
                 || (matrix[1][0] == player && matrix[1][1] == player && matrix[1][2] == player)
