@@ -22,6 +22,7 @@ public class MeowAuGame extends Game {
 	@Override
 	public void create() {
 		this.setScreen(new SplashScreen(this, null));
+		Gdx.input.setCatchBackKey(true);
 	}
 
 	private void handleInput() {

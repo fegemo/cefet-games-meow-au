@@ -5,7 +5,11 @@ import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.screens.MenuScreen;
+import br.cefetmg.games.transition.TransitionScreen;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,26 +17,27 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
 import java.util.Random;
 
 /**
- *
  * @author fegemo <coutinho@decom.cefetmg.br>
  */
 public abstract class MiniGame {
 
-//    protected final BaseScreen screen;
+    //    protected final BaseScreen screen;
     protected final AssetManager assets;
     protected final Viewport viewport;
     protected final SpriteBatch batch;
     protected long remainingTime;
-    protected float maxDuration;
     private float timeSpentOnInstructions;
     private float timeSpentPlaying;
     private MiniGameState state;
     protected Random rand;
     protected final Timer timer;
     private boolean isPaused;
+
+    float maxDuration;
 
     private boolean challengeSolved;
     private MiniGameStateObserver stateObserver;
@@ -41,13 +46,13 @@ public abstract class MiniGame {
     private float difficulty;
 
     public MiniGame(BaseScreen screen, MiniGameStateObserver observer,
-            float difficulty, float maxDuration, 
-            TimeoutBehavior endOfGameSituation) {
+                    float difficulty, float maxDuration,
+                    TimeoutBehavior endOfGameSituation) {
         if (difficulty < 0 || difficulty > 1) {
             throw new IllegalArgumentException(
                     "A dificuldade (difficulty) de um minigame deve ser um "
-                    + "número entre 0 e 1. Você passou o número " + difficulty
-                    + ".");
+                            + "número entre 0 e 1. Você passou o número " + difficulty
+                            + ".");
         }
 
         this.assets = screen.assets;
@@ -90,7 +95,7 @@ public abstract class MiniGame {
 
         // libera o cursor do mouse
         Gdx.input.setCursorCatched(false);
-        
+
         if (state == MiniGameState.PLAYING) {
             onGamePaused(isPaused);
         }
@@ -153,7 +158,7 @@ public abstract class MiniGame {
         }
     }
 
-    public final boolean isPaused() {
+    final boolean isPaused() {
         return isPaused;
     }
 
@@ -203,8 +208,8 @@ public abstract class MiniGame {
         this.challengeSolved = true;
         transitionTo(MiniGameState.PLAYER_SUCCEEDED);
     }
-    
-    protected void showMessage(String strMessage){
+
+    void showMessage(String strMessage) {
         this.stateObserver.showMessage(strMessage);
     }
 
@@ -218,13 +223,14 @@ public abstract class MiniGame {
      * Pode ser sobrescrito, mas não é necessário em todo jogo.
      */
     protected void onEnd() {
-        
+
     }
-    
+
     /**
-     * É chamado pelo próprio MiniGame quando ele é pausado/resumido pelo 
+     * É chamado pelo próprio MiniGame quando ele é pausado/resumido pelo
      * jogador. Pode ser usado para interromper/retomar a música de fundo, por
      * exemplo.
+     *
      * @param justPaused acabou de pausar (true) ou resumir (false).
      */
     protected void onGamePaused(boolean justPaused) {
@@ -236,22 +242,23 @@ public abstract class MiniGame {
      * a quantidade de inimigos, a velocidade deles etc.
      * Este método é chamado pela própria MiniGame e, dentro dele, você deve
      * apenas configurar suas próprias variáveis relativas à dificuldade.
-     * 
+     *
      * @param difficulty a dificuldade, entre [0, 1].
      */
     protected abstract void configureDifficultyParameters(float difficulty);
 
     /**
-     * Chamada o tempo todo, deve ser usada para detectar se o jogador 
-     * interagiu com a tela/teclado/mouse de alguma forma e, então, agir de 
+     * Chamada o tempo todo, deve ser usada para detectar se o jogador
+     * interagiu com a tela/teclado/mouse de alguma forma e, então, agir de
      * acordo.
      */
     public abstract void onHandlePlayingInput();
 
     /**
      * Chamada o tempo todo, deve ser usada para atualizar a lógica do jogo.
-     * @param dt tempo (em segundos) desde a última vez que onUpdate(dt) 
-     * foi chamada.
+     *
+     * @param dt tempo (em segundos) desde a última vez que onUpdate(dt)
+     *           foi chamada.
      */
     public abstract void onUpdate(float dt);
 
@@ -264,14 +271,16 @@ public abstract class MiniGame {
      * Chamada pelo próprio MiniGame para mostrar as instruções do jogo ao
      * jogador na tela. Basta retornar uma string com as instruções (que devem
      * ser curtas!).
+     *
      * @return as instruções (no máximo, 3-5 palavras
      */
     public abstract String getInstructions();
 
     /**
-     * Chamada pelo próprio jogo para saber se, durante o seu MiniGame, ele 
-     * deve esconder o ponteiro do mouse (no caso de um dispositivo com mouse). 
-     * @return true/false para falar se deve esconder o ponteiro do mouse 
+     * Chamada pelo próprio jogo para saber se, durante o seu MiniGame, ele
+     * deve esconder o ponteiro do mouse (no caso de um dispositivo com mouse).
+     *
+     * @return true/false para falar se deve esconder o ponteiro do mouse
      * ou não.
      */
     public abstract boolean shouldHideMousePointer();

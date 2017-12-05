@@ -4,6 +4,7 @@ import br.cefetmg.games.Config;
 import br.cefetmg.games.graphics.hud.SoundIcon;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -24,30 +25,33 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.Align;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Locale;
 
 public class OverworldScreen extends BaseScreen {
 
     private static final int NUMBER_OF_LEVELS = 5;
     private static final int[] MINIMUM_SCORE_TO_UNLOCK_NEXT_LEVEL
             = new int[]{3, 9, 18, 36, 72};
-    private boolean hasReachedMaximumScore;
-    
-    private Vector2 click;
+
     private Stage stage;
 
-    protected MySound click1, click2;
+    private MySound click1, click2;
 
     private boolean check = false;
     private boolean stop;
-    private Vector2[] posicaoIcone;
     private boolean[] openLevels;
-    private Image map,
-            icon1, stage1,
-            icon2, stage2,
-            icon3, stage3,
-            icon4, stage4,
-            icon5, stage5,
-            exit, menu, play, water;
+    private Image icon1;
+    private Image stage1;
+    private Image icon2;
+    private Image stage2;
+    private Image icon3;
+    private Image stage3;
+    private Image icon4;
+    private Image stage4;
+    private Image icon5;
+    private Image stage5;
+    private Image exit;
+    private Image play;
 
     private final InputMultiplexer inputMultiplexer;
     private BitmapFont fonteDeTexto;
@@ -59,11 +63,11 @@ public class OverworldScreen extends BaseScreen {
     private final StringBuilder scoreText;
     private FileHandle progressFile;
 
-    public OverworldScreen(Game game, BaseScreen previous) {
+    OverworldScreen(Game game, BaseScreen previous) {
         this(game, previous, 0, 0);
     }
 
-    public OverworldScreen(Game game, BaseScreen previous,
+    OverworldScreen(Game game, BaseScreen previous,
             int stageJustPlayed, int remainingLivesAtStageEnd) {
         super(game, previous);
         inputMultiplexer = new InputMultiplexer();
@@ -87,7 +91,7 @@ public class OverworldScreen extends BaseScreen {
 
         // agora verificamos qual é o nível máximo que deve estar desbloqueado,
         // baseado na nova pontuação calculada
-        hasReachedMaximumScore = false;
+        boolean hasReachedMaximumScore = false;
         while (score >= MINIMUM_SCORE_TO_UNLOCK_NEXT_LEVEL[currentLevel]) {
             // incrementa o nível atual, mas sem exceder o índice do nível 
             // máximo
@@ -125,8 +129,8 @@ public class OverworldScreen extends BaseScreen {
         assets.load("world/water.jpg", Texture.class, linearFilter);
         assets.load("world/cadeado.png", Texture.class, linearFilter);
         for (int i = 0; i < NUMBER_OF_LEVELS; i++) {
-            String stageFile = String.format("world/stage%d.png", i + 1);
-            String iconFile = String.format("world/icon%d.png", i + 1);
+            String stageFile = String.format(Locale.getDefault(), "world/stage%d.png", i + 1);
+            String iconFile = String.format(Locale.getDefault(), "world/icon%d.png", i + 1);
             assets.load(stageFile, Texture.class, linearFilter);
             assets.load(iconFile, Texture.class, linearFilter);
         }
@@ -149,7 +153,7 @@ public class OverworldScreen extends BaseScreen {
             locks.add(new Image(assets.get("world/cadeado.png", Texture.class)));
         }
 
-        map = new Image(assets.get("world/desert.png", Texture.class));
+        Image map = new Image(assets.get("world/desert.png", Texture.class));
         stage1 = new Image(assets.get("world/stage1.png", Texture.class));
         stage2 = new Image(assets.get("world/stage2.png", Texture.class));
         stage3 = new Image(assets.get("world/stage3.png", Texture.class));
@@ -161,9 +165,9 @@ public class OverworldScreen extends BaseScreen {
         icon4 = new Image(assets.get("world/icon4.png", Texture.class));
         icon5 = new Image(assets.get("world/icon5.png", Texture.class));
         exit = new Image(assets.get("world/menu.png", Texture.class));
-        menu = new Image(assets.get("world/menu.png", Texture.class));
+        Image menu = new Image(assets.get("world/menu.png", Texture.class));
         play = new Image(assets.get("world/play.png", Texture.class));
-        water = new Image(assets.get("world/water.jpg", Texture.class));
+        Image water = new Image(assets.get("world/water.jpg", Texture.class));
         fonteDeTexto = super.messagesFont;
 
         desenhaMeio = true;
@@ -235,7 +239,7 @@ public class OverworldScreen extends BaseScreen {
         exit.setOrigin(0, 0);
         exit.setPosition(viewport.getWorldWidth() / 2 - 225, viewport.getWorldHeight() / 2 - 100);
 
-        posicaoIcone = new Vector2[NUMBER_OF_LEVELS];
+        Vector2[] posicaoIcone = new Vector2[NUMBER_OF_LEVELS];
 
         posicaoIcone[0] = new Vector2(775.29376f, 176.95001f);
         posicaoIcone[1] = new Vector2(325.83545f, 453.82504f);
@@ -298,12 +302,19 @@ public class OverworldScreen extends BaseScreen {
 
     @Override
     public void handleInput() {
-        click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+        Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);
 
         Actor hitActor = stage.hit(click.x, click.y, false);
 
         growEffect(click);
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
+            click1.play();
+            transitionScreen(new MenuScreen(super.game, this),
+                    TransitionScreen.Effect.FADE_IN_OUT, 0.5f);
+            stop = true;
+        }
         if (Gdx.input.justTouched() && hitActor != null && !stop) {
             if ("menu".equals(hitActor.getName())) {
                 click1.play();
@@ -405,13 +416,12 @@ public class OverworldScreen extends BaseScreen {
             } else if ((("icon5".equals(hitActor.getName()) && currentLevel < 4) || ("icon4".equals(hitActor.getName()) && currentLevel < 3) || ("icon3".equals(hitActor.getName()) && currentLevel < 2) || ("icon2".equals(hitActor.getName()) && currentLevel < 1))) {
                 click2.play();
                 stop = false;
-            } else {
             }
         }
     }
 
     private void saveProgressFile() {
-        String content = String.format("%d:%d", this.currentLevel, this.score);
+        String content = String.format(Locale.getDefault(), "%d:%d", this.currentLevel, this.score);
         progressFile.writeString(content, false);
     }
 
@@ -611,7 +621,7 @@ public class OverworldScreen extends BaseScreen {
         batch.end();
     }
 
-    public void drawScoreText() {
+    private void drawScoreText() {
         final float horizontalPosition = viewport.getWorldWidth() * 0.45f;
         final float verticalPosition = viewport.getWorldHeight();
         fonteDeTexto.setColor(Color.WHITE);
