@@ -72,7 +72,7 @@ public class LoadingScreen {
          * @param clockwise determines the rotation side of the cooldown timer.
          * @param radius the radius of the circle.
          */
-        public CooldownTimer(boolean clockwise, float radius) {
+        CooldownTimer(boolean clockwise, float radius) {
             this.shapes = new ShapeRenderer();
             this.percentageComplete = 0;
             this.radius = radius;

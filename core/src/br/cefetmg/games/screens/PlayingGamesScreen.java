@@ -9,6 +9,7 @@ import br.cefetmg.games.logic.chooser.InfiniteGameSequencer;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.factories.*;
 import br.cefetmg.games.minigames.util.MiniGameState;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,18 +17,22 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.audio.Sound;
+
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.MySound;
+
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
+
 import java.util.Arrays;
 import java.util.HashSet;
+
 import com.badlogic.gdx.audio.Music;
+
 import java.util.Set;
 
 /**
- *
  * inspirado no tp de cinematica
  */
 public class PlayingGamesScreen extends BaseScreen
@@ -45,6 +50,8 @@ public class PlayingGamesScreen extends BaseScreen
     private MySound gameOverSound;
     private MySound youLoseSound;
     private MySound youWinSound;
+    private MyMusic intergames;
+    private boolean intergamesCompleted;
 
     public PlayingGamesScreen(Game game, BaseScreen previous) {
         super(game, previous);
@@ -95,7 +102,7 @@ public class PlayingGamesScreen extends BaseScreen
     }
 
     public PlayingGamesScreen(Game game, BaseScreen previous, int nGames, Set<MiniGameFactory> games,
-            float initialDifficulty, float finalDifficulty, int currentStage) {
+                              float initialDifficulty, float finalDifficulty, int currentStage) {
         super(game, previous);
         state = PlayScreenState.PLAYING;
         lives = Config.MAX_LIVES;
@@ -104,6 +111,7 @@ public class PlayingGamesScreen extends BaseScreen
 
         hud = new Hud(this, this);
         inputMultiplexer = new InputMultiplexer();
+        intergamesCompleted = false;
     }
 
     @Override
@@ -252,6 +260,14 @@ public class PlayingGamesScreen extends BaseScreen
             gameOverSound = new MySound(assets.get("sound/gameover.wav", Sound.class));
             youLoseSound = new MySound(assets.get("sound/youlose.wav", Sound.class));
             youWinSound = new MySound(assets.get("sound/youwin.wav", Sound.class));
+            intergames = new MyMusic(assets.get("hud/intergames.wav", Music.class));
+            intergames.setOnCompletionListener(new Music.OnCompletionListener() {
+                @Override
+                public void onCompletion(Music music) {
+                    intergamesCompleted = true;
+                }
+            });
+            intergames.play();
 
             hasPreloaded = true;
         }
@@ -275,7 +291,7 @@ public class PlayingGamesScreen extends BaseScreen
                 super.game.setScreen(new MenuScreen(super.game, this));
                 break;
             default:
-            	break;
+                break;
         }
         this.state = newState;
     }
@@ -288,8 +304,10 @@ public class PlayingGamesScreen extends BaseScreen
                 hud.showGameInstructions(currentGame.getInstructions());
                 hud.startInitialCountdown();
                 hud.showPauseButton();
-                MyMusic intergames = new MyMusic(assets.get("hud/intergames.wav", Music.class));
-                intergames.play();
+                intergamesCompleted = false;
+                if(hasPreloaded) {
+                    intergames.play();
+                }
                 hud.hideSoundsButton();
                 break;
 
@@ -307,8 +325,8 @@ public class PlayingGamesScreen extends BaseScreen
                     Gdx.input.setCursorCatched(false);
                 }
                 youWinSound.play();
-            // deixa passar para próximo caso (esta foi
-            // uma decisão consciente =)
+                // deixa passar para próximo caso (esta foi
+                // uma decisão consciente =)
 
             case PLAYER_FAILED:
                 hud.hidePauseButton();
@@ -349,7 +367,9 @@ public class PlayingGamesScreen extends BaseScreen
     @Override
     public void onGamePaused() {
         currentGame.pause();
-
+        if(hasPreloaded) {
+            intergames.pause();
+        }
         // desabilita até que o jogo seja despausado
         inputMultiplexer.removeProcessor(currentGame.getInputProcessor());
     }
@@ -357,6 +377,9 @@ public class PlayingGamesScreen extends BaseScreen
     @Override
     public void onGameResumed() {
         currentGame.resume();
+        if(hasPreloaded && !intergamesCompleted) {
+            intergames.play();
+        }
 
         // recupera o possível processador de input do minigame
         if (currentGame.getInputProcessor() != null) {
@@ -376,4 +399,11 @@ public class PlayingGamesScreen extends BaseScreen
         FINISHED_WON,
         BACK_MENU
     }
+
+    @Override
+    public void pause() {
+        super.pause();
+        hud.triggerPauseActions();
+    }
+
 }

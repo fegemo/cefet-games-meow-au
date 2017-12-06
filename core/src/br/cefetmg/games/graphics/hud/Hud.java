@@ -4,7 +4,9 @@ import br.cefetmg.games.Config;
 import br.cefetmg.games.minigames.util.MiniGameState;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.screens.LoadingScreen;
 import br.cefetmg.games.sound.MySound;
+import br.cefetmg.games.transition.TransitionScreen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -25,7 +27,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Align;
 
 import java.util.Locale;
@@ -119,7 +120,7 @@ public class Hud {
         pauseButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                togglePauseButton();
+                toggleHudPauseState();
             }
         });
 
@@ -130,13 +131,7 @@ public class Hud {
         backGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                backGameButton.setVisible(false);
-                backMenuButton.setVisible(false);
-                mask.setVisible(false);
-                stateObserver.onGameResumed();
-                clock.resumeTicking();
-                isPaused = !isPaused;
-                pauseButton.setChecked(false);
+                triggerResumeActions();
             }
         });
 
@@ -228,7 +223,25 @@ public class Hud {
 
     }
 
-    private void togglePauseButton() {
+    /**
+     * Dispara as ações envolvidas em pausar a tela atual.
+     */
+    public void triggerPauseActions() {
+        if (!isPaused) {
+            toggleHudPauseState();
+        }
+    }
+
+    /**
+     * Dispara as ações envolvidas em resumir a tela atual.
+     */
+    public void triggerResumeActions() {
+        if (isPaused) {
+            toggleHudPauseState();
+        }
+    }
+
+    private void toggleHudPauseState() {
         isPaused = !isPaused;
         mask.setVisible(isPaused);
         backMenuButton.setVisible(isPaused);
@@ -247,7 +260,7 @@ public class Hud {
 
     public void update(float dt) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)) {
-            togglePauseButton();
+            toggleHudPauseState();
         }
         if (!isPaused) {
             stage.act(dt);
@@ -334,4 +347,5 @@ public class Hud {
     public void showSoundsButton() {
         soundIcon.show();
     }
+
 }
