@@ -422,9 +422,11 @@ public class HitTheGopher extends MiniGame {
         @Override
         public void update(float dt) {
             super.update(dt);
-            
-            this.setPosition(Gdx.input.getX()-this.getWidth()/2.0f, -(Gdx.input.getY()-this.getHeight()/2.0f));
-            
+
+            Vector2 position = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+            viewport.unproject(position);
+            this.setCenter(position.x, position.y);
+
             switch(state){
                 case ANIMATION:
                     if(accumulated >= CLICK_TIME){
