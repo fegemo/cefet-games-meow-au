@@ -75,7 +75,7 @@ public class SplashScreen extends BaseScreen {
 
     @Override
     public void cleanUp() {
-        backgroundMusic.stop();
+        backgroundMusic.dispose();
         for (int i = 0; i < NUMBER_OF_VIDEO_FRAMES; i++) {
             logo[i].getTexture().dispose();
         }
@@ -85,6 +85,7 @@ public class SplashScreen extends BaseScreen {
      * Navega para a tela de Menu.
      */
     private void navigateToMenuScreen() {
+        backgroundMusic.stop();
         transitionScreen(new MenuScreen(game, this),
                 TransitionScreen.Effect.FADE_IN_OUT, 0.4f);
     }
