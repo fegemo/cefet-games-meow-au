@@ -48,7 +48,6 @@ public class MeowAuGame extends Game {
 	public void setScreen(Screen screen) {
 		if (loadedScreen == screen) {
 			this.screen = screen;
-			loadedScreen = null;
 			return;
 		}
 
