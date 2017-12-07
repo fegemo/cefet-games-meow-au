@@ -78,4 +78,8 @@ public class MyMusic implements AudioResource, Disposable {
         music.dispose();
     }
 
+    public void setOnCompletionListener(Music.OnCompletionListener listener){
+        music.setOnCompletionListener(listener);
+    }
+
 }
