@@ -21,7 +21,11 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.TextureData;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Align;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -58,17 +62,42 @@ public class OverworldScreen extends BaseScreen {
     private ArrayList<Image> locks;
     private boolean desenhaMeio = true;
     private MyMusic backgroundMusic;
+    private MyMusic victoryMusic;
     private int currentLevel;
     private int score;
     private final StringBuilder scoreText;
     private FileHandle progressFile;
+    
+    private final int NUM_SPRITESHEETS = 13;
+    
+    private AnimatedSprite[] catVictoryMovingR = new AnimatedSprite[NUM_SPRITESHEETS];
+    private AnimatedSprite[] catVictoryMovingB = new AnimatedSprite[NUM_SPRITESHEETS];
+    private Sprite catVictoryR;
+    private Sprite catVictoryB;
+    private Texture catVictoryTexture;
+    
+    private Texture victoryLogoTexture;
+    private Sprite victoryLogo;
 
+    private static final int LEFT = 0;
+    private static final int RIGHT = 1;
+    
+    private int victoryCatSpritesheetNumber=0;
+    private int counter=0;
+    
+    private boolean isVictory = false;
+    private boolean victoryPlayed;
+    private int MAX_TIME_TO_CHANGE_SPRITESHEET = 100;
+    
+    private final int POINTS_TO_VICTORY_ANIMATION = 72;
+    
     OverworldScreen(Game game, BaseScreen previous) {
         this(game, previous, 0, 0);
+        victoryPlayed = (score >= POINTS_TO_VICTORY_ANIMATION ? true : false);
     }
 
     OverworldScreen(Game game, BaseScreen previous,
-            int stageJustPlayed, int remainingLivesAtStageEnd) {
+        int stageJustPlayed, int remainingLivesAtStageEnd) {
         super(game, previous);
         inputMultiplexer = new InputMultiplexer();
 
@@ -122,7 +151,7 @@ public class OverworldScreen extends BaseScreen {
         TextureParameter linearFilter = new TextureParameter();
         linearFilter.minFilter = Texture.TextureFilter.Linear;
         linearFilter.magFilter = Texture.TextureFilter.Linear;
-
+        
         assets.load("world/desert.png", Texture.class, linearFilter);
         assets.load("world/menu.png", Texture.class, linearFilter);
         assets.load("world/play.png", Texture.class, linearFilter);
@@ -142,6 +171,15 @@ public class OverworldScreen extends BaseScreen {
         assets.load("world/overworldtheme.mp3", Music.class);
 
         Gdx.input.setInputProcessor(inputMultiplexer);
+        
+        //Assets victory screen
+        assets.load("victory/Blue_Sprite.png", Texture.class);   
+        for(int i=0; i<NUM_SPRITESHEETS; i++) {
+            assets.load("victory/red ("+Integer.toString(i+1)+").png", Texture.class);
+            assets.load("victory/blue ("+Integer.toString(i+1)+").png", Texture.class);
+        }
+        assets.load("victory/victory_bomberman.mp3", Music.class);
+        assets.load("victory/victory_logo.png", Texture.class);
     }
 
     @Override
@@ -292,6 +330,22 @@ public class OverworldScreen extends BaseScreen {
             cadeado.setScale(0.5f);
             i++;
         }
+        
+        //Assets victory screen
+        catVictoryTexture = assets.get("victory/Blue_Sprite.png", Texture.class);
+        catVictoryR = new Sprite(catVictoryTexture);
+        catVictoryR.setPosition(100, 100);
+        catVictoryB = new Sprite(catVictoryTexture);
+        catVictoryB.setPosition(1000, 100);
+        for(int j=0; j<NUM_SPRITESHEETS; j++) {
+            catVictoryMovingR[j] = new AnimatedSprite("victory/red ("+Integer.toString(j+1)+").png",0.1f, 194, 146, 7, RIGHT, 0);
+            catVictoryMovingB[j] = new AnimatedSprite("victory/blue ("+Integer.toString(j+1)+").png",0.1f, 194, 146, 7, RIGHT, 0);
+        }
+        victoryMusic = new MyMusic(assets.get("victory/victory_bomberman.mp3", Music.class));
+        victoryMusic.setLooping(false);
+        victoryLogoTexture = assets.get("victory/victory_logo.png", Texture.class);
+        victoryLogo = new Sprite(victoryLogoTexture);
+        victoryLogo.setPosition(400, 300);
     }
 
     @Override
@@ -618,6 +672,11 @@ public class OverworldScreen extends BaseScreen {
         batch.begin();
         drawLocks();
         drawScoreText();
+        if(isVictory) {
+            victoryLogo.draw(batch);
+            batch.draw((TextureRegion) catVictoryMovingR[victoryCatSpritesheetNumber].movement.getKeyFrame(catVictoryMovingR[victoryCatSpritesheetNumber].animationTime), catVictoryR.getX(), catVictoryR.getY());
+            batch.draw((TextureRegion) catVictoryMovingB[victoryCatSpritesheetNumber].movement.getKeyFrame(catVictoryMovingR[victoryCatSpritesheetNumber].animationTime), catVictoryB.getX(), catVictoryB.getY());
+        } 
         batch.end();
     }
 
@@ -632,6 +691,55 @@ public class OverworldScreen extends BaseScreen {
                 0.9f * viewport.getWorldWidth(),
                 Align.center,
                 true);
+    }
+    
+    //Inner Class Animated Sprite
+    class AnimatedSprite {
+
+        private Animation movement;
+        private float animationTime;
+        private final Texture spriteSheet;
+        private final TextureRegion[][] animationPictures;
+
+        AnimatedSprite(String textureName, float time, int frameWidth, int frameHeight, int frames, int sense, int startPosiiton) {
+            spriteSheet = assets.get(textureName, Texture.class);
+            animationPictures = TextureRegion.split(spriteSheet, frameWidth, frameHeight);
+
+            animationTime = 0;
+            createMovement(time, sense, frames, startPosiiton);
+        }
+
+        void configurePlayMode(Animation.PlayMode p) {
+            movement.setPlayMode(p);
+        }
+
+        private void createMovement(float time, int sense, int frames, int startPositon) {
+            TextureRegion[] t = new TextureRegion[frames];
+            int i, k;
+            k = 0;
+            if (sense == LEFT) {
+                for (i = startPositon; i >= 0; i--) {
+                    t[k] = animationPictures[0][i];
+                    k++;
+                }
+                for (i = frames - 1; i > startPositon; i--) {
+                    t[k] = animationPictures[0][i];
+                    k++;
+                }
+            } else {
+                for (i = startPositon; i < frames; i++) {
+                    t[k] = animationPictures[0][i];
+                    k++;
+                }
+                for (i = 0; i < startPositon; i++) {
+                    t[k] = animationPictures[0][i];
+                    k++;
+                }
+            }
+
+            movement = new Animation<TextureRegion>(time, t);
+            movement.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
+        }
     }
 
     @Override
@@ -661,6 +769,33 @@ public class OverworldScreen extends BaseScreen {
         } else {
             hideStage(stage5);
         }
-        stage.act(dt);
+        
+        
+        if(isVictory) {
+            backgroundMusic.stop();
+            victoryMusic.play();
+            counter++;
+            if(counter>MAX_TIME_TO_CHANGE_SPRITESHEET) {
+                victoryCatSpritesheetNumber++;
+                counter=0;
+            }
+            if(victoryCatSpritesheetNumber>NUM_SPRITESHEETS-1) {
+                victoryCatSpritesheetNumber = 0;
+                victoryMusic.stop();
+                backgroundMusic.play();
+                isVictory = false;
+            }
+            for(int i=0; i<13; i++) {
+                catVictoryMovingR[i].animationTime += dt;
+                catVictoryMovingB[i].animationTime += dt;
+            }
+        }
+        if(score>=POINTS_TO_VICTORY_ANIMATION && !victoryPlayed) {
+            isVictory = true;
+            victoryPlayed = true;
+        }
+        System.out.println("isVictory: "+isVictory);
+        System.out.println("victoryPlayed: "+victoryPlayed);
+        System.out.println("Score: "+score);
     }
 }
