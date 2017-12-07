@@ -785,17 +785,12 @@ public class OverworldScreen extends BaseScreen {
                 backgroundMusic.play();
                 isVictory = false;
             }
-            for(int i=0; i<13; i++) {
-                catVictoryMovingR[i].animationTime += dt;
-                catVictoryMovingB[i].animationTime += dt;
-            }
+                catVictoryMovingR[victoryCatSpritesheetNumber].animationTime += dt;
+                catVictoryMovingB[victoryCatSpritesheetNumber].animationTime += dt;
         }
         if(score>=POINTS_TO_VICTORY_ANIMATION && !victoryPlayed) {
             isVictory = true;
             victoryPlayed = true;
         }
-        System.out.println("isVictory: "+isVictory);
-        System.out.println("victoryPlayed: "+victoryPlayed);
-        System.out.println("Score: "+score);
     }
 }
