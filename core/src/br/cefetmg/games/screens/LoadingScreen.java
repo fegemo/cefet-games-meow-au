@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -19,9 +20,14 @@ public class LoadingScreen {
     private final Stage stage;
     private final CooldownTimer cooldownTimer;
     private final TextureRegion background;
+    private final SpriteBatch batch;
+    private final Viewport viewport;
+    private final Vector2 backgroundPosition;
 
-    public LoadingScreen(Viewport viewport) {
-        stage = new Stage(viewport);
+    public LoadingScreen(Viewport viewport, SpriteBatch batch) {
+        this.viewport = viewport;
+        this.batch = batch;
+        stage = new Stage(viewport, batch);
 
         cooldownTimer = new CooldownTimer(true, viewport.getWorldWidth() * 0.035f);
         cooldownTimer.setColor(0.75f, 0.64f, 0.8f, 1);
@@ -34,18 +40,24 @@ public class LoadingScreen {
                 Texture.TextureFilter.Linear,
                 Texture.TextureFilter.Linear);
         background = new TextureRegion(backgroundTexture);
+        backgroundPosition = new Vector2((viewport.getWorldWidth() - background.getRegionWidth())/2f, (viewport.getWorldHeight() - background.getRegionHeight())/2f);
     }
 
-    public boolean draw(AssetManager assets, SpriteBatch batch,
-            Viewport viewport) {
+    public boolean draw(AssetManager assets) {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        batch.begin();
-        batch.draw(background, 0, 0,
-                viewport.getScreenWidth(),
-                viewport.getScreenHeight());
-        batch.end();
+        boolean wasDrawing = batch.isDrawing();
+        if (!wasDrawing) {
+            batch.setProjectionMatrix(viewport.getCamera().combined);
+            batch.begin();
+        }
+        batch.draw(background, backgroundPosition.x, backgroundPosition.y,
+                background.getRegionWidth(),
+                background.getRegionHeight());
+        if (!wasDrawing) {
+            batch.end();
+        }
 
         cooldownTimer.update((float) MathUtils.clamp(assets.getProgress() + 0.05, 0, 1));
 
@@ -54,7 +66,7 @@ public class LoadingScreen {
 
         return assets.getProgress() >= 1;
     }
-
+    
     public class CooldownTimer extends Actor {
 
         private static final int TOTAL_SEGMENTS = 300;

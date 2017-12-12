@@ -34,7 +34,7 @@ public class TransitionScreen extends ScreenAdapter {
         this.currentTransitionEffect = 0;
         this.game = current.game;
         if (next instanceof PlayingGamesScreen) {
-            this.loadingScreen = new LoadingScreen(next.viewport);
+            this.loadingScreen = new LoadingScreen(next.viewport, next.batch);
         }
     }
 
@@ -76,11 +76,11 @@ public class TransitionScreen extends ScreenAdapter {
             if (transitionEffects.get(currentTransitionEffect).isFinished()) {
                 currentTransitionEffect++;
             }
-        } else if (current instanceof PlayingGamesScreen) {
+        } else if (next instanceof PlayingGamesScreen) {
             // se a próxima tela for a de PlayingGamesScreen
             // a tela de carregamento será chamada até sua conclusão 
             // (isLoadingOver receber true)
-            isLoadingOver = loadingScreen.draw(current.assets, current.batch, current.viewport);
+            isLoadingOver = loadingScreen.draw(next.assets);
         }
     }
 
