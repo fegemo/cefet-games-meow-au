@@ -16,7 +16,7 @@ public class ActionsTransitionEffect extends TransitionEffect {
         this(task, 0);
     }
     
-    public ActionsTransitionEffect(Timer.Task task, float duration) {
+    private ActionsTransitionEffect(Timer.Task task, float duration) {
         super(duration);
         this.task = task;
         alreadyExecutedOnce = false;
@@ -26,7 +26,7 @@ public class ActionsTransitionEffect extends TransitionEffect {
     @Override
     public void render(BaseScreen current) {
         if (!alreadyExecutedOnce) {
-            Timer.instance().scheduleTask(task, duration);
+            Timer.instance().postTask(task);
             alreadyExecutedOnce = true;
         } else {
             if (!alreadySwitchedScreens) {
