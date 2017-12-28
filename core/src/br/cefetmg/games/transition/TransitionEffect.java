@@ -6,12 +6,13 @@ public abstract class TransitionEffect {
     
     protected float duration;
     protected float timeElapsed;
-    protected float delta;
     protected boolean isFinished;
-    
+    protected float delta;
+
     protected TransitionEffect(float duration) {
         this.duration = duration;
         timeElapsed = 0;
+        delta = 0;
     }
 
     protected void update(float delta) {

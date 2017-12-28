@@ -30,7 +30,7 @@ import com.badlogic.gdx.utils.Scaling;
  */
 public class MenuScreen extends BaseScreen {
 
-    private static final float SCREENS_FADE_TIME = 0.7f;
+    private static final float SCREENS_FADE_TIME = 0.4f;
     private static final float BUTTONS_FADE_TIME = 0.25f;
     private static final float BUTTONS_FADE_DELAY = 0.1f;
     private static final float AMOUNT_MOVE_BUTTON = 30.0f;
@@ -78,6 +78,9 @@ public class MenuScreen extends BaseScreen {
      */
     MenuScreen(Game game, BaseScreen previous) {
         super(game, previous);
+        if (previous instanceof CreditsScreen) {
+            super.shouldClearBeforeLoaded = false;
+        }
     }
 
     /**
@@ -85,7 +88,7 @@ public class MenuScreen extends BaseScreen {
      */
     @Override
     public void appear() {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.input.setCursorCatched(false);
 
         // instancia música tema

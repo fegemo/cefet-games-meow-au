@@ -53,9 +53,11 @@ public class CreditsScreen extends BaseScreen {
     private boolean inputDetected;
     private boolean reachedEnd;
     private boolean isGoingBack;
+    private Image background;
 
     CreditsScreen(Game game, BaseScreen previous) {
         super(game, previous);
+        super.shouldClearBeforeLoaded = false;
     }
 
     @Override
@@ -65,7 +67,7 @@ public class CreditsScreen extends BaseScreen {
         TextureLoader.TextureParameter linearFilter = new TextureLoader.TextureParameter();
         linearFilter.minFilter = Texture.TextureFilter.Linear;
         linearFilter.magFilter = Texture.TextureFilter.Linear;
-        assets.load("menu/menu-background.png", Texture.class, linearFilter);
+        background = new Image(new Texture("menu/menu-background.png"));
         assets.load("world/menu.png", Texture.class, linearFilter);
         assets.load("menu/click1.mp3", Sound.class);
 
@@ -131,7 +133,6 @@ public class CreditsScreen extends BaseScreen {
     @Override
     protected void assetsLoaded() {
         BitmapFont font = assets.get("orangejuice.ttf");
-        Image background = new Image(assets.get("menu/menu-background.png", Texture.class));
         Image menu = new Image(assets.get("world/menu.png", Texture.class));
         menuBtn = new Button(menu.getDrawable());
         backSound = new MySound(assets.get("menu/click1.mp3", Sound.class));

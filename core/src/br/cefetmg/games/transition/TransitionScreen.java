@@ -4,6 +4,7 @@ import br.cefetmg.games.screens.BaseScreen;
 import br.cefetmg.games.screens.LoadingScreen;
 import br.cefetmg.games.screens.PlayingGamesScreen;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.utils.Timer;
 import java.util.ArrayList;
@@ -24,8 +25,8 @@ public class TransitionScreen extends ScreenAdapter {
     private final ArrayList<TransitionEffect> transitionEffects;
     private int currentTransitionEffect;
 
-    private LoadingScreen loadingScreen; //Tela de carregamento utilizada para transição para PlayingGamesScreen
-    private boolean isLoadingOver = true; //Variável de controle utilizada para garantir a conclusão da tela de carregamento
+    // tela de carregamento utilizada para transição para PlayingGamesScreen
+    private LoadingScreen loadingScreen;
 
     private TransitionScreen(BaseScreen current, BaseScreen next, ArrayList<TransitionEffect> transitionEffects) {
         this.current = current;
@@ -63,24 +64,22 @@ public class TransitionScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         //Verifica se os assets já foram carregados e se a tela de loading já foi concluída
-        if (current.assets.update() && isLoadingOver) {
-            if (currentTransitionEffect >= transitionEffects.size()) {
-                game.setScreen(next);
-                lastInstance = null;
-                return;
-            }
+        if (currentTransitionEffect >= transitionEffects.size()) {
+            game.setScreen(next);
+            lastInstance = null;
+            return;
+        }
 
-            transitionEffects.get(currentTransitionEffect).update(delta);
-            transitionEffects.get(currentTransitionEffect).render(current);
+        // foi necessário limitar o delta a 50ms porque após terminar de pré-carregar
+        // a próxima, o delta vem enorme (quase 1s) e isso fazia com que a transição
+        // de entrada da próxima tela concluísse muito rápido
+        // o motivo desse delta grande parece ser um overhead associado à última
+        // chamada ao AssetManager.update()
+        transitionEffects.get(currentTransitionEffect).update(Math.min(0.05f, delta));
+        transitionEffects.get(currentTransitionEffect).render(current);
 
-            if (transitionEffects.get(currentTransitionEffect).isFinished()) {
-                currentTransitionEffect++;
-            }
-        } else if (next instanceof PlayingGamesScreen) {
-            // se a próxima tela for a de PlayingGamesScreen
-            // a tela de carregamento será chamada até sua conclusão 
-            // (isLoadingOver receber true)
-            isLoadingOver = loadingScreen.draw(next.assets);
+        if (transitionEffects.get(currentTransitionEffect).isFinished()) {
+            currentTransitionEffect++;
         }
     }
 
@@ -93,8 +92,11 @@ public class TransitionScreen extends ScreenAdapter {
                 @Override
                 public void run() {
                     current = next;
+                    current.show();
+                    current.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                    current.render(0);
                 }
-            }));
+            }, loadingScreen));
         }
     }
 
@@ -128,15 +130,4 @@ public class TransitionScreen extends ScreenAdapter {
         execute(effect, duration, null);
     }
 
-    public void execute() {
-        if (lastInstance != null) {
-            return;
-        } else {
-            lastInstance = this;
-        }
-
-        if (transitionEffects != null && !transitionEffects.isEmpty()) {
-            game.setScreen(this);
-        }
-    }
 }

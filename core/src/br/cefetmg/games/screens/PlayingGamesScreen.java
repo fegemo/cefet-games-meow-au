@@ -116,7 +116,6 @@ public class PlayingGamesScreen extends BaseScreen
 
     @Override
     public void appear() {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
         TextureParameter linearFilter = new TextureLoader.TextureParameter();
         linearFilter.minFilter = Texture.TextureFilter.Linear;
         linearFilter.magFilter = Texture.TextureFilter.Linear;
@@ -147,6 +146,7 @@ public class PlayingGamesScreen extends BaseScreen
 
     @Override
     protected void assetsLoaded() {
+        Gdx.gl20.glClearColor(1, 1, 1, 1);
     }
 
     @Override

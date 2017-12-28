@@ -51,6 +51,8 @@ public abstract class BaseScreen extends ScreenAdapter {
     private boolean assetsFinishedLoading = false;
     private boolean assetsStartedLoading = false;
     private Rectangle visibleWorldBounds;
+    // se deve limpar a tela (glClear) enquanto ela está sendo carregada ou não
+    protected boolean shouldClearBeforeLoaded = true;
 
     OrthographicCamera camera;
     BitmapFont messagesFont;
@@ -196,6 +198,7 @@ public abstract class BaseScreen extends ScreenAdapter {
             appear();
             assetsStartedLoading = true;
         }
+
         if (assets.update()) {
             if (!assetsFinishedLoading) {
                 messagesFont = assets.get("snaphand-v1-free.ttf");
@@ -225,6 +228,8 @@ public abstract class BaseScreen extends ScreenAdapter {
 
             // desenha o conteúdo da tela
             draw();
+        } else if (shouldClearBeforeLoaded) {
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         }
     }
 

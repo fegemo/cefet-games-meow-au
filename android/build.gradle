@@ -1,6 +1,10 @@
+project.ext.mainClassName = "br.cefetmg.games.AndroidLauncher"
+if (!hasProperty('mainClass')) {
+    ext.mainClass = "br.cefetmg.games.AndroidLauncher"
+}
 
 android {
-    buildToolsVersion "23.0.3"
+//    buildToolsVersion "23.0.3"
     compileSdkVersion 22
     sourceSets {
         main {

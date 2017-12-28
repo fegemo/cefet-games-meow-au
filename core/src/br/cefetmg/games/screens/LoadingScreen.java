@@ -44,9 +44,6 @@ public class LoadingScreen {
     }
 
     public boolean draw(AssetManager assets) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         boolean wasDrawing = batch.isDrawing();
         if (!wasDrawing) {
             batch.setProjectionMatrix(viewport.getCamera().combined);
