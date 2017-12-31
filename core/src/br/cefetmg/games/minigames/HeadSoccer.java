@@ -63,6 +63,8 @@ public class HeadSoccer extends MiniGame {
     private Sprite bottomK;
     private ArrayList objects;
     private Rectangle bot_Rect;
+
+    private static final float BUTTONS_Y = 50f;
     
     private boolean isOver;
     protected MyMusic backgroundMusic;
@@ -94,14 +96,14 @@ public class HeadSoccer extends MiniGame {
         bottomK = new Sprite(assets.get("head-soccer/bottomK.png", Texture.class));
 
         bottomE.setSize(100, 55);
-        bottomE.setPosition(100, 0);
+        bottomE.setPosition(100, BUTTONS_Y);
         bottomD.setSize(100, 55);
-        bottomD.setPosition(270, 0);
+        bottomD.setPosition(270, BUTTONS_Y);
 
         bottomJ.setSize(100, 55);
-        bottomJ.setPosition(870, 0);
+        bottomJ.setPosition(870, BUTTONS_Y);
         bottomK.setSize(100, 55);
-        bottomK.setPosition(1040, 0);
+        bottomK.setPosition(1040, BUTTONS_Y);
 
         botTexture = assets.get("head-soccer/cat2.png", Texture.class);
         catTexture = assets.get("head-soccer/cat1.png", Texture.class);
@@ -333,28 +335,20 @@ public class HeadSoccer extends MiniGame {
     public void onHandlePlayingInput() {
 
         // atualiza a posição do alvo de acordo com o mouse
-        Vector3 click = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        Vector2 click = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(click);
         if (Gdx.input.isTouched()) {
-            if (click.x > bottomD.getX() && click.x < bottomD.getX() + bottomD.getWidth()) {
-                if (click.y > bottomD.getY() && click.y < bottomD.getY() + bottomD.getHeight()) {
-                    cat.right = true;
-                }
-            } else if (click.x > bottomE.getX() && click.x < bottomE.getX() + bottomE.getWidth()) {
-                if (click.y > bottomE.getY() && click.y < bottomE.getY() + bottomE.getHeight()) {
-                    cat.left = true;
-                }
+            if (bottomD.getBoundingRectangle().contains(click)) {
+                cat.right = true;
+            } else if (bottomE.getBoundingRectangle().contains(click)) {
+                cat.left = true;
             }
 
-            if (click.x > bottomJ.getX() && click.x < bottomJ.getX() + bottomJ.getWidth()) {
-                if (click.y > bottomJ.getY() && click.y < bottomJ.getY() + bottomJ.getHeight()) {
-                    cat.jump = true;
-                }
+            if (bottomJ.getBoundingRectangle().contains(click)) {
+                cat.jump = true;
             }
-            if (click.x > bottomK.getX() && click.x < bottomK.getX() + bottomK.getWidth()) {
-                if (click.y > bottomK.getY() && click.y < bottomK.getY() + bottomK.getHeight()) {
-                    cat.kick = true;
-                }
+            if (bottomK.getBoundingRectangle().contains(click)) {
+                cat.kick = true;
             }
         }
 
@@ -880,30 +874,28 @@ public class HeadSoccer extends MiniGame {
 
     class Player {
 
-        public static final int WORLD_WIDTH = 1280;
-        public static final int WORLD_HEIGHT = 720;
-        public static final int FLOOR = 81;
-        public static final int JUMP = 7;
-        public static final int GRAVITY = 10;
-        public static final float convertToRad = 3.14159265359f / 180;
+        static final int FLOOR = 81;
+        static final int JUMP = 7;
+        static final int GRAVITY = 10;
+        static final float convertToRad = 3.14159265359f / 180;
 
-        public static final int INITIALXLEFTGOAL = -45;
-        public static final int INITIALXRIGHTGOAL = 1135;
-        public static final int INITIALYGOAL = 75;
+        static final int INITIALXLEFTGOAL = -45;
+        static final int INITIALXRIGHTGOAL = 1135;
+        static final int INITIALYGOAL = 75;
 
-        public boolean walking, orientation, footUp, footDown, movingFoot, left, right, jump, kick;
+        boolean walking, orientation, footUp, footDown, movingFoot, left, right, jump, kick;
         private float playerStep, playerWidth, playerHeight;
-        public Sprite sprite_Player, sprite_Shoes;
-        public Vector2 position, positionMin, positionMax, speed, footPosition;
+        Sprite sprite_Player, sprite_Shoes;
+        Vector2 position, positionMin, positionMax, speed, footPosition;
         private Texture playerTexture;
         private SpriteBatch batch;
-        public float maxSpeed;
+        float maxSpeed;
         private float mass, aTime;
         private float rotation_angle, initial_angle, final_angle, correctionX, correctionY, aCorrectionX, aCorrectionY;
-        public float kick_power;
+        float kick_power;
         private int oldOrientation;
 
-        public Player(Vector2 positionInicial, Vector2 positionMin, Vector2 positionMax, Texture playerTexture, SpriteBatch batch, float playerStep, float maxSpeed, float sizeX, float sizeY, float mass) {
+        Player(Vector2 positionInicial, Vector2 positionMin, Vector2 positionMax, Texture playerTexture, SpriteBatch batch, float playerStep, float maxSpeed, float sizeX, float sizeY, float mass) {
             this.speed = new Vector2(0, 0);
             this.walking = false;
             this.positionMin = positionMin;

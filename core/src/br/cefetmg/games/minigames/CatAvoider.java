@@ -51,6 +51,8 @@ public class CatAvoider extends MiniGame {
     private final float MIN_DIFFICULTY = 18f;
     private final float MAX_DIFFICULTY = 42f;
 
+    private float timeBeforeCatAttacks;
+
     public CatAvoider(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 10f,
@@ -168,13 +170,9 @@ public class CatAvoider extends MiniGame {
         backgroundMusic.stop();
     }
 
-    public float getCurveValue(float value) {
-        return (float) (1f / (1f + Math.pow(Math.E, -6 * (value - 0.5f))));
-    }
-
     @Override
      protected void configureDifficultyParameters(float difficulty) {
-        System.out.println("difficulty = " + difficulty);
+        timeBeforeCatAttacks = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, 3.5f, 2f);
         cat.speed = DifficultyCurve.LINEAR.getCurveValueBetween(difficulty, MIN_DIFFICULTY, MAX_DIFFICULTY);
     }
 
@@ -184,9 +182,12 @@ public class CatAvoider extends MiniGame {
 
     @Override
     public void onUpdate(float dt) {
-        int changeState = randomGenerator.nextInt(30);
-        if (changeState == 29) {
-            cat.state = cat.jumpState;
+        timeBeforeCatAttacks -= dt;
+        if (timeBeforeCatAttacks <= 0) {
+            int changeState = randomGenerator.nextInt(30);
+            if (changeState == 29) {
+                cat.state = cat.jumpState;
+            }
         }
         cat.move();
         wool.getPosition();
