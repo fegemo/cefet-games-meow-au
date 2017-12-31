@@ -103,15 +103,14 @@ public class KillTheRats extends MiniGame {
         mousePos = new Vector2(0, 0);
         countFireTimer = 0;
         countRatsSurvived = 0;
-        //percentIgnoreRats = 0.4f;
-        //maxNumRats = 100;
-        maxNumFires = 100;
+        maxNumFires = 50;
         fireSoundInterval = 0;
         fireSoundMinimumInterval = 6.0f;
         releaseFire = true;
         stopAllSounds = false;
         changeWeapon = false;
-        
+
+        levelSound.setLooping(true);
         levelSound.play();
         levelSound.setVolume(0.8f);
         ratsSound.play();
@@ -138,19 +137,15 @@ public class KillTheRats extends MiniGame {
         
         for (int i = 0; i < maxNumRats; i++) {
             Rat rat = new Rat(ratsSpriteSheet, ratSound);
-            //rat.setCenter(viewport.getWorldWidth() / 2f, viewport.getWorldHeight() / 2f);
             this.rats.add(rat);
         }
     }
     
     private void initFire() {
         fires = new Array<Fire>();
-        //TextureRegion[][] frames = TextureRegion.split(fireTexture,
-        //        fireTexture.getWidth(), fireTexture.getHeight());
-        
+
         for (int i = 0; i < maxNumFires; i++) {
             Fire fire = new Fire(fireTexture);
-            //fire.setCenter(viewport.getWorldWidth() * 0.1f, viewport.getWorldHeight() / 2f);
             this.fires.add(fire);
         }
     }
@@ -164,27 +159,15 @@ public class KillTheRats extends MiniGame {
     
     @Override
     protected void configureDifficultyParameters(float difficulty) {
-        /*
-        // Valores antigos para os parâmetros de dificuldade
-        this.maxNumRats = (int) DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 100, 250);
-        this.minimumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 2, 6);
-        this.maximumEnemySpeed = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 4, 7);
-        this.percentIgnoreRats = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 0.75f, 0.3f);
-        */
-        
         // Valores atualizados para os parâmetros de dificuldade
         this.maxNumRats = (int) DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 80, 160);
+                .getCurveValueBetween(difficulty, 40, 100);
         this.minimumEnemySpeed = DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 2, 6);
         this.maximumEnemySpeed = DifficultyCurve.LINEAR
                 .getCurveValueBetween(difficulty, 4, 7);
         this.percentIgnoreRats = DifficultyCurve.LINEAR
-                .getCurveValueBetween(difficulty, 0.5f, 0.8f);
+                .getCurveValueBetween(difficulty, 0.8f, 0.6f);
     }
     
     @Override
@@ -870,28 +853,7 @@ public class KillTheRats extends MiniGame {
             
             setPosition(normalized.x, normalized.y);
         }
-        
-        /*
-        public void parabole() {
-            float x1 = getX();
-            float x2 = mousePos.x;
-            
-            a = -1;
-            b = -(x1 + x2); // soma das raizes da equação
-            c = -(x1 * x2); // produto das raizes da equação
-            
-            float delta = b*b - 4*a*c;
-            float paraboleHeight = -delta/(4*a);
-            float height = viewport.getWorldHeight() / 3;
-            
-            float newHeight = height / paraboleHeight;
-            a *= newHeight;
-            b *= newHeight;
-            c *= newHeight;
-            c += getY();
-            //c += mousePos.y;
-        }
-        */
+
         
         public Vector2 tangentCircle(Circle c) {
             Vector2 radiusVec = getPosition().sub(c.x, c.y);
@@ -926,16 +888,6 @@ public class KillTheRats extends MiniGame {
         }
         
         public void trajectoryCurve(float x) {
-            /*
-            x += speed; // obtem a abscissa do próximo ponto
-            float y = (a*x*x - b*x + c);
-            
-            // calcula o vetor que inicia na posição atual e aponta para a próxima posição
-            direction.x = x - getX();
-            direction.y = y - getY();
-            //setPosition(x+speed, y);
-            */
-            
             direction = tangentCircle(arcCircle);
             
             Circle circle = new Circle(getX(), getY(), Math.max(getWidth(), getHeight()));
