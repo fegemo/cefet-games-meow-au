@@ -91,8 +91,8 @@ public class TicCatDog extends MiniGame {
         mouseArrowSprite = new Sprite(assets.get(
                 "tic-cat-dog/mouse-arrow.png", Texture.class));
 
-        catMeowingSound = new MySound(assets.get("tic-cat-dog/cat-meowing.wav", Sound.class));
-        dogBarkingSound = new MySound(assets.get("tic-cat-dog/dog-barking.wav", Sound.class));
+        catMeowingSound = new MySound(assets.get("tic-cat-dog/cat-meowing.mp3", Sound.class));
+        dogBarkingSound = new MySound(assets.get("tic-cat-dog/dog-barking.mp3", Sound.class));
 
         float squareHeight = viewport.getWorldHeight() / 5;
         float squareWidth = viewport.getWorldWidth() / 5;
@@ -147,6 +147,17 @@ public class TicCatDog extends MiniGame {
             }
         }
         return false;
+    }
+
+    private boolean isTheMatrixEmpty(int[][] matrix) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (matrix[i][j] != EMPTY_SQUARE) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private Move minimax(int[][] matrix, int player) {
@@ -268,11 +279,19 @@ public class TicCatDog extends MiniGame {
             Move move;
 
             //Inteligência artificial: melhor movimento selecionado
-            if(catCleverness == CAT_SMART)
-                move = minimax(ticCatDogMatrix, CAT_TURN);
+            if(catCleverness == CAT_SMART) {
+                if (isTheMatrixEmpty(ticCatDogMatrix)) {
+                    // movimento aleatório, pra não demorar
+                    move = getRandomMove(ticCatDogMatrix);
+                } else {
+                    move = minimax(ticCatDogMatrix, CAT_TURN);
+                }
+            }
             else //Movimento randômico (CAT_DUMB)
+            {
                 move = getRandomMove(ticCatDogMatrix);
-                
+            }
+
             //Realiza-se o movimento
             ticCatDogMatrix[move.getX()][move.getY()] = CAT_SQUARE;
             ticTacToeSprites[move.getX()][move.getY()].setTexture(catSquareTexture);

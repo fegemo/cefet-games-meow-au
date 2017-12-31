@@ -31,6 +31,7 @@ public class MouseAttackFactory implements MiniGameFactory {
                 put("mouse-attack/sprite-monster.png", Texture.class);
                 put("mouse-attack/projetil.png", Texture.class);
                 put("mouse-attack/target.png", Texture.class);
+
                 put("mouse-attack/shoot-sound.mp3", Sound.class);
                 put("mouse-attack/monster-dying.mp3", Sound.class);
             }

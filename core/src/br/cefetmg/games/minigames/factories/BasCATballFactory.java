@@ -38,6 +38,7 @@ public class BasCATballFactory implements MiniGameFactory {
                 put("bascatball/lightarrowL.png", Texture.class);
                 put("bascatball/lightarrowR.png", Texture.class);
                 put("bascatball/doraemon.png", Texture.class);
+
                 put("bascatball/beats.mp3", Sound.class);
                 put("bascatball/fail.mp3", Sound.class);
                 put("bascatball/flyingdown.mp3", Sound.class);

@@ -32,9 +32,10 @@ public class UnderwaterCatFactory implements MiniGameFactory {
                 put("underwater-cat/fish3.png", Texture.class);
                 put("underwater-cat/fish5.png", Texture.class);
                 put("underwater-cat/background.bmp", Texture.class);
+
                 put("underwater-cat/water.mp3", Music.class);
-                put("underwater-cat/swim.wav", Music.class);
-                put("underwater-cat/eat.wav", Sound.class);
+                put("underwater-cat/swim.mp3", Music.class);
+                put("underwater-cat/eat.mp3", Sound.class);
 
             }
         };

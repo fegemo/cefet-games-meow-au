@@ -7,6 +7,8 @@ import br.cefetmg.games.screens.BaseScreen;
 import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -54,8 +56,8 @@ public class PhantomCat extends MiniGame {
                 "phantom-cat/target.png", Texture.class);
         fundoTexture = assets.get(
                 "phantom-cat/fundo.jpg", Texture.class);
-        dieCat = new MySound( Gdx.audio.newSound(Gdx.files.internal("phantom-cat/cat.mp3")));
-        fundo =  new MyMusic(Gdx.audio.newMusic(Gdx.files.internal("phantom-cat/fundo.mp3")));
+        dieCat = new MySound( assets.get("phantom-cat/cat.mp3", Sound.class));
+        fundo =  new MyMusic( assets.get("phantom-cat/fundo.mp3", Music.class));
         fundo.play();
         fundo.setVolume(.2f);
         target = new Sprite(targetTexture);
@@ -122,7 +124,7 @@ public class PhantomCat extends MiniGame {
 
                 if (sprite.getBoundingRectangle().overlaps(
                         target.getBoundingRectangle())) {
-                    dieCat.play(0.05f);
+                    dieCat.play(0.75f);
                     // contabiliza um inimigo morto
                     this.enemiesKilled++;
                     // remove o inimigo do array

@@ -465,7 +465,7 @@ public class OverworldScreen extends BaseScreen {
                             new DogBarksCatFleeFactory(),
                             new ClickFindCatFactory(),
                             // andré brait
-                            new AstroCatGameFactory()
+                            new AstroCatFactory()
                     )
             ), .3f, .4f, currentLevel), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
         }

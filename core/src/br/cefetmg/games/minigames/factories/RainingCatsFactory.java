@@ -30,7 +30,7 @@ public class RainingCatsFactory implements MiniGameFactory {
                 put("raining-cats/arrow.png", Texture.class);
 
                 put("raining-cats/music.mp3", Music.class);
-                put("raining-cats/Pop.mp3", Sound.class);
+                put("raining-cats/pop.mp3", Sound.class);
 
             }
         };

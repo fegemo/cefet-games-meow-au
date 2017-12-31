@@ -1,8 +1,7 @@
 package br.cefetmg.games.sound;
 
-import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
+
 import java.util.HashSet;
 
 /**
@@ -16,6 +15,8 @@ public class SoundManager {
     private final HashSet<AudioResource> audios;
     private static SoundManager INSTANCE;
     private MyMusic backgroundMusic;
+    private final SoundSamplingAwareInternalFileHandleResolver resolver =
+            new SoundSamplingAwareInternalFileHandleResolver();
 
     
     /**
@@ -101,7 +102,7 @@ public class SoundManager {
         
         if (isItANewSound) {
             backgroundMusic = new MyMusic(
-                    Gdx.audio.newMusic(Gdx.files.internal(musicPath)), musicPath);
+                    Gdx.audio.newMusic(resolver.resolve(musicPath)), musicPath);
             backgroundMusic.play();
             addActiveSound(backgroundMusic);            
         }
@@ -111,9 +112,8 @@ public class SoundManager {
     
     /**
      * Pára a música de fundo, se tiver uma tocando.
-     * @param musicPath o nome (caminho) para o arquivo da música.
      */
-    public void stopBackgroundMusic(String musicPath) {
+    public void stopBackgroundMusic() {
         if (backgroundMusic != null) {
             backgroundMusic.stop();
             removeActiveSound(backgroundMusic);

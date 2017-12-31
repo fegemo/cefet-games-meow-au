@@ -92,10 +92,10 @@ public class NinjaCat extends MiniGame {
         texhit1 = assets.get("ninja-cat/hit1.png", Texture.class);
         catPose = assets.get("ninja-cat/intro.png", Texture.class);
 
-        intro = new MySound(assets.get("ninja-cat/Intro.mp3", Sound.class));
+        intro = new MySound(assets.get("ninja-cat/intro.mp3", Sound.class));
         ken1 = new MySound(assets.get("ninja-cat/ken1.mp3", Sound.class));
         ken2 = new MySound(assets.get("ninja-cat/ken2.mp3", Sound.class));
-        gosound = new MySound(assets.get("ninja-cat/GameOver.mp3", Sound.class));
+        gosound = new MySound(assets.get("ninja-cat/game-over.mp3", Sound.class));
         dzsound = new MySound(assets.get("ninja-cat/zombie.mp3", Sound.class));
         dzsound1 = new MySound(assets.get("ninja-cat/zombie1.mp3", Sound.class));
 

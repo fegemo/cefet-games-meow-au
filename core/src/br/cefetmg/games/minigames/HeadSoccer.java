@@ -140,7 +140,7 @@ public class HeadSoccer extends MiniGame {
         int heightscreen = 720;
         floorBall = 69;
 
-        Texture obstacleTexture = assets.get("avoider/grey.png", Texture.class);
+        Texture obstacleTexture = assets.get("cat-avoider/grey.png", Texture.class);
         backgroundLeft = new Obstacle(obstacleTexture, new Vector2(0, height + floorBall), width, heightscreen - width - floorBall);
         backgroundRight = new Obstacle(obstacleTexture, new Vector2(widthscreen - width, height + floorBall), width, heightscreen - width - floorBall);
         backgroundTop = new Obstacle(obstacleTexture, new Vector2(0, heightscreen - width), widthscreen, height);

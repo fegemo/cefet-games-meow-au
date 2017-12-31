@@ -85,10 +85,10 @@ public class KillTheRats extends MiniGame {
         primaryWeapon_Texture = assets.get("kill-the-rats/primary_weapon.png", Texture.class);
         secondaryWeapon_Texture = assets.get("kill-the-rats/secondary_weapon.png", Texture.class);
         
-        levelSound = new MyMusic(assets.get("kill-the-rats/JerryFive.mp3", Music.class));
-        ratsSound = new MyMusic(assets.get("kill-the-rats/Rats_Ambience.mp3", Music.class));
+        levelSound = new MyMusic(assets.get("kill-the-rats/jerry-five.mp3", Music.class));
+        ratsSound = new MyMusic(assets.get("kill-the-rats/rats-ambience.mp3", Music.class));
         ratSound = new MySound(assets.get("kill-the-rats/rat.mp3", Sound.class));
-        fireSound = new MySound(assets.get("kill-the-rats/pistol_silenced_walther.mp3", Sound.class));
+        fireSound = new MySound(assets.get("kill-the-rats/pistol.mp3", Sound.class));
         bombSound = new MySound(assets.get("kill-the-rats/bomb.mp3", Sound.class));
         
         init();

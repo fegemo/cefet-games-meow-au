@@ -27,7 +27,7 @@ public class HeadSoccerFactory implements MiniGameFactory {
         return new HashMap<String, Class>() {
             {
                 put("head-soccer/shoes.png", Texture.class);
-                put("avoider/grey.png", Texture.class);
+                put("cat-avoider/grey.png", Texture.class);
                 put("head-soccer/Arena.png", Texture.class);
                 put("head-soccer/cat1.png", Texture.class);
                 put("head-soccer/cat2.png", Texture.class);
@@ -40,7 +40,8 @@ public class HeadSoccerFactory implements MiniGameFactory {
                 put("head-soccer/bottomL.png", Texture.class);
                 put("head-soccer/bottomJ.png", Texture.class);
                 put("head-soccer/bottomK.png", Texture.class);
-                put("head-soccer/soccer.mp3",Music.class);
+
+                put("head-soccer/soccer.mp3", Music.class);
             }
         };
     }

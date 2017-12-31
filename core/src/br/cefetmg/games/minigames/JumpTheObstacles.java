@@ -111,7 +111,7 @@ public class JumpTheObstacles extends MiniGame {
         for (int i = 0; i < this.enemies.size; i++) {
             Obstacle obstacle = this.enemies.get(i);
 
-            if (obstacle.getX() <= 0) {
+            if (obstacle.getX() <= -obstacle.getWidth()) {
                 enemies.removeIndex(i);
                 i--;
             } else {
@@ -132,8 +132,8 @@ public class JumpTheObstacles extends MiniGame {
         //Background
         batch.draw(backgroundTexture, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
 
-        for (Obstacle tart : this.enemies) {
-            tart.draw(batch);
+        for (Obstacle turtle : this.enemies) {
+            turtle.draw(batch);
         }
         dog.draw(batch);
     }
@@ -279,12 +279,8 @@ public class JumpTheObstacles extends MiniGame {
 
     class Obstacle extends AnimatedSprite {
 
-        static final float SPEED = 160.0f;
-
         static final int FRAME_WIDTH = 100;
         static final int FRAME_HEIGHT = 100;
-
-        static final float MIN_SPACE = 80.0f;
 
         private Vector2 speed;
 
@@ -306,26 +302,14 @@ public class JumpTheObstacles extends MiniGame {
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
             super.setAutoUpdate(false);
 
-            //this.setX(Gdx.graphics.getWidth());
-            speed = new Vector2(-SPEED, 0.0f);
 
-        }
-
-        Vector2 getHeadPosition() {
-            return new Vector2(
-                    this.getX() + this.getWidth() * 0.5f,
-                    this.getY() + this.getHeight() * 0.8f);
-        }
-
-        float getHeadDistanceTo(float enemyX, float enemyY) {
-            return getHeadPosition().dst(enemyX, enemyY);
         }
 
         @Override
         public void update(float dt) {
             super.update(dt);
 
-            super.setPosition(Math.max(super.getX() + this.speed.x * dt, 0.0f),
+            super.setPosition(super.getX() + this.speed.x * dt,
                     super.getY() + this.speed.y * dt);
         }
 

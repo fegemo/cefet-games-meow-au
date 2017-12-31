@@ -31,17 +31,18 @@ public class MeowsicFactory implements MiniGameFactory {
                 put("meowsic/note3.png", Texture.class);
                 put("meowsic/note4.png", Texture.class);
                 put("meowsic/note5.png", Texture.class);
-                put("meowsic/song1.wav", Sound.class);
-                put("meowsic/song2.wav", Sound.class);
-                put("meowsic/song3.wav", Sound.class);
-                put("meowsic/song4.wav", Sound.class);
-                put("meowsic/song5.wav", Sound.class);
+
+                put("meowsic/song1.mp3", Sound.class);
+                put("meowsic/song2.mp3", Sound.class);
+                put("meowsic/song3.mp3", Sound.class);
+                put("meowsic/song4.mp3", Sound.class);
+                put("meowsic/song5.mp3", Sound.class);
                 put("meowsic/music1.mp3", Music.class);
                 put("meowsic/music2.mp3", Music.class);
                 put("meowsic/music3.mp3", Music.class);
                 put("meowsic/music4.mp3", Music.class);
                 put("meowsic/music5.mp3", Music.class);
-                put("meowsic/fail.wav", Sound.class);
+                put("meowsic/fail.mp3", Sound.class);
             }
         };
     }

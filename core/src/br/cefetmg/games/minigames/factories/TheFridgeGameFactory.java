@@ -47,12 +47,12 @@ public class TheFridgeGameFactory implements MiniGameFactory{
                 put("the-fridge-game/shelf.png",Texture.class);  
                 put("the-fridge-game/cat.png",Texture.class);  
                 put("the-fridge-game/fish.png",Texture.class);  
-                put("the-fridge-game/penguin.png",Texture.class);    
-                put("the-fridge-game/city-shopping.mp3", Music.class);   
-                put("the-fridge-game/whistle-up.mp3", Sound.class);   
-                put("the-fridge-game/whistle-down.mp3", Sound.class);  
-                put("the-fridge-game/crash.mp3", Sound.class);    
-                put("the-fridge-game/clap.mp3", Sound.class);  
+                put("the-fridge-game/penguin.png",Texture.class);
+
+                put("the-fridge-game/city-shopping.mp3", Music.class);
+                put("the-fridge-game/whistle-up.mp3", Sound.class);
+                put("the-fridge-game/whistle-down.mp3", Sound.class);
+                put("the-fridge-game/crash.mp3", Sound.class);
             }
         };
     }

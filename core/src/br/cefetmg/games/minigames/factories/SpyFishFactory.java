@@ -28,8 +28,8 @@ public class SpyFishFactory implements MiniGameFactory {
                 put("spy-fish/fish.png", Texture.class);
                 put("spy-fish/card.png", Texture.class);
                 put("spy-fish/ocean.png", Texture.class);
-                put("spy-fish/smw_fireball.wav", Sound.class);
-                put("spy-fish/smw_kick.wav", Sound.class);
+                put("spy-fish/smw_fireball.mp3", Sound.class);
+                put("spy-fish/smw_kick.mp3", Sound.class);
             }
         };
     }

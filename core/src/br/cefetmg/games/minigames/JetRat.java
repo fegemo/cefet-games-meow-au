@@ -7,6 +7,7 @@ import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -20,6 +21,8 @@ import java.util.Random;
 
 import static br.cefetmg.games.Config.WORLD_HEIGHT;
 import static br.cefetmg.games.Config.WORLD_WIDTH;
+
+import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -37,9 +40,9 @@ public class JetRat extends MiniGame {
     private float screenWidth;
     private float screenHeight;
     int srcX, troca;
-    private MySound meon;
+    private MyMusic meon;
     private MySound jet;
-    int cont;
+    private float nextJetSoundPlay = 0;
     int difficulty;
     
     public JetRat(BaseScreen screen,
@@ -59,8 +62,8 @@ public class JetRat extends MiniGame {
         bg1 = assets.get("jet-rat/background.png", Texture.class);
         bg1.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         tubeTexture = assets.get("jet-rat/tube.png", Texture.class);
-        meon = new MySound(assets.get("jet-rat/meon.mp3", Sound.class));
-        jet = new MySound(assets.get("jet-rat/Kruncha angry.mp3", Sound.class));
+        meon = new MyMusic(assets.get("jet-rat/meon.mp3", Music.class));
+        jet = new MySound(assets.get("jet-rat/kruncha-angry.mp3", Sound.class));
         mouse = new Calopsita(mouseTexture);
         mouse.setScale(0.5f);
         
@@ -79,7 +82,8 @@ public class JetRat extends MiniGame {
 
         }, 0, (float) Math.random() + 0.7f);
         srcX = 0;
-        meon.play(0.2f);
+        meon.setVolume(0.2f);
+        meon.play();
     }
 
     private void spawnEnemy() {
@@ -127,9 +131,13 @@ public class JetRat extends MiniGame {
                 mouse.startAnimation("fuel");
             }
             mouse.fuel = true;
-            
-            jet.play();
-            jet.setVolume(0.5f);
+
+            if (nextJetSoundPlay <= 0) {
+                jet.play(0.5f);
+                nextJetSoundPlay = 0.5f;
+            } else {
+                nextJetSoundPlay -= Gdx.graphics.getDeltaTime();
+            }
         }
         else{
             if(mouse.getY() >= screenHeight/2){

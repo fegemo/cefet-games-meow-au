@@ -5,6 +5,7 @@ import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -24,11 +26,10 @@ public class DodgeTheVeggies extends MiniGame {
 
     private Texture catSpritesheet;
     private Cat cat;
-    private Texture veggieTexture;
     private Texture faintedCatTexture;
     private Array<Veggie> veggies;
     private Array<Texture> veggieTextures;
-    private MySound backgroundMusic;
+    private MyMusic backgroundMusic;
     private float speedMultiplier;
     private float spawnIntervalMultiplier;
     private final float spawnInterval = 1;
@@ -58,9 +59,9 @@ public class DodgeTheVeggies extends MiniGame {
             assets.get("dodge-the-veggies/onion.png", Texture.class),
             assets.get("dodge-the-veggies/tomato.png", Texture.class),
             assets.get("dodge-the-veggies/potato.png", Texture.class));
-        backgroundMusic = new MySound(assets.get("dodge-the-veggies/bensound-jazzcomedy.mp3", Sound.class));
+        backgroundMusic = new MyMusic(assets.get("dodge-the-veggies/bensound-jazzcomedy.mp3", Music.class));
 
-        cat = new Cat(catSpritesheet, 200);
+        cat = new Cat(200);
         cat.setCenter(
             viewport.getWorldWidth() / 2f,
             cat.height);
@@ -186,12 +187,11 @@ public class DodgeTheVeggies extends MiniGame {
     }
 
     class Cat extends MultiAnimatedSprite {
-        private final int lives = 9;
         private final float height;
         static final int FRAME_WIDTH = 497;
         static final int FRAME_HEIGHT = 291;
 
-        public Cat(Texture texture, float height) {
+        public Cat(float height) {
             super(new HashMap<String, Animation>() {
                 {
                     TextureRegion[][] frames = TextureRegion

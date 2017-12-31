@@ -31,8 +31,6 @@ public class ClickFindCat extends MiniGame {
     private Sprite catSprite;
 
     private MySound meawSound;
-    private MySound scaredMeawSound;
-    private MySound happyMeawSound;
 
     private Rat rat;
     private ArrayList<Rat> ratos;
@@ -62,15 +60,13 @@ public class ClickFindCat extends MiniGame {
         catScaleX = initialCatScale * (float) viewport.getWorldWidth() / viewport.getScreenWidth();
         catScaleY = initialCatScale * (float) viewport.getWorldHeight() / viewport.getScreenHeight();
 
-        catTexture = assets.get("ClickFindCat/gatinho-grande.png", Texture.class);
-        ratTexture = assets.get("ClickFindCat/crav_rat.png", Texture.class);
-        miraTexture = assets.get("ClickFindCat/target.png", Texture.class);
+        catTexture = assets.get("click-find-cat/gatinho-grande.png", Texture.class);
+        ratTexture = assets.get("click-find-cat/crav_rat.png", Texture.class);
+        miraTexture = assets.get("click-find-cat/target.png", Texture.class);
         miraSprite = new Sprite(miraTexture);
         miraSprite.setScale(1.0f);
         miraSprite.setOriginCenter();
-        meawSound = new MySound(assets.get("ClickFindCat/cat-meow.wav", Sound.class));
-        scaredMeawSound = new MySound(assets.get("ClickFindCat/ScaredCat.wav", Sound.class));
-        happyMeawSound = new MySound(assets.get("ClickFindCat/YAY.mp3", Sound.class));
+        meawSound = new MySound(assets.get("click-find-cat/cat-meow.wav", Sound.class));
         initializeCat();
         //initializeRat();
         for (int i = 0; i < numeroDeRatos; i++) {
@@ -152,11 +148,6 @@ public class ClickFindCat extends MiniGame {
     @Override
     public void onUpdate(float dt) {
         checkCatRatDistance();
-        if (super.getState() == MiniGameState.PLAYER_FAILED) {
-            scaredMeawSound.play();
-        } else if (rand.nextInt() % 4 == 1 && super.getState() == MiniGameState.PLAYER_SUCCEEDED) {
-            happyMeawSound.play();
-        }
         tempoDeAnimacao += Gdx.graphics.getDeltaTime();
         for (Rat rato : ratos) {
             rato.movimento(dt, viewport.getWorldWidth(), viewport.getWorldHeight());

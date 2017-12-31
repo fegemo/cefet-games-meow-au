@@ -3,6 +3,8 @@ package br.cefetmg.games.minigames.factories;
 import br.cefetmg.games.minigames.DodgeTheVeggies;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.screens.BaseScreen;
+
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
@@ -28,7 +30,7 @@ public class DodgeTheVeggiesFactory implements MiniGameFactory {
                 put("dodge-the-veggies/cat-spritesheet.png", Texture.class);
                 put("dodge-the-veggies/fainted-cat-texture.png", Texture.class);
                 put("dodge-the-veggies/background.png", Texture.class);
-                put("dodge-the-veggies/bensound-jazzcomedy.mp3", Sound.class);
+                put("dodge-the-veggies/bensound-jazzcomedy.mp3", Music.class);
             }
         };
     }

@@ -5,6 +5,7 @@ import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,7 +27,7 @@ public class CatchThatHomework extends MiniGame {
     private Cat cat;
     private Texture homeworkTexture;
     private Array<Homework> homeworks;
-    private MySound backgroundMusic;
+    private MyMusic backgroundMusic;
     private float speedMultiplier;
     private Texture backgroundImage;
 
@@ -39,7 +41,7 @@ public class CatchThatHomework extends MiniGame {
     protected void onStart() {
         catSpritesheet = assets.get("catch-that-homework/cat-spritesheet.png", Texture.class);
         homeworkTexture = assets.get("catch-that-homework/homework.png", Texture.class);
-        backgroundMusic = new MySound(assets.get("catch-that-homework/bensound-sexy.mp3", Sound.class));
+        backgroundMusic = new MyMusic(assets.get("catch-that-homework/bensound-sexy.mp3", Music.class));
         backgroundImage = assets.get("catch-that-homework/valley.png", Texture.class);
 
         cat = new Cat(catSpritesheet, 200);

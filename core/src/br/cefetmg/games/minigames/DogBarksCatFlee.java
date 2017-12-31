@@ -99,12 +99,12 @@ public class DogBarksCatFlee extends MiniGame {
     @Override
     protected void onStart() {
         tempoDeAnimacao = 0;
-        whiningSound = new MySound(assets.get("DogBarksCatFlee/dog-whining-sound.mp3", Sound.class));
-        deadTexture = assets.get("DogBarksCatFlee/kitten1-alt_4.png", Texture.class);
-        barkSound = new MySound( assets.get("DogBarksCatFlee/BarkSound.wav", Sound.class));
-        dogTextureStandBy = assets.get("DogBarksCatFlee/dog_separado_4.png", Texture.class);
-        dogTexture = assets.get("DogBarksCatFlee/dog_spritesheet.png", Texture.class);
-        dogTextureWalking = assets.get("DogBarksCatFlee/spritesheet2.png", Texture.class);
+        whiningSound = new MySound(assets.get("dog-barks-cat-flee/dog-whining-sound.mp3", Sound.class));
+        deadTexture = assets.get("dog-barks-cat-flee/kitten1-alt_4.png", Texture.class);
+        barkSound = new MySound( assets.get("dog-barks-cat-flee/bark-sound.wav", Sound.class));
+        dogTextureStandBy = assets.get("dog-barks-cat-flee/dog_separado_4.png", Texture.class);
+        dogTexture = assets.get("dog-barks-cat-flee/dog_spritesheet.png", Texture.class);
+        dogTextureWalking = assets.get("dog-barks-cat-flee/spritesheet2.png", Texture.class);
         TextureRegion[][] quadrosDeAnimacao = TextureRegion.split(dogTexture, 128, 128);
         TextureRegion[][] quadrosDeAnimacao2 = TextureRegion.split(dogTextureWalking, 128, 128);
         dogBarking = new Animation<TextureRegion>(0.3f,
@@ -120,15 +120,15 @@ public class DogBarksCatFlee extends MiniGame {
                 quadrosDeAnimacao2[0][4]);
         dogBarking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
         dogWalking.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
-        catTexture2 = assets.get("DogBarksCatFlee/kitten1-alt_3.png", Texture.class);
-        catTexture = assets.get("DogBarksCatFlee/kitten1-alt.png", Texture.class);
-        meawSound = new MySound(assets.get("DogBarksCatFlee/cat-meow.wav", Sound.class));
+        catTexture2 = assets.get("dog-barks-cat-flee/kitten1-alt_3.png", Texture.class);
+        catTexture = assets.get("dog-barks-cat-flee/kitten1-alt.png", Texture.class);
+        meawSound = new MySound(assets.get("dog-barks-cat-flee/cat-meow.wav", Sound.class));
 
-        tileTexture[0] = assets.get("DogBarksCatFlee/tile0.png", Texture.class);
-        tileTexture[1] = assets.get("DogBarksCatFlee/tile1.png", Texture.class);
-        tileTexture[2] = assets.get("DogBarksCatFlee/tile2.png", Texture.class);
-        tileTexture[3] = assets.get("DogBarksCatFlee/tile3.png", Texture.class);
-        tileTexture[4] = assets.get("DogBarksCatFlee/tile4.png", Texture.class);
+        tileTexture[0] = assets.get("dog-barks-cat-flee/tile0.png", Texture.class);
+        tileTexture[1] = assets.get("dog-barks-cat-flee/tile1.png", Texture.class);
+        tileTexture[2] = assets.get("dog-barks-cat-flee/tile2.png", Texture.class);
+        tileTexture[3] = assets.get("dog-barks-cat-flee/tile3.png", Texture.class);
+        tileTexture[4] = assets.get("dog-barks-cat-flee/tile4.png", Texture.class);
 
         tilesVector = new Array<Tiles>();
 

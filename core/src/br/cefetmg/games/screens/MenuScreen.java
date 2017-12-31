@@ -454,7 +454,7 @@ public class MenuScreen extends BaseScreen {
     public void cleanUp() {
         stage.dispose();
         if (!shouldContinueBackgroundMusic) {
-            SoundManager.getInstance().stopBackgroundMusic("menu/meowautheme.mp3");
+            SoundManager.getInstance().stopBackgroundMusic();
         }
     }
 

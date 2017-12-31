@@ -76,6 +76,7 @@ public class MouseAttack extends MiniGame {
                 "mouse-attack/target.png", Texture.class);
         projectileTexture = assets.get(
                 "mouse-attack/projetil.png", Texture.class);
+
         shootSound = new MySound(assets.get(
                 "mouse-attack/shoot-sound.mp3", Sound.class));
         monsterDieSound = new MySound(assets.get(

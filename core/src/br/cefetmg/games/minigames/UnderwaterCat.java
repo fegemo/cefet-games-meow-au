@@ -60,8 +60,8 @@ public class UnderwaterCat extends MiniGame {
     @Override
     protected void onStart() {
         backgroundMusic = new MyMusic(assets.get("underwater-cat/water.mp3", Music.class));
-        swimmingAmbientSound =  new MyMusic(assets.get("underwater-cat/swim.wav", Music.class));
-        gotFishSound = new MySound(assets.get("underwater-cat/eat.wav", Sound.class));
+        swimmingAmbientSound =  new MyMusic(assets.get("underwater-cat/swim.mp3", Music.class));
+        gotFishSound = new MySound(assets.get("underwater-cat/eat.mp3", Sound.class));
         swimCatTexture = assets.get(
                 "underwater-cat/swimcatspritesheet.png", Texture.class);
         fish1Texture = assets.get(

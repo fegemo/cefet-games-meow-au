@@ -119,20 +119,20 @@ public class CatAvoider extends MiniGame {
 
     @Override
     protected void onStart() {
-        backgroundTexture = assets.get("avoider/backgroundTexture.png", Texture.class);
+        backgroundTexture = assets.get("cat-avoider/backgroundTexture.png", Texture.class);
         backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setSize(WORLD_WIDTH, WORLD_HEIGHT);
 
         limitsWidth = 20;
         limitsHeight = 20;
         
-        Texture obstacleTexture = assets.get("avoider/grey.png", Texture.class);
+        Texture obstacleTexture = assets.get("cat-avoider/grey.png", Texture.class);
         up = new Obstacle(obstacleTexture, new Vector2(0, WORLD_HEIGHT - limitsHeight), WORLD_WIDTH, limitsHeight);
         down = new Obstacle(obstacleTexture, new Vector2(0, 0), WORLD_WIDTH, limitsHeight);
         left = new Obstacle(obstacleTexture, new Vector2(0, limitsWidth), limitsWidth, WORLD_HEIGHT);
         right = new Obstacle(obstacleTexture, new Vector2(WORLD_WIDTH - limitsWidth, limitsWidth), limitsWidth, WORLD_HEIGHT);
 
-        cat.texture = assets.get("avoider/catNinja.png", Texture.class);
+        cat.texture = assets.get("cat-avoider/catNinja.png", Texture.class);
         cat.sprite = new Sprite(cat.texture);
         cat.sprite.setSize(100, 150);
         cat.sprite.setOrigin(cat.sprite.getWidth() / 2, cat.sprite.getHeight() / 2);
@@ -140,26 +140,26 @@ public class CatAvoider extends MiniGame {
         cat.moveType = CatMoveType.downL;
         cat.state = cat.randomState;
 
-        catMovingUpL = new AnimatedSprite("avoider/cat-moving-upL.png", 0.1f, 144, 150, 12, RIGHT, 0);
-        catMovingUpR = new AnimatedSprite("avoider/cat-moving-upR.png", 0.1f, 144, 150, 12, RIGHT, 0);
+        catMovingUpL = new AnimatedSprite("cat-avoider/cat-moving-upL.png", 0.1f, 144, 150, 12, RIGHT, 0);
+        catMovingUpR = new AnimatedSprite("cat-avoider/cat-moving-upR.png", 0.1f, 144, 150, 12, RIGHT, 0);
 
-        catMovingDownL = new AnimatedSprite("avoider/cat-moving-downL.png", 0.1f, 144, 150, 12, RIGHT, 0);
-        catMovingDownR = new AnimatedSprite("avoider/cat-moving-downR.png", 0.1f, 144, 150, 12, RIGHT, 0);
+        catMovingDownL = new AnimatedSprite("cat-avoider/cat-moving-downL.png", 0.1f, 144, 150, 12, RIGHT, 0);
+        catMovingDownR = new AnimatedSprite("cat-avoider/cat-moving-downR.png", 0.1f, 144, 150, 12, RIGHT, 0);
 
-        catMovingLeft = new AnimatedSprite("avoider/cat-moving-left.png", 0.1f, 142, 150, 12, RIGHT, 0);
-        catMovingRight = new AnimatedSprite("avoider/cat-moving-right.png", 0.1f, 142, 150, 12, RIGHT, 0);
+        catMovingLeft = new AnimatedSprite("cat-avoider/cat-moving-left.png", 0.1f, 142, 150, 12, RIGHT, 0);
+        catMovingRight = new AnimatedSprite("cat-avoider/cat-moving-right.png", 0.1f, 142, 150, 12, RIGHT, 0);
 
         wool.direction = new Vector2(0, 0);
-        wool.texture = assets.get("avoider/wool.png", Texture.class);
+        wool.texture = assets.get("cat-avoider/wool.png", Texture.class);
         wool.position = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         wool.sprite = new Sprite(wool.texture);
         wool.sprite.setSize(50, 50);
 
-        backgroundMusic =  new MyMusic(assets.get("avoider/ninja_theme.mp3", Music.class));
+        backgroundMusic =  new MyMusic(assets.get("cat-avoider/ninja-theme.mp3", Music.class));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
 
-        impact = new MySound(assets.get("avoider/impact.mp3", Sound.class));
+        impact = new MySound(assets.get("cat-avoider/impact.mp3", Sound.class));
     }
     
     

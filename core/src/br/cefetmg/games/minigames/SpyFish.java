@@ -45,6 +45,7 @@ public class SpyFish extends MiniGame {
     private float chipMaxSpeed;
     private int numberOfLostChips = 0;
     private int chipsTaken = 0;
+    private float proximoSomDeMudarAlvo = 0f;
 
     public SpyFish(BaseScreen screen, MiniGameStateObserver observer, float difficulty) {
         super(screen, observer, difficulty, 20000f, TimeoutBehavior.FAILS_WHEN_MINIGAME_ENDS);
@@ -56,8 +57,8 @@ public class SpyFish extends MiniGame {
         this.texturaMemoCard = assets.get("spy-fish/card.png", Texture.class);
         this.texturaFundo = assets.get("spy-fish/ocean.png", Texture.class);
         
-        this.somPegarCartao = new MySound(assets.get("spy-fish/smw_kick.wav", Sound.class));
-        this.somMudarAlvo = new MySound(assets.get("spy-fish/smw_fireball.wav", Sound.class));
+        this.somPegarCartao = new MySound(assets.get("spy-fish/smw_kick.mp3", Sound.class));
+        this.somMudarAlvo = new MySound(assets.get("spy-fish/smw_fireball.mp3", Sound.class));
         
         chips = new ArrayList<MemoryChip>();
         for (int i = 0; i < this.maxChips; i++) {
@@ -83,7 +84,12 @@ public class SpyFish extends MiniGame {
                 getMousePosInGameWorld().x, getMousePosInGameWorld().y);
         
         if (Gdx.input.isTouched() || Gdx.input.justTouched()) {
-            this.somMudarAlvo.play(1.0f);
+            if (proximoSomDeMudarAlvo <= 0) {
+                this.somMudarAlvo.play(1.0f);
+                proximoSomDeMudarAlvo = 0.15f;
+            } else {
+                proximoSomDeMudarAlvo -= Gdx.graphics.getDeltaTime();
+            }
         }
     }
 

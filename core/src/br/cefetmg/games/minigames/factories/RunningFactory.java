@@ -32,6 +32,7 @@ public class RunningFactory implements MiniGameFactory {
                 put("running/wool.png", Texture.class);
                 put("running/bone.png", Texture.class);
                 put("running/kit.png", Texture.class);
+
                 put("running/pickup_wool.wav", Sound.class);
                 put("running/pickup_kit.wav", Sound.class);
                 put("running/final.wav", Sound.class);

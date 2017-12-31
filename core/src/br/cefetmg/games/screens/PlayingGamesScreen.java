@@ -93,7 +93,7 @@ public class PlayingGamesScreen extends BaseScreen
                         new TheFridgeGameFactory(),
                         new KillTheRatsFactory(),
                         //andre brait
-                        new AstroCatGameFactory()
+                        new AstroCatFactory()
                 )
         ), 0, 1, this, this);
 
@@ -136,7 +136,7 @@ public class PlayingGamesScreen extends BaseScreen
         assets.load("sound/gameover.wav", Sound.class);
         assets.load("sound/youwin.wav", Sound.class);
         assets.load("sound/youlose.wav", Sound.class);
-        assets.load("hud/intergames.wav", Music.class);
+        assets.load("hud/intergames.mp3", Music.class);
 
         assets.load("hud/no-sound-button.png", Texture.class, linearFilter);
         assets.load("hud/sound-button.png", Texture.class, linearFilter);
@@ -260,7 +260,7 @@ public class PlayingGamesScreen extends BaseScreen
             gameOverSound = new MySound(assets.get("sound/gameover.wav", Sound.class));
             youLoseSound = new MySound(assets.get("sound/youlose.wav", Sound.class));
             youWinSound = new MySound(assets.get("sound/youwin.wav", Sound.class));
-            intergames = new MyMusic(assets.get("hud/intergames.wav", Music.class));
+            intergames = new MyMusic(assets.get("hud/intergames.mp3", Music.class));
             intergames.setOnCompletionListener(new Music.OnCompletionListener() {
                 @Override
                 public void onCompletion(Music music) {

@@ -118,6 +118,7 @@ public class BasCATball extends MiniGame {
         darkArrowLTexture = assets.get("bascatball/darkarrowL.png", Texture.class);
         darkArrowRTexture = assets.get("bascatball/darkarrowR.png", Texture.class);
         doraemonTexture = assets.get("bascatball/doraemon.png", Texture.class);
+
         beat = new MySound(assets.get("bascatball/beats.mp3", Sound.class));
         fail = new MySound(assets.get("bascatball/fail.mp3", Sound.class));
         flyingdown = new MySound(assets.get("bascatball/flyingdown.mp3", Sound.class));

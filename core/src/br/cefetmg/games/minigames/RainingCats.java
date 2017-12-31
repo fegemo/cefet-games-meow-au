@@ -58,7 +58,7 @@ public class RainingCats extends MiniGame {
         arrowTexture = assets.get("raining-cats/arrow.png", Texture.class);
 
         music =  new MyMusic(assets.get("raining-cats/music.mp3", Music.class));
-        pop = new MySound(assets.get("raining-cats/Pop.mp3", Sound.class));
+        pop = new MySound(assets.get("raining-cats/pop.mp3", Sound.class));
 
         arrow = new Sprite(arrowTexture);
         arrow.setScale(0.08f);

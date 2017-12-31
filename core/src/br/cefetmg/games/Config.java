@@ -92,4 +92,25 @@ public class Config {
      * Caminho do arquivo de configuração do banco de dados.
      */
     public static final String DATABASE_CONFIG = "data/service-account.json";
+
+
+    /**
+     * A taxa de amostragem dos sons para usar. Foi necessário ter versões dos sons
+     * em 44100hz e 48000hz por causa de alguns aparelhos Android.
+     */
+    private static int preferredSoundSamplingRate = 44100;
+
+    private static final int [] AVAILABLE_SOUND_SAMPLING_RATES = new int[] { 44100, 48000 };
+
+    public static int getPreferredSoundSamplingRate() {
+        return preferredSoundSamplingRate;
+    }
+
+    public static void setPreferredSoundSamplingRate(int rate) {
+        for (int r : AVAILABLE_SOUND_SAMPLING_RATES) {
+            if (r == rate) {
+                preferredSoundSamplingRate = rate;
+            }
+        }
+    }
 }

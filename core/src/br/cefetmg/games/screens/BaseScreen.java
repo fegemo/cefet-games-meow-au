@@ -1,6 +1,7 @@
 package br.cefetmg.games.screens;
 
 import br.cefetmg.games.Config;
+import br.cefetmg.games.sound.SoundSamplingAwareInternalFileHandleResolver;
 import br.cefetmg.games.transition.TransitionScreen;
 
 import com.badlogic.gdx.Game;
@@ -70,7 +71,7 @@ public abstract class BaseScreen extends ScreenAdapter {
         this.batch = new SpriteBatch();
         this.camera = new OrthographicCamera();
         this.viewport = chooseBestViewport();
-        this.assets = new AssetManager();
+        this.assets = new AssetManager(new SoundSamplingAwareInternalFileHandleResolver());
 
         FileHandleResolver resolver = new InternalFileHandleResolver();
         assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));

@@ -56,17 +56,17 @@ public class Meowsic extends MiniGame {
         note3 = assets.get("meowsic/note3.png", Texture.class);
         note4 = assets.get("meowsic/note4.png", Texture.class);
         note5 = assets.get("meowsic/note5.png", Texture.class);
-        song1 = new MySound(assets.get("meowsic/song1.wav", Sound.class));
-        song2 = new MySound(assets.get("meowsic/song2.wav", Sound.class));
-        song3 = new MySound(assets.get("meowsic/song3.wav", Sound.class));
-        song4 = new MySound(assets.get("meowsic/song4.wav", Sound.class));
-        song5 = new MySound(assets.get("meowsic/song5.wav", Sound.class));
+        song1 = new MySound(assets.get("meowsic/song1.mp3", Sound.class));
+        song2 = new MySound(assets.get("meowsic/song2.mp3", Sound.class));
+        song3 = new MySound(assets.get("meowsic/song3.mp3", Sound.class));
+        song4 = new MySound(assets.get("meowsic/song4.mp3", Sound.class));
+        song5 = new MySound(assets.get("meowsic/song5.mp3", Sound.class));
         music1 =  new MyMusic(assets.get("meowsic/music1.mp3", Music.class));
         music2 =  new MyMusic(assets.get("meowsic/music2.mp3", Music.class));
         music3 =  new MyMusic(assets.get("meowsic/music3.mp3", Music.class));
         music4 =  new MyMusic(assets.get("meowsic/music4.mp3", Music.class));
         music5 =  new MyMusic(assets.get("meowsic/music5.mp3", Music.class));
-        fail = new MySound(assets.get("meowsic/fail.wav", Sound.class));
+        fail = new MySound(assets.get("meowsic/fail.mp3", Sound.class));
 
         for (i = 0; i < NUMBER_OF_NOTES; i++) {
             noteX[i] = 350 + laneSize * MathUtils.random(0, 4);
