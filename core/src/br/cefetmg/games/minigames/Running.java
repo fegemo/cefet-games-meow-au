@@ -1,19 +1,21 @@
 package br.cefetmg.games.minigames;
 
-import br.cefetmg.games.minigames.util.DifficultyCurve;
-import br.cefetmg.games.minigames.util.TimeoutBehavior;
-import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+
 import net.dermetfan.gdx.graphics.g2d.AnimatedSprite;
+
+import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.minigames.util.TimeoutBehavior;
+import br.cefetmg.games.screens.BaseScreen;
 import br.cefetmg.games.sound.MySound;
-import com.badlogic.gdx.audio.Sound;
 
 /**
  *
@@ -45,8 +47,8 @@ public class Running extends MiniGame {
     private MySound loseSound;
     private float catSpeed;
     //constantes de velocidade
-    private static final float CAT_SPEED_CONSTANT = (float) 0.25;
-    private static final float DOG_SPEED_CONSTANT = (float) 0.002;
+    private static final float CAT_SPEED_CONSTANT = (float) 1;
+    private static final float DOG_SPEED_CONSTANT = (float) 0.008;
     // variáveis do desafio - variam com a dificuldade do minigame
     private float minimumdogSpeed;
     private float dogSpeed;
@@ -58,6 +60,7 @@ public class Running extends MiniGame {
     private int totalEnemy;
     private final int increase = 3;
     private float fltScale = 1;
+    private boolean isDraggingCat = false;
 
     public Running(BaseScreen screen,
             MiniGameStateObserver observer, float difficulty) {
@@ -97,6 +100,7 @@ public class Running extends MiniGame {
 
     protected void setPositions(boolean blnChange) {
         cat.setPosition(0, (viewport.getWorldHeight() - cat.getHeight()) * rand.nextFloat());
+        cat.setOriginCenter();
         catSpeed = (float) 0.8;
         ball = new Sprite(ballTexture);
         float fltBall = rand.nextFloat();
@@ -116,11 +120,11 @@ public class Running extends MiniGame {
         }
         woolArray = new Array<Sprite>();
         for (int i = 0; i < totalWool; i++) {
-            createWool();
+            createWool(i, totalWool);
         }
         boneArray = new Array<Sprite>();
         for (int i = 0; i < totalBone; i++) {
-            createBone();
+            createBone(i, totalBone);
         }
         kitArray = new Array<Sprite>();
         for (int i = 0; i < totalKit; i++) {
@@ -150,7 +154,16 @@ public class Running extends MiniGame {
     public void onHandlePlayingInput() {
         Vector2 pointer = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         viewport.unproject(pointer);
-        cat.setY(Math.min(pointer.y, viewport.getWorldHeight() - cat.getHeight()));
+
+        if (Gdx.input.isTouched() && cat.getBoundingRectangle().contains(pointer)) {
+            isDraggingCat = true;
+        } else if (!Gdx.input.isTouched()) {
+            isDraggingCat = false;
+        }
+
+        if (isDraggingCat) {
+            cat.setCenter(cat.getX() + cat.getWidth()/2.0f, pointer.y);
+        }
     }
 
     @Override
@@ -184,6 +197,7 @@ public class Running extends MiniGame {
             if (cat.getBoundingRectangle().overlaps(kitArray.get(i).getBoundingRectangle())) {
                 if (catSpeed > 0.5) {
                     catSpeed -= CAT_SPEED_CONSTANT;
+                    catSpeed = Math.max(1, catSpeed);
                 }
                 kitArray.removeIndex(i);
                 pickupKitSound.play();
@@ -253,7 +267,7 @@ public class Running extends MiniGame {
 
     @Override
     public String getInstructions() {
-        return "Pegue a bola na linha de chegada";
+        return "Chegue com o gatinho cinza até a bola de futebol";
     }
 
     @Override
@@ -261,7 +275,7 @@ public class Running extends MiniGame {
         return true;
     }
 
-    public Vector2 randomPosition() {
+    private Vector2 randomPosition() {
         // pega x e y entre 0 e 1
         Vector2 position = new Vector2(rand.nextFloat(), rand.nextFloat());
         // multiplica x e y pela largura e altura da tela
@@ -271,6 +285,19 @@ public class Running extends MiniGame {
 
         return position;
     }
+
+    private Vector2 randomStratifiedPosition(int i, int totalLanes) {
+        float laneStart = i / (float) totalLanes;
+        float laneEnd = (i+1) / (float) totalLanes;
+        Vector2 position = new Vector2(rand.nextFloat() * (laneEnd - laneStart) + laneStart,
+                rand.nextFloat());
+        position.scl(
+                viewport.getWorldWidth() - woolTexture.getWidth(),
+                viewport.getWorldHeight() - woolTexture.getHeight()
+        );
+        return position;
+    }
+
 
     public void changeLevel() {
         totalEnemy *= increase;
@@ -294,16 +321,16 @@ public class Running extends MiniGame {
 
     }
 
-    public void createWool() {
+    public void createWool(int i, int total) {
         Sprite wool = new Sprite(woolTexture);
-        Vector2 position = randomPosition();
+        Vector2 position = randomStratifiedPosition(i, total);
         wool.setPosition(position.x, position.y);
         woolArray.add(wool);
     }
 
-    public void createBone() {
+    public void createBone(int i, int total) {
         Sprite bone = new Sprite(boneTexture);
-        Vector2 position = randomPosition();
+        Vector2 position = randomStratifiedPosition(i, total);
         bone.setPosition(position.x, position.y);
         boneArray.add(bone);
     }
