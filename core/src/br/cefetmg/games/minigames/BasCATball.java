@@ -283,7 +283,7 @@ public class BasCATball extends MiniGame {
     }
 
     float eqBallRightTrajetory(float posicaox) {
-        return viewport.getWorldHeight() * 0.15f + a * posicaox;
+        return viewport.getWorldHeight() * 0.30f + a * posicaox;
     }
 
     float eqBallLeftTrajetory(float posicaox) {
@@ -310,7 +310,7 @@ public class BasCATball extends MiniGame {
             if (ball.getBoundingRectangle().overlaps(player.getBoundingRectangle())) {
                 withBall = true;
                 withoutBall = false;
-                if (player.getX() + player.getWidth() / 2 * player.getScaleX() <= viewport.getScreenWidth() / 2) {
+                if (player.getX() + player.getWidth() / 2 * player.getScaleX() <= viewport.getWorldWidth() / 2) {
                     a = ((viewport.getWorldHeight() * 8 / 10) - viewport.getWorldHeight() * 0.25f) / (viewport.getScreenWidth() - player.getX() + player.getWidth() / 2 * player.getScaleX());
                     ballGoingRight = true;
                     dorami.setX(basketPositionRX);
