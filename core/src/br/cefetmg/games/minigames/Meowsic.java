@@ -70,7 +70,7 @@ public class Meowsic extends MiniGame {
 
         for (i = 0; i < NUMBER_OF_NOTES; i++) {
             noteX[i] = 350 + laneSize * MathUtils.random(0, 4);
-            noteY[i] = 470 + i * 125;
+            noteY[i] = (velocidade < 4 ? 220 : 270) + i * 125;
             clicked[i] = 0;
         }
         
