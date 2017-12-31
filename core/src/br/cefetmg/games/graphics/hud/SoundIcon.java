@@ -78,8 +78,4 @@ public class SoundIcon {
     public Button getButton() {
         return this.soundButton;
     }
-
-    public Skin getSkin() {
-        return this.skin;
-    }
 }

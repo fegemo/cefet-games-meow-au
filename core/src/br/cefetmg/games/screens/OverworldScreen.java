@@ -56,7 +56,6 @@ public class OverworldScreen extends BaseScreen {
     private final InputMultiplexer inputMultiplexer;
     private BitmapFont fonteDeTexto;
     private ArrayList<Image> locks;
-    private boolean desenhaMeio = true;
     private MyMusic backgroundMusic;
     private int currentLevel;
     private int score;
@@ -67,7 +66,7 @@ public class OverworldScreen extends BaseScreen {
         this(game, previous, 0, 0);
     }
 
-    OverworldScreen(Game game, BaseScreen previous,
+    public OverworldScreen(Game game, BaseScreen previous,
             int stageJustPlayed, int remainingLivesAtStageEnd) {
         super(game, previous);
         inputMultiplexer = new InputMultiplexer();
@@ -170,7 +169,6 @@ public class OverworldScreen extends BaseScreen {
         Image water = new Image(assets.get("world/water.jpg", Texture.class));
         fonteDeTexto = super.messagesFont;
 
-        desenhaMeio = true;
         click1 = new MySound(assets.get("menu/click2.mp3", Sound.class));
         click2 = new MySound(assets.get("menu/click3.mp3", Sound.class));
         backgroundMusic = new MyMusic(assets.get("world/overworldtheme.mp3", Music.class));
@@ -214,6 +212,8 @@ public class OverworldScreen extends BaseScreen {
         soundIcon.create(
                 assets.get("hud/no-sound-button.png", Texture.class),
                 assets.get("hud/sound-button.png", Texture.class));
+        soundIcon.getButton().setY(viewport.getWorldHeight() * 0.12f);
+        soundIcon.getButton().setX(viewport.getWorldHeight() * 0.08f);
 
         map.setZIndex(2);
         water.setZIndex(1);
@@ -241,45 +241,46 @@ public class OverworldScreen extends BaseScreen {
 
         Vector2[] posicaoIcone = new Vector2[NUMBER_OF_LEVELS];
 
-        posicaoIcone[0] = new Vector2(775.29376f, 176.95001f);
-        posicaoIcone[1] = new Vector2(325.83545f, 453.82504f);
-        posicaoIcone[2] = new Vector2(570.648f - 20, 545.2626f);
-        posicaoIcone[3] = new Vector2(630.8559f, 316.95004f);
-        posicaoIcone[4] = new Vector2(983.3172f, 320.38754f);
+        posicaoIcone[0] = new Vector2(705, 90);
+        posicaoIcone[1] = new Vector2(120, 260);
+        posicaoIcone[2] = new Vector2(325, 335);
+        posicaoIcone[3] = new Vector2(980, 312);
+        posicaoIcone[4] = new Vector2(568, 255);
 
-        icon1.setScale(0.2f);
-        icon1.setOrigin(0, 0);
+        icon1.setScale(0.3f);
+        icon1.setOrigin(Align.center);
         icon1.setPosition(posicaoIcone[0].x, posicaoIcone[0].y);
         stage1.setScale(0.8f);
         stage1.setOrigin(0, 0);
 
-        icon2.setScale(0.9f);
-        icon2.setOrigin(0, 0);
+        icon2.setScale(0.25f);
+        icon2.setOrigin(Align.center);
         icon2.setPosition(posicaoIcone[1].x, posicaoIcone[1].y);
         stage2.setScale(0.8f);
         stage2.setOrigin(0, 0);
 
-        icon3.setScale(0.3f);
-        icon3.setOrigin(0, 0);
+        icon3.setScale(0.2f);
+        icon3.setOrigin(Align.center);
         icon3.setPosition(posicaoIcone[2].x + 20, posicaoIcone[2].y);
         stage3.setScale(0.8f);
         stage3.setOrigin(0, 0);
 
-        icon4.setScale(0.25f);
-        icon4.setOrigin(0, 0);
+        icon4.setScale(0.9f);
+        icon4.setOrigin(Align.center);
         icon4.setPosition(posicaoIcone[3].x, posicaoIcone[3].y);
         stage4.setScale(0.8f);
         stage4.setOrigin(0, 0);
 
         icon5.setScale(0.4f);
-        icon5.setOrigin(0, 0);
+        icon5.setOrigin(Align.center);
         icon5.setPosition(posicaoIcone[4].x, posicaoIcone[4].y);
         stage5.setScale(0.8f);
         stage5.setOrigin(0, 0);
 
         menu.setScale(.8f);
         menu.setOrigin(0, 0);
-        menu.setPosition(0, 0);
+        menu.setY(viewport.getWorldHeight() * 0.02f);
+        menu.setX(viewport.getWorldHeight() * 0.02f);
 
         stage.setViewport(viewport);
         stage.act(Gdx.graphics.getDeltaTime());
@@ -326,64 +327,55 @@ public class OverworldScreen extends BaseScreen {
                     stop = true;
                     click1.play();
                     firstStage(true);
-                    desenhaMeio = true;
                 }
                 if ("exit".equals(hitActor.getName())) {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     openLevels[0] = false;
-                    desenhaMeio = true;
                 }
             } else if (openLevels[1]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
                     secondStage(true);
-                    desenhaMeio = true;
                 }
                 if ("exit".equals(hitActor.getName())) {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     openLevels[1] = false;
-                    desenhaMeio = true;
                 }
             } else if (openLevels[2]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
                     thirdStage(true);
-                    desenhaMeio = true;
                 }
                 if ("exit".equals(hitActor.getName())) {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     openLevels[2] = false;
-                    desenhaMeio = true;
                 }
             } else if (openLevels[3]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
                     click1.play();
-                    lastStage(true);
-                    desenhaMeio = true;
+                    fourthStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
                     click1.play();
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     openLevels[3] = false;
-                    desenhaMeio = true;
                 }
             } else if (openLevels[4]) {
                 if ("play".equals(hitActor.getName())) {
 
                     stop = true;
                     click1.play();
-                    fourthStage(true);
-                    desenhaMeio = true;
+                    lastStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
 
@@ -391,28 +383,22 @@ public class OverworldScreen extends BaseScreen {
                     play.setZIndex(0);
                     exit.setZIndex(0);
                     openLevels[4] = false;
-                    desenhaMeio = true;
                 }
             } else if ("icon1".equals(hitActor.getName())) {
                 click1.play();
-                desenhaMeio = false;
                 firstStage(false);
             } else if ("icon2".equals(hitActor.getName()) && currentLevel >= 1) {
                 click1.play();
-                desenhaMeio = false;
                 secondStage(false);
             } else if ("icon3".equals(hitActor.getName()) && currentLevel >= 2) {
                 click1.play();
-                desenhaMeio = false;
                 thirdStage(false);
             } else if ("icon4".equals(hitActor.getName()) && currentLevel >= 3) {
                 click1.play();
-                desenhaMeio = false;
-                lastStage(false);
+                fourthStage(false);
             } else if ("icon5".equals(hitActor.getName()) && currentLevel >= 4) {
                 click1.play();
-                desenhaMeio = false;
-                fourthStage(false);
+                lastStage(false);
             } else if ((("icon5".equals(hitActor.getName()) && currentLevel < 4) || ("icon4".equals(hitActor.getName()) && currentLevel < 3) || ("icon3".equals(hitActor.getName()) && currentLevel < 2) || ("icon2".equals(hitActor.getName()) && currentLevel < 1))) {
                 click2.play();
                 stop = false;
@@ -528,13 +514,7 @@ public class OverworldScreen extends BaseScreen {
         int i = 0;
         for (Image lock : locks) {
             if (i > currentLevel) {
-                if (i == 3) {
-                    if (desenhaMeio) {
-                        lock.draw(batch, 1);
-                    }
-                } else {
-                    lock.draw(batch, 1);
-                }
+                lock.draw(batch, 1);
             }
             i++;
         }
@@ -545,49 +525,36 @@ public class OverworldScreen extends BaseScreen {
         if (!stop && hitActor != null && !openLevels[1] && !openLevels[2] && !openLevels[3] && !openLevels[0] && !openLevels[4]) {
             if ("icon1".equals(hitActor.getName())) {
                 if (check) {
-                    icon1.setScale(.28f);
-                    icon1.setPosition(755.29376f, 166.95001f);
+                    icon1.setScale(.35f);
                     check = !check;
                 }
             } else if ("icon2".equals(hitActor.getName())) {
                 if (check) {
-                    icon2.setScale(1.1f);
-                    icon2.setPosition(325.83545f, 443.82504f);
+                    icon2.setScale(0.31f);
                     check = !check;
                 }
             } else if ("icon3".equals(hitActor.getName())) {
                 if (check) {
-                    icon3.setScale(.4f);
-                    icon3.setPosition(560.648f, 535.2626f);
+                    icon3.setScale(.25f);
                     check = !check;
                 }
             } else if ("icon4".equals(hitActor.getName())) {
                 if (check) {
-                    icon4.setScale(.31f);
-                    icon4.setPosition(620.8559f, 306.95004f);
+                    icon4.setScale(1.1f);
                     check = !check;
                 }
             } else if ("icon5".equals(hitActor.getName())) {
                 if (check) {
                     icon5.setScale(.5f);
-                    icon5.setPosition(973.3172f, 310.38754f);
                     check = !check;
                 }
             } else {
-                icon1.setScale(0.2f);
-                icon1.setPosition(775.29376f, 176.95001f);
-
-                icon2.setScale(0.9f);
-                icon2.setPosition(325.83545f, 453.82504f);
-
-                icon3.setScale(0.3f);
-                icon3.setPosition(570.648f, 545.2626f);
-
-                icon4.setScale(0.25f);
-                icon4.setPosition(630.8559f, 316.95004f);
-
+                icon1.setScale(0.3f);
+                icon2.setScale(0.25f);
+                icon3.setScale(0.2f);
+                icon4.setScale(0.9f);
                 icon5.setScale(0.4f);
-                icon5.setPosition(983.3172f, 320.38754f);
+
                 check = true;
             }
         }
