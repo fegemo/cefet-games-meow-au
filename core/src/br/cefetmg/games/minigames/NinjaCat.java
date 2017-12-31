@@ -306,12 +306,12 @@ public class NinjaCat extends MiniGame {
                     super.addAll(new TextureRegion[]{
                         frames[0][0],
                         frames[0][1],
-                        frames[0][2],
-                        frames[0][3],
-                        frames[0][4],
-                        frames[0][5],
-                        frames[0][6],
-                        frames[0][7],});
+                        frames[1][0],
+                        frames[1][1],
+                        frames[2][0],
+                        frames[2][1],
+                        frames[3][0],
+                        frames[3][1],});
                 }
             }));
             super.getAnimation().setPlayMode(Animation.PlayMode.LOOP);
