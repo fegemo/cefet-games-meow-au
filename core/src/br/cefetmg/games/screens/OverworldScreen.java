@@ -6,9 +6,13 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RepeatAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import br.cefetmg.games.transition.TransitionScreen;
 import java.util.Arrays;
@@ -22,7 +26,10 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Locale;
@@ -37,37 +44,32 @@ public class OverworldScreen extends BaseScreen {
 
     private MySound click1, click2;
 
-    private boolean check = false;
     private boolean stop;
     private boolean[] openLevels;
-    private Image icon1;
     private Image stage1;
-    private Image icon2;
     private Image stage2;
-    private Image icon3;
     private Image stage3;
-    private Image icon4;
     private Image stage4;
-    private Image icon5;
     private Image stage5;
     private Image exit;
     private Image play;
 
     private final InputMultiplexer inputMultiplexer;
     private BitmapFont fonteDeTexto;
-    private ArrayList<Image> locks;
     private MyMusic backgroundMusic;
     private int currentLevel;
     private int score;
     private final StringBuilder scoreText;
     private FileHandle progressFile;
 
+    private static final float ICON_SIZE = 115f;
+
     OverworldScreen(Game game, BaseScreen previous) {
         this(game, previous, 0, 0);
     }
 
-    public OverworldScreen(Game game, BaseScreen previous,
-            int stageJustPlayed, int remainingLivesAtStageEnd) {
+    OverworldScreen(Game game, BaseScreen previous,
+                    int stageJustPlayed, int remainingLivesAtStageEnd) {
         super(game, previous);
         inputMultiplexer = new InputMultiplexer();
 
@@ -145,7 +147,7 @@ public class OverworldScreen extends BaseScreen {
 
     @Override
     protected void assetsLoaded() {
-        locks = new ArrayList<Image>();
+        ArrayList<Image> locks = new ArrayList<Image>();
         openLevels = new boolean[NUMBER_OF_LEVELS];
         for (int i = 0; i < NUMBER_OF_LEVELS; i++) {
             openLevels[i] = false;
@@ -158,11 +160,12 @@ public class OverworldScreen extends BaseScreen {
         stage3 = new Image(assets.get("world/stage3.png", Texture.class));
         stage4 = new Image(assets.get("world/stage4.png", Texture.class));
         stage5 = new Image(assets.get("world/stage5.png", Texture.class));
-        icon1 = new Image(assets.get("world/icon1.png", Texture.class));
-        icon2 = new Image(assets.get("world/icon2.png", Texture.class));
-        icon3 = new Image(assets.get("world/icon3.png", Texture.class));
-        icon4 = new Image(assets.get("world/icon4.png", Texture.class));
-        icon5 = new Image(assets.get("world/icon5.png", Texture.class));
+        Image icon1 = new Image(assets.get("world/icon1.png", Texture.class));
+        Image icon2 = new Image(assets.get("world/icon2.png", Texture.class));
+        Image icon3 = new Image(assets.get("world/icon3.png", Texture.class));
+        Image icon4 = new Image(assets.get("world/icon4.png", Texture.class));
+        Image icon5 = new Image(assets.get("world/icon5.png", Texture.class));
+        Array<Image> levelIcons = new Array<Image>(new Image[] {icon1, icon2, icon3, icon4, icon5});
         exit = new Image(assets.get("world/menu.png", Texture.class));
         Image menu = new Image(assets.get("world/menu.png", Texture.class));
         play = new Image(assets.get("world/play.png", Texture.class));
@@ -241,37 +244,37 @@ public class OverworldScreen extends BaseScreen {
 
         Vector2[] posicaoIcone = new Vector2[NUMBER_OF_LEVELS];
 
-        posicaoIcone[0] = new Vector2(705, 90);
-        posicaoIcone[1] = new Vector2(120, 260);
-        posicaoIcone[2] = new Vector2(325, 335);
-        posicaoIcone[3] = new Vector2(980, 312);
-        posicaoIcone[4] = new Vector2(568, 255);
+        posicaoIcone[0] = new Vector2(775.29376f, 176.95001f);
+        posicaoIcone[1] = new Vector2(320.83545f, 453.82504f);
+        posicaoIcone[2] = new Vector2(520.648f, 545.2626f);
+        posicaoIcone[3] = new Vector2(983.3172f, 320.38754f);
+        posicaoIcone[4] = new Vector2(638.8559f, 316.95004f);
 
-        icon1.setScale(0.3f);
+        icon1.setSize(ICON_SIZE, ICON_SIZE);
         icon1.setOrigin(Align.center);
         icon1.setPosition(posicaoIcone[0].x, posicaoIcone[0].y);
         stage1.setScale(0.8f);
         stage1.setOrigin(0, 0);
 
-        icon2.setScale(0.25f);
+        icon2.setSize(ICON_SIZE, ICON_SIZE);
         icon2.setOrigin(Align.center);
         icon2.setPosition(posicaoIcone[1].x, posicaoIcone[1].y);
         stage2.setScale(0.8f);
         stage2.setOrigin(0, 0);
 
-        icon3.setScale(0.2f);
+        icon3.setSize(ICON_SIZE, ICON_SIZE);
         icon3.setOrigin(Align.center);
         icon3.setPosition(posicaoIcone[2].x + 20, posicaoIcone[2].y);
         stage3.setScale(0.8f);
         stage3.setOrigin(0, 0);
 
-        icon4.setScale(0.9f);
+        icon4.setSize(ICON_SIZE, ICON_SIZE);
         icon4.setOrigin(Align.center);
         icon4.setPosition(posicaoIcone[3].x, posicaoIcone[3].y);
         stage4.setScale(0.8f);
         stage4.setOrigin(0, 0);
 
-        icon5.setScale(0.4f);
+        icon5.setSize(ICON_SIZE, ICON_SIZE);
         icon5.setOrigin(Align.center);
         icon5.setPosition(posicaoIcone[4].x, posicaoIcone[4].y);
         stage5.setScale(0.8f);
@@ -287,23 +290,52 @@ public class OverworldScreen extends BaseScreen {
 
         inputMultiplexer.addProcessor(soundIcon.getInputProcessor());
 
-        Vector2[] posicaoCadeado = new Vector2[NUMBER_OF_LEVELS];
-        posicaoCadeado[0] = new Vector2(775.29376f, 176.95001f);
-        posicaoCadeado[1] = new Vector2(320.83545f, 453.82504f);
-        posicaoCadeado[2] = new Vector2(570.648f - 20, 545.2626f);
-        posicaoCadeado[3] = new Vector2(983.3172f, 320.38754f);
-        posicaoCadeado[4] = new Vector2(638.8559f, 316.95004f);
-
+        Vector2[] lockDisplacements = new Vector2[] {
+            new Vector2(),
+            new Vector2(),
+            new Vector2(30, 0),
+            new Vector2(),
+            new Vector2()
+        };
         for (int i = 0; i < locks.size(); i++) {
             Image lock = locks.get(i);
+            // configura os cadeados
+            Vector2 lockPosition = lockDisplacements[i].add(posicaoIcone[i]);
+            lock.setZIndex(10);
+            lock.setAlign(Align.center);
+            lock.setPosition(lockPosition.x, lockPosition.y);
+            lock.setScale(0.5f);
+
+            // coloca apenas aqueles das fases que ainda estão travadas
             if (i > currentLevel) {
                 stage.addActor(locks.get(i));
             }
-            lock.setZIndex(10);
-            lock.setAlign(Align.center);
-            lock.setPosition(posicaoCadeado[i].x, posicaoCadeado[i].y);
-            lock.setScale(0.5f);
         }
+
+        // faz os ícones aumentarem/dimunuírem quando o mouse entra/sai
+        for (final Image icon : levelIcons) {
+            icon.addListener(new ClickListener() {
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    event.getTarget().setScale(1.1f);
+                }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    event.getTarget().setScale(0.9f);
+                }
+            });
+        }
+
+        // faz o ícone do nível atual ficar pulsando
+        Image currentLevelIcon = levelIcons.get(currentLevel);
+        RepeatAction repeatingSize = new RepeatAction();
+        repeatingSize.setCount(RepeatAction.FOREVER);
+        repeatingSize.setAction(Actions.sequence(
+                Actions.scaleBy(0.05f, 0.05f, 1, Interpolation.smooth),
+                Actions.scaleBy(-0.05f, -0.05f, 1, Interpolation.smooth)
+        ));
+        currentLevelIcon.addAction(repeatingSize);
     }
 
     @Override
@@ -318,8 +350,6 @@ public class OverworldScreen extends BaseScreen {
         viewport.unproject(click);
 
         Actor hitActor = stage.hit(click.x, click.y, false);
-
-        growEffect(click);
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
             click1.play();
@@ -518,46 +548,6 @@ public class OverworldScreen extends BaseScreen {
                             new KillTheRatsFactory()
                     )
             ), 0.9f, 1, currentLevel), TransitionScreen.Effect.FADE_IN_OUT, 0.7f);
-        }
-    }
-
-    private void growEffect(Vector2 click) {
-        Actor hitActor = stage.hit(click.x, click.y, false);
-        if (!stop && hitActor != null && !openLevels[1] && !openLevels[2] && !openLevels[3] && !openLevels[0] && !openLevels[4]) {
-            if ("icon1".equals(hitActor.getName())) {
-                if (check) {
-                    icon1.setScale(.35f);
-                    check = !check;
-                }
-            } else if ("icon2".equals(hitActor.getName())) {
-                if (check) {
-                    icon2.setScale(0.31f);
-                    check = !check;
-                }
-            } else if ("icon3".equals(hitActor.getName())) {
-                if (check) {
-                    icon3.setScale(.25f);
-                    check = !check;
-                }
-            } else if ("icon4".equals(hitActor.getName())) {
-                if (check) {
-                    icon4.setScale(1.1f);
-                    check = !check;
-                }
-            } else if ("icon5".equals(hitActor.getName())) {
-                if (check) {
-                    icon5.setScale(.5f);
-                    check = !check;
-                }
-            } else {
-                icon1.setScale(0.3f);
-                icon2.setScale(0.25f);
-                icon3.setScale(0.2f);
-                icon4.setScale(0.9f);
-                icon5.setScale(0.4f);
-
-                check = true;
-            }
         }
     }
 
