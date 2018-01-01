@@ -272,7 +272,7 @@ public class Running extends MiniGame {
 
     @Override
     public boolean shouldHideMousePointer() {
-        return true;
+        return false;
     }
 
     private Vector2 randomPosition() {
