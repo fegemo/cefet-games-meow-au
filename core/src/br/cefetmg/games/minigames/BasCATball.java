@@ -217,6 +217,7 @@ public class BasCATball extends MiniGame {
 
         beat.stop();
         beat.setLooping(true);
+        beat.play();
     }
 
     @Override
