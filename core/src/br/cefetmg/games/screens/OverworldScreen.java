@@ -287,9 +287,16 @@ public class OverworldScreen extends BaseScreen {
 
         inputMultiplexer.addProcessor(soundIcon.getInputProcessor());
 
+        Vector2[] posicaoCadeado = new Vector2[NUMBER_OF_LEVELS];
+        posicaoCadeado[0] = new Vector2(775.29376f, 176.95001f);
+        posicaoCadeado[1] = new Vector2(320.83545f, 453.82504f);
+        posicaoCadeado[2] = new Vector2(570.648f - 20, 545.2626f);
+        posicaoCadeado[3] = new Vector2(983.3172f, 320.38754f);
+        posicaoCadeado[4] = new Vector2(638.8559f, 316.95004f);
+
         int i = 0;
         for (Image cadeado : locks) {
-            cadeado.setPosition(posicaoIcone[i].x + cadeado.getImageHeight() / 2, posicaoIcone[i].y + +cadeado.getImageWidth() / 2);
+            cadeado.setPosition(posicaoCadeado[i].x + cadeado.getImageHeight() / 2, posicaoCadeado[i].y + cadeado.getImageWidth() / 2);
             cadeado.setScale(0.5f);
             i++;
         }
