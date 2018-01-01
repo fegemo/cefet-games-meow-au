@@ -64,7 +64,7 @@ public class OverworldScreen extends BaseScreen {
 
     private static final float ICON_SIZE = 115f;
 
-    OverworldScreen(Game game, BaseScreen previous) {
+    public OverworldScreen(Game game, BaseScreen previous) {
         this(game, previous, 0, 0);
     }
 
@@ -218,15 +218,50 @@ public class OverworldScreen extends BaseScreen {
         soundIcon.getButton().setY(viewport.getWorldHeight() * 0.12f);
         soundIcon.getButton().setX(viewport.getWorldHeight() * 0.08f);
 
-        map.setZIndex(2);
-        water.setZIndex(1);
-        stage1.setZIndex(0);
-        stage2.setZIndex(0);
-        stage3.setZIndex(0);
-        stage4.setZIndex(0);
-        stage5.setZIndex(0);
-        play.setZIndex(0);
-        exit.setZIndex(0);
+
+        Vector2[] posicaoIcone = new Vector2[NUMBER_OF_LEVELS];
+        posicaoIcone[0] = new Vector2(775.29376f, 176.95001f);
+        posicaoIcone[1] = new Vector2(320.83545f, 453.82504f);
+        posicaoIcone[2] = new Vector2(520.648f, 545.2626f);
+        posicaoIcone[3] = new Vector2(983.3172f, 320.38754f);
+        posicaoIcone[4] = new Vector2(638.8559f, 316.95004f);
+
+        Vector2[] lockDisplacements = new Vector2[] {
+                new Vector2(),
+                new Vector2(),
+                new Vector2(30, 0),
+                new Vector2(),
+                new Vector2()
+        };
+        for (int i = 0; i < locks.size(); i++) {
+            Image lock = locks.get(i);
+            // configura os cadeados
+            Vector2 lockPosition = lockDisplacements[i].add(posicaoIcone[i]);
+            lock.setZIndex(0);
+            lock.setAlign(Align.center);
+            lock.setPosition(lockPosition.x, lockPosition.y);
+            lock.setScale(0.5f);
+
+            // coloca apenas aqueles das fases que ainda estão travadas
+            if (i > currentLevel) {
+                stage.addActor(lock);
+            }
+        }
+
+        map.setZIndex(1);
+        water.setZIndex(0);
+        stage1.setZIndex(100);
+        stage1.setVisible(false);
+        stage2.setZIndex(100);
+        stage2.setVisible(false);
+        stage3.setZIndex(100);
+        stage3.setVisible(false);
+        stage4.setZIndex(100);
+        stage4.setVisible(false);
+        stage5.setZIndex(100);
+        stage5.setVisible(false);
+        play.setZIndex(1000);
+        exit.setZIndex(1000);
 
         map.setOrigin(0, 0);
         map.setScale(viewport.getWorldWidth() / map.getWidth(), viewport.getWorldHeight() / map.getHeight());
@@ -238,17 +273,11 @@ public class OverworldScreen extends BaseScreen {
         play.setScale(.9f);
         play.setOrigin(0, 0);
         play.setPosition(viewport.getWorldWidth() / 2 + 50, viewport.getWorldHeight() / 2 - 100);
+        play.setVisible(false);
         exit.setScale(.9f);
         exit.setOrigin(0, 0);
         exit.setPosition(viewport.getWorldWidth() / 2 - 225, viewport.getWorldHeight() / 2 - 100);
-
-        Vector2[] posicaoIcone = new Vector2[NUMBER_OF_LEVELS];
-
-        posicaoIcone[0] = new Vector2(775.29376f, 176.95001f);
-        posicaoIcone[1] = new Vector2(320.83545f, 453.82504f);
-        posicaoIcone[2] = new Vector2(520.648f, 545.2626f);
-        posicaoIcone[3] = new Vector2(983.3172f, 320.38754f);
-        posicaoIcone[4] = new Vector2(638.8559f, 316.95004f);
+        exit.setVisible(false);
 
         icon1.setSize(ICON_SIZE, ICON_SIZE);
         icon1.setOrigin(Align.center);
@@ -290,27 +319,6 @@ public class OverworldScreen extends BaseScreen {
 
         inputMultiplexer.addProcessor(soundIcon.getInputProcessor());
 
-        Vector2[] lockDisplacements = new Vector2[] {
-            new Vector2(),
-            new Vector2(),
-            new Vector2(30, 0),
-            new Vector2(),
-            new Vector2()
-        };
-        for (int i = 0; i < locks.size(); i++) {
-            Image lock = locks.get(i);
-            // configura os cadeados
-            Vector2 lockPosition = lockDisplacements[i].add(posicaoIcone[i]);
-            lock.setZIndex(10);
-            lock.setAlign(Align.center);
-            lock.setPosition(lockPosition.x, lockPosition.y);
-            lock.setScale(0.5f);
-
-            // coloca apenas aqueles das fases que ainda estão travadas
-            if (i > currentLevel) {
-                stage.addActor(locks.get(i));
-            }
-        }
 
         // faz os ícones aumentarem/dimunuírem quando o mouse entra/sai
         for (final Image icon : levelIcons) {
@@ -371,8 +379,8 @@ public class OverworldScreen extends BaseScreen {
                 }
                 if ("exit".equals(hitActor.getName())) {
                     click1.play();
-                    play.setZIndex(0);
-                    exit.setZIndex(0);
+                    play.setVisible(false);
+                    exit.setVisible(false);
                     openLevels[0] = false;
                 }
             } else if (openLevels[1]) {
@@ -383,8 +391,8 @@ public class OverworldScreen extends BaseScreen {
                 }
                 if ("exit".equals(hitActor.getName())) {
                     click1.play();
-                    play.setZIndex(0);
-                    exit.setZIndex(0);
+                    play.setVisible(false);
+                    exit.setVisible(false);
                     openLevels[1] = false;
                 }
             } else if (openLevels[2]) {
@@ -395,8 +403,8 @@ public class OverworldScreen extends BaseScreen {
                 }
                 if ("exit".equals(hitActor.getName())) {
                     click1.play();
-                    play.setZIndex(0);
-                    exit.setZIndex(0);
+                    play.setVisible(false);
+                    exit.setVisible(false);
                     openLevels[2] = false;
                 }
             } else if (openLevels[3]) {
@@ -407,22 +415,20 @@ public class OverworldScreen extends BaseScreen {
                 }
                 if ("exit".equals(hitActor.getName())) {
                     click1.play();
-                    play.setZIndex(0);
-                    exit.setZIndex(0);
+                    play.setVisible(false);
+                    exit.setVisible(false);
                     openLevels[3] = false;
                 }
             } else if (openLevels[4]) {
                 if ("play".equals(hitActor.getName())) {
-
                     stop = true;
                     click1.play();
                     lastStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
-
                     click1.play();
-                    play.setZIndex(0);
-                    exit.setZIndex(0);
+                    play.setVisible(false);
+                    exit.setVisible(false);
                     openLevels[4] = false;
                 }
             } else if ("icon1".equals(hitActor.getName())) {
@@ -460,7 +466,7 @@ public class OverworldScreen extends BaseScreen {
 
     private void firstStage(boolean go) {
         openLevels[0] = true;
-        stage1.setZIndex(18);
+        stage1.setVisible(true);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
                     Arrays.asList(
@@ -479,7 +485,7 @@ public class OverworldScreen extends BaseScreen {
 
     private void secondStage(boolean go) {
         openLevels[1] = true;
-        stage2.setZIndex(18);
+        stage2.setVisible(true);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
                     Arrays.asList(
@@ -500,7 +506,7 @@ public class OverworldScreen extends BaseScreen {
 
     private void thirdStage(boolean go) {
         openLevels[2] = true;
-        stage3.setZIndex(18);
+        stage3.setVisible(true);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
                     Arrays.asList(
@@ -517,9 +523,8 @@ public class OverworldScreen extends BaseScreen {
 
     private void fourthStage(boolean go) {
         openLevels[3] = true;
-        stage4.setZIndex(18);
+        stage4.setVisible(true);
         if (go) {
-            stage4.setZIndex(stage4.getZIndex() + 7);
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
                     Arrays.asList(
                             // gabriel e natália
@@ -535,7 +540,7 @@ public class OverworldScreen extends BaseScreen {
 
     private void lastStage(boolean go) {
         openLevels[4] = true;
-        stage5.setZIndex(18);
+        stage5.setVisible(true);
         if (go) {
             transitionScreen(new PlayingGamesScreen(super.game, this, 5, new HashSet<MiniGameFactory>(
                     Arrays.asList(
@@ -552,17 +557,21 @@ public class OverworldScreen extends BaseScreen {
     }
 
     private void showStage(Image stage) {
+        stage.setVisible(true);
         if (stage.getScaleX() < .8f) {
             stage.setScale(stage.getScaleX() + .1f);
             stage.setPosition(viewport.getWorldWidth() / 2 - stage.getWidth() * stage.getScaleX() / 2, viewport.getWorldHeight() / 2 - stage.getHeight() * stage.getScaleY() / 2);
+            exit.setVisible(false);
+            play.setVisible(false);
 
         } else {
-            exit.setZIndex(19);
-            play.setZIndex(19);
+            exit.setVisible(true);
+            play.setVisible(true);
         }
     }
 
     private void hideStage(Image stage) {
+        stage.setVisible(false);
         if (stage.getScaleX() > 0) {
             stage.setScale(stage.getScaleX() - .1f);
             stage.setPosition(viewport.getWorldWidth() / 2 - stage.getWidth() * stage.getScaleX() / 2, viewport.getWorldHeight() / 2 - stage.getHeight() * stage.getScaleY() / 2);
