@@ -410,6 +410,7 @@ public class AstroCat extends MiniGame {
         backgroundMusic = new MyMusic(assets.get(MUSIC_PATH, Music.class));
         backgroundMusic.setLooping(true);
         backgroundMusic.setVolume(0.6f);
+        backgroundMusic.play();
     }
 
     private Texture loadTexture(String path) {
@@ -560,10 +561,6 @@ public class AstroCat extends MiniGame {
             asteroid.draw(batch);
         }
         crosshair.draw(batch);
-
-//        if (isPaused()) {
-//            astroCat.stopAccelerating();
-//        }
     }
 
     @Override
@@ -578,7 +575,7 @@ public class AstroCat extends MiniGame {
 
     @Override
     protected void onEnd() {
-        SoundManager.getInstance().stopBackgroundMusic();
+        backgroundMusic.stop();
         gasNoise.stop();
         world.destroyBody(astroCat.body);
         world.destroyBody(planet.body);
