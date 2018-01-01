@@ -68,7 +68,7 @@ public class LoadingScreen {
 
         private static final int TOTAL_SEGMENTS = 300;
         private static final float START_ANGLE = 90;
-        private static final float RADIUS_VARIATION = 0.75f;
+        private static final float RADIUS_VARIATION = 1f;
         private static final float MARGIN = 30f;
         private float totalAngle = 360;
         private final float initialRadius;
@@ -96,21 +96,36 @@ public class LoadingScreen {
             batch.end();
             shapes.setProjectionMatrix(batch.getProjectionMatrix());
             shapes.setTransformMatrix(batch.getTransformMatrix());
+
+            // desenha o fundo branco
             shapes.begin(ShapeRenderer.ShapeType.Filled);
             shapes.setColor(Color.WHITE);
             shapes.circle(
                     MARGIN + initialRadius + RADIUS_VARIATION,
                     MARGIN + initialRadius + RADIUS_VARIATION,
                     radius, TOTAL_SEGMENTS);
+
+            // desenha o círculo interno, de progresso
             shapes.setColor(super.getColor());
-            shapes.arc(
-                    MARGIN + initialRadius + RADIUS_VARIATION,
-                    MARGIN + initialRadius + RADIUS_VARIATION,
-                    radius,
-                    START_ANGLE,
-                    totalAngle * percentageComplete,
-                    TOTAL_SEGMENTS);
+            // o shapes.arc não desenha um círculo fechado, mesmo para arcos de 360º
+            // portanto, quando atingirmos 100%, passamos para shapes.circle
+            if (percentageComplete < 1) {
+                shapes.arc(
+                        MARGIN + initialRadius + RADIUS_VARIATION,
+                        MARGIN + initialRadius + RADIUS_VARIATION,
+                        radius,
+                        START_ANGLE,
+                        totalAngle * percentageComplete,
+                        TOTAL_SEGMENTS);
+            } else {
+                shapes.circle(
+                        MARGIN + initialRadius + RADIUS_VARIATION,
+                        MARGIN + initialRadius + RADIUS_VARIATION,
+                        radius, TOTAL_SEGMENTS);
+            }
             shapes.end();
+
+            // desenha o contorno
             shapes.begin(ShapeRenderer.ShapeType.Line);
             shapes.setColor(Color.GRAY);
             shapes.circle(
