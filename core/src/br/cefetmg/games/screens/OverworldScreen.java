@@ -294,11 +294,15 @@ public class OverworldScreen extends BaseScreen {
         posicaoCadeado[3] = new Vector2(983.3172f, 320.38754f);
         posicaoCadeado[4] = new Vector2(638.8559f, 316.95004f);
 
-        int i = 0;
-        for (Image cadeado : locks) {
-            cadeado.setPosition(posicaoCadeado[i].x + cadeado.getImageHeight() / 2, posicaoCadeado[i].y + cadeado.getImageWidth() / 2);
-            cadeado.setScale(0.5f);
-            i++;
+        for (int i = 0; i < locks.size(); i++) {
+            Image lock = locks.get(i);
+            if (i > currentLevel) {
+                stage.addActor(locks.get(i));
+            }
+            lock.setZIndex(10);
+            lock.setAlign(Align.center);
+            lock.setPosition(posicaoCadeado[i].x, posicaoCadeado[i].y);
+            lock.setScale(0.5f);
         }
     }
 
@@ -517,16 +521,6 @@ public class OverworldScreen extends BaseScreen {
         }
     }
 
-    private void drawLocks() {
-        int i = 0;
-        for (Image lock : locks) {
-            if (i > currentLevel) {
-                lock.draw(batch, 1);
-            }
-            i++;
-        }
-    }
-
     private void growEffect(Vector2 click) {
         Actor hitActor = stage.hit(click.x, click.y, false);
         if (!stop && hitActor != null && !openLevels[1] && !openLevels[2] && !openLevels[3] && !openLevels[0] && !openLevels[4]) {
@@ -590,7 +584,6 @@ public class OverworldScreen extends BaseScreen {
         stage.draw();
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        drawLocks();
         drawScoreText();
         batch.end();
     }
