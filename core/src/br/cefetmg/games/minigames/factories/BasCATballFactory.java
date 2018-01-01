@@ -3,6 +3,8 @@ package br.cefetmg.games.minigames.factories;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.BasCATball;
 import br.cefetmg.games.screens.BaseScreen;
+
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
@@ -39,7 +41,7 @@ public class BasCATballFactory implements MiniGameFactory {
                 put("bascatball/lightarrowR.png", Texture.class);
                 put("bascatball/doraemon.png", Texture.class);
 
-                put("bascatball/beats.mp3", Sound.class);
+                put("bascatball/beats.mp3", Music.class);
                 put("bascatball/fail.mp3", Sound.class);
                 put("bascatball/flyingdown.mp3", Sound.class);
                 put("bascatball/doh.mp3", Sound.class);

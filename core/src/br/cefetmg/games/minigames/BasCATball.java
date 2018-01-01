@@ -5,11 +5,13 @@ import br.cefetmg.games.minigames.util.DifficultyCurve;
 import br.cefetmg.games.minigames.util.TimeoutBehavior;
 import br.cefetmg.games.screens.BaseScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.audio.Sound;
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.MySound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -21,7 +23,7 @@ import java.util.HashMap;
  */
 public class BasCATball extends MiniGame {
 
-    private MySound beat;
+    private MyMusic beat;
     private MySound fail;
     private MySound flyingdown;
     private MySound doh;
@@ -119,7 +121,7 @@ public class BasCATball extends MiniGame {
         darkArrowRTexture = assets.get("bascatball/darkarrowR.png", Texture.class);
         doraemonTexture = assets.get("bascatball/doraemon.png", Texture.class);
 
-        beat = new MySound(assets.get("bascatball/beats.mp3", Sound.class));
+        beat = new MyMusic(assets.get("bascatball/beats.mp3", Music.class));
         fail = new MySound(assets.get("bascatball/fail.mp3", Sound.class));
         flyingdown = new MySound(assets.get("bascatball/flyingdown.mp3", Sound.class));
         doh = new MySound(assets.get("bascatball/doh.mp3", Sound.class));
@@ -214,8 +216,18 @@ public class BasCATball extends MiniGame {
         doraemon.setPosition(player.getX(), player.getY());
 
         beat.stop();
-        beat.loop();
+        beat.setLooping(true);
+    }
 
+    @Override
+    protected void onGamePaused(boolean justPaused) {
+        if (justPaused) {
+            beat.pause();
+        } else {
+            if (withoutBall) {
+                beat.play();
+            }
+        }
     }
 
     @Override
