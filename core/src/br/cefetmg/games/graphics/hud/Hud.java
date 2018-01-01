@@ -109,6 +109,8 @@ public class Hud {
         soundIcon.create(
                 screen.assets.get("hud/no-sound-button.png", Texture.class),
                 screen.assets.get("hud/sound-button.png", Texture.class));
+        soundIcon.getButton().setY(screen.viewport.getWorldHeight() * 0.20f);
+        soundIcon.getButton().setX(screen.viewport.getWorldHeight() * 0.06f);
 
         pauseButton = new ImageButton(
                 skin.getDrawable("unpause"),
@@ -211,7 +213,7 @@ public class Hud {
 
         table.padBottom(10).row().expandX();
 
-        table.add(pauseButton).uniformX().left();
+        table.add(pauseButton).uniformX().left().padLeft(screen.viewport.getWorldHeight() * 0.055f);
         table.add(clock).uniformX();
         table.add(livesGroup).uniformX();
         table.add().uniformX();
