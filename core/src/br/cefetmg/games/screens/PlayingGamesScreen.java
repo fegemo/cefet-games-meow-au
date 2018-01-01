@@ -32,9 +32,6 @@ import com.badlogic.gdx.audio.Music;
 
 import java.util.Set;
 
-/**
- * inspirado no tp de cinematica
- */
 public class PlayingGamesScreen extends BaseScreen
         implements MiniGameStateObserver {
 
