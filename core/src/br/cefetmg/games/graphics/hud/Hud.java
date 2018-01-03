@@ -56,6 +56,9 @@ public class Hud {
     private int currentLives;
     private boolean isPaused;
 
+    private MySound clickConfirmSound;
+    private MySound clickCancelSound;
+
     public Hud(BaseScreen screen, MiniGameStateObserver stateObserver) {
         this.screen = screen;
         this.stateObserver = stateObserver;
@@ -63,6 +66,9 @@ public class Hud {
     }
 
     public void create() {
+        clickConfirmSound = new MySound(screen.assets.get("menu/click1.mp3", Sound.class));
+        clickCancelSound = new MySound(screen.assets.get("menu/click2.mp3", Sound.class));
+
         Skin skin = new Skin(Gdx.files.internal("hud/uiskin.json"));
         skin.add("unpause", screen.assets.get("hud/unpause-button.png",
                 Texture.class));
@@ -123,7 +129,8 @@ public class Hud {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 toggleHudPauseState();
-            }
+                clickConfirmSound.play();
+        }
         });
 
         backGameButton = new ImageButton(
@@ -134,6 +141,7 @@ public class Hud {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 triggerResumeActions();
+                clickCancelSound.play();
             }
         });
 
@@ -150,6 +158,7 @@ public class Hud {
                 showMessage("Ao voltar para o menu inicial seu progresso sera perdido\nDeseja continuar?");
                 confirmButton.setVisible(true);
                 unnconfirmedButton.setVisible(true);
+                clickConfirmSound.play();
             }
         });
 
@@ -161,6 +170,7 @@ public class Hud {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 stateObserver.onStateChanged(MiniGameState.BACK_MENU);
+                clickConfirmSound.play();
             }
         });
         unnconfirmedButton = new ImageButton(
@@ -176,6 +186,7 @@ public class Hud {
                 backMenuButton.setVisible(true);
                 backGameButton.setVisible(true);
                 showPauseButton();
+                clickCancelSound.play();
             }
         });
         backMenuButton.setX(stage.getViewport().getWorldWidth() * 0.50f - backMenuButton.getWidth() / 2);
@@ -222,7 +233,6 @@ public class Hud {
         // DESCOMENTE a linha abaixo para ver as bordas da tabela
         //table.debug();
         stage.addActor(table);
-
     }
 
     /**

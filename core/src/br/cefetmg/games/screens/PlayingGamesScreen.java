@@ -134,6 +134,8 @@ public class PlayingGamesScreen extends BaseScreen
         assets.load("sound/youwin.wav", Sound.class);
         assets.load("sound/youlose.wav", Sound.class);
         assets.load("hud/intergames.mp3", Music.class);
+        assets.load("menu/click1.mp3", Sound.class);
+        assets.load("menu/click2.mp3", Sound.class);
 
         assets.load("hud/no-sound-button.png", Texture.class, linearFilter);
         assets.load("hud/sound-button.png", Texture.class, linearFilter);
@@ -284,9 +286,6 @@ public class PlayingGamesScreen extends BaseScreen
             case FINISHED_GAME_OVER:
                 Gdx.input.setCursorCatched(false);
                 break;
-            case BACK_MENU:
-                super.game.setScreen(new MenuScreen(super.game, this));
-                break;
             default:
                 break;
         }
@@ -351,8 +350,8 @@ public class PlayingGamesScreen extends BaseScreen
                 hud.cancelEndingTimer();
                 break;
             case BACK_MENU:
-                hud.showSoundsButton();
-                transitionTo(PlayScreenState.BACK_MENU);
+                transitionScreen(new MenuScreen(super.game, this), TransitionScreen.Effect.FADE_IN_OUT, 0.3f);
+                break;
         }
     }
 
