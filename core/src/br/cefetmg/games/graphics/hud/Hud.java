@@ -1,13 +1,5 @@
 package br.cefetmg.games.graphics.hud;
 
-import br.cefetmg.games.Config;
-import br.cefetmg.games.minigames.util.MiniGameState;
-import br.cefetmg.games.minigames.util.MiniGameStateObserver;
-import br.cefetmg.games.screens.BaseScreen;
-import br.cefetmg.games.screens.LoadingScreen;
-import br.cefetmg.games.sound.MySound;
-import br.cefetmg.games.transition.TransitionScreen;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -30,6 +22,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 
 import java.util.Locale;
+
+import br.cefetmg.games.Config;
+import br.cefetmg.games.minigames.util.MiniGameState;
+import br.cefetmg.games.minigames.util.MiniGameStateObserver;
+import br.cefetmg.games.screens.BaseScreen;
+import br.cefetmg.games.sound.MySound;
 
 /**
  * @author fegemo <coutinho@decom.cefetmg.br>
@@ -130,7 +128,7 @@ public class Hud {
             public void changed(ChangeEvent event, Actor actor) {
                 toggleHudPauseState();
                 clickConfirmSound.play();
-        }
+            }
         });
 
         backGameButton = new ImageButton(
@@ -247,7 +245,7 @@ public class Hud {
     /**
      * Dispara as ações envolvidas em resumir a tela atual.
      */
-    public void triggerResumeActions() {
+    private void triggerResumeActions() {
         if (isPaused) {
             toggleHudPauseState();
         }
@@ -316,14 +314,6 @@ public class Hud {
         clock.stopTicking();
     }
 
-    public void pauseEndingTimer() {
-        clock.pauseTicking();
-    }
-
-    public void resumeEndingTimer() {
-        clock.resumeTicking();
-    }
-
     public void showGameInstructions(String instructions) {
         centeredLabel.setText(instructions);
     }
@@ -354,10 +344,6 @@ public class Hud {
 
     public void hideSoundsButton() {
         soundIcon.hide();
-    }
-
-    public void showSoundsButton() {
-        soundIcon.show();
     }
 
 }
