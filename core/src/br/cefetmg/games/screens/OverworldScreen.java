@@ -342,8 +342,8 @@ public class OverworldScreen extends BaseScreen {
         RepeatAction repeatingSize = new RepeatAction();
         repeatingSize.setCount(RepeatAction.FOREVER);
         repeatingSize.setAction(Actions.sequence(
-                Actions.scaleBy(0.05f, 0.05f, 1, Interpolation.smooth),
-                Actions.scaleBy(-0.05f, -0.05f, 1, Interpolation.smooth)
+                Actions.scaleBy(0.12f, 0.12f, 0.75f, Interpolation.smooth),
+                Actions.scaleBy(-0.12f, -0.12f, 0.75f, Interpolation.smooth)
         ));
         currentLevelIcon.addAction(repeatingSize);
     }
@@ -449,7 +449,7 @@ public class OverworldScreen extends BaseScreen {
                 clickConfirmSound.play();
                 lastStage(false);
             } else if ((("icon5".equals(hitActor.getName()) && currentLevel < 4) || ("icon4".equals(hitActor.getName()) && currentLevel < 3) || ("icon3".equals(hitActor.getName()) && currentLevel < 2) || ("icon2".equals(hitActor.getName()) && currentLevel < 1))) {
-                clickDisabledSound.play(0.6f);
+                clickDisabledSound.play(0.35f);
                 stop = false;
             }
         }
