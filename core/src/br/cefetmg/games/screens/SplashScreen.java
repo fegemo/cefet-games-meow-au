@@ -1,15 +1,17 @@
 package br.cefetmg.games.screens;
 
-import br.cefetmg.games.Config;
-import br.cefetmg.games.transition.TransitionScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+
+import br.cefetmg.games.Config;
+import br.cefetmg.games.transition.TransitionScreen;
 
 /**
  * A tela de <em>splash</em> (inicial, com a logomarca) do jogo.
@@ -18,7 +20,7 @@ import com.badlogic.gdx.utils.TimeUtils;
  */
 public class SplashScreen extends BaseScreen {
 
-    private final int NUMBER_OF_VIDEO_FRAMES = 47;
+    private static final int NUMBER_OF_VIDEO_FRAMES = 47;
     private final float VIDEO_DURATION_IN_SECONDS = 2.9f;
     private final float TIME_ON_EACH_FRAME_IN_SECONDS
             = VIDEO_DURATION_IN_SECONDS / NUMBER_OF_VIDEO_FRAMES;
@@ -30,10 +32,11 @@ public class SplashScreen extends BaseScreen {
     /**
      * Uma {@link Sprite} que contém a logo da empresa CEFET-GAMES.
      */
-    private final Sprite[] logo = new Sprite[NUMBER_OF_VIDEO_FRAMES];
+    private Array<Sprite> videoSprites;
     private Music backgroundMusic;
     private int currentFrame;
     private float timeShowingCurrentFrame;
+    private TextureAtlas videoFrames;
 
     /**
      * Cria uma nova tela de <em>splash</em>.
@@ -55,18 +58,17 @@ public class SplashScreen extends BaseScreen {
         TextureLoader.TextureParameter linearFilter = new TextureLoader.TextureParameter();
         linearFilter.magFilter = TextureFilter.Linear;
         linearFilter.minFilter = TextureFilter.Linear;
-        // carrega cada quadro do vídeo separadamente, como uma textura
-        for (int i = 0; i < NUMBER_OF_VIDEO_FRAMES; i++) {
-            assets.load("splash/frames/" + Integer.toString(i + 1) + ".png", Texture.class, linearFilter);
-        }
+        // carrega os quadro do vídeo e o áudio
+        assets.load("splash/video.atlas", TextureAtlas.class);
         assets.load("splash/splash.mp3", Music.class);
     }
 
     @Override
     protected void assetsLoaded() {
-        for (int i = 0; i < NUMBER_OF_VIDEO_FRAMES; i++) {
-            logo[i] = new Sprite(assets.get("splash/frames/" + Integer.toString(i + 1) + ".png", Texture.class));
-            logo[i].setCenter(super.viewport.getWorldWidth() / 2, super.viewport.getWorldHeight() / 2);
+        videoFrames = assets.get("splash/video.atlas", TextureAtlas.class);
+        videoSprites = videoFrames.createSprites();
+        for (Sprite sprite : videoSprites) {
+            sprite.setCenter(super.viewport.getWorldWidth() / 2, super.viewport.getWorldHeight() / 2);
         }
         backgroundMusic = assets.get("splash/splash.mp3", Music.class);
         backgroundMusic.play();
@@ -76,9 +78,8 @@ public class SplashScreen extends BaseScreen {
     @Override
     public void cleanUp() {
         backgroundMusic.dispose();
-        for (int i = 0; i < NUMBER_OF_VIDEO_FRAMES; i++) {
-            logo[i].getTexture().dispose();
-        }
+        videoSprites.clear();
+        videoFrames.dispose();
     }
 
     /**
@@ -116,7 +117,7 @@ public class SplashScreen extends BaseScreen {
             navigateToMenuScreen();
         }
         timeShowingCurrentFrame += dt;
-        if (currentFrame < NUMBER_OF_VIDEO_FRAMES - 1
+        if (currentFrame < videoSprites.size - 1
                 && timeShowingCurrentFrame > TIME_ON_EACH_FRAME_IN_SECONDS) {
             currentFrame++;
             timeShowingCurrentFrame -= TIME_ON_EACH_FRAME_IN_SECONDS;
@@ -129,7 +130,7 @@ public class SplashScreen extends BaseScreen {
     @Override
     public void draw() {
         batch.begin();
-        logo[currentFrame].draw(batch);
+        videoSprites.get(currentFrame).draw(batch);
         batch.end();
     }
 }
