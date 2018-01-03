@@ -167,7 +167,7 @@ public class Hud {
         confirmButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                stateObserver.onStateChanged(MiniGameState.BACK_MENU);
+                stateObserver.onStateChanged(MiniGameState.GOING_BACK_TO_MENU);
                 clickConfirmSound.play();
             }
         });

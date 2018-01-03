@@ -1,7 +1,21 @@
 package br.cefetmg.games.screens;
 
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.assets.loaders.TextureLoader;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import br.cefetmg.games.Config;
-import br.cefetmg.games.transition.TransitionScreen;
 import br.cefetmg.games.graphics.hud.Hud;
 import br.cefetmg.games.logic.chooser.BaseGameSequencer;
 import br.cefetmg.games.logic.chooser.GameSequencer;
@@ -9,28 +23,10 @@ import br.cefetmg.games.logic.chooser.InfiniteGameSequencer;
 import br.cefetmg.games.minigames.MiniGame;
 import br.cefetmg.games.minigames.factories.*;
 import br.cefetmg.games.minigames.util.MiniGameState;
-
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.audio.Sound;
-
 import br.cefetmg.games.minigames.util.MiniGameStateObserver;
 import br.cefetmg.games.sound.MyMusic;
 import br.cefetmg.games.sound.MySound;
-
-import com.badlogic.gdx.assets.loaders.TextureLoader;
-import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
-
-import java.util.Arrays;
-import java.util.HashSet;
-
-import com.badlogic.gdx.audio.Music;
-
-import java.util.Set;
+import br.cefetmg.games.transition.TransitionScreen;
 
 public class PlayingGamesScreen extends BaseScreen
         implements MiniGameStateObserver {
@@ -243,7 +239,7 @@ public class PlayingGamesScreen extends BaseScreen
     }
 
     private void drawEndGame() {
-        super.drawCenterAlignedText("Toque para voltar ao Menu",
+        super.drawCenterAlignedText("Toque para voltar",
                 super.viewport.getWorldHeight() * 0.35f);
     }
 
@@ -325,8 +321,10 @@ public class PlayingGamesScreen extends BaseScreen
                 // uma decisão consciente =)
 
             case PLAYER_FAILED:
+                // esconde o botão de pausa
                 hud.hidePauseButton();
-                hud.showMessage(state == MiniGameState.PLAYER_FAILED ? "Falhou!" : "Conseguiu!");
+
+                // verifica se perdeu e se tem vidas, ou se o jogo já acabou
                 if (state == MiniGameState.PLAYER_FAILED) {
                     loseLife();
 
@@ -336,6 +334,24 @@ public class PlayingGamesScreen extends BaseScreen
                         youLoseSound.play();
                     }
                 }
+
+                // mostra mensagem de vitória/derrota
+                String messageToDisplay;
+                if (lives == 0) {
+                    messageToDisplay = "[#990033]Perdeu :([] mas tente novamente!";
+                } else {
+                    if (state == MiniGameState.PLAYER_FAILED) {
+                        if (this.sequencer.hasNextGame()) {
+                            messageToDisplay = "Falhou!";
+                        } else {
+                            messageToDisplay = "Falhou, mas [#003399]venceu[] a sequência!";
+                        }
+                    } else {
+                        messageToDisplay = "Conseguiu!";
+                    }
+                }
+                hud.showMessage(messageToDisplay);
+
 
                 inputMultiplexer.removeProcessor(currentGame.getInputProcessor());
                 Timer.instance().scheduleTask(new Task() {
@@ -349,8 +365,15 @@ public class PlayingGamesScreen extends BaseScreen
                 Gdx.input.setCursorCatched(false);
                 hud.cancelEndingTimer();
                 break;
-            case BACK_MENU:
-                transitionScreen(new MenuScreen(super.game, this), TransitionScreen.Effect.FADE_IN_OUT, 0.3f);
+
+            case GOING_BACK_TO_MENU:
+                if (sequencer instanceof InfiniteGameSequencer) {
+                    transitionScreen(new MenuScreen(super.game, this), TransitionScreen.Effect.FADE_IN_OUT, 0.3f);
+                } else if (sequencer instanceof GameSequencer) {
+                    transitionScreen(new OverworldScreen(super.game, this),
+                            TransitionScreen.Effect.FADE_IN_OUT, 0.5f);
+                }
+
                 break;
         }
     }
