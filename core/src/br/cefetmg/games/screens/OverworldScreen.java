@@ -42,7 +42,7 @@ public class OverworldScreen extends BaseScreen {
 
     private Stage stage;
 
-    private MySound click1, click2;
+    private MySound clickConfirmSound, clickCancelSound, clickDisabledSound;
 
     private boolean stop;
     private boolean[] openLevels;
@@ -138,6 +138,7 @@ public class OverworldScreen extends BaseScreen {
         assets.load("hud/no-sound-button.png", Texture.class, linearFilter);
         assets.load("hud/sound-button.png", Texture.class, linearFilter);
 
+        assets.load("menu/click1.mp3", Sound.class);
         assets.load("menu/click2.mp3", Sound.class);
         assets.load("menu/click3.mp3", Sound.class);
         assets.load("world/overworldtheme.mp3", Music.class);
@@ -172,8 +173,9 @@ public class OverworldScreen extends BaseScreen {
         Image water = new Image(assets.get("world/water.jpg", Texture.class));
         fonteDeTexto = super.messagesFont;
 
-        click1 = new MySound(assets.get("menu/click2.mp3", Sound.class));
-        click2 = new MySound(assets.get("menu/click3.mp3", Sound.class));
+        clickCancelSound  = new MySound(assets.get("menu/click1.mp3", Sound.class));
+        clickConfirmSound = new MySound(assets.get("menu/click2.mp3", Sound.class));
+        clickDisabledSound = new MySound(assets.get("menu/click3.mp3", Sound.class));
         backgroundMusic = new MyMusic(assets.get("world/overworldtheme.mp3", Music.class));
         backgroundMusic.setLooping(true);
         backgroundMusic.play();
@@ -360,25 +362,25 @@ public class OverworldScreen extends BaseScreen {
         Actor hitActor = stage.hit(click.x, click.y, false);
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.BACK)){
-            click1.play();
+            clickCancelSound.play();
             transitionScreen(new MenuScreen(super.game, this),
                     TransitionScreen.Effect.FADE_IN_OUT, 0.5f);
             stop = true;
         }
         if (Gdx.input.justTouched() && hitActor != null && !stop) {
             if ("menu".equals(hitActor.getName())) {
-                click1.play();
+                clickCancelSound.play();
                 transitionScreen(new MenuScreen(super.game, this),
                         TransitionScreen.Effect.FADE_IN_OUT, 0.5f);
                 stop = true;
             } else if (openLevels[0]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
-                    click1.play();
+                    clickConfirmSound.play();
                     firstStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
-                    click1.play();
+                    clickCancelSound.play();
                     play.setVisible(false);
                     exit.setVisible(false);
                     openLevels[0] = false;
@@ -386,11 +388,11 @@ public class OverworldScreen extends BaseScreen {
             } else if (openLevels[1]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
-                    click1.play();
+                    clickConfirmSound.play();
                     secondStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
-                    click1.play();
+                    clickCancelSound.play();
                     play.setVisible(false);
                     exit.setVisible(false);
                     openLevels[1] = false;
@@ -398,11 +400,11 @@ public class OverworldScreen extends BaseScreen {
             } else if (openLevels[2]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
-                    click1.play();
+                    clickConfirmSound.play();
                     thirdStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
-                    click1.play();
+                    clickCancelSound.play();
                     play.setVisible(false);
                     exit.setVisible(false);
                     openLevels[2] = false;
@@ -410,11 +412,11 @@ public class OverworldScreen extends BaseScreen {
             } else if (openLevels[3]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
-                    click1.play();
+                    clickConfirmSound.play();
                     fourthStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
-                    click1.play();
+                    clickCancelSound.play();
                     play.setVisible(false);
                     exit.setVisible(false);
                     openLevels[3] = false;
@@ -422,32 +424,32 @@ public class OverworldScreen extends BaseScreen {
             } else if (openLevels[4]) {
                 if ("play".equals(hitActor.getName())) {
                     stop = true;
-                    click1.play();
+                    clickConfirmSound.play();
                     lastStage(true);
                 }
                 if ("exit".equals(hitActor.getName())) {
-                    click1.play();
+                    clickCancelSound.play();
                     play.setVisible(false);
                     exit.setVisible(false);
                     openLevels[4] = false;
                 }
             } else if ("icon1".equals(hitActor.getName())) {
-                click1.play();
+                clickConfirmSound.play();
                 firstStage(false);
             } else if ("icon2".equals(hitActor.getName()) && currentLevel >= 1) {
-                click1.play();
+                clickConfirmSound.play();
                 secondStage(false);
             } else if ("icon3".equals(hitActor.getName()) && currentLevel >= 2) {
-                click1.play();
+                clickConfirmSound.play();
                 thirdStage(false);
             } else if ("icon4".equals(hitActor.getName()) && currentLevel >= 3) {
-                click1.play();
+                clickConfirmSound.play();
                 fourthStage(false);
             } else if ("icon5".equals(hitActor.getName()) && currentLevel >= 4) {
-                click1.play();
+                clickConfirmSound.play();
                 lastStage(false);
             } else if ((("icon5".equals(hitActor.getName()) && currentLevel < 4) || ("icon4".equals(hitActor.getName()) && currentLevel < 3) || ("icon3".equals(hitActor.getName()) && currentLevel < 2) || ("icon2".equals(hitActor.getName()) && currentLevel < 1))) {
-                click2.play();
+                clickDisabledSound.play(0.6f);
                 stop = false;
             }
         }

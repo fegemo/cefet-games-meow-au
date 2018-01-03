@@ -64,8 +64,8 @@ public class Hud {
     }
 
     public void create() {
-        clickConfirmSound = new MySound(screen.assets.get("menu/click1.mp3", Sound.class));
-        clickCancelSound = new MySound(screen.assets.get("menu/click2.mp3", Sound.class));
+        clickCancelSound = new MySound(screen.assets.get("menu/click1.mp3", Sound.class));
+        clickConfirmSound = new MySound(screen.assets.get("menu/click2.mp3", Sound.class));
 
         Skin skin = new Skin(Gdx.files.internal("hud/uiskin.json"));
         skin.add("unpause", screen.assets.get("hud/unpause-button.png",
