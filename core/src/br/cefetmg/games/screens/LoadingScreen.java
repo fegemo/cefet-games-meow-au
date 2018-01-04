@@ -3,7 +3,6 @@ package br.cefetmg.games.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,9 +10,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
 
 public class LoadingScreen {
 
@@ -23,6 +24,19 @@ public class LoadingScreen {
     private final SpriteBatch batch;
     private final Viewport viewport;
     private final Vector2 backgroundPosition;
+
+    // efeito de surgimento e desaparecimento do background
+    private static final float TOTAL_TIME_FADING_IN_OR_OUT = 1f;
+    private float timeFadingInOrOutRemaining;
+    private float alpha = 0;
+    private float meanProgressSpeed;
+    private float timeSpentLoading = 0;
+    private WindowedMean progressSpeed = new WindowedMean(6);
+
+    private enum EffectState {
+        FADING_IN, WAITING_TO_START_FADING_OUT, FADING_OUT, FINISHED
+    }
+    private EffectState state = EffectState.FADING_IN;
 
     public LoadingScreen(Viewport viewport, SpriteBatch batch) {
         this.viewport = viewport;
@@ -41,14 +55,49 @@ public class LoadingScreen {
                 Texture.TextureFilter.Linear);
         background = new TextureRegion(backgroundTexture);
         backgroundPosition = new Vector2((viewport.getWorldWidth() - background.getRegionWidth())/2f, (viewport.getWorldHeight() - background.getRegionHeight())/2f);
+        timeFadingInOrOutRemaining = TOTAL_TIME_FADING_IN_OR_OUT;
     }
 
     public boolean draw(AssetManager assets) {
+        timeSpentLoading += Gdx.graphics.getRawDeltaTime();
+        meanProgressSpeed = assets.getProgress() / timeSpentLoading;
+
         boolean wasDrawing = batch.isDrawing();
         if (!wasDrawing) {
             batch.setProjectionMatrix(viewport.getCamera().combined);
             batch.begin();
         }
+        switch (state) {
+            case FADING_IN:
+                timeFadingInOrOutRemaining -= Gdx.graphics.getDeltaTime();
+                alpha = Math.min(1, 1 - timeFadingInOrOutRemaining / TOTAL_TIME_FADING_IN_OR_OUT);
+                if (alpha >= 1.0f) {
+                    state = EffectState.WAITING_TO_START_FADING_OUT;
+                }
+                break;
+
+            case FADING_OUT:
+                timeFadingInOrOutRemaining -= Gdx.graphics.getDeltaTime();
+                alpha = Math.max(0, timeFadingInOrOutRemaining / TOTAL_TIME_FADING_IN_OR_OUT);
+                if (timeFadingInOrOutRemaining <= 0) {
+                    state = EffectState.FINISHED;
+                }
+                break;
+
+            case WAITING_TO_START_FADING_OUT:
+                // verifica se precisa começar a fazer fadeout...
+                // tenta determinar a partir de qual progresso (% assets.progress) que
+                // deve começar o fading out. Para isso, faz uma média da velocidade de
+                // carregamento
+                float progressValueToStartFadingOut = 1 - (meanProgressSpeed * TOTAL_TIME_FADING_IN_OR_OUT);
+                progressSpeed.addValue(progressValueToStartFadingOut);
+                if (progressSpeed.hasEnoughData() && assets.getProgress() > progressSpeed.getMean()) {
+                    timeFadingInOrOutRemaining = TOTAL_TIME_FADING_IN_OR_OUT / 2;
+                    state = EffectState.FADING_OUT;
+                }
+                break;
+        }
+        batch.setColor(1, 1, 1, alpha);
         batch.draw(background, backgroundPosition.x, backgroundPosition.y,
                 background.getRegionWidth(),
                 background.getRegionHeight());
